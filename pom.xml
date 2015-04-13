@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.infogen</groupId>
 	<artifactId>infogen_soa</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>infogen_soa</name>
@@ -207,6 +207,44 @@
 					<effort>Default</effort>
 					<findbugsXmlOutput>true</findbugsXmlOutput>
 					<findbugsXmlOutputDirectory>target/findbugs</findbugsXmlOutputDirectory>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<!-- 将所有依赖的jar都拷贝出来 -->
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<!-- 往Manifest.MF文件中添加ClassPath -->
+							<addClasspath>true</addClasspath>
+							<!-- classpath前缀 -->
+							<classpathPrefix>lib/</classpathPrefix>
+							<!-- 主程序入口 -->
+							<mainClass>com.infogen.demo.Launcher_Demo</mainClass>
+						</manifest>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
