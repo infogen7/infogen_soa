@@ -1,0 +1,38 @@
+最新 V1.1.00R150313
+BUG:
+@RequestMapping(value = "/create_job", method = RequestMethod.GET)
+RequestMapping中method没有配置时会报错的问题
+kafka 异常捕获
+重复注册监听问题
+去掉return中tojson的异常
+java -jar -XX:+UseG1GC  -XX:+UseStringDeduplication TM.jar
+
+
+Y 频次为最长30秒持久化一次
+Y 全局只打印一次的日志
+Y 参数简化  list<KV>比较繁琐
+YIP白名单
+Y修复先创建节点后写数据在慢网络下的问题 创建时写入数据
+YACL
+Y  修改本地启动时路径问题
+
+分离jetty
+NGRPC 及分发
+http2 取出idl
+异步post失败后导致连接泄漏
+
+
+因集群复制导致的跨客户端视图的并发一致性问题  读取前sync
+统一加密解密(添加开关)
+数据分离安全框架
+时间格式统一
+测试用例
+调用返回处理简化
+
+
+
+spring mvc测试
+jacoco和infogen_aop 冲突的问题
+
+待观察
+节点下线10秒超时后重新上线  特定机器上接收不到节点信息

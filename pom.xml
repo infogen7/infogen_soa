@@ -1,0 +1,241 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.infogen</groupId>
+	<artifactId>infogen_soa</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>infogen_soa</name>
+	<url>https://github.com/larrylgq/infogen_aop</url>
+	<description>分布式服务框架</description>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>larry</name>
+			<email>larrylv@outlook.com</email>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git@github.com:larrylgq/infogen_aop.git</connection>
+		<developerConnection>scm:git@github.com:larrylgq/infogen_aop.git</developerConnection>
+		<url>git@github.com:larrylgq/infogen_aop.git</url>
+	</scm>
+	<properties>
+		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
+	</properties>
+	<dependencies>
+		<!-- core -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.5.1</version>
+		</dependency>
+
+
+
+		<!-- aop -->
+		<dependency>
+			<groupId>com.github.larrylgq</groupId>
+			<artifactId>infogen_aop</artifactId>
+			<version>V1.0.00R150302</version>
+		</dependency>
+
+		<!-- zookeeper -->
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.4.6</version>
+		</dependency>
+		<!-- kafka -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.10</artifactId>
+			<version>0.8.2.1</version>
+		</dependency>
+
+
+
+		<!-- http -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpasyncclient</artifactId>
+			<version>4.1-beta1</version>
+		</dependency>
+
+
+		<!-- spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>4.1.6.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>4.1.6.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>4.1.6.RELEASE</version>
+		</dependency>
+
+		<!-- thrift -->
+		<dependency>
+			<groupId>org.apache.thrift</groupId>
+			<artifactId>libthrift</artifactId>
+			<version>0.9.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>3.0.0-alpha-2</version>
+		</dependency>
+
+		<!-- Jetty Webapp -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-annotations</artifactId>
+			<version>9.3.0.M2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>9.3.0.M2</version>
+		</dependency>
+
+
+		<!-- backups -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.8.1</version>
+		</dependency>
+
+
+		<!-- shell 命令解析 -->
+		<dependency>
+			<groupId>commons-cli</groupId>
+			<artifactId>commons-cli</artifactId>
+			<version>1.2</version>
+		</dependency>
+	</dependencies>
+
+
+	<build>
+		<finalName>infogen_soa</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+					<compilerArguments>
+						<extdirs>src/main/webapp/WEB-INF/lib</extdirs>
+					</compilerArguments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.13</version>
+				<configuration>
+					<useFile>false</useFile>
+					<disableXmlReport>true</disableXmlReport>
+					<includes>
+						<include>**/*Test.*</include>
+						<include>**/*Suite.*</include>
+					</includes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<!-- <threshold>High</threshold> -->
+					<effort>Default</effort>
+					<findbugsXmlOutput>true</findbugsXmlOutput>
+					<findbugsXmlOutputDirectory>target/findbugs</findbugsXmlOutputDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+
+		<resources>
+			<!-- ${basedir} 项目根目录 缺省为target/infogen_soa -->
+			<!-- ${project.build.directory} 构建目录，缺省为target -->
+			<!-- ${project.build.outputDirectory} 构建过程输出目录，缺省为target/classes -->
+			<!-- 调试和web容器发布模式 -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/webapp</directory>
+				<targetPath> ${project.build.outputDirectory}/webapp</targetPath>
+				<filtering>true</filtering>
+			</resource>
+			<!-- jar 包发布模式 -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<targetPath>${project.build.directory}</targetPath>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/webapp</directory>
+				<targetPath>${project.build.directory}/webapp</targetPath>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
+</project>

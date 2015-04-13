@@ -1,0 +1,2 @@
+advertised.host.name 默认值：null
+如果设置了这个hostname，会分发给所有的producer，consumer和其他broker来连接自己
