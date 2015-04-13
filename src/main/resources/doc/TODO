@@ -15,10 +15,10 @@ YIP白名单
 Y修复先创建节点后写数据在慢网络下的问题 创建时写入数据
 YACL
 Y  修改本地启动时路径问题
+Y分离jetty
 
-分离jetty
 NGRPC 及分发
-http2 取出idl
+http2 取代idl
 异步post失败后导致连接泄漏
 
 

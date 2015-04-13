@@ -42,32 +42,6 @@ public class InfoGen_HTTP {
 	private static Integer socket_timeout = 10_000;// 数据传输时间
 	private static Integer connect_timeout = 3_000;// 连接时间
 
-	// ////////////////////////////////////////////////////////post///////////////////////////////////////////////////////////////////////////
-	/**
-	 * post 获取 rest 资源
-	 * 
-	 * @param url
-	 * @param name_value_pair
-	 * @return
-	 * @throws ClientProtocolException
-	 * @throws IOException
-	 */
-	public static Return do_post(String url, List<BasicNameValuePair> name_value_pair) throws IOException {
-		String body = "{}";
-		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socket_timeout).setConnectTimeout(connect_timeout).build();
-		CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
-		try {
-			HttpPost httpost = new HttpPost(url);
-			httpost.setEntity(new UrlEncodedFormEntity(name_value_pair, StandardCharsets.UTF_8));
-			HttpResponse response = httpclient.execute(httpost);
-			HttpEntity entity = response.getEntity();
-			body = EntityUtils.toString(entity);
-		} finally {
-			httpclient.close();
-		}
-		return Return.create(body);
-	}
-
 	// //////////////////////////////////////////////////////////////////////////////////////////////get/////////////////////////////////////////////////////////////
 	/**
 	 * get 获取 rest 资源
@@ -103,35 +77,35 @@ public class InfoGen_HTTP {
 		return Return.create(body);
 	}
 
-	// ///////////////////////////////////////////async//////////////////////////////////////////////////
-	public static Http_Callback do_async_post(String url, List<BasicNameValuePair> name_value_pair) throws IOException {
-		Http_Callback callback = new Http_Callback();
+	// ////////////////////////////////////////////////////////post///////////////////////////////////////////////////////////////////////////
+	/**
+	 * post 获取 rest 资源
+	 * 
+	 * @param url
+	 * @param name_value_pair
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public static Return do_post(String url, List<BasicNameValuePair> name_value_pair) throws IOException {
+		String body = "{}";
 		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socket_timeout).setConnectTimeout(connect_timeout).build();
-		CloseableHttpAsyncClient httpclient = HttpAsyncClients.custom().setDefaultRequestConfig(requestConfig).build();
-		httpclient.start();
-		HttpPost httpost = new HttpPost(url);
-		httpost.setEntity(new UrlEncodedFormEntity(name_value_pair, StandardCharsets.UTF_8));
-		httpclient.execute(httpost, new FutureCallback<HttpResponse>() {
-			public void completed(final HttpResponse response) {
-				try {
-					callback.add(Return.create(EntityUtils.toString(response.getEntity())));
-				} catch (ParseException | IOException e) {
-					callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
-				}
-			}
-
-			public void failed(final Exception e) {
-				callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
-			}
-
-			public void cancelled() {
-				callback.add(Return.FAIL(CODE._500.code, "cancelled"));
-			}
-		});
-		return callback;
+		CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
+		try {
+			HttpPost httpost = new HttpPost(url);
+			httpost.setEntity(new UrlEncodedFormEntity(name_value_pair, StandardCharsets.UTF_8));
+			HttpResponse response = httpclient.execute(httpost);
+			HttpEntity entity = response.getEntity();
+			body = EntityUtils.toString(entity);
+		} finally {
+			httpclient.close();
+		}
+		return Return.create(body);
 	}
 
-	public static Http_Callback do_async_get(String url, List<BasicNameValuePair> name_value_pair) throws IOException {
+	// ///////////////////////////////////////////async//////////////////////////////////////////////////
+
+	public static Http_Callback do_async_get(String url, List<BasicNameValuePair> name_value_pair) {
 
 		Http_Callback callback = new Http_Callback();
 
@@ -152,7 +126,62 @@ public class InfoGen_HTTP {
 
 		httpclient.start();
 		HttpGet httpget = new HttpGet(url);
-		httpclient.execute(httpget, new FutureCallback<HttpResponse>() {
+
+		FutureCallback<HttpResponse> future_callback = new FutureCallback<HttpResponse>() {
+			public void completed(final HttpResponse response) {
+				try {
+					callback.add(Return.create(EntityUtils.toString(response.getEntity())));
+				} catch (ParseException | IOException e) {
+					callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
+				} finally {
+					try {
+						httpclient.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			public void failed(final Exception e) {
+				callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
+				try {
+					httpclient.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+
+			public void cancelled() {
+				callback.add(Return.FAIL(CODE._500.code, "cancelled"));
+				try {
+					httpclient.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		try {
+			httpclient.execute(httpget, future_callback);
+		} catch (Exception e) {
+			logger.error("http do_async_get 调用失败", e);
+			try {
+				httpclient.close();
+			} catch (IOException e1) {
+				logger.error("http do_async_get 关闭连接失败", e1);
+			}
+		}
+		return callback;
+	}
+
+	public static Http_Callback do_async_post(String url, List<BasicNameValuePair> name_value_pair) throws IOException {
+		Http_Callback callback = new Http_Callback();
+		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socket_timeout).setConnectTimeout(connect_timeout).build();
+		CloseableHttpAsyncClient httpclient = HttpAsyncClients.custom().setDefaultRequestConfig(requestConfig).build();
+		httpclient.start();
+		HttpPost httpost = new HttpPost(url);
+		httpost.setEntity(new UrlEncodedFormEntity(name_value_pair, StandardCharsets.UTF_8));
+
+		FutureCallback<HttpResponse> future_callback = new FutureCallback<HttpResponse>() {
 			public void completed(final HttpResponse response) {
 				try {
 					callback.add(Return.create(EntityUtils.toString(response.getEntity())));
@@ -168,7 +197,19 @@ public class InfoGen_HTTP {
 			public void cancelled() {
 				callback.add(Return.FAIL(CODE._500.code, "cancelled"));
 			}
-		});
+		};
+
+		try {
+			httpclient.execute(httpost, future_callback);
+		} catch (Exception e) {
+			logger.error("http do_async_post 调用失败", e);
+			try {
+				httpclient.close();
+			} catch (IOException e1) {
+				logger.error("http do_async_post 关闭连接失败", e1);
+			}
+		}
 		return callback;
 	}
+
 }
