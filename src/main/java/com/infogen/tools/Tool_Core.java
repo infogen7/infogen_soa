@@ -247,6 +247,7 @@ public class Tool_Core {
 	 * @param string_ip
 	 * @return
 	 */
+	@Deprecated
 	public long ip_to_long(String string_ip) {
 		long[] ip = new long[4];
 		int position1 = string_ip.indexOf(".");
@@ -270,6 +271,7 @@ public class Tool_Core {
 	 * @param str
 	 * @return
 	 */
+	@Deprecated
 	public static boolean pattern_match(String pattern, String str) {
 		pattern = convertToRegexPattern(pattern);
 		return Pattern.matches(pattern, str);

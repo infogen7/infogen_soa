@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
  * @since 1.0
  * @version 1.0
  */
+@Deprecated
 public class Logger_Once {
 	public static Logger logger = Logger.getLogger(Logger_Once.class.getName());
 	private static Map<String, Boolean> map = new java.util.HashMap<>();

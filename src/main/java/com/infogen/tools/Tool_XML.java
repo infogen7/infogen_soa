@@ -22,6 +22,7 @@ import org.jsoup.select.Elements;
  * @email larry.lv.word@gmail.com
  * @version 创建时间 2013-6-14 下午3:56:48
  */
+@Deprecated
 public class Tool_XML {
 	private static Logger logger = Logger.getLogger(Tool_XML.class.getName());
 

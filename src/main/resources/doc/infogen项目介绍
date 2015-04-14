@@ -16,12 +16,13 @@ node:每个项目的单个实例
 
 文件夹:
 aop :提供了面向切面的功能,只要实现了基于注解的性能监控
-cache:缓存服务配置,包括从zookeeper家在服务和全局配置的数据以及持久化这些数据到硬盘
+cache:缓存服务和配置,包括从zookeeper加载服务和全局配置的数据以及持久化这些数据到硬盘
 configuration:读取并初始化infogen配置
 event_handle:事件回调处理器
 http:封装了启动mvc框架和http调用和安全白名单限制
 kafka:封装了kafka的接收器
 rpc:目前封装了thrift的处理器和异步处理  TODO:需要替换成GRPC
+Security:安全相关配置的处理
 self_describing:启动时扫描http自描述接口,用于生成文档
 server:获取服务相关的类
 thrift:thrift自动生成的服务类

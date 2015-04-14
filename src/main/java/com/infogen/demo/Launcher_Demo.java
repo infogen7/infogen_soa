@@ -39,7 +39,7 @@ public class Launcher_Demo {
 		config.add_basic_outparameter(new OutParameter("code", Integer.class, true, "200", "错误码<br>200 成功<br>400 参数不正确<br>401 特定参数不符合条件(eg:没有这个用户)<br>404 没有这个方法 (RPC调用)<br>500 错误"));
 
 		// 读取白名单
-		InfoGen.getInstance().start_and_watch(config).register();
+		InfoGen.getInstance().start_and_watch(config).register().start_white_list();
 
 		InfoGen_Kafka.getInstance().start(config);
 		InfoGen_Jetty.getInstance().start(config, "/", NativePath.get("webapp").toString(), NativePath.get("webapp/WEB-INF/web.xml").toString());
