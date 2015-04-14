@@ -133,31 +133,15 @@ public class InfoGen_HTTP {
 					callback.add(Return.create(EntityUtils.toString(response.getEntity())));
 				} catch (ParseException | IOException e) {
 					callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
-				} finally {
-					try {
-						httpclient.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
 				}
 			}
 
 			public void failed(final Exception e) {
 				callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
-				try {
-					httpclient.close();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
 			}
 
 			public void cancelled() {
 				callback.add(Return.FAIL(CODE._500.code, "cancelled"));
-				try {
-					httpclient.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 			}
 		};
 		try {

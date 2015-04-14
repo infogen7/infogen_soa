@@ -27,7 +27,7 @@ import com.infogen.util.Return;
  * @since 1.0
  * @version 1.0
  */
-@WebFilter(filterName = "InfoGen_Security_Filter", urlPatterns = { "/*" }, asyncSupported = true)
+//@WebFilter(filterName = "InfoGen_Security_Filter", urlPatterns = { "/*" }, asyncSupported = true)
 public class InfoGen_Security_Filter implements Filter {
 	public static Logger logger = Logger.getLogger(InfoGen_Security_Filter.class.getName());
 
