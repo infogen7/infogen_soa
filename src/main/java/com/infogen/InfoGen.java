@@ -80,6 +80,10 @@ public class InfoGen {
 		CACHE_CONFIGURATION.init_local_infogen_cfg_dynamic();
 		// 定时修正没有找到可用配置
 		CACHE_CONFIGURATION.schedule();
+		return this;
+	}
+
+	public InfoGen start_white_list() {
 		// 获取白名单配置
 		if (configuration.infogen_security_name != null) {
 			Configuration_Loaded_Handle configuration_loaded_handle = (security) -> {

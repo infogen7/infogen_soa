@@ -3,18 +3,22 @@ syntax = "proto3";
 package  com.infogen.grpc;
 
 message Request{
-	int64 sequence=1;
-	string method=2;
-	map<string,string> parameters=3;	
+	int32 version=1;
+	int64 sequence=2;
+	string session=3;
+	string method=4;
+	map<string,string> parameters=5;
 }
 
 message Response{
-	int64 sequence=1;
-	string method=2;
-	string data=3;
-	bool success=4;
-	int32 code=5;
-	string note=6;
+	int32 version=1;
+	int64 sequence=2;
+	string session=3;
+	string method=4;
+	string data=5;
+	bool success=6;
+	int32 code=7;
+	string note=8;
 }
 
 service Message
