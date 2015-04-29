@@ -53,11 +53,13 @@ public class Return extends HashMap<String, Object> {
 				HashMap.Entry entry = (HashMap.Entry)iter.next();
 				Object key = entry.getKey(); 
 				Object val = entry.getValue(); 
+				jo.put((String) key, val);
 			} 
-			
+		
 		} catch (IOException e) {
 			logger.error("Return.create 解析 JSON 失败", e);
 		}
+			
 		return jo;
 	}
 
