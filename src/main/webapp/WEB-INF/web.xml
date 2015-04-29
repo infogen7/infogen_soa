@@ -5,6 +5,7 @@
 	version="3.0">
 	<display-name>Archetype Created Web Application</display-name>
 	<!-- 只支持最后面加*的规则 不支持类似*.html -->
+
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/components/*</url-pattern>
@@ -28,15 +29,15 @@
 
 	<error-page>
 		<error-code>404</error-code>
-		<location>/index.jsp</location>
+		<location>/index.html</location>
 	</error-page>
 
 	<error-page>
 		<error-code>500</error-code>
-		<location>/index.jsp</location>
+		<location>/index.html</location>
 	</error-page>
 
 	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 </web-app>

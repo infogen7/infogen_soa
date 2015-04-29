@@ -23,7 +23,9 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.http.listener.InfoGen_MVC_Listener;
+import com.infogen.http.InfoGen_MVC_Listener;
+import com.infogen.logger.InfoGen_Logger_Kafka;
+import com.infogen.logger.InfoGen_Logger;
 import com.infogen.self_describing.InfoGen_Self_Describing;
 import com.infogen.self_describing.component.Function;
 import com.infogen.self_describing.component.OutParameter;
@@ -50,6 +52,8 @@ public class InfoGen_Configuration {
 	public final static String infogen_logger_topic_execution_exception = "infogen_logger_topic_execution_exception";
 	public final static String infogen_logger_topic_invoke_time = "infogen_logger_topic_invoke_time";
 	public final static String infogen_logger_topic_invoke_exception = "infogen_logger_topic_invoke_exception";
+	
+	public static InfoGen_Logger infogen_logger = InfoGen_Logger_Kafka.getInstance();
 
 	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
 	public RegisterNode register_node = new RegisterNode();

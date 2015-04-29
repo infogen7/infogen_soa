@@ -26,10 +26,10 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 
-import com.infogen.event_handle.Zookeeper_Expired_Handle;
-import com.infogen.event_handle.Zookeeper_Watcher_Children_Handle;
-import com.infogen.event_handle.Zookeeper_Watcher_Data_Handle;
 import com.infogen.util.Scheduled;
+import com.infogen.zookeeper.event_handle.InfoGen_Zookeeper_Handle_Expired;
+import com.infogen.zookeeper.event_handle.InfoGen_Zookeeper_Handle_Watcher_Children;
+import com.infogen.zookeeper.event_handle.InfoGen_Zookeeper_Handle_Watcher_Data;
 
 /**
  * zookeeper调用封装
@@ -54,7 +54,7 @@ public class InfoGen_ZooKeeper {
 
 	private String host_port;
 	private ZooKeeper zookeeper;
-	private Zookeeper_Expired_Handle expired_handle;
+	private InfoGen_Zookeeper_Handle_Expired expired_handle;
 	public static String CONTEXT = "/infogen/";
 	public static String CONTEXT_CONFIGURATION = "/infogen_configuration/";
 
@@ -76,7 +76,7 @@ public class InfoGen_ZooKeeper {
 	 * @param host_port
 	 * @throws IOException
 	 */
-	public void start_zookeeper(String host_port, Zookeeper_Expired_Handle expired_handle) throws IOException {
+	public void start_zookeeper(String host_port, InfoGen_Zookeeper_Handle_Expired expired_handle) throws IOException {
 		if (zookeeper == null) {
 			this.expired_handle = expired_handle;
 			logger.info("启动zookeeper:".concat(host_port));
@@ -248,9 +248,9 @@ public class InfoGen_ZooKeeper {
 
 	// //////////////////////////////////////////////节点数据 Watcher/////////////////////////////////////////////////////////////
 	// 节点改变数据触发事件处理
-	private Map<String, Zookeeper_Watcher_Data_Handle> watcher_data_handle_map = new HashMap<>();
+	private Map<String, InfoGen_Zookeeper_Handle_Watcher_Data> watcher_data_handle_map = new HashMap<>();
 
-	public void watcher_data_single(String path, Zookeeper_Watcher_Data_Handle watcher_data_handle) {
+	public void watcher_data_single(String path, InfoGen_Zookeeper_Handle_Watcher_Data watcher_data_handle) {
 		if (watcher_data_handle_map.get(path) != null) {
 			logger.info("当前监听已经注册过:".concat(path));
 			return;
@@ -269,7 +269,7 @@ public class InfoGen_ZooKeeper {
 				logger.info("节点数据事件  path:" + event.getPath() + "  state:" + event.getState().name() + "  type:" + event.getType().name());
 				if (event.getType() == EventType.NodeDataChanged) {
 					logger.info("重新加载节点信息:".concat(path));
-					Zookeeper_Watcher_Data_Handle watcher_data_handle = watcher_data_handle_map.get(path);
+					InfoGen_Zookeeper_Handle_Watcher_Data watcher_data_handle = watcher_data_handle_map.get(path);
 					if (watcher_data_handle != null) {
 						watcher_data_handle.handle_event(path);
 					}
@@ -289,10 +289,10 @@ public class InfoGen_ZooKeeper {
 
 	// //////////////////////////////////////////////子节点 Watcher////////////////////////////////////////////////////////////////
 	// 子节点改变触发事件处理
-	private Map<String, Zookeeper_Watcher_Children_Handle> watcher_children_handle_map = new HashMap<>();
+	private Map<String, InfoGen_Zookeeper_Handle_Watcher_Children> watcher_children_handle_map = new HashMap<>();
 
 	// 创建子节点监听,如果已存在该字节点的监听直接返回
-	public void watcher_children_single(String path, Zookeeper_Watcher_Children_Handle watcher_children_handle) {
+	public void watcher_children_single(String path, InfoGen_Zookeeper_Handle_Watcher_Children watcher_children_handle) {
 		if (watcher_children_handle_map.get(path) != null) {
 			logger.info("当前监听已经注册过:".concat(path));
 			return;
@@ -311,7 +311,7 @@ public class InfoGen_ZooKeeper {
 				logger.info("子节点事件  path:" + event.getPath() + "  state:" + event.getState().name() + "  type:" + event.getType().name());
 				if (event.getType() == EventType.NodeChildrenChanged) {
 					logger.info("重新加载服务信息:".concat(path));
-					Zookeeper_Watcher_Children_Handle watcher_children_handle = watcher_children_handle_map.get(path);
+					InfoGen_Zookeeper_Handle_Watcher_Children watcher_children_handle = watcher_children_handle_map.get(path);
 					if (watcher_children_handle != null) {
 						watcher_children_handle.handle_event(path);
 					}

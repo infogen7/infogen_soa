@@ -47,20 +47,11 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
 		</dependency>
+		<!-- -->
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>2.5.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.5.2</version> 
-		</dependency>
-		<dependency>  
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-			<version>2.5.2</version>
+			<groupId>com.nimbusds</groupId>
+			<artifactId>nimbus-jose-jwt</artifactId>
+			<version>3.10</version>
 		</dependency>
 
 
@@ -101,8 +92,9 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpasyncclient</artifactId>
-			<version>4.0.2</version>
+			<version>4.1</version>
 		</dependency>
+
 
 
 
@@ -155,14 +147,12 @@
 
 
 		<!-- backups -->
+		<!-- shell 命令解析 -->
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
 			<version>1.8.1</version>
 		</dependency>
-
-
-		<!-- shell 命令解析 -->
 		<dependency>
 			<groupId>commons-cli</groupId>
 			<artifactId>commons-cli</artifactId>
@@ -210,71 +200,7 @@
 					<findbugsXmlOutputDirectory>target/findbugs</findbugsXmlOutputDirectory>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<!-- 将所有依赖的jar都拷贝出来 -->
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>false</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<!-- 往Manifest.MF文件中添加ClassPath -->
-							<addClasspath>true</addClasspath>
-							<!-- classpath前缀 -->
-							<classpathPrefix>lib/</classpathPrefix>
-							<!-- 主程序入口 -->
-							<mainClass>com.infogen.demo.Launcher_Demo</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
 		</plugins>
 
-		<resources>
-			<!-- ${basedir} 项目根目录 缺省为target/infogen_soa -->
-			<!-- ${project.build.directory} 构建目录，缺省为target -->
-			<!-- ${project.build.outputDirectory} 构建过程输出目录，缺省为target/classes -->
-			<!-- 调试和web容器发布模式 -->
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>src/main/webapp</directory>
-				<targetPath> ${project.build.outputDirectory}/webapp</targetPath>
-				<filtering>true</filtering>
-			</resource>
-			<!-- jar 包发布模式 -->
-			<resource>
-				<directory>src/main/resources</directory>
-				<targetPath>${project.build.directory}</targetPath>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>src/main/webapp</directory>
-				<targetPath>${project.build.directory}/webapp</targetPath>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
 	</build>
 </project>

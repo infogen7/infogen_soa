@@ -8,10 +8,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 
 import com.infogen.security.component.Security;
 import com.infogen.security.component.WhiteList;
+import com.infogen.tools.Tool_Core;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年4月8日 下午4:54:10
@@ -32,7 +35,19 @@ public class InfoGen_Security {
 	private InfoGen_Security() {
 	}
 
-	public Boolean check_white_list(String url, String ip) {
+	public Boolean authentication(HttpServletRequest request) {
+		// request.getRealPath("/")); F:\Tomcat 6.0\webapps\news\test
+		// System.out.println(request.getRequestURL()); // http://localhost:8080/news/main/list.jsp
+		// System.out.println(request.getContextPath()); // /news
+		// System.out.println(request.getServletPath()); // /main/list.jsp 配置spring mvc 的<mvc:default-servlet-handler />后始终为空
+		// System.out.println(request.getRequestURI()); // /news/main/list.jsp
+		// 当前请求页面
+		String target_path = request.getRequestURI();
+		String ip = Tool_Core.get_ip(request);
+		return check_white_list(target_path, ip);
+	}
+
+	private Boolean check_white_list(String url, String ip) {
 		// 例外
 		if (security_ignore_equal.contains(url)) {
 			return true;

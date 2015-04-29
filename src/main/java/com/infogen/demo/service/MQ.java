@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.infogen.aop.annotation.Execution_Logger;
+import com.infogen.aop.annotation.InfoGen_Execution;
 import com.infogen.self_describing.annotation.Describe;
 import com.infogen.self_describing.annotation.InParam;
 import com.infogen.self_describing.annotation.OutParam;
@@ -23,7 +23,7 @@ import com.infogen.util.Return;
 @RestController
 public class MQ {
 	// ///////////////////////////////////request//////////////////////////////////////////////////////////////////
-	@Execution_Logger
+	@InfoGen_Execution
 	@Describe(author = "larry", version = 1.0, value = "向队列发送消息", tags = "")
 	@InParam(name = "token", describe = "任务令牌")
 	@InParam(name = "message", describe = "消息")
@@ -45,7 +45,7 @@ public class MQ {
 	 * @param userForMobile
 	 * @return
 	 */
-	@Execution_Logger
+	@InfoGen_Execution
 	@Describe(author = "larry", version = 1.0, value = "从队列取得消息", tags = "")
 	@InParam(name = "token", describe = "任务令牌")
 	@OutParam(name = "message", type = String.class, describe = "取得的消息")

@@ -18,11 +18,12 @@ public class httpasyncclient_Client {
 		name_value_pair.add(new BasicNameValuePair("key", "value"));
 		for (int i = 0; i < 10000; i++) {
 			try {
-				InfoGen_HTTP.do_async_get("www.baidu.com", name_value_pair);
+				InfoGen_HTTP.do_async_get("localhost:8080", name_value_pair);
 			} catch (Exception e) {
 				// e.printStackTrace();
 			}
 		}
+		System.out.println("end");
 		Thread.currentThread().join();
 	}
 }
