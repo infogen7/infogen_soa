@@ -4,7 +4,7 @@
 	<groupId>com.infogen</groupId>
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>V1.0.00R150414</version>
 
 	<name>infogen_soa</name>
 	<url>https://github.com/larrylgq/infogen_aop</url>
@@ -203,4 +203,55 @@
 		</plugins>
 
 	</build>
+	<profiles>
+		<profile>
+			<id>develop</id>
+				<properties>
+				<dversion>-SNAPSHOT</dversion>
+				</properties>
+				<activation>
+				<activeByDefault>true</activeByDefault>
+				</activation>
+				<distributionManagement>
+				<snapshotRepository>
+					<id>snapshots</id>
+					<name>snapshots repository</name>
+					<url>http://192.168.0.126:8081/nexus/content/repositories/snapshots</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+		<profile>
+			<id>release</id>
+			<properties>
+				<dversion></dversion>
+			</properties>
+			<distributionManagement>
+				<repository>
+					<id>releases</id>
+					<name>releases repository</name> 
+					<url>http://192.168.0.126:8081/nexus/content/repositories/releases</url>
+				</repository>
+			</distributionManagement>
+			<build>
+				<plugins>
+					<!-- Source -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.4</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+
+			</build>
+		</profile>
+		
+	</profiles>
 </project>
