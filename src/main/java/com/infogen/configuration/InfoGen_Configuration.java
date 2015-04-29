@@ -45,17 +45,16 @@ import com.infogen.zookeeper.InfoGen_ZooKeeper;
 
 public class InfoGen_Configuration {
 	public final static Logger logger = Logger.getLogger(InfoGen_Configuration.class.getName());
-
 	public final static ZoneId zoneid = ZoneId.of("GMT+08:00");
 	public final static Charset charset = StandardCharsets.UTF_8;
 	public final static String infogen_logger_topic_execution_time = "infogen_logger_topic_execution_time";
 	public final static String infogen_logger_topic_execution_exception = "infogen_logger_topic_execution_exception";
 	public final static String infogen_logger_topic_invoke_time = "infogen_logger_topic_invoke_time";
 	public final static String infogen_logger_topic_invoke_exception = "infogen_logger_topic_invoke_exception";
-	
-	public static InfoGen_Logger infogen_logger = InfoGen_Logger_Kafka.getInstance();
 
 	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
+	public static InfoGen_Logger infogen_logger = InfoGen_Logger_Kafka.getInstance();
+
 	public RegisterNode register_node = new RegisterNode();
 	public RegisterServer register_server = new RegisterServer();
 

@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.infogen</groupId>
+	<groupId>com.github.infogen_soa</groupId>
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
 	<version>V1.0.00R150414</version>
@@ -33,16 +33,6 @@
 	<dependencies>
 		<!-- core -->
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-		</dependency>
-		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
@@ -62,6 +52,12 @@
 			<artifactId>infogen_aop</artifactId>
 			<version>V1.0.00R150302</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.infogen_soa</groupId>
+			<artifactId>infogen_tools</artifactId>
+			<version>V1.0.00R150414</version>
+		</dependency>
+
 
 		<!-- zookeeper -->
 		<dependency>
@@ -206,13 +202,13 @@
 	<profiles>
 		<profile>
 			<id>develop</id>
-				<properties>
+			<properties>
 				<dversion>-SNAPSHOT</dversion>
-				</properties>
-				<activation>
+			</properties>
+			<activation>
 				<activeByDefault>true</activeByDefault>
-				</activation>
-				<distributionManagement>
+			</activation>
+			<distributionManagement>
 				<snapshotRepository>
 					<id>snapshots</id>
 					<name>snapshots repository</name>
@@ -228,7 +224,7 @@
 			<distributionManagement>
 				<repository>
 					<id>releases</id>
-					<name>releases repository</name> 
+					<name>releases repository</name>
 					<url>http://192.168.0.126:8081/nexus/content/repositories/releases</url>
 				</repository>
 			</distributionManagement>
@@ -252,6 +248,6 @@
 
 			</build>
 		</profile>
-		
+
 	</profiles>
 </project>

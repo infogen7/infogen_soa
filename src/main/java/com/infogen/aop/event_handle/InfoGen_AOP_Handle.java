@@ -1,8 +1,3 @@
-/**
-* @author larry/larrylv@outlook.com
-* @date 创建时间 2015年4月29日 下午3:35:56
-* @version 1.0
-*/
 package com.infogen.aop.event_handle;
 
 import com.infogen.configuration.InfoGen_Configuration;
