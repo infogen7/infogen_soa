@@ -11,16 +11,14 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.Properties;
 
-import kafka.producer.KeyedMessage;
-
 import org.apache.log4j.Logger;
 
 import com.infogen.InfoGen;
 import com.infogen.InfoGen_Jetty;
-import com.infogen.InfoGen_Kafka;
 import com.infogen.InfoGen_Thrift;
+import com.infogen.aop.event_handle.InfoGen_AOP_Handle;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.kafka.Infogen_Kafka_Consumer;
+import com.infogen.logger.InfoGen_Logger_Kafka;
 import com.infogen.self_describing.component.OutParameter;
 import com.infogen.util.NativePath;
 
@@ -41,30 +39,11 @@ public class Launcher_Demo {
 		// 读取白名单
 		InfoGen.getInstance().start_and_watch(config).register().start_white_list();
 
-		InfoGen_Kafka.getInstance().start(config);
+		InfoGen_Logger_Kafka.getInstance().start(config);
 		InfoGen_Jetty.getInstance().start(config, "/", NativePath.get("webapp").toString(), NativePath.get("webapp/WEB-INF/web.xml").toString());
 		InfoGen_Thrift.getInstance().start_asyn(config);
 
-		Thread thread = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				for (int i = 0; i < 100000000; i++) {
-					InfoGen_Kafka.getInstance().send(new KeyedMessage<String, String>("infogen_logger_topic_job_status", "test.infogen_soa.demo " + i));
-					try {
-						Thread.currentThread().sleep(500);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		});
-		thread.start();
-
-		Infogen_Kafka_Consumer.consume(config, "test.infogen_soa.demo.group1", "infogen_logger_topic_job_status", (message) -> {
-			System.out.println(message);
-		});
+		//Logger_Handle.producer = null;
 		//
 		Thread.currentThread().join();
 	}

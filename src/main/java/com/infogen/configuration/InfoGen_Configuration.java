@@ -23,7 +23,9 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.http.listener.InfoGen_MVC_Listener;
+import com.infogen.http.InfoGen_MVC_Listener;
+import com.infogen.logger.InfoGen_Logger_Kafka;
+import com.infogen.logger.InfoGen_Logger;
 import com.infogen.self_describing.InfoGen_Self_Describing;
 import com.infogen.self_describing.component.Function;
 import com.infogen.self_describing.component.OutParameter;
@@ -43,7 +45,6 @@ import com.infogen.zookeeper.InfoGen_ZooKeeper;
 
 public class InfoGen_Configuration {
 	public final static Logger logger = Logger.getLogger(InfoGen_Configuration.class.getName());
-
 	public final static ZoneId zoneid = ZoneId.of("GMT+08:00");
 	public final static Charset charset = StandardCharsets.UTF_8;
 	public final static String infogen_logger_topic_execution_time = "infogen_logger_topic_execution_time";
@@ -52,6 +53,8 @@ public class InfoGen_Configuration {
 	public final static String infogen_logger_topic_invoke_exception = "infogen_logger_topic_invoke_exception";
 
 	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
+	public static InfoGen_Logger infogen_logger = InfoGen_Logger_Kafka.getInstance();
+
 	public RegisterNode register_node = new RegisterNode();
 	public RegisterServer register_server = new RegisterServer();
 

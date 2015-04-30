@@ -36,7 +36,7 @@ public class NativeServer extends AbstractServer {
 			if (!disabled_nodes.isEmpty()) {
 				append(disabled_nodes);
 			}
-		}, 10, 10, TimeUnit.SECONDS);
+		}, 3, 3, TimeUnit.SECONDS);
 	}
 
 	// ////////////////////////////////////////// 定时修正不可用的节点/////////////////////////////////////////////////////

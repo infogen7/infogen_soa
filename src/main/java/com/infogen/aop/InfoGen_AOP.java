@@ -12,10 +12,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.aop.annotation.Execution_Logger;
-import com.infogen.aop.annotation.Invoke_Logger;
-import com.infogen.aop.handle.Execution_Logger_Handle;
-import com.infogen.aop.handle.Invoke_Logger_Handle;
+import com.infogen.aop.annotation.InfoGen_Execution;
+import com.infogen.aop.annotation.InfoGen_Invoke;
+import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Execution;
+import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Invoke;
 import com.infogen.infogen_aop.InfoGen_Agent_Advice_Class;
 import com.infogen.infogen_aop.InfoGen_Agent_Advice_Method;
 import com.infogen.infogen_aop.InfoGen_Agent_Cache;
@@ -84,13 +84,13 @@ public class InfoGen_AOP {
 		Method[] declaredMethods = clazz.getDeclaredMethods();
 		for (Method method : declaredMethods) {
 			// 添加日志
-			Execution_Logger[] infogen_logger = method.getAnnotationsByType(Execution_Logger.class);
+			InfoGen_Execution[] infogen_logger = method.getAnnotationsByType(InfoGen_Execution.class);
 			if (infogen_logger.length != 0) {
-				methods.add(Execution_Logger_Handle.attach(class_name, method.getName(), infogen_logger[0].value()));
+				methods.add(new InfoGen_AOP_Handle_Execution().attach(class_name, method.getName(), infogen_logger[0].value()));
 			}
-			Invoke_Logger[] service_logger = method.getAnnotationsByType(Invoke_Logger.class);
+			InfoGen_Invoke[] service_logger = method.getAnnotationsByType(InfoGen_Invoke.class);
 			if (service_logger.length != 0) {
-				methods.add(Invoke_Logger_Handle.attach(class_name, method.getName(), service_logger[0].value()));
+				methods.add(new InfoGen_AOP_Handle_Invoke().attach(class_name, method.getName(), service_logger[0].value()));
 			}
 			// TODO 继续添加...
 		}

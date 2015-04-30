@@ -113,9 +113,11 @@ public class InfoGen_HTTP {
 		CloseableHttpAsyncClient httpclient = HttpAsyncClients.custom().setDefaultRequestConfig(requestConfig).build();
 		if (name_value_pair != null) {
 			StringBuffer do_async_get_sbf = new StringBuffer();
-			do_async_get_sbf.append(url).append("?");
+			do_async_get_sbf.append(url);
 			for (int j = 0; j < name_value_pair.size(); j++) {
-				if (j != 0) {
+				if (j == 0) {
+					do_async_get_sbf.append("?");
+				} else {
 					do_async_get_sbf.append("&");
 				}
 				NameValuePair nameValuePair = name_value_pair.get(j);
@@ -133,22 +135,33 @@ public class InfoGen_HTTP {
 					callback.add(Return.create(EntityUtils.toString(response.getEntity())));
 				} catch (ParseException | IOException e) {
 					callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
+				} finally {
+					close();
 				}
 			}
 
 			public void failed(final Exception e) {
 				callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
+				close();
 			}
 
 			public void cancelled() {
 				callback.add(Return.FAIL(CODE._500.code, "cancelled"));
+				close();
+			}
+
+			private void close() {
+				try {
+					httpclient.close();
+				} catch (IOException e) {
+				}
 			}
 		};
 		try {
 			httpclient.execute(httpget, future_callback);
 		} catch (Exception e) {
-			logger.error("http do_async_get 调用失败", e);
 			try {
+				callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
 				httpclient.close();
 			} catch (IOException e1) {
 				logger.error("http do_async_get 关闭连接失败", e1);
@@ -171,23 +184,34 @@ public class InfoGen_HTTP {
 					callback.add(Return.create(EntityUtils.toString(response.getEntity())));
 				} catch (ParseException | IOException e) {
 					callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
+				} finally {
+					close();
 				}
 			}
 
 			public void failed(final Exception e) {
 				callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
+				close();
 			}
 
 			public void cancelled() {
 				callback.add(Return.FAIL(CODE._500.code, "cancelled"));
+				close();
+			}
+
+			private void close() {
+				try {
+					httpclient.close();
+				} catch (IOException e) {
+				}
 			}
 		};
 
 		try {
 			httpclient.execute(httpost, future_callback);
 		} catch (Exception e) {
-			logger.error("http do_async_post 调用失败", e);
 			try {
+				callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
 				httpclient.close();
 			} catch (IOException e1) {
 				logger.error("http do_async_post 关闭连接失败", e1);

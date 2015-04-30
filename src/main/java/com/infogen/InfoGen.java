@@ -19,11 +19,11 @@ import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 
 import com.infogen.aop.InfoGen_AOP;
-import com.infogen.cache.InfoGen_Configuration_Cache;
-import com.infogen.cache.InfoGen_Server_Cache;
+import com.infogen.cache.InfoGen_Cache_Configuration;
+import com.infogen.cache.InfoGen_Cache_Server;
+import com.infogen.cache.event_handle.InfoGen_Loaded_Handle_Configuration;
+import com.infogen.cache.event_handle.InfoGen_Loaded_Handle_Server;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.event_handle.Configuration_Loaded_Handle;
-import com.infogen.event_handle.Server_Loaded_Handle;
 import com.infogen.security.InfoGen_Security;
 import com.infogen.security.component.Security;
 import com.infogen.server.NativeServer;
@@ -54,8 +54,8 @@ public class InfoGen {
 	}
 
 	private InfoGen_ZooKeeper ZK = com.infogen.zookeeper.InfoGen_ZooKeeper.getInstance();
-	private InfoGen_Configuration_Cache CACHE_CONFIGURATION = InfoGen_Configuration_Cache.getInstance();
-	private InfoGen_Server_Cache CACHE_SERVER = InfoGen_Server_Cache.getInstance();
+	private InfoGen_Cache_Configuration CACHE_CONFIGURATION = InfoGen_Cache_Configuration.getInstance();
+	private InfoGen_Cache_Server CACHE_SERVER = InfoGen_Cache_Server.getInstance();
 	private InfoGen_Configuration configuration;
 
 	// //////////////////////////////////////////初始化/////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ public class InfoGen {
 	public InfoGen start_white_list() {
 		// 获取白名单配置
 		if (configuration.infogen_security_name != null) {
-			Configuration_Loaded_Handle configuration_loaded_handle = (security) -> {
+			InfoGen_Loaded_Handle_Configuration configuration_loaded_handle = (security) -> {
 				try {
 					Security securitys = Tool_Jackson.toObject(security, Security.class);
 					InfoGen_Security.getInstance().refresh_security(securitys);
@@ -265,7 +265,7 @@ public class InfoGen {
 	 * @param server_loaded_handle
 	 * @return
 	 */
-	public NativeServer get_server(String server_name, Server_Loaded_Handle server_loaded_handle) {
+	public NativeServer get_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
 		NativeServer server = CACHE_SERVER.depend_server.get(server_name);
 		if (server != null) {
 			return server;
@@ -280,7 +280,7 @@ public class InfoGen {
 	 * @param server_loaded_handle
 	 * @return
 	 */
-	private NativeServer init_server(String server_name, Server_Loaded_Handle server_loaded_handle) {
+	private NativeServer init_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
 		NativeServer server = CACHE_SERVER.cache_server_single(server_name, server_loaded_handle);
 		if (server != null) {
 			return server;
@@ -326,7 +326,7 @@ public class InfoGen {
 	 * @param configuration_loaded_handle
 	 * @return
 	 */
-	public String get_configuration(String configuration_name, Configuration_Loaded_Handle configuration_loaded_handle) {
+	public String get_configuration(String configuration_name, InfoGen_Loaded_Handle_Configuration configuration_loaded_handle) {
 		String configuration = CACHE_CONFIGURATION.depend_configuration.get(configuration_name);
 		if (configuration != null) {
 			return configuration;
@@ -341,7 +341,7 @@ public class InfoGen {
 	 * @param configuration_loaded_handle
 	 * @return
 	 */
-	private String init_configuration(String configuration_name, Configuration_Loaded_Handle configuration_loaded_handle) {
+	private String init_configuration(String configuration_name, InfoGen_Loaded_Handle_Configuration configuration_loaded_handle) {
 		String data = CACHE_CONFIGURATION.cache_configuration_single(configuration_name, configuration_loaded_handle);
 		if (data != null) {
 			return data;

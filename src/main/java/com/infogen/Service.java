@@ -13,8 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 
-import com.infogen.aop.annotation.Invoke_Logger;
-import com.infogen.cache.InfoGen_Server_Cache;
+import com.infogen.aop.annotation.InfoGen_Invoke;
+import com.infogen.cache.InfoGen_Cache_Server;
 import com.infogen.http.callback.Http_Callback;
 import com.infogen.rpc.callback.RPC_Callback;
 import com.infogen.server.NativeNode;
@@ -37,7 +37,7 @@ public class Service {
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static InfoGen instance = InfoGen.getInstance();
 	private String server_name;
-	private ConcurrentHashMap<String, NativeServer> depend_server = InfoGen_Server_Cache.getInstance().depend_server;
+	private ConcurrentHashMap<String, NativeServer> depend_server = InfoGen_Cache_Server.getInstance().depend_server;
 	private NetType net_type = NetType.LOCAL;
 
 	public Service(String server_name) {
@@ -111,13 +111,13 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	@Invoke_Logger
+	@InfoGen_Invoke
 	public Response call(String method, Map<String, String> map) {
 		return blocking_rpc(method, map);
 	}
 
 	@Deprecated
-	@Invoke_Logger
+	@InfoGen_Invoke
 	public Response call(String method, List<BasicNameValuePair> name_value_pair) {
 		return blocking_rpc(method, pair_to_map(name_value_pair));
 	}
@@ -129,13 +129,13 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	@Invoke_Logger
+	@InfoGen_Invoke
 	public RPC_Callback async_call(String method, Map<String, String> map) {
 		return async_rpc(method, map);
 	}
 
 	@Deprecated
-	@Invoke_Logger
+	@InfoGen_Invoke
 	public RPC_Callback async_call(String method, List<BasicNameValuePair> name_value_pair) {
 		return async_rpc(method, pair_to_map(name_value_pair));
 	}
@@ -206,7 +206,7 @@ public class Service {
 
 	// //////////////////////////////////////////////////HTTP///////////////////////////////////////////////////////////////////////
 
-	@Invoke_Logger
+	@InfoGen_Invoke
 	/**
 	 * 同步get调用
 	 * @param url
@@ -225,7 +225,7 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	@Invoke_Logger
+	@InfoGen_Invoke
 	public Return post(String url, Map<String, String> map) {
 		List<BasicNameValuePair> name_value_pair = map_to_pair(map);
 		return blocking_http(url, name_value_pair, RequestType.POST, net_type);
@@ -238,7 +238,7 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	@Invoke_Logger
+	@InfoGen_Invoke
 	public Http_Callback async_get(String url, Map<String, String> map) {
 		List<BasicNameValuePair> name_value_pair = map_to_pair(map);
 		return async_http(url, name_value_pair, RequestType.GET, net_type);
@@ -251,32 +251,32 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	@Invoke_Logger
+	@InfoGen_Invoke
 	public Http_Callback async_post(String url, Map<String, String> map) {
 		List<BasicNameValuePair> name_value_pair = map_to_pair(map);
 		return async_http(url, name_value_pair, RequestType.POST, net_type);
 	}
 
 	@Deprecated
-	@Invoke_Logger
+	@InfoGen_Invoke
 	public Return get(String url, List<BasicNameValuePair> name_value_pair) {
 		return blocking_http(url, name_value_pair, RequestType.GET, net_type);
 	}
 
 	@Deprecated
-	@Invoke_Logger
+	@InfoGen_Invoke
 	public Return post(String url, List<BasicNameValuePair> name_value_pair) {
 		return blocking_http(url, name_value_pair, RequestType.POST, net_type);
 	}
 
 	@Deprecated
-	@Invoke_Logger
+	@InfoGen_Invoke
 	public Http_Callback async_get(String url, List<BasicNameValuePair> name_value_pair) {
 		return async_http(url, name_value_pair, RequestType.GET, net_type);
 	}
 
 	@Deprecated
-	@Invoke_Logger
+	@InfoGen_Invoke
 	public Http_Callback async_post(String url, List<BasicNameValuePair> name_value_pair) {
 		return async_http(url, name_value_pair, RequestType.POST, net_type);
 	}
