@@ -4,7 +4,7 @@
 	<groupId>com.infogen</groupId>
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
-	<version>V1.0.01R150427-rp-lambda</version>
+	<version>V1.0.02R150427-rp-lambda</version>
 
 	<name>infogen_soa</name>
 	<url>https://github.com/larrylgq/infogen_aop</url>
