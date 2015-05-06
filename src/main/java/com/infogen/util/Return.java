@@ -5,6 +5,9 @@ package com.infogen.util;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -28,6 +31,7 @@ public class Return extends HashMap<String, Object> {
 
 	public static Return create(String json) {
 		Return jo = new Return();
+		/*
 		HashMap<String, Object> fromJson;
 		try {
 			fromJson = Tool_Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
@@ -38,6 +42,24 @@ public class Return extends HashMap<String, Object> {
 		} catch (IOException e) {
 			logger.error("Return.create 解析 JSON 失败", e);
 		}
+		*/
+		HashMap<String, Object> fromJsons;
+		try {
+			fromJsons = Tool_Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
+			});
+			Iterator<Entry<String, Object>> iter = fromJsons.entrySet().iterator(); 
+
+			while(iter.hasNext()){ 
+				HashMap.Entry entry = (HashMap.Entry)iter.next();
+				Object key = entry.getKey(); 
+				Object val = entry.getValue(); 
+				jo.put((String) key, val);
+			} 
+		
+		} catch (IOException e) {
+			logger.error("Return.create 解析 JSON 失败", e);
+		}
+			
 		return jo;
 	}
 
