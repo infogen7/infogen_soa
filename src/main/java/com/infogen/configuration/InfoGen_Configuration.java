@@ -18,6 +18,12 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 import com.infogen.aop.InfoGen_AOP;
+import com.infogen.aop.annotation.Authc;
+import com.infogen.aop.annotation.Execution;
+import com.infogen.aop.annotation.Invoke;
+import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Authc;
+import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Execution;
+import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Invoke;
 import com.infogen.aop.tools.Tool_Core;
 import com.infogen.aop.util.NativePath;
 import com.infogen.self_describing.InfoGen_Self_Describing;
@@ -153,5 +159,12 @@ public class InfoGen_Configuration {
 		// 读取自描述
 		Map<String, Function> functions = InfoGen_Self_Describing.getInstance().self_describing(InfoGen_AOP.getInstance().getClasses());
 		register_server.setFunctions(functions);
+
+		// AOP
+		InfoGen_AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
+		InfoGen_AOP.getInstance().add_advice_method(Invoke.class, new InfoGen_AOP_Handle_Invoke());
+		InfoGen_AOP.getInstance().add_advice_method(Authc.class, new InfoGen_AOP_Handle_Authc());
+		InfoGen_AOP.getInstance().add_autowired_field("com.infogen.server.model.AbstractNode", "infogen_version", "\"V1.0.00R150430\";");
+		InfoGen_AOP.getInstance().advice();
 	}
 }

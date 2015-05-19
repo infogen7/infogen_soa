@@ -15,13 +15,6 @@ import org.apache.zookeeper.data.Id;
 import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 
-import com.infogen.aop.InfoGen_AOP;
-import com.infogen.aop.annotation.Authc;
-import com.infogen.aop.annotation.Execution;
-import com.infogen.aop.annotation.Invoke;
-import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Authc;
-import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Execution;
-import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Invoke;
 import com.infogen.aop.tools.Tool_Jackson;
 import com.infogen.cache.InfoGen_Cache_Configuration;
 import com.infogen.cache.InfoGen_Cache_Server;
@@ -62,13 +55,6 @@ public class InfoGen {
 	// //////////////////////////////////////////初始化/////////////////////////////////////////////////////
 	public InfoGen start_and_watch(InfoGen_Configuration infogen_configuration) throws IOException, URISyntaxException {
 		this.configuration = infogen_configuration;
-		// AOP
-		InfoGen_AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
-		InfoGen_AOP.getInstance().add_advice_method(Invoke.class, new InfoGen_AOP_Handle_Invoke());
-		InfoGen_AOP.getInstance().add_advice_method(Authc.class, new InfoGen_AOP_Handle_Authc());
-		InfoGen_AOP.getInstance().add_autowired_field("com.infogen.server.model.AbstractNode", "infogen_version", "\"V1.0.00R150430\";");
-		InfoGen_AOP.getInstance().advice();
-
 		// 初始化 zookeeper
 		ZK.start_zookeeper(infogen_configuration.zookeeper, () -> {// zookeeper 因连接session过期重启后定制处理
 					register();
