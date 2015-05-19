@@ -10,7 +10,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
 
-import com.infogen.aop.tools.Tool_Jackson;
 import com.infogen.self_describing.InfoGen_Self_Describing;
 import com.infogen.self_describing.component.Function;
 import com.infogen.self_describing.component.InParameter;
@@ -19,6 +18,7 @@ import com.infogen.thrift.Request;
 import com.infogen.thrift.Response;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
+import com.larrylgq.aop.tools.Tool_Jackson;
 
 /**
  * thrift消息处理器

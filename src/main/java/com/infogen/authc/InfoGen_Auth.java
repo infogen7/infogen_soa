@@ -1,4 +1,4 @@
-package com.infogen;
+package com.infogen.authc;
 
 import org.apache.log4j.Logger;
 

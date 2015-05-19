@@ -15,7 +15,6 @@ import org.apache.zookeeper.data.Id;
 import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 
-import com.infogen.aop.tools.Tool_Jackson;
 import com.infogen.cache.InfoGen_Cache_Configuration;
 import com.infogen.cache.InfoGen_Cache_Server;
 import com.infogen.cache.event_handle.InfoGen_Loaded_Handle_Configuration;
@@ -25,6 +24,7 @@ import com.infogen.server.model.NativeServer;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
 import com.infogen.zookeeper.InfoGen_ZooKeeper;
+import com.larrylgq.aop.tools.Tool_Jackson;
 
 /**
  * 启动infogen服务

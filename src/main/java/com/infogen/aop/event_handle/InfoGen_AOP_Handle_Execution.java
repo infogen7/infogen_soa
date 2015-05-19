@@ -6,13 +6,13 @@ import java.lang.reflect.Method;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.aop.advice.event_handle.InfoGen_AOP_Handle;
-import com.infogen.aop.agent.InfoGen_Agent_Advice_Field;
-import com.infogen.aop.agent.InfoGen_Agent_Advice_Method;
 import com.infogen.aop.annotation.Execution;
-import com.infogen.aop.tools.Tool_Core;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.logger.kafka.InfoGen_Logger_Kafka_Producer;
+import com.larrylgq.aop.advice.event_handle.AOP_Handle;
+import com.larrylgq.aop.agent.Agent_Advice_Field;
+import com.larrylgq.aop.agent.Agent_Advice_Method;
+import com.larrylgq.aop.tools.Tool_Core;
 
 /**
  * 统计方法执行时间的处理器
@@ -21,11 +21,11 @@ import com.infogen.logger.kafka.InfoGen_Logger_Kafka_Producer;
  * @since 1.0
  * @version 1.0
  */
-public class InfoGen_AOP_Handle_Execution extends InfoGen_AOP_Handle {
+public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 	@Override
-	public InfoGen_Agent_Advice_Method attach_method(String class_name, Method method, Annotation annotation) {
+	public Agent_Advice_Method attach_method(String class_name, Method method, Annotation annotation) {
 		String method_name = method.getName();
-		InfoGen_Agent_Advice_Method advice_method = new InfoGen_Agent_Advice_Method();
+		Agent_Advice_Method advice_method = new Agent_Advice_Method();
 		advice_method.setMethod_name(method_name);
 		advice_method.setLong_local_variable("infogen_logger_attach_start_millis");
 		advice_method.setInsert_before("infogen_logger_attach_start_millis =System.currentTimeMillis();");
@@ -73,7 +73,7 @@ public class InfoGen_AOP_Handle_Execution extends InfoGen_AOP_Handle {
 	 * @see com.infogen.aop.advice.event_handle.InfoGen_AOP_Handle#attach_field(java.lang.String, java.lang.reflect.Field, java.lang.annotation.Annotation)
 	 */
 	@Override
-	public InfoGen_Agent_Advice_Field attach_field(String class_name, Field field, Annotation annotation) {
+	public Agent_Advice_Field attach_field(String class_name, Field field, Annotation annotation) {
 		// TODO Auto-generated method stub
 		return null;
 	}

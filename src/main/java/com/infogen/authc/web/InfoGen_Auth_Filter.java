@@ -13,13 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.InfoGen_Auth;
-import com.infogen.aop.tools.Tool_Jackson;
+import com.infogen.authc.InfoGen_Auth;
 import com.infogen.authc.exception.InfoGen_Auth_Exception;
 import com.infogen.authc.subject.Redis_Subject_DAO;
 import com.infogen.authc.subject.Subject;
 import com.infogen.authc.subject.Subject_DAO;
 import com.infogen.util.Return;
+import com.larrylgq.aop.tools.Tool_Jackson;
 
 /**
  * API认证的过滤器

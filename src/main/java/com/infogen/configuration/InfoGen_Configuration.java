@@ -17,15 +17,12 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.aop.InfoGen_AOP;
 import com.infogen.aop.annotation.Authc;
 import com.infogen.aop.annotation.Execution;
 import com.infogen.aop.annotation.Invoke;
 import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Authc;
 import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Execution;
 import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Invoke;
-import com.infogen.aop.tools.Tool_Core;
-import com.infogen.aop.util.NativePath;
 import com.infogen.self_describing.InfoGen_Self_Describing;
 import com.infogen.self_describing.component.Function;
 import com.infogen.self_describing.component.OutParameter;
@@ -33,6 +30,9 @@ import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
 import com.infogen.web.InfoGen_Server_Initializer;
 import com.infogen.zookeeper.InfoGen_ZooKeeper;
+import com.larrylgq.aop.AOP;
+import com.larrylgq.aop.tools.Tool_Core;
+import com.larrylgq.aop.util.NativePath;
 
 /**
  * infogen配置解析及其它全局配置
@@ -154,17 +154,17 @@ public class InfoGen_Configuration {
 		}
 		// @Resource(name="sqliteCarDao")
 		// 遍历项目所有class文件
-		InfoGen_AOP.getInstance().addClasses(com.infogen.Service.class);
-		InfoGen_AOP.getInstance();
+		AOP.getInstance().addClasses(com.infogen.Service.class);
+		AOP.getInstance();
 		// 读取自描述
-		Map<String, Function> functions = InfoGen_Self_Describing.getInstance().self_describing(InfoGen_AOP.getInstance().getClasses());
+		Map<String, Function> functions = InfoGen_Self_Describing.getInstance().self_describing(AOP.getInstance().getClasses());
 		register_server.setFunctions(functions);
 
 		// AOP
-		InfoGen_AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
-		InfoGen_AOP.getInstance().add_advice_method(Invoke.class, new InfoGen_AOP_Handle_Invoke());
-		InfoGen_AOP.getInstance().add_advice_method(Authc.class, new InfoGen_AOP_Handle_Authc());
-		InfoGen_AOP.getInstance().add_autowired_field("com.infogen.server.model.AbstractNode", "infogen_version", "\"V1.0.00R150430\";");
-		InfoGen_AOP.getInstance().advice();
+		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
+		AOP.getInstance().add_advice_method(Invoke.class, new InfoGen_AOP_Handle_Invoke());
+		AOP.getInstance().add_advice_method(Authc.class, new InfoGen_AOP_Handle_Authc());
+		AOP.getInstance().add_autowired_field("com.infogen.server.model.AbstractNode", "infogen_version", "\"V1.0.00R150430\";");
+		AOP.getInstance().advice();
 	}
 }
