@@ -36,9 +36,9 @@ import com.infogen.zookeeper.InfoGen_ZooKeeper;
 /**
  * 启动infogen服务
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年10月27日 下午2:57:52
+ * @author larry/larrylv@outlook.com/创建时间 2015年5月19日 下午2:58:57
+ * @since 1.0
+ * @version 1.0
  */
 public class InfoGen {
 	public final Logger logger = Logger.getLogger(InfoGen.class.getName());

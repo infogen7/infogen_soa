@@ -1,8 +1,3 @@
-/**
- * @author larry/larrylv@outlook.com
- * @date 创建时间 2015年2月27日 下午6:11:09
- * @version 1.0
- */
 package com.infogen.aop.event_handle;
 
 import java.lang.annotation.Annotation;

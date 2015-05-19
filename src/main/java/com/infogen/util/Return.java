@@ -14,9 +14,9 @@ import com.infogen.aop.tools.Tool_Jackson;
 /**
  * 接口返回值封装
  * 
- * @author larry
- * @email larry.lv.word@gmail.com
- * @version 创建时间 2013-4-11 下午7:57:11
+ * @author larry/larrylv@outlook.com/创建时间 2015年5月19日 下午2:50:30
+ * @since 1.0
+ * @version 1.0
  */
 public class Return extends HashMap<String, Object> {
 	private static final long serialVersionUID = 2203513787220720192L;
@@ -28,9 +28,8 @@ public class Return extends HashMap<String, Object> {
 
 	public static Return create(String json) {
 		Return jo = new Return();
-		HashMap<String, Object> fromJson;
 		try {
-			fromJson = Tool_Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
+			HashMap<String, Object> fromJson = Tool_Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
 			});
 			fromJson.forEach((k, v) -> {
 				jo.put(k, v);
@@ -38,14 +37,6 @@ public class Return extends HashMap<String, Object> {
 		} catch (IOException e) {
 			logger.error("Return.create 解析 JSON 失败", e);
 		}
-		return jo;
-	}
-
-	public static Return SUCCESS(Integer code, String note) {
-		Return jo = new Return();
-		jo.put(Return_Fields.success.name(), true);
-		jo.put(Return_Fields.note.name(), note);
-		jo.put(Return_Fields.code.name(), code);
 		return jo;
 	}
 
@@ -57,7 +48,15 @@ public class Return extends HashMap<String, Object> {
 		return jo;
 	}
 
-	public static Return FAIL(Integer code, String note) {
+	public static Return SUCCESS(Integer code, String note) {
+		Return jo = new Return();
+		jo.put(Return_Fields.success.name(), true);
+		jo.put(Return_Fields.note.name(), note);
+		jo.put(Return_Fields.code.name(), code);
+		return jo;
+	}
+
+	public static Return FAIL(String code, String note) {
 		Return jo = new Return();
 		jo.put(Return_Fields.success.name(), false);
 		jo.put(Return_Fields.note.name(), note);
@@ -65,7 +64,7 @@ public class Return extends HashMap<String, Object> {
 		return jo;
 	}
 
-	public static Return FAIL(String code, String note) {
+	public static Return FAIL(Integer code, String note) {
 		Return jo = new Return();
 		jo.put(Return_Fields.success.name(), false);
 		jo.put(Return_Fields.note.name(), note);

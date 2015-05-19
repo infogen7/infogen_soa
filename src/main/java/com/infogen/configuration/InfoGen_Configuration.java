@@ -46,7 +46,6 @@ public class InfoGen_Configuration {
 	public final static String infogen_logger_topic_invoke_exception = "infogen_logger_topic_invoke_exception";
 
 	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
-
 	public RegisterNode register_node = new RegisterNode();
 	public RegisterServer register_server = new RegisterServer();
 
@@ -150,6 +149,7 @@ public class InfoGen_Configuration {
 		// @Resource(name="sqliteCarDao")
 		// 遍历项目所有class文件
 		InfoGen_AOP.getInstance().addClasses(com.infogen.Service.class);
+		InfoGen_AOP.getInstance();
 		// 读取自描述
 		Map<String, Function> functions = InfoGen_Self_Describing.getInstance().self_describing(InfoGen_AOP.getInstance().getClasses());
 		register_server.setFunctions(functions);
