@@ -47,7 +47,6 @@ public class InfoGen_Configuration {
 	public final static ZoneId zoneid = ZoneId.of("GMT+08:00");
 	public final static Charset charset = StandardCharsets.UTF_8;
 
-
 	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
 	public RegisterNode register_node = new RegisterNode();
 	public RegisterServer register_server = new RegisterServer();
@@ -161,7 +160,7 @@ public class InfoGen_Configuration {
 		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
 		AOP.getInstance().add_advice_method(Invoke.class, new InfoGen_AOP_Handle_Invoke());
 		AOP.getInstance().add_advice_method(Authc.class, new InfoGen_AOP_Handle_Authc());
-		AOP.getInstance().add_autowired_field("com.infogen.server.model.AbstractNode", "infogen_version", "\"V1.0.00R150430\";");
+		AOP.getInstance().add_autowired_field("com.infogen.server.model.AbstractNode", "infogen_version", "\"V1.0.00R150520\";");
 		AOP.getInstance().advice();
 	}
 }
