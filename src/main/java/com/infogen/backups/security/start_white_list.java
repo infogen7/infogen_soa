@@ -3,7 +3,7 @@
  * @date 创建时间 2015年5月8日 下午3:03:30
  * @version 1.0
  */
-package com.infogen.backups;
+package com.infogen.backups.security;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.infogen.aop.tools.Tool_Jackson;
-import com.infogen.backups.security0.InfoGen_Security;
-import com.infogen.backups.security0.component.Security;
+import com.infogen.backups.security.component.Security;
 import com.infogen.cache.InfoGen_Cache_Configuration;
 import com.infogen.cache.event_handle.InfoGen_Loaded_Handle_Configuration;
 

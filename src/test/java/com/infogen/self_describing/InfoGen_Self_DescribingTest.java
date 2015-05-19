@@ -3,7 +3,6 @@ package com.infogen.self_describing;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Map;
@@ -25,11 +24,11 @@ public class InfoGen_Self_DescribingTest {
 	private static Constructor<?>[] ref_Construction_method;
 	private static Field ref_class_pool;
 
-	@BeforeClass(groups = { "tools","all" })
-	public void beforeClass() throws NoSuchMethodException, SecurityException,NoSuchFieldException {
+	@BeforeClass(groups = { "tools", "all" })
+	public void beforeClass() throws NoSuchMethodException, SecurityException, NoSuchFieldException {
 		instance = InfoGen_Self_Describing.getInstance();
 		Class<?> refNewClass = instance.getClass();
-		ref_get_in_parameter_names = refNewClass.getDeclaredMethod("get_in_parameter_names", Class.class, String.class,String.class);
+		ref_get_in_parameter_names = refNewClass.getDeclaredMethod("get_in_parameter_names", Class.class, String.class, java.lang.reflect.Parameter[].class);
 		ref_get_in_parameter_names.setAccessible(true);
 		ref_Construction_method = refNewClass.getDeclaredConstructors();
 		int i;
@@ -40,30 +39,18 @@ public class InfoGen_Self_DescribingTest {
 		ref_class_pool.setAccessible(true);
 	}
 
-	@Test(groups = { "tools","all" })
+	@Test(groups = { "tools", "all" })
 	public void getInstance() {
 		Assert.assertNotNull(instance);
 		Assert.assertEquals(instance instanceof InfoGen_Self_Describing, true);
 	}
 
-	@Test(groups = { "tools","all" })
-	public void get_in_parameter_names() throws IllegalAccessException,IllegalArgumentException, InvocationTargetException {
-		Object obj = ref_get_in_parameter_names.invoke(instance,InfoGen_Self_DescribingTest.class, "test", "/test");
-		Assert.assertNotNull(obj);
-		String[] params = (String[]) obj;
-		int i;
-		for (i = 0; i < params.length; i++) {
-			Assert.assertEquals(params[0], "a");
-			Assert.assertEquals(params[1], "b");
-		}
-	}
-
-	@Test(groups = { "tools","all" })
+	@Test(groups = { "tools", "all" })
 	public void self_describing() throws IOException {
 		Set<Class<?>> class_set = new HashSet<Class<?>>();
 		class_set.add(InfoGen_Self_DescribingTest.class);
 		class_set.add(com.infogen.tools.Tool_JacksonTest.class);
-		Map<String , Function> map = instance.self_describing(class_set);
+		Map<String, Function> map = instance.self_describing(class_set);
 		Assert.assertEquals(map.size(), 1);
 	}
 

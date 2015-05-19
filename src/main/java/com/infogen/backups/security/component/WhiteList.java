@@ -1,4 +1,4 @@
-package com.infogen.backups.security0.component;
+package com.infogen.backups.security.component;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年4月7日 下午6:16:04

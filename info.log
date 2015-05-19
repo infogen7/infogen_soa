@@ -1,0 +1,24 @@
+05-19 16:38:21 0 INFO  [main] aop.InfoGen_AOP - java.home  => /usr/lib/jvm/java-8-sun/jre
+05-19 16:38:21 2 INFO  [main] aop.InfoGen_AOP - jdk home dir => /usr/lib/jvm/java-8-sun/lib/tools.jar
+05-19 16:38:22 681 INFO  [Thread-0] util.NativePath - final path ---> :/home/juxinli/workspace/infogen_soa/target/classes/src/main/webapp
+05-19 16:38:22 682 INFO  [Thread-0] util.NativePath - final path ---> :/home/juxinli/workspace/infogen_soa/target/classes/src/main/webapp/WEB-INF/web.xml
+05-19 16:38:22 792 INFO  [Thread-0] util.log - Logging initialized @1544ms
+05-19 16:38:22 953 INFO  [Thread-0] infogen.InfoGen_Jetty - add jetty annotation config dir => file:///home/juxinli/workspace/infogen_soa/target/classes/
+05-19 16:38:22 958 INFO  [Thread-0] infogen.InfoGen_Jetty - add jetty annotation config dir => file:///home/juxinli/workspace/infogen_soa/target/classes/
+05-19 16:38:22 994 INFO  [Thread-0] server.Server - jetty-9.3.0.RC0
+05-19 16:40:35 0 INFO  [main] aop.InfoGen_AOP - java.home  => /usr/lib/jvm/java-8-sun/jre
+05-19 16:40:35 2 INFO  [main] aop.InfoGen_AOP - jdk home dir => /usr/lib/jvm/java-8-sun/lib/tools.jar
+05-19 16:40:36 666 INFO  [Thread-0] util.NativePath - final path ---> :/home/juxinli/workspace/infogen_soa/target/classes/src/main/webapp
+05-19 16:40:36 680 INFO  [Thread-0] util.NativePath - final path ---> :/home/juxinli/workspace/infogen_soa/target/classes/src/main/webapp/WEB-INF/web.xml
+05-19 16:40:36 744 INFO  [Thread-0] util.log - Logging initialized @1972ms
+05-19 16:40:36 926 INFO  [Thread-0] infogen.InfoGen_Jetty - add jetty annotation config dir => file:///home/juxinli/workspace/infogen_soa/target/classes/
+05-19 16:40:36 927 INFO  [Thread-0] infogen.InfoGen_Jetty - add jetty annotation config dir => file:///home/juxinli/workspace/infogen_soa/target/classes/
+05-19 16:40:36 952 INFO  [Thread-0] server.Server - jetty-9.3.0.RC0
+05-19 16:41:39 0 INFO  [main] aop.InfoGen_AOP - java.home  => /usr/lib/jvm/java-8-sun/jre
+05-19 16:41:39 2 INFO  [main] aop.InfoGen_AOP - jdk home dir => /usr/lib/jvm/java-8-sun/lib/tools.jar
+05-19 16:41:39 674 INFO  [Thread-0] util.NativePath - final path ---> :/home/juxinli/workspace/infogen_soa/target/classes/src/main/webapp
+05-19 16:41:39 675 INFO  [Thread-0] util.NativePath - final path ---> :/home/juxinli/workspace/infogen_soa/target/classes/src/main/webapp/WEB-INF/web.xml
+05-19 16:41:39 733 INFO  [Thread-0] util.log - Logging initialized @1460ms
+05-19 16:41:39 932 INFO  [Thread-0] infogen.InfoGen_Jetty - add jetty annotation config dir => file:///home/juxinli/workspace/infogen_soa/target/classes/
+05-19 16:41:39 933 INFO  [Thread-0] infogen.InfoGen_Jetty - add jetty annotation config dir => file:///home/juxinli/workspace/infogen_soa/target/classes/
+05-19 16:41:40 955 INFO  [Thread-0] server.Server - jetty-9.3.0.RC0

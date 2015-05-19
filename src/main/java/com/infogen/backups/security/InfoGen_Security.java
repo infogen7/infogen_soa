@@ -1,4 +1,4 @@
-package com.infogen.backups.security0;
+package com.infogen.backups.security;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.backups.security0.component.Security;
-import com.infogen.backups.security0.component.WhiteList;
+import com.infogen.backups.security.component.Security;
+import com.infogen.backups.security.component.WhiteList;
 import com.infogen.tools.Tool_Context;
 
 /**
