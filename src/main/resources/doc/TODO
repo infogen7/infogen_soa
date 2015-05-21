@@ -16,6 +16,11 @@ Y修复先创建节点后写数据在慢网络下的问题 (创建时写入数�
 YACL
 Y  修改本地启动时路径问题
 Y异步post失败后导致连接泄漏
+Y user manager 服务
+Y sesion扩展
+Y 权限框架
+Y 用户自描述
+Y infogen版本配置
 
 NGRPC 及分发(如何实现?)
 http2 取代idl
@@ -36,10 +41,4 @@ json时间格式统一
 调用链
 错误处理
 rpc
-权限框架
-sesion扩展
-基础白名单
-user manager 服务
 
-spring mvc测试
-jacoco和infogen_aop 冲突的问题

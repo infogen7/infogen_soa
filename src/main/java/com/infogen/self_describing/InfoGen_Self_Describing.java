@@ -38,9 +38,9 @@ import com.infogen.self_describing.component.OutParameter;
 /**
  * 启动时扫描自描述配置
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2015年2月11日 下午5:32:23
+ * @author larry/larrylv@outlook.com/创建时间 2015年5月21日 下午5:20:06
+ * @since 1.0
+ * @version 1.0
  */
 public class InfoGen_Self_Describing {
 	public final Logger logger = Logger.getLogger(InfoGen_Self_Describing.class.getName());
@@ -61,9 +61,21 @@ public class InfoGen_Self_Describing {
 	public Map<String, Function> self_describing(Set<Class<?>> class_set) throws IOException {
 		class_set.forEach((clazz) -> {
 			try {
-				RestController[] rest_controllers = clazz.getAnnotationsByType(RestController.class);
-				if (rest_controllers.length == 0) {
+				RestController rest_controller = clazz.getAnnotation(RestController.class);
+				if (rest_controller == null) {
 					return;
+				}
+
+				String url_prefix = "";
+				RequestMapping class_url_annotation = clazz.getAnnotation(RequestMapping.class);
+				if (class_url_annotation != null) {
+					url_prefix = class_url_annotation.value()[0];
+					if (url_prefix.startsWith("/")) {
+						url_prefix = url_prefix.substring(1);
+					}
+					if (url_prefix.endsWith("/")) {
+						url_prefix = url_prefix.substring(0, url_prefix.length() - 2);
+					}
 				}
 
 				Object instance = clazz.newInstance();
@@ -84,12 +96,31 @@ public class InfoGen_Self_Describing {
 						function.setVersion(describe.version());
 						function.setTags(describe.tags());
 					}
-					String request_method = request_mapping_annotation.value()[0];
-					if (request_method.startsWith("/")) {
-						function.setRequest_method(request_method.substring(1));
+
+					String url = "";// URL /a/b/c/ 转化为 a/b/c 第一个和最后一个/都会被过滤掉
+					String[] values = request_mapping_annotation.value();
+					if (values.length == 0) {
+						url = url_prefix;
 					} else {
-						function.setRequest_method(request_method);
+						String url_suffix = values[0];
+						if (url_suffix.isEmpty()) {
+							url = url_prefix;
+						} else {
+							if (url_suffix.startsWith("/")) {
+								url_suffix = url_suffix.substring(1);
+							}
+							if (url_suffix.endsWith("/")) {
+								url_suffix = url_suffix.substring(0, url_suffix.length() - 2);
+							}
+							if (url_prefix.isEmpty()) {
+								url = url_suffix;
+							} else {
+								url = new StringBuilder(url_prefix).append("/").append(url_suffix).toString();
+							}
+						}
 					}
+					function.setRequest_method(url);
+
 					RequestMethod[] get_post_methods = request_mapping_annotation.method();
 					if (get_post_methods.length == 0) {
 						function.setSubmit_mode("GET");
@@ -98,12 +129,12 @@ public class InfoGen_Self_Describing {
 					}
 
 					// inParams
-					Map<String, InParam> inparam_map = new HashMap<>();
-					InParam[] inParams = method.getAnnotationsByType(InParam.class);// 输入参数注释(通过反射方法形参与注释的mapping)
+					Map<String, InParam> inparam_map = new HashMap<>();// 输入参数注释(通过反射方法形参与注释的mapping)
+					InParam[] inParams = method.getAnnotationsByType(InParam.class);
 					for (InParam inParam : inParams) {
 						inparam_map.put(inParam.name(), inParam);
 					}
-					java.lang.reflect.Parameter[] reflect_parameters = method.getParameters();
+					java.lang.reflect.Parameter[] reflect_parameters = method.getParameters();// 方法参数的名称
 					String[] get_in_parameter_names = reflect_parameters.length == 0 ? new String[] {} : get_in_parameter_names(clazz, method.getName(), reflect_parameters);
 					for (int i = 0; i < reflect_parameters.length; i++) {
 						java.lang.reflect.Parameter reflect_parameter = reflect_parameters[i];
@@ -118,18 +149,18 @@ public class InfoGen_Self_Describing {
 						}
 
 						InParameter parameter = new InParameter();
-						parameter.setName(name);
-						parameter.setType(reflect_parameter.getType());
-						RequestParam[] annotations = reflect_parameter.getAnnotationsByType(RequestParam.class);
-						for (RequestParam annotation : annotations) {
-							String default_value = annotation.defaultValue();
+						parameter.setName(name);// 参数名
+						parameter.setType(reflect_parameter.getType());// 参数类型
+						RequestParam param_annotation = reflect_parameter.getAnnotation(RequestParam.class);
+						if (param_annotation != null) {
+							String default_value = param_annotation.defaultValue();// 默认值
 							default_value = default_value.equals(ValueConstants.DEFAULT_NONE) ? "" : default_value;
 							parameter.setDefault_value(default_value);
-							parameter.setRequired(annotation.required());
+							parameter.setRequired(param_annotation.required());// 是否必须
 						}
 						InParam inParam = inparam_map.get(name);
 						if (inParam != null) {
-							parameter.setDescribe(inParam.describe());
+							parameter.setDescribe(inParam.describe());// 参数描述
 						}
 						function.getIn_parameters().add(parameter);
 					}
