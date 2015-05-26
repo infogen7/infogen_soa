@@ -40,11 +40,9 @@ import com.infogen.util.Return;
 
 /**
  * 为本地调用处理扩展的节点属性
- * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年10月24日 下午4:27:17
- * @当前版本只支持 rest,rpc调用,只支持对等式
+* @author larry/larrylv@outlook.com/创建时间 2015年5月22日 上午10:56:37
+* @since 1.0
+* @version 1.0
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class NativeNode extends AbstractNode {
@@ -123,6 +121,7 @@ public class NativeNode extends AbstractNode {
 		}
 	}
 
+	@JsonIgnore
 	private static final StampedLock call_lock = new StampedLock();
 
 	public Response call(String session, String method, Map<String, String> call_map) throws TException, IOException {
@@ -147,6 +146,7 @@ public class NativeNode extends AbstractNode {
 		return call;
 	}
 
+	@JsonIgnore
 	private static final StampedLock async_call_lock = new StampedLock();
 
 	public RPC_Callback async_call(String session, String method, Map<String, String> call_map) throws TException, IOException {

@@ -10,11 +10,11 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.servlet.FilterRegistration.Dynamic;
 
-import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import com.infogen.authc.web.InfoGen_Auth_Filter;
+import com.infogen.web.ServletContainerInitializer.WebApplicationInitializer;
 
 /**
  * 用于启动mvc框架的监听器
