@@ -1,7 +1,6 @@
 package com.infogen.aop.event_handle;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import com.infogen.aop.annotation.Authc;
@@ -10,7 +9,6 @@ import com.infogen.authc.exception.InfoGen_Auth_Exception;
 import com.infogen.authc.exception.impl.Session_Lose_Exception;
 import com.infogen.authc.subject.Subject;
 import com.larrylgq.aop.advice.event_handle.AOP_Handle;
-import com.larrylgq.aop.agent.Agent_Advice_Field;
 import com.larrylgq.aop.agent.Agent_Advice_Method;
 
 /**
@@ -51,15 +49,5 @@ public class InfoGen_AOP_Handle_Authc extends AOP_Handle {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.infogen.aop.advice.event_handle.InfoGen_AOP_Handle#attach_field(java.lang.String, java.lang.reflect.Field, java.lang.annotation.Annotation)
-	 */
-	@Override
-	public Agent_Advice_Field attach_field(String arg0, Field arg1, Annotation arg2) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

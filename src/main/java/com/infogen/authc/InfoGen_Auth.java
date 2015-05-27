@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import com.infogen.authc.subject.Subject;
 
 /**
- * API认证框架的工具类,可以获取subject和session
+ * API认证框架的工具类,可以获取subject
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年5月4日 下午2:11:06
  * @since 1.0

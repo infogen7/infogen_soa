@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>com.github.larrylgq</groupId>
 			<artifactId>infogen_aop</artifactId>
-			<version>V1.0.00R150521</version>
+			<version>V1.0.00R150527</version>
 		</dependency>
 
 		<!-- zookeeper -->

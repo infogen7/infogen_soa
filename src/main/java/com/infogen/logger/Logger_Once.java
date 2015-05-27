@@ -1,4 +1,4 @@
-package com.infogen.util;
+package com.infogen.logger;
 
 import java.util.Map;
 
@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
  * @since 1.0
  * @version 1.0
  */
+// TODO 没有定时清除缓存,不建议使用
+@Deprecated
 public class Logger_Once {
 	public static Logger logger = Logger.getLogger(Logger_Once.class.getName());
 	private static Map<String, Boolean> map = new java.util.HashMap<>();

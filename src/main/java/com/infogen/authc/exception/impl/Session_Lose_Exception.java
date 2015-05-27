@@ -1,13 +1,10 @@
-/**
- * @author larry/larrylv@outlook.com
- * @date 创建时间 2015年5月15日 下午12:30:39
- * @version 1.0
- */
 package com.infogen.authc.exception.impl;
 
 import com.infogen.authc.exception.InfoGen_Auth_Exception;
 
 /**
+ * 没有这个会话
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年5月15日 下午12:30:39
  * @since 1.0
  * @version 1.0

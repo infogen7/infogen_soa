@@ -1,7 +1,6 @@
 package com.infogen.aop.event_handle;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.apache.log4j.Logger;
@@ -10,7 +9,6 @@ import com.infogen.aop.InfoGen_AOP;
 import com.infogen.aop.annotation.Execution;
 import com.infogen.logger.kafka.InfoGen_Logger_Kafka_Producer;
 import com.larrylgq.aop.advice.event_handle.AOP_Handle;
-import com.larrylgq.aop.agent.Agent_Advice_Field;
 import com.larrylgq.aop.agent.Agent_Advice_Method;
 import com.larrylgq.aop.tools.Tool_Core;
 
@@ -65,16 +63,5 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		producer.send(InfoGen_AOP.infogen_logger_topic_execution_exception, class_name, sbd.toString());
 		Logger logger = Logger.getLogger(class_name);
 		logger.error(sbd.toString());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.infogen.aop.advice.event_handle.InfoGen_AOP_Handle#attach_field(java.lang.String, java.lang.reflect.Field, java.lang.annotation.Annotation)
-	 */
-	@Override
-	public Agent_Advice_Field attach_field(String class_name, Field field, Annotation annotation) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

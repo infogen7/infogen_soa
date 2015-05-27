@@ -65,8 +65,11 @@ public class InfoGen_Auth_Filter implements Filter {
 			}
 			filterChain.doFilter(srequset, sresponse);
 		} catch (Exception e) {
-			if (e instanceof InfoGen_Auth_Exception || e.getCause() instanceof InfoGen_Auth_Exception) {
+			if (e instanceof InfoGen_Auth_Exception) {
 				InfoGen_Auth_Exception cause = (InfoGen_Auth_Exception) e;
+				response.getWriter().write(Return.FAIL(cause.name(), cause.note()).toJson());
+			} else if (e.getCause() instanceof InfoGen_Auth_Exception) {
+				InfoGen_Auth_Exception cause = (InfoGen_Auth_Exception) e.getCause();
 				response.getWriter().write(Return.FAIL(cause.name(), cause.note()).toJson());
 			} else {
 				throw e;

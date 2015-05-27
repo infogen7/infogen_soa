@@ -1,18 +1,16 @@
 package com.infogen.aop.event_handle;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import com.infogen.aop.InfoGen_AOP;
 import com.infogen.logger.kafka.InfoGen_Logger_Kafka_Producer;
 import com.larrylgq.aop.advice.event_handle.AOP_Handle;
-import com.larrylgq.aop.agent.Agent_Advice_Field;
 import com.larrylgq.aop.agent.Agent_Advice_Method;
 import com.larrylgq.aop.tools.Tool_Core;
 
 /**
- * 统计方法调用时间的处理器
+ * 统计方法调用时间的处理器/infogen 内部使用
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年2月27日 下午6:11:09
  * @since 1.0
@@ -57,14 +55,4 @@ public class InfoGen_AOP_Handle_Invoke extends AOP_Handle {
 		producer.send(InfoGen_AOP.infogen_logger_topic_invoke_exception, class_name, sbd.toString());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.infogen.aop.advice.event_handle.InfoGen_AOP_Handle#attach_field(java.lang.String, java.lang.reflect.Field, java.lang.annotation.Annotation)
-	 */
-	@Override
-	public Agent_Advice_Field attach_field(String class_name, Field field, Annotation annotation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

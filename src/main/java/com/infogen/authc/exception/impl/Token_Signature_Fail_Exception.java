@@ -3,7 +3,7 @@ package com.infogen.authc.exception.impl;
 import com.infogen.authc.exception.InfoGen_Auth_Exception;
 
 /**
- * Token 格式不正确
+ * Token 签名错误
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年5月14日 下午5:20:05
  * @since 1.0

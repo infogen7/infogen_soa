@@ -1,4 +1,4 @@
-package com.infogen.web;
+package com.infogen.aop;
 
 import java.io.IOException;
 
@@ -14,10 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.aop.InfoGen_AOP;
-
 /**
- * http白名单过滤的过滤器
+ * 实现AOP的过滤器/基于ThreadLocal
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年3月27日 下午4:09:09
  * @since 1.0

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 /**
- * API认证框架的工具类,可以获取subject和session
+ * AOP的工具类,可以获取存放在ThreadLocal中的对象
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年5月4日 下午2:11:06
  * @since 1.0
