@@ -160,7 +160,6 @@ public class InfoGen_Configuration {
 		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
 		AOP.getInstance().add_advice_method(Invoke.class, new InfoGen_AOP_Handle_Invoke());
 		AOP.getInstance().add_advice_method(Authc.class, new InfoGen_AOP_Handle_Authc());
-		AOP.getInstance().add_autowired_field("com.infogen.server.model.AbstractNode", "infogen_version", "\"V1.0.00R150520\";");
 		AOP.getInstance().advice();
 	}
 }

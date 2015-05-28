@@ -23,7 +23,7 @@ public abstract class AbstractNode {
 	protected String server_room;// sh@youfu
 	protected String host;// 机器名
 	protected Integer ratio;// 1-10的整数 //类似一致性哈希实现负载均衡
-	protected String infogen_version;
+	protected String infogen_version  = "V1.0.03R150528";
 
 	protected String ip;
 	protected String net_ip;
