@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 import com.infogen.authc.InfoGen_Auth;
 import com.infogen.authc.exception.InfoGen_Auth_Exception;
-import com.infogen.authc.subject.Redis_Subject_DAO;
+import com.infogen.authc.subject.Default_Subject_DAO;
 import com.infogen.authc.subject.Subject;
 import com.infogen.authc.subject.Subject_DAO;
 import com.infogen.util.Return;
@@ -40,7 +40,7 @@ public class InfoGen_Auth_Filter implements Filter {
 		this.filterConfig = filterConfig;
 	}
 
-	private static Subject_DAO subject_dao = new Redis_Subject_DAO("192.168.0.145", 6379, "redis2014!!");
+	private static Subject_DAO subject_dao = new Default_Subject_DAO();
 	public static String TOKEN_NAME = "x-access-token";
 
 	/**

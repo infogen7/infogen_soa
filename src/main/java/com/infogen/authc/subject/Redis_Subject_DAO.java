@@ -59,7 +59,7 @@ public class Redis_Subject_DAO extends Subject_DAO {
 	 * @see com.infogen.authc.cache.Subject_DAO#save(com.infogen.authc.subject.Subject)
 	 */
 	@Override
-	public void save(Subject subject, Integer expire) {
+	public void save(Subject subject) {
 		Jedis take = take();
 		Map<String, String> map = new HashMap<>();
 		map.put("remember", subject.getRemember().toString());
@@ -69,7 +69,7 @@ public class Redis_Subject_DAO extends Subject_DAO {
 		try {
 			String key = subject.getSubject();
 			take.hmset(key, map);
-			take.expire(key, expire);
+			take.expire(key, 60 * 60 * 12);
 		} finally {
 			pool.returnResourceObject(take);
 		}
