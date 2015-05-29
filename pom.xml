@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>com.github.larrylgq</groupId>
 			<artifactId>infogen_aop</artifactId>
-			<version>V1.0.00R150527</version>
+			<version>V1.0.00R150529</version>
 		</dependency>
 
 		<!-- zookeeper -->
@@ -126,11 +126,17 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>com.google.protobuf</groupId>
-			<artifactId>protobuf-java</artifactId>
-			<version>3.0.0-alpha-2</version>
-		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>com.google.protobuf</groupId> -->
+		<!-- <artifactId>protobuf-java</artifactId> -->
+		<!-- <version>3.0.0-alpha-2</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>io.grpc</groupId> -->
+		<!-- <artifactId>grpc-all</artifactId> -->
+		<!-- <version>0.7.0</version> -->
+		<!-- </dependency> -->
 
 		<!-- Jetty Webapp -->
 		<dependency>

@@ -96,6 +96,16 @@ public class NativeNode extends AbstractNode {
 		return asyncClient;
 	}
 
+	/**
+	 * 不推荐使用
+	 * 
+	 * @param session
+	 * @param method
+	 * @param name_value_pair
+	 * @return
+	 * @throws Exception
+	 */
+	@Deprecated
 	public Return call_once(String session, String method, List<BasicNameValuePair> name_value_pair) throws Exception {
 		TTransport transport = new TSocket(ip, rpc_port, connect_timeout);
 		TProtocol protocol = new TCompactProtocol(transport);
