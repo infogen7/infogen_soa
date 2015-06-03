@@ -9,6 +9,7 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.larrylgq.aop.tools.Tool_Core;
 import com.larrylgq.aop.tools.Tool_Jackson;
 
 /**
@@ -36,7 +37,24 @@ public class Return extends HashMap<String, Object> {
 			});
 		} catch (IOException e) {
 			logger.error("Return.create 解析 JSON 失败", e);
+			return Return.FAIL(CODE._510.code, CODE._510.name());
 		}
+		return jo;
+	}
+
+	public static Return SUCCESS(CODE code) {
+		Return jo = new Return();
+		jo.put(Return_Fields.success.name(), true);
+		jo.put(Return_Fields.note.name(), code.note);
+		jo.put(Return_Fields.code.name(), code.code);
+		return jo;
+	}
+
+	public static Return SUCCESS(CODE code, Exception e) {
+		Return jo = new Return();
+		jo.put(Return_Fields.success.name(), true);
+		jo.put(Return_Fields.note.name(), Tool_Core.stacktrace(e));
+		jo.put(Return_Fields.code.name(), code.code);
 		return jo;
 	}
 
@@ -53,6 +71,22 @@ public class Return extends HashMap<String, Object> {
 		jo.put(Return_Fields.success.name(), true);
 		jo.put(Return_Fields.note.name(), note);
 		jo.put(Return_Fields.code.name(), code);
+		return jo;
+	}
+
+	public static Return FAIL(CODE code) {
+		Return jo = new Return();
+		jo.put(Return_Fields.success.name(), false);
+		jo.put(Return_Fields.note.name(), code.note);
+		jo.put(Return_Fields.code.name(), code.code);
+		return jo;
+	}
+
+	public static Return FAIL(CODE code, Exception e) {
+		Return jo = new Return();
+		jo.put(Return_Fields.success.name(), false);
+		jo.put(Return_Fields.note.name(), Tool_Core.stacktrace(e));
+		jo.put(Return_Fields.code.name(), code.code);
 		return jo;
 	}
 

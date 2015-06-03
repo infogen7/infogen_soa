@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.infogen.rpc.handler;
 
 import java.util.ArrayList;

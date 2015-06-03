@@ -1,4 +1,4 @@
-package com.infogen.aop;
+package com.infogen.track;
 
 import java.io.IOException;
 
@@ -21,15 +21,15 @@ import org.apache.log4j.Logger;
  * @since 1.0
  * @version 1.0
  */
-@WebFilter(filterName = "InfoGen_AOP_Filter", urlPatterns = { "/*" }, asyncSupported = true)
-public class InfoGen_AOP_Filter implements Filter {
-	public static Logger logger = Logger.getLogger(InfoGen_AOP_Filter.class.getName());
+@WebFilter(filterName = "InfoGen_Track_Filter", urlPatterns = { "/*" }, asyncSupported = true)
+public class InfoGen_Track_Filter implements Filter {
+	public static Logger logger = Logger.getLogger(InfoGen_Track_Filter.class.getName());
 
 	public void doFilter(ServletRequest srequset, ServletResponse sresponse, FilterChain filterChain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) srequset;
 		HttpServletResponse response = (HttpServletResponse) sresponse;
-		InfoGen_AOP.setRequest(request);
-		InfoGen_AOP.setResponse(response);
+		InfoGen_Track.setRequest(request);
+		InfoGen_Track.setResponse(response);
 		filterChain.doFilter(request, response);
 	}
 

@@ -387,7 +387,7 @@ public class InfoGen_ZooKeeper {
 	private Set<String> watcher_data_paths = new HashSet<String>();
 
 	public void schedule() {
-		Scheduled.executors.scheduleWithFixedDelay(() -> {
+		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
 			Set<String> paths = new HashSet<String>();
 			paths.addAll(watcher_children_paths);
 			watcher_children_paths.clear();
@@ -401,7 +401,7 @@ public class InfoGen_ZooKeeper {
 			});
 		}, 30, 30, TimeUnit.SECONDS);
 
-		Scheduled.executors.scheduleWithFixedDelay(() -> {
+		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
 			Set<String> paths = new HashSet<String>();
 			paths.addAll(watcher_data_paths);
 			watcher_data_paths.clear();

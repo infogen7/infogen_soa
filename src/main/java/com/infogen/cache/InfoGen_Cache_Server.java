@@ -161,7 +161,7 @@ public class InfoGen_Cache_Server {
 
 	// ////////////////////////////////////////////Scheduled////////////////////////////////////////////////////////////////
 	public void schedule() {
-		Scheduled.executors.scheduleWithFixedDelay(() -> {
+		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
 			Set<String> tmp_reload_server_paths = new HashSet<>();
 			tmp_reload_server_paths.addAll(reload_server_paths);
 			reload_server_paths.clear();
@@ -175,7 +175,7 @@ public class InfoGen_Cache_Server {
 			});
 		}, 30, 30, TimeUnit.SECONDS);
 
-		Scheduled.executors.scheduleWithFixedDelay(() -> {
+		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
 			persistence_delay();
 		}, 30, 30, TimeUnit.SECONDS);
 	}

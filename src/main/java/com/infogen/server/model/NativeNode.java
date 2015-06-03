@@ -5,12 +5,11 @@ package com.infogen.server.model;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.StampedLock;
 
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
 import org.apache.thrift.async.AsyncMethodCallback;
@@ -106,7 +105,7 @@ public class NativeNode extends AbstractNode {
 	 * @throws Exception
 	 */
 	@Deprecated
-	public Return call_once(String session, String method, List<BasicNameValuePair> name_value_pair) throws Exception {
+	public Return call_once(String session, String method, Map<String, String> name_value_pair) throws Exception {
 		TTransport transport = new TSocket(ip, rpc_port, connect_timeout);
 		TProtocol protocol = new TCompactProtocol(transport);
 		Message.Client client = new Message.Client(protocol);
@@ -118,8 +117,8 @@ public class NativeNode extends AbstractNode {
 			request.setSequence(sequence.longValue());
 			request.setMethod(method);
 			Map<String, String> call_map = new HashMap<>();
-			for (BasicNameValuePair basicNameValuePair : name_value_pair) {
-				call_map.put(basicNameValuePair.getName(), basicNameValuePair.getValue());
+			for (Entry<String, String> basicNameValuePair : name_value_pair.entrySet()) {
+				call_map.put(basicNameValuePair.getKey(), basicNameValuePair.getValue());
 			}
 			request.setParameters(call_map);
 			Response call = client.call(request);
@@ -135,6 +134,7 @@ public class NativeNode extends AbstractNode {
 
 	private static final StampedLock call_lock = new StampedLock();
 
+	@Deprecated
 	public Response call(String session, String method, Map<String, String> call_map) throws TException, IOException {
 		Request request = new Request();
 		request.setSessionID(session);
@@ -159,6 +159,7 @@ public class NativeNode extends AbstractNode {
 
 	private static final StampedLock async_call_lock = new StampedLock();
 
+	@Deprecated
 	public RPC_Callback async_call(String session, String method, Map<String, String> call_map) throws TException, IOException {
 		RPC_Callback callback = new RPC_Callback();
 		Request request = new Request();
@@ -207,7 +208,7 @@ public class NativeNode extends AbstractNode {
 		NET, LOCAL
 	}
 
-	public Http_Callback async_http(String method, List<BasicNameValuePair> name_value_pair, RequestType request_type, NetType net_type) throws IOException {
+	public Http_Callback async_http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type) throws IOException {
 		StringBuffer async_http_sbf = new StringBuffer();
 		if (request_type == RequestType.GET) {
 			if (net_type == NetType.LOCAL) {
@@ -226,7 +227,7 @@ public class NativeNode extends AbstractNode {
 		}
 	}
 
-	public Return http(String method, List<BasicNameValuePair> name_value_pair, RequestType request_type, NetType net_type) throws IOException {
+	public String http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type) throws IOException {
 		StringBuffer blocking_http_sbf = new StringBuffer();
 		if (request_type == RequestType.GET) {
 			if (net_type == NetType.LOCAL) {

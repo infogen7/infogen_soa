@@ -1,4 +1,4 @@
-package com.infogen.aop;
+package com.infogen.track;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,12 +12,8 @@ import org.apache.log4j.Logger;
  * @since 1.0
  * @version 1.0
  */
-public class InfoGen_AOP {
-	public final Logger logger = Logger.getLogger(InfoGen_AOP.class.getName());
-	public final static String infogen_logger_topic_execution_time = "infogen_logger_topic_execution_time";
-	public final static String infogen_logger_topic_execution_exception = "infogen_logger_topic_execution_exception";
-	public final static String infogen_logger_topic_invoke_time = "infogen_logger_topic_invoke_time";
-	public final static String infogen_logger_topic_invoke_exception = "infogen_logger_topic_invoke_exception";
+public class InfoGen_Track {
+	public final Logger logger = Logger.getLogger(InfoGen_Track.class.getName());
 	private static final ThreadLocal<HttpServletRequest> thread_local_request = new ThreadLocal<>();
 	private static final ThreadLocal<HttpServletResponse> thread_local_response = new ThreadLocal<>();
 

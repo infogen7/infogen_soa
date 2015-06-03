@@ -151,7 +151,6 @@ public class InfoGen_Configuration {
 		// @Resource(name="sqliteCarDao")
 		// 遍历项目所有class文件
 		AOP.getInstance().addClasses(com.infogen.Service.class);
-		AOP.getInstance();
 		// 读取自描述
 		Map<String, Function> functions = InfoGen_Self_Describing.getInstance().self_describing(AOP.getInstance().getClasses());
 		register_server.setFunctions(functions);

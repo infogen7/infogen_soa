@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
+import com.infogen.util.CODE;
 import com.infogen.util.Return;
 
 /**
@@ -20,9 +21,9 @@ import com.infogen.util.Return;
 public class Http_Callback {
 	public static final Logger logger = Logger.getLogger(Http_Callback.class.getName());
 
-	private ArrayBlockingQueue<Return> queue = new ArrayBlockingQueue<Return>(1);
+	private ArrayBlockingQueue<String> queue = new ArrayBlockingQueue<>(1);
 
-	public Boolean add(Return value) {
+	public Boolean add(String value) {
 		if (value == null) {
 			return false;
 		}
@@ -31,12 +32,15 @@ public class Http_Callback {
 
 	public Return get(Long seconds) {
 		try {
-			Return poll = queue.poll(seconds, TimeUnit.SECONDS);
-			return poll;
+			String poll = queue.poll(seconds, TimeUnit.SECONDS);
+			if (poll == null) {
+				return Return.FAIL(CODE._502.code, CODE._502.note);
+			} else {
+				return Return.create(poll);
+			}
 		} catch (Exception e) {
 			logger.error("获取异步返回值异常", e);
+			return Return.FAIL(CODE._510.code, CODE._510.note);
 		}
-		return null;
 	}
-
 }

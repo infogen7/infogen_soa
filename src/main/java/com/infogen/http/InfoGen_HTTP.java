@@ -1,33 +1,22 @@
-/**
- * 
- */
 package com.infogen.http;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.concurrent.FutureCallback;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
-import org.apache.http.impl.nio.client.HttpAsyncClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import com.infogen.http.callback.Http_Callback;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
+import com.larrylgq.aop.tools.Tool_Jackson;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 /**
  * http调用的工具类
@@ -41,183 +30,119 @@ public class InfoGen_HTTP {
 	// 当使用长轮循时需要注意不能超过此时间
 	private static Integer socket_timeout = 10_000;// 数据传输时间
 	private static Integer connect_timeout = 3_000;// 连接时间
+	private static final OkHttpClient client = new OkHttpClient();
+	static {
+		client.setConnectTimeout(connect_timeout, TimeUnit.SECONDS);
+		client.setReadTimeout(socket_timeout, TimeUnit.SECONDS);
+		client.setWriteTimeout(socket_timeout, TimeUnit.SECONDS);
+	}
+
+	public static void main(String[] args) throws Exception {
+		System.out.println(do_get("http://www.eclipse.org/jetty/documentation/current/http-client-api.html", null));
+	}
 
 	// //////////////////////////////////////////////////////////////////////////////////////////////get/////////////////////////////////////////////////////////////
+	private static String concat_url_params(String url, Map<String, String> params) {
+		if (params != null) {
+			StringBuffer do_get_sbf = new StringBuffer();
+			do_get_sbf.append(url);
+			String[] keys = new String[params.size()];
+			params.keySet().toArray(keys);
+			for (int j = 0; j < keys.length; j++) {
+				if (j == 0) {
+					do_get_sbf.append("?");
+				} else {
+					do_get_sbf.append("&");
+				}
+				String key = keys[j];
+				String value = params.get(key);
+				do_get_sbf.append(key).append("=").append(value);
+			}
+			url = do_get_sbf.toString();
+		}
+		return url;
+	}
+
 	/**
 	 * get 获取 rest 资源
 	 * 
 	 * @param url
 	 * @return
-	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public static Return do_get(String url, List<BasicNameValuePair> name_value_pair) throws ClientProtocolException, IOException {
-		String body = "{}";
-		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socket_timeout).setConnectTimeout(connect_timeout).build();
-		CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
-		try {
-			if (name_value_pair != null) {
-				StringBuffer do_get_sbf = new StringBuffer();
-				do_get_sbf.append(url).append("?");
-				for (int j = 0; j < name_value_pair.size(); j++) {
-					if (j != 0) {
-						do_get_sbf.append("&");
-					}
-					NameValuePair nameValuePair = name_value_pair.get(j);
-					do_get_sbf.append(nameValuePair.getName()).append("=").append(nameValuePair.getValue());
-				}
-				url = do_get_sbf.toString();
-			}
-			HttpResponse response = httpclient.execute(new HttpGet(url));
-			HttpEntity entity = response.getEntity();
-			body = EntityUtils.toString(entity);
-		} finally {
-			httpclient.close();
+	public static String do_get(String url, Map<String, String> params) throws IOException {
+		url = concat_url_params(url, params);
+		Request request = new Request.Builder().url(url).build();
+		Response response = client.newCall(request).execute();
+		if (response.isSuccessful()) {
+			return response.body().string();
+		} else {
+			throw new IOException("Unexpected code " + response);
 		}
-		return Return.create(body);
+	}
+
+	public static Http_Callback do_async_get(String url, Map<String, String> params) {
+		Http_Callback callback = new Http_Callback();
+		url = concat_url_params(url, params);
+
+		Request request = new Request.Builder().url(url).build();
+		client.newCall(request).enqueue(new Callback() {
+			@Override
+			public void onFailure(Request request, IOException e) {
+				callback.add(Return.FAIL(CODE._500, e).toJson());
+			}
+
+			@Override
+			public void onResponse(Response response) throws IOException {
+				if (response.isSuccessful()) {
+					callback.add(response.body().string());
+				} else {
+					callback.add(Return.FAIL(CODE._500).toJson());
+				}
+			}
+		});
+		return callback;
 	}
 
 	// ////////////////////////////////////////////////////////post///////////////////////////////////////////////////////////////////////////
-	/**
-	 * post 获取 rest 资源
-	 * 
-	 * @param url
-	 * @param name_value_pair
-	 * @return
-	 * @throws ClientProtocolException
-	 * @throws IOException
-	 */
-	public static Return do_post(String url, List<BasicNameValuePair> name_value_pair) throws IOException {
-		String body = "{}";
-		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socket_timeout).setConnectTimeout(connect_timeout).build();
-		CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
-		try {
-			HttpPost httpost = new HttpPost(url);
-			httpost.setEntity(new UrlEncodedFormEntity(name_value_pair, StandardCharsets.UTF_8));
-			HttpResponse response = httpclient.execute(httpost);
-			HttpEntity entity = response.getEntity();
-			body = EntityUtils.toString(entity);
-		} finally {
-			httpclient.close();
+	public static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
+	public static final MediaType MEDIA_TYPE_MARKDOWN = MediaType.parse("text/x-markdown; charset=utf-8");
+	public static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
+
+	public static String do_post(String url, Map<String, String> params) throws IOException {
+		if (params == null) {
+			params = new HashMap<>();
 		}
-		return Return.create(body);
+		Request request = new Request.Builder().url(url).post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
+		Response response = client.newCall(request).execute();
+		if (response.isSuccessful()) {
+			return response.body().string();
+		} else {
+			throw new IOException("Unexpected code " + response);
+		}
 	}
 
-	// ///////////////////////////////////////////async//////////////////////////////////////////////////
-
-	public static Http_Callback do_async_get(String url, List<BasicNameValuePair> name_value_pair) {
-
+	public static Http_Callback do_async_post(String url, Map<String, String> params) throws IOException {
 		Http_Callback callback = new Http_Callback();
+		if (params == null) {
+			params = new HashMap<>();
+		}
+		Request request = new Request.Builder().url(url).post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
+		client.newCall(request).enqueue(new Callback() {
+			@Override
+			public void onFailure(Request request, IOException e) {
+				callback.add(Return.FAIL(CODE._500, e).toJson());
+			}
 
-		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socket_timeout).setConnectTimeout(connect_timeout).build();
-		CloseableHttpAsyncClient httpclient = HttpAsyncClients.custom().setDefaultRequestConfig(requestConfig).build();
-		if (name_value_pair != null) {
-			StringBuffer do_async_get_sbf = new StringBuffer();
-			do_async_get_sbf.append(url);
-			for (int j = 0; j < name_value_pair.size(); j++) {
-				if (j == 0) {
-					do_async_get_sbf.append("?");
+			@Override
+			public void onResponse(Response response) throws IOException {
+				if (response.isSuccessful()) {
+					callback.add(response.body().string());
 				} else {
-					do_async_get_sbf.append("&");
-				}
-				NameValuePair nameValuePair = name_value_pair.get(j);
-				do_async_get_sbf.append(nameValuePair.getName()).append("=").append(nameValuePair.getValue());
-			}
-			url = do_async_get_sbf.toString();
-		}
-
-		httpclient.start();
-		HttpGet httpget = new HttpGet(url);
-
-		FutureCallback<HttpResponse> future_callback = new FutureCallback<HttpResponse>() {
-			public void completed(final HttpResponse response) {
-				try {
-					callback.add(Return.create(EntityUtils.toString(response.getEntity())));
-				} catch (ParseException | IOException e) {
-					callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
-				} finally {
-					close();
+					callback.add(Return.FAIL(CODE._500).toJson());
 				}
 			}
-
-			public void failed(final Exception e) {
-				callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
-				close();
-			}
-
-			public void cancelled() {
-				callback.add(Return.FAIL(CODE._500.code, "cancelled"));
-				close();
-			}
-
-			private void close() {
-				try {
-					httpclient.close();
-				} catch (IOException e) {
-				}
-			}
-		};
-		try {
-			httpclient.execute(httpget, future_callback);
-		} catch (Exception e) {
-			try {
-				callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
-				httpclient.close();
-			} catch (IOException e1) {
-				logger.error("http do_async_get 关闭连接失败", e1);
-			}
-		}
+		});
 		return callback;
 	}
-
-	public static Http_Callback do_async_post(String url, List<BasicNameValuePair> name_value_pair) throws IOException {
-		Http_Callback callback = new Http_Callback();
-		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socket_timeout).setConnectTimeout(connect_timeout).build();
-		CloseableHttpAsyncClient httpclient = HttpAsyncClients.custom().setDefaultRequestConfig(requestConfig).build();
-		httpclient.start();
-		HttpPost httpost = new HttpPost(url);
-		httpost.setEntity(new UrlEncodedFormEntity(name_value_pair, StandardCharsets.UTF_8));
-
-		FutureCallback<HttpResponse> future_callback = new FutureCallback<HttpResponse>() {
-			public void completed(final HttpResponse response) {
-				try {
-					callback.add(Return.create(EntityUtils.toString(response.getEntity())));
-				} catch (ParseException | IOException e) {
-					callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
-				} finally {
-					close();
-				}
-			}
-
-			public void failed(final Exception e) {
-				callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
-				close();
-			}
-
-			public void cancelled() {
-				callback.add(Return.FAIL(CODE._500.code, "cancelled"));
-				close();
-			}
-
-			private void close() {
-				try {
-					httpclient.close();
-				} catch (IOException e) {
-				}
-			}
-		};
-
-		try {
-			httpclient.execute(httpost, future_callback);
-		} catch (Exception e) {
-			try {
-				callback.add(Return.FAIL(CODE._500.code, e.getMessage()));
-				httpclient.close();
-			} catch (IOException e1) {
-				logger.error("http do_async_post 关闭连接失败", e1);
-			}
-		}
-		return callback;
-	}
-
 }

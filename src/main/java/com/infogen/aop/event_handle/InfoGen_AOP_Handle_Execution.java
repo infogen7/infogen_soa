@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.aop.InfoGen_AOP;
+import com.infogen.aop.InfoGen_AOP_Configuration;
 import com.infogen.aop.annotation.Execution;
 import com.infogen.logger.kafka.InfoGen_Logger_Kafka_Producer;
 import com.larrylgq.aop.advice.event_handle.AOP_Handle;
@@ -52,7 +52,7 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 	public static void insert_after_call_back(String class_name, String method_name, String user_definition, long start_millis, long end_millis) {
 		StringBuilder sbd = new StringBuilder();
 		sbd.append(class_name).append(",").append(method_name).append(",").append(end_millis - start_millis);
-		producer.send(InfoGen_AOP.infogen_logger_topic_execution_time, class_name, sbd.toString());
+		producer.send(InfoGen_AOP_Configuration.infogen_logger_topic_execution_time, class_name, sbd.toString());
 		Logger logger = Logger.getLogger(class_name);
 		logger.info(sbd.toString());
 	}
@@ -60,7 +60,7 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 	public static void add_catch_call_back(String class_name, String method_name, String user_definition, Throwable e) {
 		StringBuilder sbd = new StringBuilder();
 		sbd.append(class_name).append(",").append(method_name).append(",").append(e.getMessage()).append(",").append(Tool_Core.stacktrace(e));
-		producer.send(InfoGen_AOP.infogen_logger_topic_execution_exception, class_name, sbd.toString());
+		producer.send(InfoGen_AOP_Configuration.infogen_logger_topic_execution_exception, class_name, sbd.toString());
 		Logger logger = Logger.getLogger(class_name);
 		logger.error(sbd.toString());
 	}
