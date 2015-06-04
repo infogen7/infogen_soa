@@ -59,6 +59,7 @@ public class InfoGen_Self_Describing {
 	public Map<String, Function> functions = new HashMap<>();
 
 	public Map<String, Function> self_describing(Set<Class<?>> class_set) throws IOException {
+		// 方法名格式为: /get
 		class_set.forEach((clazz) -> {
 			try {
 				RestController rest_controller = clazz.getAnnotation(RestController.class);
@@ -97,7 +98,7 @@ public class InfoGen_Self_Describing {
 						function.setTags(describe.tags());
 					}
 
-					String url = "";// URL /a/b/c/ 转化为 a/b/c 第一个和最后一个/都会被过滤掉
+					String url = "";// URL a/b/c/ 转化为 /a/b/c 地一个/会被补齐,最后一个/会被过滤掉
 					String[] values = request_mapping_annotation.value();
 					if (values.length == 0) {
 						url = url_prefix;

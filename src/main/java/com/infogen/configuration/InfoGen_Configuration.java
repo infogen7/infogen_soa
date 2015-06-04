@@ -17,10 +17,8 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.aop.annotation.Authc;
 import com.infogen.aop.annotation.Execution;
 import com.infogen.aop.annotation.Invoke;
-import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Authc;
 import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Execution;
 import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Invoke;
 import com.infogen.self_describing.InfoGen_Self_Describing;
@@ -158,7 +156,6 @@ public class InfoGen_Configuration {
 		// AOP
 		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
 		AOP.getInstance().add_advice_method(Invoke.class, new InfoGen_AOP_Handle_Invoke());
-		AOP.getInstance().add_advice_method(Authc.class, new InfoGen_AOP_Handle_Authc());
 		AOP.getInstance().advice();
 	}
 }
