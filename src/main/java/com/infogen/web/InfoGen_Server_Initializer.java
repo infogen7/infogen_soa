@@ -1,19 +1,15 @@
 package com.infogen.web;
 
 import java.io.IOException;
-import java.util.EnumSet;
 import java.util.concurrent.locks.StampedLock;
 
-import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
-import javax.servlet.FilterRegistration.Dynamic;
 
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-import com.infogen.authc.web.InfoGen_Auth_Filter;
 import com.infogen.web.ServletContainerInitializer.WebApplicationInitializer;
 
 /**
@@ -66,13 +62,6 @@ public class InfoGen_Server_Initializer implements WebApplicationInitializer {
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		try {
 			start_mvc(servletContext);
-
-			Dynamic addFilter = servletContext.addFilter("Default_Web_Auth_Filter", InfoGen_Auth_Filter.class);
-			EnumSet<DispatcherType> dispatcherTypes = EnumSet.allOf(DispatcherType.class);
-			dispatcherTypes.add(DispatcherType.REQUEST);
-
-			addFilter.addMappingForUrlPatterns(dispatcherTypes, true, "/*");
-			addFilter.setAsyncSupported(true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			servletContext.log("启动MVC框架失败");

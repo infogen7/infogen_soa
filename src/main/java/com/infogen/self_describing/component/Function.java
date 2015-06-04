@@ -27,6 +27,8 @@ public class Function {
 	private String describe;
 
 	private String tags; // 方法的分类 比如前端，数据库，中间件，测试
+	private Boolean authc;
+	private String[] roles;
 
 	// 参数
 	private List<InParameter> in_parameters = new ArrayList<>();
@@ -117,4 +119,21 @@ public class Function {
 	public String getTags() {
 		return tags;
 	}
+
+	public Boolean getAuthc() {
+		return authc;
+	}
+
+	public void setAuthc(Boolean authc) {
+		this.authc = authc;
+	}
+
+	public String[] getRoles() {
+		return roles;
+	}
+
+	public void setRoles(String[] roles) {
+		this.roles = roles;
+	}
+
 }
