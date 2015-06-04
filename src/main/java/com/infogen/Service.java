@@ -224,7 +224,7 @@ public class Service {
 	private Return blocking_http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type) {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
-			return Return.FAIL(CODE._402.code, CODE._402.note);
+			return Return.FAIL(CODE._402);
 		}
 		NativeNode node = null;
 		// 调用出错重试3次
@@ -232,16 +232,17 @@ public class Service {
 			try {
 				node = server.random_node();
 				if (node == null) {
-					return Return.FAIL(CODE._403.code, CODE._403.note);
+					return Return.FAIL(CODE._403);
 				}
-				return Return.create(node.http(method, name_value_pair, request_type, net_type));
+				String http = node.http(method, name_value_pair, request_type, net_type);
+				return Return.create(http);
 			} catch (IOException e) {
-				logger.error("调用失败", e);
+				logger.error("调用失败".concat(e.getMessage()));
 				server.disabled(node);
 				continue;
 			}
 		}
-		return Return.FAIL(CODE._500.code, CODE._500.note);
+		return Return.FAIL(CODE._500);
 	}
 
 	/**
@@ -258,7 +259,7 @@ public class Service {
 
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
-			callback.add(Return.FAIL(CODE._402.code, CODE._402.note).toJson());
+			callback.add(Return.FAIL(CODE._402).toJson());
 			return callback;
 		}
 		NativeNode node = null;
@@ -266,7 +267,7 @@ public class Service {
 		for (int i = 0; i < 3; i++) {
 			node = server.random_node();
 			if (node == null) {
-				callback.add(Return.FAIL(CODE._403.code, CODE._403.note).toJson());
+				callback.add(Return.FAIL(CODE._403).toJson());
 				return callback;
 			}
 			try {
@@ -277,7 +278,7 @@ public class Service {
 				continue;
 			}
 		}
-		callback.add(Return.FAIL(CODE._500.code, CODE._500.note).toJson());
+		callback.add(Return.FAIL(CODE._500).toJson());
 		return callback;
 	}
 

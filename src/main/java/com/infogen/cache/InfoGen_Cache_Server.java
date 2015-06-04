@@ -96,9 +96,7 @@ public class InfoGen_Cache_Server {
 			for (String node_string : get_server_state) {
 				try {
 					NativeNode node = Tool_Jackson.toObject(node_string, NativeNode.class);
-					if (node.available()) {
-						server.getAvailable_nodes().add(node);
-					}
+					server.add(node);
 				} catch (Exception e) {
 					logger.error("节点数据错误:", e);
 				}

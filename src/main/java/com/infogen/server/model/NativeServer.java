@@ -4,7 +4,6 @@
 package com.infogen.server.model;
 
 import java.time.Clock;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -33,26 +32,19 @@ public class NativeServer extends AbstractServer {
 	@JsonIgnore
 	private transient ConcurrentHashMap<Integer, NativeNode> load_balanc_map = new ConcurrentHashMap<>();
 	@JsonIgnore
-	private transient String rehash_load_balanc_map_write_lock = "";
-
-	public NativeServer() {
-	}
+	private transient String change_node_status_lock = "";
 
 	// ////////////////////////////////////////// 定时修正不可用的节点/////////////////////////////////////////////////////
-	public void addAll(List<NativeNode> nodes) {
-		synchronized (rehash_load_balanc_map_write_lock) {
-			for (NativeNode node : nodes) {
-				if (node.available()) {
-					available_nodes.add(node);
-				} else {
-					logger.error("node unavailable:".concat(Tool_Jackson.toJson(node)));
-				}
-			}
+	public void add(NativeNode node) {
+		if (node.available()) {
+			available_nodes.add(node);
+		} else {
+			logger.error("node unavailable:".concat(Tool_Jackson.toJson(node)));
 		}
 	}
 
 	private void recover() {
-		synchronized (rehash_load_balanc_map_write_lock) {
+		synchronized (change_node_status_lock) {
 			available_nodes.addAll(disabled_nodes);
 			Integer count = load_balanc_map.size();
 			for (NativeNode node : disabled_nodes) {
@@ -66,23 +58,20 @@ public class NativeServer extends AbstractServer {
 	}
 
 	public void rehash() {
-		synchronized (rehash_load_balanc_map_write_lock) {
-			load_balanc_map.clear();
-			Integer count = 0;
-			for (NativeNode node : available_nodes) {
-				for (int i = 0; i < node.getRatio(); i++) {
-					load_balanc_map.put(count, node);
-					count++;
-				}
+		load_balanc_map.clear();
+		Integer count = 0;
+		for (NativeNode node : available_nodes) {
+			for (int i = 0; i < node.getRatio(); i++) {
+				load_balanc_map.put(count, node);
+				count++;
 			}
 		}
 	}
 
 	public void disabled(NativeNode node) {
-		synchronized (rehash_load_balanc_map_write_lock) {
+		synchronized (change_node_status_lock) {
 			disabled_nodes.add(node);
 			available_nodes.remove(node);
-			last_sync_status_timestamp = Clock.system(InfoGen_Configuration.zoneid).millis();
 		}
 		rehash();
 	}
@@ -92,16 +81,18 @@ public class NativeServer extends AbstractServer {
 	 * 
 	 * @return
 	 */
-	long last_sync_status_timestamp = Clock.system(InfoGen_Configuration.zoneid).millis();
+
+	private long last_invoke_millis = Clock.system(InfoGen_Configuration.zoneid).millis();
 
 	public NativeNode random_node() {
 		long millis = Clock.system(InfoGen_Configuration.zoneid).millis();
-		if ((millis - last_sync_status_timestamp) > 3000 || available_nodes.size() == 0) {
+		// 没有可用节点或距离上一次调用超过指定时间
+		if (available_nodes.size() == 0 || (millis - last_invoke_millis) > 500000) {
 			if (disabled_nodes.size() > 0) {
 				recover();
 			}
-			last_sync_status_timestamp = millis;
 		}
+		last_invoke_millis = millis;
 
 		NativeNode node = null;
 		int size = load_balanc_map.size();
@@ -109,10 +100,6 @@ public class NativeServer extends AbstractServer {
 			node = load_balanc_map.get(new Random().nextInt(size));
 		}
 		return node;
-	}
-
-	public List<NativeNode> getAvailable_nodes() {
-		return available_nodes;
 	}
 
 }

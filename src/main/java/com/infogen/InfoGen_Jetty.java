@@ -58,7 +58,6 @@ public class InfoGen_Jetty {
 			public void run() {
 				try {
 					final Server server = createServerInSource(infogen_configuration.http_port, CONTEXT, NativePath.get(DEFAULT_WEBAPP_PATH).toString(), NativePath.get(DESCRIPTOR).toString());
-					server.stop();
 					server.start();
 					server.join();
 				} catch (Exception e) {
@@ -78,7 +77,6 @@ public class InfoGen_Jetty {
 	 * @throws MalformedURLException
 	 */
 	private Server createServerInSource(int port, String context, String default_webapp_path, String descriptor) throws MalformedURLException {
-
 		Server server = new Server();
 		// 设置在JVM退出时关闭Jetty的钩子。
 		server.setStopAtShutdown(true);

@@ -12,7 +12,6 @@ import org.apache.zookeeper.KeeperException.Code;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Id;
-import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 
 import com.infogen.cache.InfoGen_Cache_Configuration;
@@ -147,61 +146,6 @@ public class InfoGen {
 		}
 	}
 
-	/**
-	 * 代理创建一个服务节点
-	 * 
-	 * @param register_server
-	 */
-	@Deprecated
-	public void create_proxy_server(RegisterServer register_server) {
-		String register_server_name = register_server.getName();
-		// 创建或更新服务节点
-		String create_path = ZK.create(InfoGen_ZooKeeper.path(register_server_name), new byte[0], CreateMode.PERSISTENT);
-		if (create_path == null) {
-			logger.error("注册自身服务失败!");
-			return;
-		}
-		if (create_path != "NODEEXISTS") {
-			// 更新服务节点数据
-			ZK.set_data(create_path, Tool_Jackson.toJson(register_server).getBytes(), -1);
-		}
-	}
-
-	/**
-	 * 代理创建一个服务实例节点
-	 * 
-	 * @param server_name
-	 * @param proxy_node
-	 */
-	@Deprecated
-	public void create_proxy_node(String server_name, RegisterNode proxy_node) {
-		Stat server_exists = ZK.exists(InfoGen_ZooKeeper.path(server_name));
-		if (server_exists == null) {
-			RegisterServer register_server = new RegisterServer();
-			register_server.setName(server_name);
-			create_proxy_server(register_server);
-		}
-
-		String node_path = InfoGen_ZooKeeper.path(server_name, proxy_node.getName());
-		Stat exists = ZK.exists(node_path);
-		if (exists != null) {
-			// 代理节点都是持久化节点,所以需要先删除后创建才会出发 getchilds 的监听
-			ZK.delete(node_path);
-		}
-		ZK.create(node_path, Tool_Jackson.toJson(proxy_node).getBytes(), CreateMode.PERSISTENT);
-	}
-
-	/**
-	 * 删除一个服务实例节点
-	 * 
-	 * @param server_name
-	 * @param node_name
-	 */
-	@Deprecated
-	public void delete_proxy_node(String server_name, String node_name) {
-		ZK.delete(InfoGen_ZooKeeper.path(server_name, node_name));
-	}
-
 	// ////////////////////////////////////////// 获取服务/////////////////////////////////////////////////////
 	/**
 	 * 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
@@ -215,7 +159,7 @@ public class InfoGen {
 			return server;
 		}
 		return init_server(server_name, (native_server) -> {
-			// 获取所有节点数据并转化为本地调用版本
+			// 本地缓存或服务端获取的服务节点数据转化为本地调用版本
 				native_server.rehash();
 				// 缓存
 				CACHE_SERVER.depend_server.put(server_name, native_server);
