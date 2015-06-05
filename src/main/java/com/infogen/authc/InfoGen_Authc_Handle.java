@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import com.infogen.InfoGen;
 import com.infogen.authc.exception.InfoGen_Auth_Exception;
 import com.infogen.authc.exception.impl.Authentication_Fail_Exception;
 import com.infogen.authc.subject.Default_Subject_DAO;
 import com.infogen.authc.subject.Subject;
 import com.infogen.authc.subject.Subject_DAO;
-import com.infogen.self_describing.InfoGen_Self_Describing;
 import com.infogen.self_describing.component.Function;
 import com.infogen.util.Return;
 import com.infogen.web.InfoGen_SOA_Filter_Handle;
@@ -30,7 +30,7 @@ public class InfoGen_Authc_Handle extends InfoGen_SOA_Filter_Handle {
 
 	private static Subject_DAO subject_dao = new Default_Subject_DAO();
 	public static String TOKEN_NAME = "x-access-token";
-	public Map<String, Function> functions = InfoGen_Self_Describing.getInstance().functions;
+	public Map<String, Function> functions = InfoGen.getInstance().getConfiguration().register_server.getFunctions();
 
 	/**
 	 * js 前端页面加载时判断是否有 x-access-token 没有跳转到登录页面

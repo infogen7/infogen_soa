@@ -269,4 +269,11 @@ public class InfoGen {
 
 		return data;
 	}
+
+	// ///////////////////////////////////////////////////////////////////getter setter/////////////////////////
+
+	public InfoGen_Configuration getConfiguration() {
+		return configuration;
+	}
+
 }

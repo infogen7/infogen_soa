@@ -1,8 +1,3 @@
-/**
- * @author larry/larrylv@outlook.com
- * @date 创建时间 2015年5月29日 下午12:15:11
- * @version 1.0
- */
 package com.infogen.cache;
 
 import java.util.ArrayList;

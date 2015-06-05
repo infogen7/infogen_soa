@@ -59,7 +59,6 @@ public class InfoGen_Self_Describing {
 	public Map<String, Function> functions = new HashMap<>();
 
 	public Map<String, Function> self_describing(Set<Class<?>> class_set) throws IOException {
-		// 方法名格式为: /get
 		class_set.forEach((clazz) -> {
 			try {
 				RestController rest_controller = clazz.getAnnotation(RestController.class);
@@ -67,15 +66,16 @@ public class InfoGen_Self_Describing {
 					return;
 				}
 
-				String url_prefix = "";
+				// 方法名格式为: /get/message
+				String pre_url = "";
 				RequestMapping class_url_annotation = clazz.getAnnotation(RequestMapping.class);
 				if (class_url_annotation != null) {
-					url_prefix = class_url_annotation.value()[0];
-					if (url_prefix.startsWith("/")) {
-						url_prefix = url_prefix.substring(1);
+					pre_url = class_url_annotation.value()[0];
+					if (!pre_url.startsWith("/")) {
+						pre_url = "/".concat(pre_url);
 					}
-					if (url_prefix.endsWith("/")) {
-						url_prefix = url_prefix.substring(0, url_prefix.length() - 2);
+					if (pre_url.endsWith("/")) {
+						pre_url = pre_url.substring(0, pre_url.length() - 1);
 					}
 				}
 
@@ -101,23 +101,19 @@ public class InfoGen_Self_Describing {
 					String url = "";// URL a/b/c/ 转化为 /a/b/c 地一个/会被补齐,最后一个/会被过滤掉
 					String[] values = request_mapping_annotation.value();
 					if (values.length == 0) {
-						url = url_prefix;
+						url = pre_url;
 					} else {
-						String url_suffix = values[0];
-						if (url_suffix.isEmpty()) {
-							url = url_prefix;
+						String suf_url = values[0];
+						if (suf_url.isEmpty()) {
+							url = pre_url;
 						} else {
-							if (url_suffix.startsWith("/")) {
-								url_suffix = url_suffix.substring(1);
+							if (!suf_url.startsWith("/")) {
+								suf_url = "/".concat(suf_url);
 							}
-							if (url_suffix.endsWith("/")) {
-								url_suffix = url_suffix.substring(0, url_suffix.length() - 2);
+							if (suf_url.endsWith("/")) {
+								suf_url = suf_url.substring(0, suf_url.length() - 1);
 							}
-							if (url_prefix.isEmpty()) {
-								url = url_suffix;
-							} else {
-								url = new StringBuilder(url_prefix).append("/").append(url_suffix).toString();
-							}
+							url = new StringBuilder(pre_url).append(suf_url).toString();
 						}
 					}
 					function.setRequest_method(url);

@@ -45,13 +45,12 @@ public class InfoGen_Configuration {
 	public final static ZoneId zoneid = ZoneId.of("GMT+08:00");
 	public final static Charset charset = StandardCharsets.UTF_8;
 
-	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
 	public RegisterNode register_node = new RegisterNode();
 	public RegisterServer register_server = new RegisterServer();
+	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
 
 	public String zookeeper;
 	public String kafka;
-
 	public Integer http_port;
 	public Integer rpc_port;
 
@@ -76,7 +75,6 @@ public class InfoGen_Configuration {
 
 	// ///////////////////////////////////////////////////////////////////////////////
 	private void initialization(Properties infogen_properties) throws IOException, URISyntaxException {
-		// zookeeper
 		zookeeper = infogen_properties.getProperty("infogen.zookeeper");
 		if (zookeeper == null || zookeeper.trim().isEmpty()) {
 			logger.error("zookeeper配置不能为空:infogen.zookeeper");
@@ -146,6 +144,7 @@ public class InfoGen_Configuration {
 		if (spring_mvc_path != null && !spring_mvc_path.trim().isEmpty()) {
 			InfoGen_Server_Initializer.start_mvc(spring_mvc_path, spring_mvc_mapping);
 		}
+
 		// @Resource(name="sqliteCarDao")
 		// 遍历项目所有class文件
 		AOP.getInstance().addClasses(com.infogen.Service.class);
