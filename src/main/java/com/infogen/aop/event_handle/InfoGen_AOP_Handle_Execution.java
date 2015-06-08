@@ -21,12 +21,18 @@ import com.larrylgq.aop.tools.Tool_Core;
  */
 public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 
-	private static ThreadLocal<String> module = new ThreadLocal<String>();
-
-	public static void setModule(String Module) {
-		module.set(Module);
-	}
-
+	
+	 private static ThreadLocal<String> module = new ThreadLocal<String>();
+	 private static ThreadLocal<String> request_ip = new ThreadLocal<String>();
+	 
+	 public static void setModule(String Module){
+		 module.set(Module);
+	 }
+	 
+	 public static void setRequest_IP(String Request_IP){
+		 request_ip.set(Request_IP);
+	 }
+	 
 	@Override
 	public Agent_Advice_Method attach_method(String class_name, Method method, Annotation annotation) {
 		String method_name = method.getName();
@@ -58,8 +64,9 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 
 	public static void insert_after_call_back(String class_name, String method_name, String user_definition, long start_millis, long end_millis) {
 		StringBuilder sbd = new StringBuilder();
-		sbd.append(module.get()).append(class_name).append(",").append(method_name).append(",").append(end_millis - start_millis);
-		producer.send(InfoGen_AOP_Configuration.infogen_logger_topic_execution_time, class_name, sbd.toString());
+
+		sbd.append(request_ip.get()).append(",").append(module.get()).append(",").append(class_name).append(",").append(method_name).append(",").append(end_millis - start_millis);
+		producer.send(InfoGen_AOP.infogen_logger_topic_execution_time, class_name, sbd.toString());
 		Logger logger = Logger.getLogger(class_name);
 		logger.info(sbd.toString());
 	}
