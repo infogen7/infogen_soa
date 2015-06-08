@@ -48,7 +48,7 @@ public class InfoGen_AOP_Handle_Invoke extends AOP_Handle {
 		StringBuilder sbd = new StringBuilder();
 
 		sbd.append(class_name).append(",").append(method_name).append(",").append(end_millis - start_millis).append(",");
-		producer.send(InfoGen_AOP.infogen_logger_topic_invoke_time, class_name, sbd.toString());
+		producer.send(InfoGen_AOP_Configuration.infogen_logger_topic_invoke_time, class_name, sbd.toString());
 
 	}
 

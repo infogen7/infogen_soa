@@ -66,7 +66,7 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		StringBuilder sbd = new StringBuilder();
 
 		sbd.append(request_ip.get()).append(",").append(module.get()).append(",").append(class_name).append(",").append(method_name).append(",").append(end_millis - start_millis);
-		producer.send(InfoGen_AOP.infogen_logger_topic_execution_time, class_name, sbd.toString());
+		producer.send(InfoGen_AOP_Configuration.infogen_logger_topic_execution_time, class_name, sbd.toString());
 		Logger logger = Logger.getLogger(class_name);
 		logger.info(sbd.toString());
 	}
