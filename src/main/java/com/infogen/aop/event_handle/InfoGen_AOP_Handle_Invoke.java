@@ -17,21 +17,7 @@ import com.larrylgq.aop.tools.Tool_Core;
  * @version 1.0
  */
 public class InfoGen_AOP_Handle_Invoke extends AOP_Handle {
-	 //调用的IP
-	 private static ThreadLocal<String> requestIP = new ThreadLocal<String>();
 	 
-	 public static void setRequestIP(String ip){
-		 requestIP.set(ip);
-	 }
-	 
-	 //调用的项目名
-	 private static ThreadLocal<String> module = new ThreadLocal<String>();
-	 
-	 public static void setModule(String Module){
-		 module.set(Module);
-	 }
-	 
-	
 	@Override
 	public Agent_Advice_Method attach_method(String class_name, Method method, Annotation annotation) {
 		String method_name = method.getName();
@@ -60,7 +46,7 @@ public class InfoGen_AOP_Handle_Invoke extends AOP_Handle {
 
 	public static void insert_after_call_back(String class_name, String method_name, long start_millis, long end_millis) {
 		StringBuilder sbd = new StringBuilder();
-		sbd.append(requestIP.get()).append(module.get()).append(class_name).append(",").append(method_name).append(",").append(end_millis - start_millis).append(",");
+		sbd.append(class_name).append(",").append(method_name).append(",").append(end_millis - start_millis).append(",");
 		producer.send(InfoGen_AOP.infogen_logger_topic_invoke_time, class_name, sbd.toString());
 	}
 
