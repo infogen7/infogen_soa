@@ -74,7 +74,7 @@ public class InfoGen_Authc_Handle extends InfoGen_SOA_Filter_Handle {
 			}
 			subject.hasRole(function.getRoles());
 			// 缓存
-			InfoGen_Auth.setSubject(subject);
+			ThreadLocal_Auth.setSubject(subject);
 		} catch (InfoGen_Auth_Exception e) {
 			response.getWriter().write(Return.FAIL(e.name(), e.note()).toJson());
 			return false;

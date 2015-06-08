@@ -11,8 +11,8 @@ import com.infogen.authc.subject.Subject;
  * @since 1.0
  * @version 1.0
  */
-public class InfoGen_Auth {
-	public final Logger logger = Logger.getLogger(InfoGen_Auth.class.getName());
+public class ThreadLocal_Auth {
+	public final Logger logger = Logger.getLogger(ThreadLocal_Auth.class.getName());
 
 	private static final ThreadLocal<Subject> thread_local_subject = new ThreadLocal<>();
 

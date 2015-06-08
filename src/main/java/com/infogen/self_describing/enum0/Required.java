@@ -1,4 +1,4 @@
-package com.infogen.self_describing.enum_;
+package com.infogen.self_describing.enum0;
 
 /**
  * 是否是必须的参数
