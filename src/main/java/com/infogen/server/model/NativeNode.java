@@ -97,7 +97,7 @@ public class NativeNode extends AbstractNode {
 	}
 
 	public Return call_once(String session, String method, List<BasicNameValuePair> name_value_pair) throws Exception {
-		TTransport transport = new TSocket(ip, rpc_port, connect_timeout);
+		TTransport transport = new TSocket(ip, rpc_port);
 		TProtocol protocol = new TCompactProtocol(transport);
 		Message.Client client = new Message.Client(protocol);
 		try {
