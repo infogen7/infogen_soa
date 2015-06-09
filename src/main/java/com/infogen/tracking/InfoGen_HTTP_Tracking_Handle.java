@@ -15,7 +15,6 @@ import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
 import com.infogen.tools.Tool_Context;
 import com.infogen.tracking.enum0.Track;
-import com.infogen.web.InfoGen_SOA_Filter_Handle;
 
 /**
  * Track的工具类,可以获取存放在ThreadLocal中的对象
@@ -24,8 +23,8 @@ import com.infogen.web.InfoGen_SOA_Filter_Handle;
  * @since 1.0
  * @version 1.0
  */
-public class InfoGen_Tracking_Handle extends InfoGen_SOA_Filter_Handle {
-	public final Logger logger = Logger.getLogger(InfoGen_Tracking_Handle.class.getName());
+public class InfoGen_HTTP_Tracking_Handle {
+	public final Logger logger = Logger.getLogger(InfoGen_HTTP_Tracking_Handle.class.getName());
 	public RegisterServer register_server = InfoGen.getInstance().getConfiguration().register_server;
 	public RegisterNode register_node = InfoGen.getInstance().getConfiguration().register_node;
 
@@ -34,11 +33,7 @@ public class InfoGen_Tracking_Handle extends InfoGen_SOA_Filter_Handle {
 	 * 
 	 * @see com.infogen.web.InfoGen_SOA_Filter_Handle#doFilter(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	@Override
-	public Boolean doFilter(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		ThreadLocal_Tracking.setRequest(request);
-		ThreadLocal_Tracking.setResponse(response);
-		// TODO
+	public CallChain doFilter(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		// cookie等用户标识 ,traceid,sequence,来源地址 ,来源ip,当前地址,当前ip,当前服务 ,调用时间 ,调用时长,调用状态 ,数据大小,sessionid(token),客户端类型
 		// a00000... ,tr00000,0 ,home.html ,xx ,send ,xx ,中控 ,2015050X ,300ms ,ok/error/auth,1.3k ,t0000,测试/京东/聚信立
 
@@ -93,7 +88,9 @@ public class InfoGen_Tracking_Handle extends InfoGen_SOA_Filter_Handle {
 		callchain.setTarget_server(register_server.getName());
 
 		//
+		ThreadLocal_Tracking.setRequest(request);
+		ThreadLocal_Tracking.setResponse(response);
 		ThreadLocal_Tracking.setCallchain(callchain);
-		return true;
+		return callchain;
 	}
 }

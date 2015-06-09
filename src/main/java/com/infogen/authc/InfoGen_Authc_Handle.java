@@ -17,7 +17,6 @@ import com.infogen.authc.subject.Subject;
 import com.infogen.authc.subject.Subject_DAO;
 import com.infogen.self_describing.component.Function;
 import com.infogen.util.Return;
-import com.infogen.web.InfoGen_SOA_Filter_Handle;
 
 /**
  * API认证的过滤器
@@ -25,7 +24,7 @@ import com.infogen.web.InfoGen_SOA_Filter_Handle;
  * @author larry
  * @email larry.lv.word@gmail.com
  */
-public class InfoGen_Authc_Handle extends InfoGen_SOA_Filter_Handle {
+public class InfoGen_Authc_Handle  {
 	public final static Logger logger = Logger.getLogger(InfoGen_Authc_Handle.class.getName());
 
 	private static Subject_DAO subject_dao = new Default_Subject_DAO();

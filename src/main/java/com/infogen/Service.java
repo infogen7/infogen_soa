@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.aop.annotation.Invoke;
 import com.infogen.cache.InfoGen_Cache_Server;
 import com.infogen.http.callback.Http_Callback;
 import com.infogen.rpc.callback.RPC_Callback;
@@ -78,7 +77,6 @@ public class Service {
 	 * @return
 	 */
 	@Deprecated
-	@Invoke
 	public Response call(String method, Map<String, String> map) {
 		return blocking_rpc(method, map);
 	}
@@ -91,7 +89,6 @@ public class Service {
 	 * @return
 	 */
 	@Deprecated
-	@Invoke
 	public RPC_Callback async_call(String method, Map<String, String> map) {
 		return async_rpc(method, map);
 	}
@@ -171,7 +168,6 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	@Invoke
 	public Return get(String url, Map<String, String> name_value_pair) {
 		return blocking_http(url, name_value_pair, RequestType.GET, net_type);
 	}
@@ -183,7 +179,6 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	@Invoke
 	public Return post(String url, Map<String, String> name_value_pair) {
 		return blocking_http(url, name_value_pair, RequestType.POST, net_type);
 	}
@@ -195,7 +190,6 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	@Invoke
 	public Http_Callback async_get(String url, Map<String, String> name_value_pair) {
 		return async_http(url, name_value_pair, RequestType.GET, net_type);
 	}
@@ -207,7 +201,6 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	@Invoke
 	public Http_Callback async_post(String url, Map<String, String> name_value_pair) {
 		return async_http(url, name_value_pair, RequestType.POST, net_type);
 	}

@@ -3,14 +3,12 @@ package com.infogen.aop.event_handle;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import org.apache.log4j.Logger;
-
-import com.infogen.aop.InfoGen_AOP_Configuration;
 import com.infogen.aop.annotation.Execution;
 import com.infogen.logger.kafka.InfoGen_Logger_Kafka_Producer;
+import com.infogen.tracking.CallChain;
+import com.infogen.tracking.ThreadLocal_Tracking;
 import com.larrylgq.aop.advice.event_handle.AOP_Handle;
 import com.larrylgq.aop.agent.Agent_Advice_Method;
-import com.larrylgq.aop.tools.Tool_Core;
 
 /**
  * 统计方法执行时间的处理器
@@ -21,18 +19,6 @@ import com.larrylgq.aop.tools.Tool_Core;
  */
 public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 
-	
-	 private static ThreadLocal<String> module = new ThreadLocal<String>();
-	 private static ThreadLocal<String> request_ip = new ThreadLocal<String>();
-	 
-	 public static void setModule(String Module){
-		 module.set(Module);
-	 }
-	 
-	 public static void setRequest_IP(String Request_IP){
-		 request_ip.set(Request_IP);
-	 }
-	 
 	@Override
 	public Agent_Advice_Method attach_method(String class_name, Method method, Annotation annotation) {
 		String method_name = method.getName();
@@ -63,19 +49,22 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 	public static InfoGen_Logger_Kafka_Producer producer = InfoGen_Logger_Kafka_Producer.getInstance();
 
 	public static void insert_after_call_back(String class_name, String method_name, String user_definition, long start_millis, long end_millis) {
-		StringBuilder sbd = new StringBuilder();
+		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
 
-		sbd.append(request_ip.get()).append(",").append(module.get()).append(",").append(class_name).append(",").append(method_name).append(",").append(end_millis - start_millis);
-		producer.send(InfoGen_AOP.infogen_logger_topic_execution_time, class_name, sbd.toString());
-		Logger logger = Logger.getLogger(class_name);
-		logger.info(sbd.toString());
+		StringBuilder sbd = new StringBuilder();
+		sbd.append(callChain.getIdentify()).append(",");
+
+		// sbd.append(request_ip.get()).append(",").append(module.get()).append(",").append(class_name).append(",").append(method_name).append(",").append(end_millis - start_millis);
+		// producer.send(InfoGen_AOP_Configuration.infogen_logger_topic_execution_time, class_name, sbd.toString());
+		// Logger logger = Logger.getLogger(class_name);
+		// logger.info(sbd.toString());
 	}
 
 	public static void add_catch_call_back(String class_name, String method_name, String user_definition, Throwable e) {
-		StringBuilder sbd = new StringBuilder();
-		sbd.append(class_name).append(",").append(method_name).append(",").append(e.getMessage()).append(",").append(Tool_Core.stacktrace(e));
-		producer.send(InfoGen_AOP_Configuration.infogen_logger_topic_execution_exception, class_name, sbd.toString());
-		Logger logger = Logger.getLogger(class_name);
-		logger.error(sbd.toString());
+		// StringBuilder sbd = new StringBuilder();
+		// sbd.append(class_name).append(",").append(method_name).append(",").append(e.getMessage()).append(",").append(Tool_Core.stacktrace(e));
+		// producer.send(InfoGen_AOP_Configuration.infogen_logger_topic_execution_exception, class_name, sbd.toString());
+		// Logger logger = Logger.getLogger(class_name);
+		// logger.error(sbd.toString());
 	}
 }

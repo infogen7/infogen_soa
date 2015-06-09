@@ -11,8 +11,8 @@ import org.apache.log4j.Logger;
  */
 public class InfoGen_AOP_Configuration {
 	public final Logger logger = Logger.getLogger(InfoGen_AOP_Configuration.class.getName());
+	@Deprecated
 	public final static String infogen_logger_topic_execution_time = "infogen_logger_topic_execution_time";
-	public final static String infogen_logger_topic_execution_exception = "infogen_logger_topic_execution_exception";
-	public final static String infogen_logger_topic_invoke_time = "infogen_logger_topic_invoke_time";
-	public final static String infogen_logger_topic_invoke_exception = "infogen_logger_topic_invoke_exception";
+
+	public final static String infogen_topic_tracking = "infogen_topic_tracking";
 }
