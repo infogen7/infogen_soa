@@ -56,7 +56,7 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 	public static void insert_before_call_back(String class_name, String method_name, String user_definition, long start_millis) {
 	}
 
-	// traceid,sequence,来源地址 ,来源ip,当前地址,当前ip,当前服务 ,当前类,当前方法,调用时间 ,调用时长,调用状态 ,数据大小,cookie等用户标识,sessionid(token),客户端类型
+	// traceid,sequence,来源地址 ,来源ip,当前地址,当前ip,当前服务 ,当前类,当前方法,调用时间 ,调用时长,调用状态(成功/失败) ,返回数据大小,cookie等用户标识,sessionid(token),客户端类型
 	// tr00000,0 ,home.html ,xx ,send ,xx ,中控 ,2015050X ,300ms ,ok/error/auth,1.3k ,t0000,测试/京东/聚信立, a00000...
 	public static void insert_after_call_back(String class_name, String method_name, String user_definition, long start_millis, long end_millis, Object return0) {
 		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();

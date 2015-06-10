@@ -102,4 +102,21 @@ public class NativeServer extends AbstractServer {
 		return node;
 	}
 
+	// ///////////////////////////////////////////////////////////getter setter////////////////////////////////////////
+	public CopyOnWriteArrayList<NativeNode> getAvailable_nodes() {
+		return available_nodes;
+	}
+
+	public void setAvailable_nodes(CopyOnWriteArrayList<NativeNode> available_nodes) {
+		this.available_nodes = available_nodes;
+	}
+
+	public CopyOnWriteArrayList<NativeNode> getDisabled_nodes() {
+		return disabled_nodes;
+	}
+
+	public void setDisabled_nodes(CopyOnWriteArrayList<NativeNode> disabled_nodes) {
+		this.disabled_nodes = disabled_nodes;
+	}
+
 }

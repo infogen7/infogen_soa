@@ -4,19 +4,21 @@
 package com.infogen;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
+import org.apache.thrift.TException;
 
 import com.infogen.cache.InfoGen_Cache_Server;
 import com.infogen.http.callback.Http_Callback;
-import com.infogen.rpc.callback.RPC_Callback;
 import com.infogen.server.model.NativeNode;
 import com.infogen.server.model.NativeNode.NetType;
 import com.infogen.server.model.NativeNode.RequestType;
 import com.infogen.server.model.NativeServer;
-import com.infogen.thrift.Response;
+import com.infogen.util.BasicNameValuePair;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
 
@@ -54,57 +56,23 @@ public class Service {
 		instance.get_server(server_name);
 	}
 
-	// //////////////////////////////////////////////////RPC///////////////////////////////////////////////////////////////////////
-	/**
-	 * 根据错误码生成一个Response 用于rpc调用
-	 * 
-	 * @param code
-	 * @return
-	 */
-	private Response fail_response(CODE code) {
-		Response call = new Response();
-		call.success = false;
-		call.code = code.code;
-		call.note = code.note;
-		return call;
+	// ///////////////////////////////////////////////////NODE/////////////////////////////////////////////////////
+	public NativeNode get_node() {
+		NativeServer server = depend_server.get(server_name);
+		return server.random_node();
 	}
 
-	/**
-	 * 同步rpc调用
-	 * 
-	 * @param method
-	 * @param map
-	 * @return
-	 */
-	@Deprecated
-	public Response call(String method, Map<String, String> map) {
-		return blocking_rpc(method, map);
+	public void disabled_node(NativeNode node) {
+		NativeServer server = depend_server.get(server_name);
+		server.disabled(node);
 	}
 
-	/**
-	 * 异步rpc调用
-	 * 
-	 * @param method
-	 * @param map
-	 * @return
-	 */
+	// //////////////////////////////////////////////////RPC////////////////////////////////////////////////////////////////////////
 	@Deprecated
-	public RPC_Callback async_call(String method, Map<String, String> map) {
-		return async_rpc(method, map);
-	}
-
-	/**
-	 * 同步RPC调用,支持错误重试,及随机调度
-	 * 
-	 * @param method
-	 * @param map
-	 * @return
-	 */
-	@Deprecated
-	private Response blocking_rpc(String method, Map<String, String> map) {
+	public Return blocking_rpc(String method, Map<String, String> name_value_pair) {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
-			return fail_response(CODE._402);
+			return Return.FAIL(CODE._402);
 		}
 		NativeNode node = null;
 		// 调用出错重试3次
@@ -112,54 +80,26 @@ public class Service {
 			try {
 				node = server.random_node();
 				if (node == null) {
-					return fail_response(CODE._403);
+					return Return.FAIL(CODE._403);
 				}
-				return node.call("", method, map);
-			} catch (Exception e) {
+				return node.call_once("", method, name_value_pair);
+			} catch (TException e) {
+				logger.error("调用失败".concat(e.getMessage()));
 				server.disabled(node);
-				logger.error("调用失败", e);
 				continue;
 			}
 		}
-		return fail_response(CODE._500);
-	}
-
-	/**
-	 * 异步rpc调用,支持错误重试,及随机调度
-	 * 
-	 * @param method
-	 * @param map
-	 * @return
-	 */
-	@Deprecated
-	private RPC_Callback async_rpc(String method, Map<String, String> map) {
-		RPC_Callback callback = new RPC_Callback();
-		NativeServer server = depend_server.get(server_name);
-		if (server == null) {
-			callback.add(fail_response(CODE._402));
-			return callback;
-		}
-		NativeNode node = null;
-		// 调用出错重试3次
-		for (int i = 0; i < 3; i++) {
-			try {
-				node = server.random_node();
-				if (node == null) {
-					callback.add(fail_response(CODE._403));
-					return callback;
-				}
-				return node.async_call("", method, map);
-			} catch (Exception e) {
-				server.disabled(node);
-				logger.error("调用失败", e);
-				continue;
-			}
-		}
-		callback.add(fail_response(CODE._500));
-		return callback;
+		return Return.FAIL(CODE._500);
 	}
 
 	// //////////////////////////////////////////////////HTTP///////////////////////////////////////////////////////////////////////
+	private Map<String, String> pair_to_map(List<BasicNameValuePair> name_value_pair) {
+		Map<String, String> map = new HashMap<>();
+		name_value_pair.forEach(pair -> {
+			map.put(pair.getName(), pair.getValue());
+		});
+		return map;
+	}
 
 	/**
 	 * 同步get调用
@@ -172,6 +112,11 @@ public class Service {
 		return blocking_http(url, name_value_pair, RequestType.GET, net_type);
 	}
 
+	@Deprecated
+	public Return get(String url, List<BasicNameValuePair> name_value_pair) {
+		return blocking_http(url, pair_to_map(name_value_pair), RequestType.GET, net_type);
+	}
+
 	/**
 	 * 同步post调用
 	 * 
@@ -181,6 +126,11 @@ public class Service {
 	 */
 	public Return post(String url, Map<String, String> name_value_pair) {
 		return blocking_http(url, name_value_pair, RequestType.POST, net_type);
+	}
+
+	@Deprecated
+	public Return post(String url, List<BasicNameValuePair> name_value_pair) {
+		return blocking_http(url, pair_to_map(name_value_pair), RequestType.POST, net_type);
 	}
 
 	/**
