@@ -8,30 +8,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.LongAdder;
-import java.util.concurrent.locks.StampedLock;
 
 import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
-import org.apache.thrift.async.AsyncMethodCallback;
-import org.apache.thrift.async.TAsyncClientManager;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.protocol.TProtocolFactory;
-import org.apache.thrift.transport.TFramedTransport;
-import org.apache.thrift.transport.TNonblockingSocket;
-import org.apache.thrift.transport.TNonblockingTransport;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
-import org.apache.thrift.transport.TTransportException;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.infogen.http.InfoGen_HTTP;
 import com.infogen.http.callback.Http_Callback;
-import com.infogen.rpc.callback.RPC_Callback;
 import com.infogen.thrift.Message;
-import com.infogen.thrift.Message.AsyncClient;
-import com.infogen.thrift.Message.AsyncClient.call_call;
 import com.infogen.thrift.Request;
 import com.infogen.thrift.Response;
 import com.infogen.util.CODE;
@@ -54,47 +43,6 @@ public class NativeNode extends AbstractNode {
 	@JsonIgnore
 	private transient Integer connect_timeout = 3000;
 
-	public void clean() {
-		client = null;
-		if (transport.isOpen()) {
-			transport.close();
-		}
-		asyncClient = null;
-		if (async_transport.isOpen()) {
-			async_transport.close();
-		}
-	}
-
-	// ///////////////////////////////////////////rpc//////////////////////////////////////////////////
-	@JsonIgnore
-	private transient Message.Client client = null;
-	@JsonIgnore
-	private transient TTransport transport = null;
-	@JsonIgnore
-	private transient Message.AsyncClient asyncClient = null;
-	@JsonIgnore
-	private transient TNonblockingTransport async_transport = null;
-
-	private Message.Client get_client() throws IOException, TTransportException {
-		if (client == null) {
-			TTransport transport = new TFramedTransport(new TSocket(ip, rpc_port, connect_timeout));
-			TProtocol protocol = new TCompactProtocol(transport);
-			client = new Message.Client(protocol);
-			transport.open();
-		}
-		return client;
-	}
-
-	private Message.AsyncClient get_async_client() throws IOException {
-		if (asyncClient == null) {
-			TAsyncClientManager clientManager = new TAsyncClientManager();
-			async_transport = new TNonblockingSocket(ip, rpc_port, connect_timeout);
-			TProtocolFactory protocol = new TCompactProtocol.Factory();
-			asyncClient = new Message.AsyncClient(protocol, clientManager, async_transport);
-		}
-		return asyncClient;
-	}
-
 	/**
 	 * 不推荐使用
 	 * 
@@ -102,10 +50,11 @@ public class NativeNode extends AbstractNode {
 	 * @param method
 	 * @param name_value_pair
 	 * @return
+	 * @throws TException
 	 * @throws Exception
 	 */
 	@Deprecated
-	public Return call_once(String session, String method, Map<String, String> name_value_pair) throws Exception {
+	public Return call_once(String session, String method, Map<String, String> name_value_pair) throws TException {
 		TTransport transport = new TSocket(ip, rpc_port, connect_timeout);
 		TProtocol protocol = new TCompactProtocol(transport);
 		Message.Client client = new Message.Client(protocol);
@@ -130,73 +79,6 @@ public class NativeNode extends AbstractNode {
 		} finally {
 			transport.close();
 		}
-	}
-
-	private static final StampedLock call_lock = new StampedLock();
-
-	@Deprecated
-	public Response call(String session, String method, Map<String, String> call_map) throws TException, IOException {
-		Request request = new Request();
-		request.setSessionID(session);
-		sequence.increment();
-		request.setSequence(sequence.longValue());
-		request.setMethod(method);
-		request.setParameters(call_map);
-		Response call = null;
-
-		long stamp = call_lock.writeLock();
-		try {
-			call = get_client().call(request);// TODO 使用前或定时测试连接可用性
-		} catch (TException | IOException e) {
-			client = null;
-			transport.close();
-			throw e;
-		} finally {
-			call_lock.unlockWrite(stamp);
-		}
-		return call;
-	}
-
-	private static final StampedLock async_call_lock = new StampedLock();
-
-	@Deprecated
-	public RPC_Callback async_call(String session, String method, Map<String, String> call_map) throws TException, IOException {
-		RPC_Callback callback = new RPC_Callback();
-		Request request = new Request();
-		request.setSessionID(session);
-		sequence.increment();
-		request.setSequence(sequence.longValue());
-		request.setMethod(method);
-		request.setParameters(call_map);
-
-		long stamp = async_call_lock.writeLock();
-		try {
-			get_async_client().call(request, new AsyncMethodCallback<AsyncClient.call_call>() {
-				public void onComplete(call_call arg0) {
-					try {
-						callback.add(arg0.getResult());
-					} catch (TException e) {
-						onError(e);
-					}
-				}
-
-				public void onError(Exception e) {
-					Response call = new Response();
-					call.success = false;
-					call.code = CODE._500.code;
-					call.note = e.getMessage();
-					callback.add(call);
-				}
-			});
-		} catch (Exception e) {
-			asyncClient = null;
-			async_transport.close();
-			throw e;
-		} finally {
-			async_call_lock.unlockWrite(stamp);
-		}
-		//
-		return callback;
 	}
 
 	// ///////////////////////////////////////////http////////////////////////////////////////////////

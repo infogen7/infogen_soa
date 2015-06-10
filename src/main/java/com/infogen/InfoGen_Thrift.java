@@ -47,13 +47,13 @@ public class InfoGen_Thrift {
 	 * @param infogen_configuration
 	 * @return
 	 */
-	public InfoGen_Thrift start_asyn(InfoGen_Configuration infogen_configuration) {
+	public InfoGen_Thrift start_asyn(InfoGen_Configuration infogen_configuration, Thrift_Message_Handler handler) {
 		Thread t = new Thread(new Runnable() {
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
 			public void run() {
 				try {
-					final Message.Processor processor = new Message.Processor(new Thrift_Message_Handler());
+					final Message.Processor processor = new Message.Processor(handler);
 					//
 					TNonblockingServerSocket socket = new TNonblockingServerSocket(infogen_configuration.rpc_port);
 
@@ -83,13 +83,13 @@ public class InfoGen_Thrift {
 	 * @param infogen_configuration
 	 * @return
 	 */
-	public InfoGen_Thrift start_blocking(InfoGen_Configuration infogen_configuration) {
+	public InfoGen_Thrift start_blocking(InfoGen_Configuration infogen_configuration, Thrift_Message_Handler handler) {
 		Thread t = new Thread(new Runnable() {
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
 			public void run() {
 				try {
-					final Message.Processor processor = new Message.Processor(new Thrift_Message_Handler());
+					final Message.Processor processor = new Message.Processor(handler);
 					//
 					TServerSocket socket = new TServerSocket(infogen_configuration.rpc_port);
 
