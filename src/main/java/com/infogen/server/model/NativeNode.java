@@ -43,48 +43,17 @@ public class NativeNode extends AbstractNode {
 	@JsonIgnore
 	private transient Integer connect_timeout = 3000;
 
-	public void clean() {
-		client = null;
-		if (transport.isOpen()) {
-			transport.close();
-		}
-		asyncClient = null;
-		if (async_transport.isOpen()) {
-			async_transport.close();
-		}
-	}
-
-	// ///////////////////////////////////////////rpc//////////////////////////////////////////////////
-	@JsonIgnore
-	private transient Message.Client client = null;
-	@JsonIgnore
-	private transient TTransport transport = null;
-	@JsonIgnore
-	private transient Message.AsyncClient asyncClient = null;
-	@JsonIgnore
-	private transient TNonblockingTransport async_transport = null;
-
-	private Message.Client get_client() throws IOException, TTransportException {
-		if (client == null) {
-			TTransport transport = new TFramedTransport(new TSocket(ip, rpc_port, connect_timeout));
-			TProtocol protocol = new TCompactProtocol(transport);
-			client = new Message.Client(protocol);
-			transport.open();
-		}
-		return client;
-	}
-
-	private Message.AsyncClient get_async_client() throws IOException {
-		if (asyncClient == null) {
-			TAsyncClientManager clientManager = new TAsyncClientManager();
-			async_transport = new TNonblockingSocket(ip, rpc_port, connect_timeout);
-			TProtocolFactory protocol = new TCompactProtocol.Factory();
-			asyncClient = new Message.AsyncClient(protocol, clientManager, async_transport);
-		}
-		return asyncClient;
-	}
-
-	public Return call_once(String session, String method, List<BasicNameValuePair> name_value_pair) throws Exception {
+	/**
+	 * 不推荐使用
+	 * 
+	 * @param session
+	 * @param method
+	 * @param name_value_pair
+	 * @return
+	 * @throws TException
+	 * @throws Exception
+	 */
+	public Return call_once(String session, String method, Map<String, String> name_value_pair) throws TException {
 		TTransport transport = new TSocket(ip, rpc_port);
 		TProtocol protocol = new TCompactProtocol(transport);
 		Message.Client client = new Message.Client(protocol);
