@@ -1,9 +1,6 @@
 /target/
 .classpath
 .settings/
-<<<<<<< HEAD
 .project
-=======
 *.log
 *.log.*
->>>>>>> 2046e828d1c946a8029e940551ac3d547687919e

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.infogen.self_describing;
 
 import java.io.IOException;
@@ -28,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ValueConstants;
 
+import com.infogen.self_describing.annotation.Authc;
 import com.infogen.self_describing.annotation.Describe;
 import com.infogen.self_describing.annotation.InParam;
 import com.infogen.self_describing.annotation.OutParam;
@@ -56,9 +54,8 @@ public class InfoGen_Self_Describing {
 	private InfoGen_Self_Describing() {
 	}
 
-	public Map<String, Function> functions = new HashMap<>();
-
 	public Map<String, Function> self_describing(Set<Class<?>> class_set) throws IOException {
+		Map<String, Function> functions = new HashMap<>();
 		class_set.forEach((clazz) -> {
 			try {
 				RestController rest_controller = clazz.getAnnotation(RestController.class);
@@ -66,16 +63,17 @@ public class InfoGen_Self_Describing {
 					return;
 				}
 
-				String url_prefix = "";
+				// 方法名格式为: /get/message
+				String pre_url = "";
 				RequestMapping class_url_annotation = clazz.getAnnotation(RequestMapping.class);
 				if (class_url_annotation != null) {
-					url_prefix = class_url_annotation.value()[0];
-					if (url_prefix.startsWith("/")) {
-						url_prefix = url_prefix.substring(1);
-					}
-					if (url_prefix.endsWith("/")) {
-						url_prefix = url_prefix.substring(0, url_prefix.length() - 2);
-					}
+					pre_url = class_url_annotation.value()[0].trim();
+				}
+				if (pre_url.endsWith("/")) {
+					pre_url = pre_url.substring(0, pre_url.length() - 1);
+				}
+				if (pre_url.length() > 0 && !pre_url.startsWith("/")) {
+					pre_url = "/".concat(pre_url);
 				}
 
 				Object instance = clazz.newInstance();
@@ -89,6 +87,13 @@ public class InfoGen_Self_Describing {
 
 					function.setInstance(instance);// 实例对象
 					function.setMethod(method);// 方法对象
+
+					Authc authc = method.getAnnotation(Authc.class);
+					if (authc != null) {
+						function.setAuthc(true);// Auth
+						function.setRoles(authc.roles().split(","));// roles
+					}
+
 					Describe describe = method.getAnnotation(Describe.class);// 方法描述注释
 					if (describe != null) {
 						function.setAuthor(describe.author());
@@ -97,29 +102,18 @@ public class InfoGen_Self_Describing {
 						function.setTags(describe.tags());
 					}
 
-					String url = "";// URL /a/b/c/ 转化为 a/b/c 第一个和最后一个/都会被过滤掉
+					String suf_url = "";// URL a/b/c/ 转化为 /a/b/c 地一个/会被补齐,最后一个/会被过滤掉
 					String[] values = request_mapping_annotation.value();
-					if (values.length == 0) {
-						url = url_prefix;
-					} else {
-						String url_suffix = values[0];
-						if (url_suffix.isEmpty()) {
-							url = url_prefix;
-						} else {
-							if (url_suffix.startsWith("/")) {
-								url_suffix = url_suffix.substring(1);
-							}
-							if (url_suffix.endsWith("/")) {
-								url_suffix = url_suffix.substring(0, url_suffix.length() - 2);
-							}
-							if (url_prefix.isEmpty()) {
-								url = url_suffix;
-							} else {
-								url = new StringBuilder(url_prefix).append("/").append(url_suffix).toString();
-							}
-						}
+					if (values.length != 0) {
+						suf_url = values[0];
 					}
-					function.setRequest_method(url);
+					if (suf_url.endsWith("/")) {
+						suf_url = suf_url.substring(0, suf_url.length() - 1);
+					}
+					if (suf_url.length() > 0 && !suf_url.startsWith("/")) {
+						suf_url = "/".concat(suf_url);
+					}
+					function.setRequest_method(new StringBuilder(pre_url).append(suf_url).toString());
 
 					RequestMethod[] get_post_methods = request_mapping_annotation.method();
 					if (get_post_methods.length == 0) {

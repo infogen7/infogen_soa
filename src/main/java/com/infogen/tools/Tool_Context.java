@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.infogen.tools;
 
 import java.net.InetAddress;

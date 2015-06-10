@@ -1,4 +1,4 @@
-package com.infogen.aop;
+package com.infogen.web;
 
 import java.io.IOException;
 
@@ -14,23 +14,31 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import com.infogen.authc.InfoGen_Authc_Handle;
+import com.infogen.tracking.InfoGen_HTTP_Tracking_Handle;
+
 /**
- * 实现AOP的过滤器/基于ThreadLocal
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年3月27日 下午4:09:09
  * @since 1.0
  * @version 1.0
  */
-@WebFilter(filterName = "InfoGen_AOP_Filter", urlPatterns = { "/*" }, asyncSupported = true)
-public class InfoGen_AOP_Filter implements Filter {
-	public static Logger logger = Logger.getLogger(InfoGen_AOP_Filter.class.getName());
+@WebFilter(filterName = "InfoGen_SOA_Filter", urlPatterns = { "/*" }, asyncSupported = true)
+public class InfoGen_SOA_Filter implements Filter {
+	public static Logger logger = Logger.getLogger(InfoGen_SOA_Filter.class.getName());
+	private InfoGen_HTTP_Tracking_Handle track = new InfoGen_HTTP_Tracking_Handle();
+	private InfoGen_Authc_Handle authc = new InfoGen_Authc_Handle();
 
 	public void doFilter(ServletRequest srequset, ServletResponse sresponse, FilterChain filterChain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) srequset;
 		HttpServletResponse response = (HttpServletResponse) sresponse;
-		InfoGen_AOP.setRequest(request);
-		InfoGen_AOP.setResponse(response);
-		filterChain.doFilter(request, response);
+		track.doFilter(request, response);
+
+		if (!authc.doFilter(request, response)) {
+			return;
+		}
+
+		filterChain.doFilter(srequset, sresponse);
 	}
 
 	/*

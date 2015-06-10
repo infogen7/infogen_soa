@@ -15,8 +15,6 @@ public abstract class InfoGen_Auth_Exception extends IOException {
 	public enum Auth_Exception_CODE {
 		authentication_fail(5001, "认证失败"), //
 		roles_fail(5002, "授权失败"), //
-		token_signature_fail(5003, "Token 签名失败"), //
-		token_verify_signature_fail(5004, "Token 验签失败"), //
 		session_expiration(5005, "Session 过期"), //
 		session_lose(5006, "Session 丢失"), //
 		end(9999, "");

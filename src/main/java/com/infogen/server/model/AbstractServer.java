@@ -22,6 +22,8 @@ public abstract class AbstractServer {
 	protected String name;
 	protected String protocol;
 	protected String describe;
+
+	protected String infogen_version = "V1.0.03R150610";
 	// proxy
 	protected String http_domain;
 	protected String http_proxy;

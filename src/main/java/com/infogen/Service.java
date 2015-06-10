@@ -4,23 +4,18 @@
 package com.infogen;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 
-import com.infogen.aop.annotation.Invoke;
 import com.infogen.cache.InfoGen_Cache_Server;
 import com.infogen.http.callback.Http_Callback;
 import com.infogen.rpc.callback.RPC_Callback;
 import com.infogen.server.model.NativeNode;
-import com.infogen.server.model.NativeServer;
 import com.infogen.server.model.NativeNode.NetType;
 import com.infogen.server.model.NativeNode.RequestType;
+import com.infogen.server.model.NativeServer;
 import com.infogen.thrift.Response;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
@@ -59,36 +54,7 @@ public class Service {
 		instance.get_server(server_name);
 	}
 
-	// ///////////////////////////////////////////////////
-	/**
-	 * map转成BasicNameValuePair用于http调用
-	 * 
-	 * @param map
-	 * @return
-	 */
-	private List<BasicNameValuePair> map_to_pair(Map<String, String> map) {
-		List<BasicNameValuePair> name_value_pair = new ArrayList<>();
-		map.forEach((k, v) -> {
-			name_value_pair.add(new BasicNameValuePair(k, v));
-		});
-		return name_value_pair;
-	}
-
-	/**
-	 * BasicNameValuePair转成map用于rpc调用
-	 * 
-	 * @param name_value_pair
-	 * @return
-	 */
-	@Deprecated
-	private Map<String, String> pair_to_map(List<BasicNameValuePair> name_value_pair) {
-		Map<String, String> map = new HashMap<>();
-		name_value_pair.forEach(pair -> {
-			map.put(pair.getName(), pair.getValue());
-		});
-		return map;
-	}
-
+	// //////////////////////////////////////////////////RPC///////////////////////////////////////////////////////////////////////
 	/**
 	 * 根据错误码生成一个Response 用于rpc调用
 	 * 
@@ -103,7 +69,6 @@ public class Service {
 		return call;
 	}
 
-	// //////////////////////////////////////////////////RPC///////////////////////////////////////////////////////////////////////
 	/**
 	 * 同步rpc调用
 	 * 
@@ -111,15 +76,9 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	@Invoke
+	@Deprecated
 	public Response call(String method, Map<String, String> map) {
 		return blocking_rpc(method, map);
-	}
-
-	@Deprecated
-	@Invoke
-	public Response call(String method, List<BasicNameValuePair> name_value_pair) {
-		return blocking_rpc(method, pair_to_map(name_value_pair));
 	}
 
 	/**
@@ -129,15 +88,9 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	@Invoke
+	@Deprecated
 	public RPC_Callback async_call(String method, Map<String, String> map) {
 		return async_rpc(method, map);
-	}
-
-	@Deprecated
-	@Invoke
-	public RPC_Callback async_call(String method, List<BasicNameValuePair> name_value_pair) {
-		return async_rpc(method, pair_to_map(name_value_pair));
 	}
 
 	/**
@@ -147,6 +100,7 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
+	@Deprecated
 	private Response blocking_rpc(String method, Map<String, String> map) {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
@@ -177,6 +131,7 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
+	@Deprecated
 	private RPC_Callback async_rpc(String method, Map<String, String> map) {
 		RPC_Callback callback = new RPC_Callback();
 		NativeServer server = depend_server.get(server_name);
@@ -206,15 +161,14 @@ public class Service {
 
 	// //////////////////////////////////////////////////HTTP///////////////////////////////////////////////////////////////////////
 
-	@Invoke
 	/**
 	 * 同步get调用
+	 * 
 	 * @param url
 	 * @param map
 	 * @return
 	 */
-	public Return get(String url, Map<String, String> map) {
-		List<BasicNameValuePair> name_value_pair = map_to_pair(map);
+	public Return get(String url, Map<String, String> name_value_pair) {
 		return blocking_http(url, name_value_pair, RequestType.GET, net_type);
 	}
 
@@ -225,9 +179,7 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	@Invoke
-	public Return post(String url, Map<String, String> map) {
-		List<BasicNameValuePair> name_value_pair = map_to_pair(map);
+	public Return post(String url, Map<String, String> name_value_pair) {
 		return blocking_http(url, name_value_pair, RequestType.POST, net_type);
 	}
 
@@ -238,9 +190,7 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	@Invoke
-	public Http_Callback async_get(String url, Map<String, String> map) {
-		List<BasicNameValuePair> name_value_pair = map_to_pair(map);
+	public Http_Callback async_get(String url, Map<String, String> name_value_pair) {
 		return async_http(url, name_value_pair, RequestType.GET, net_type);
 	}
 
@@ -251,33 +201,7 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	@Invoke
-	public Http_Callback async_post(String url, Map<String, String> map) {
-		List<BasicNameValuePair> name_value_pair = map_to_pair(map);
-		return async_http(url, name_value_pair, RequestType.POST, net_type);
-	}
-
-	@Deprecated
-	@Invoke
-	public Return get(String url, List<BasicNameValuePair> name_value_pair) {
-		return blocking_http(url, name_value_pair, RequestType.GET, net_type);
-	}
-
-	@Deprecated
-	@Invoke
-	public Return post(String url, List<BasicNameValuePair> name_value_pair) {
-		return blocking_http(url, name_value_pair, RequestType.POST, net_type);
-	}
-
-	@Deprecated
-	@Invoke
-	public Http_Callback async_get(String url, List<BasicNameValuePair> name_value_pair) {
-		return async_http(url, name_value_pair, RequestType.GET, net_type);
-	}
-
-	@Deprecated
-	@Invoke
-	public Http_Callback async_post(String url, List<BasicNameValuePair> name_value_pair) {
+	public Http_Callback async_post(String url, Map<String, String> name_value_pair) {
 		return async_http(url, name_value_pair, RequestType.POST, net_type);
 	}
 
@@ -290,10 +214,10 @@ public class Service {
 	 * @param net_type
 	 * @return
 	 */
-	private Return blocking_http(String method, List<BasicNameValuePair> name_value_pair, RequestType request_type, NetType net_type) {
+	private Return blocking_http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type) {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
-			return Return.FAIL(CODE._402.code, CODE._402.note);
+			return Return.FAIL(CODE._402);
 		}
 		NativeNode node = null;
 		// 调用出错重试3次
@@ -301,16 +225,17 @@ public class Service {
 			try {
 				node = server.random_node();
 				if (node == null) {
-					return Return.FAIL(CODE._403.code, CODE._403.note);
+					return Return.FAIL(CODE._403);
 				}
-				return node.http(method, name_value_pair, request_type, net_type);
+				String http = node.http(method, name_value_pair, request_type, net_type);
+				return Return.create(http);
 			} catch (IOException e) {
-				logger.error("调用失败", e);
+				logger.error("调用失败".concat(e.getMessage()));
 				server.disabled(node);
 				continue;
 			}
 		}
-		return Return.FAIL(CODE._500.code, CODE._500.note);
+		return Return.FAIL(CODE._500);
 	}
 
 	/**
@@ -322,12 +247,12 @@ public class Service {
 	 * @param net_type
 	 * @return
 	 */
-	private Http_Callback async_http(String method, List<BasicNameValuePair> name_value_pair, RequestType request_type, NetType net_type) {
+	private Http_Callback async_http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type) {
 		Http_Callback callback = new Http_Callback();
 
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
-			callback.add(Return.FAIL(CODE._402.code, CODE._402.note));
+			callback.add(Return.FAIL(CODE._402).toJson());
 			return callback;
 		}
 		NativeNode node = null;
@@ -335,7 +260,7 @@ public class Service {
 		for (int i = 0; i < 3; i++) {
 			node = server.random_node();
 			if (node == null) {
-				callback.add(Return.FAIL(CODE._403.code, CODE._403.note));
+				callback.add(Return.FAIL(CODE._403).toJson());
 				return callback;
 			}
 			try {
@@ -346,7 +271,7 @@ public class Service {
 				continue;
 			}
 		}
-		callback.add(Return.FAIL(CODE._500.code, CODE._500.note));
+		callback.add(Return.FAIL(CODE._500).toJson());
 		return callback;
 	}
 

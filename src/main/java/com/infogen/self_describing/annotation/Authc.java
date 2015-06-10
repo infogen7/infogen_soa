@@ -1,4 +1,4 @@
-package com.infogen.aop.annotation;
+package com.infogen.self_describing.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

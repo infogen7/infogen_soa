@@ -1,8 +1,8 @@
 package com.infogen.logger;
 
-import java.util.Map;
-
 import org.apache.log4j.Logger;
+
+import com.infogen.cache.LRULinkedHashMap;
 
 /**
  * 只会打印一次的日志
@@ -11,11 +11,9 @@ import org.apache.log4j.Logger;
  * @since 1.0
  * @version 1.0
  */
-// TODO 没有定时清除缓存,不建议使用
-@Deprecated
 public class Logger_Once {
 	public static Logger logger = Logger.getLogger(Logger_Once.class.getName());
-	private static Map<String, Boolean> map = new java.util.HashMap<>();
+	private static LRULinkedHashMap<String, Boolean> map = new LRULinkedHashMap<>(10000);
 
 	private static Boolean has(String message) {
 		if (map.get(message) == null) {

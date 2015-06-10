@@ -19,29 +19,24 @@ public class Redis_Subject_DAO extends Subject_DAO {
 	public static final Logger logger = Logger.getLogger(Redis_Subject_DAO.class.getName());
 	private JedisPool pool = null;
 
-	public Redis_Subject_DAO(String ip, Integer port) {
-		logger.info("#创建 redis 连接池");
+	private JedisPoolConfig getJedisPoolConfig() {
 		JedisPoolConfig poolConfig = new JedisPoolConfig();
 		poolConfig.setMaxIdle(50);
-		poolConfig.setMaxTotal(200);
+		poolConfig.setMaxTotal(500);
 		poolConfig.setMinIdle(10);
 		poolConfig.setMaxWaitMillis(1000 * 100);
+		return poolConfig;
+	}
 
-		int timeout = 1000;
-		pool = new JedisPool(poolConfig, ip, port, timeout);
+	public Redis_Subject_DAO(String ip, Integer port) {
+		logger.info("#创建 redis 连接池");
+		pool = new JedisPool(getJedisPoolConfig(), ip, port, 1000);
 		logger.info("#创建 redis 连接池成功");
 	}
 
 	public Redis_Subject_DAO(String ip, Integer port, String password) {
 		logger.info("#创建 redis 连接池");
-		JedisPoolConfig poolConfig = new JedisPoolConfig();
-		poolConfig.setMaxIdle(50);
-		poolConfig.setMaxTotal(200);
-		poolConfig.setMinIdle(10);
-		poolConfig.setMaxWaitMillis(1000 * 100);
-
-		int timeout = 1000;
-		pool = new JedisPool(poolConfig, ip, port, timeout, password);
+		pool = new JedisPool(getJedisPoolConfig(), ip, port, 1000, password);
 		logger.info("#创建 redis 连接池成功");
 	}
 
@@ -53,13 +48,17 @@ public class Redis_Subject_DAO extends Subject_DAO {
 		return pool.getResource();
 	}
 
+	public void returnResource(Jedis redis) {
+		pool.returnResourceObject(redis);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.infogen.authc.cache.Subject_DAO#save(com.infogen.authc.subject.Subject)
 	 */
 	@Override
-	public void save(Subject subject, Integer expire) {
+	public void save(Subject subject) {
 		Jedis take = take();
 		Map<String, String> map = new HashMap<>();
 		map.put("remember", subject.getRemember().toString());
@@ -69,9 +68,9 @@ public class Redis_Subject_DAO extends Subject_DAO {
 		try {
 			String key = subject.getSubject();
 			take.hmset(key, map);
-			take.expire(key, expire);
+			take.expire(key, 60 * 60 * 12);
 		} finally {
-			pool.returnResourceObject(take);
+			returnResource(take);
 		}
 	}
 
@@ -96,7 +95,7 @@ public class Redis_Subject_DAO extends Subject_DAO {
 				return subject;
 			}
 		} finally {
-			pool.returnResourceObject(take);
+			returnResource(take);
 		}
 		return null;
 	}
@@ -112,11 +111,8 @@ public class Redis_Subject_DAO extends Subject_DAO {
 		try {
 			take.expire(user, 1);
 		} finally {
-			pool.returnResourceObject(take);
+			returnResource(take);
 		}
 	}
 
-	public void returnResource(Jedis redis) {
-		pool.returnResourceObject(redis);
-	}
 }

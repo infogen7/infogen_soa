@@ -14,7 +14,7 @@ public class Scheduled {
 	/**
 	 * infogen 定时对加载服务和监听纠错 调用程序不要使用
 	 */
-	public static ScheduledExecutorService executors = Executors.newSingleThreadScheduledExecutor((r) -> {
+	public static ScheduledExecutorService executors_single = Executors.newSingleThreadScheduledExecutor((r) -> {
 		Thread thread = Executors.defaultThreadFactory().newThread(r);
 		thread.setDaemon(true);
 		return thread;

@@ -12,8 +12,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
+import org.eclipse.jetty.http2.server.HTTP2CServerConnectionFactory;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -55,7 +58,6 @@ public class InfoGen_Jetty {
 			public void run() {
 				try {
 					final Server server = createServerInSource(infogen_configuration.http_port, CONTEXT, NativePath.get(DEFAULT_WEBAPP_PATH).toString(), NativePath.get(DESCRIPTOR).toString());
-					server.stop();
 					server.start();
 					server.join();
 				} catch (Exception e) {
@@ -75,13 +77,18 @@ public class InfoGen_Jetty {
 	 * @throws MalformedURLException
 	 */
 	private Server createServerInSource(int port, String context, String default_webapp_path, String descriptor) throws MalformedURLException {
-
 		Server server = new Server();
 		// 设置在JVM退出时关闭Jetty的钩子。
 		server.setStopAtShutdown(true);
 
 		// 这是http的连接器
-		ServerConnector connector = new ServerConnector(server);
+		// Common HTTP configuration.
+		HttpConfiguration config = new HttpConfiguration();
+		// HTTP/1.1 support.
+		HttpConnectionFactory http1_1 = new HttpConnectionFactory(config);
+		// HTTP/2 cleartext support.
+		HTTP2CServerConnectionFactory http2 = new HTTP2CServerConnectionFactory(config);
+		ServerConnector connector = new ServerConnector(server, http1_1, http2);
 		connector.setPort(port);
 		// 解决Windows下重复启动Jetty居然不报告端口冲突的问题. 但是可能会造成linux上产生僵尸进程
 		// connector.setReuseAddress(false);

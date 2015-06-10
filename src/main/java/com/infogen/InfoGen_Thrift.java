@@ -25,6 +25,7 @@ import com.infogen.thrift.Message;
  * @email larrylv@outlook.com
  * @version 创建时间 2014年10月30日 下午12:22:45
  */
+@Deprecated
 public class InfoGen_Thrift {
 	public static final Logger logger = Logger.getLogger(InfoGen_Thrift.class.getName());
 
