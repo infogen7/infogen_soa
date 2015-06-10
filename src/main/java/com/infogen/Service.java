@@ -4,6 +4,8 @@
 package com.infogen;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,6 +19,7 @@ import com.infogen.server.model.NativeNode.NetType;
 import com.infogen.server.model.NativeNode.RequestType;
 import com.infogen.server.model.NativeServer;
 import com.infogen.thrift.Response;
+import com.infogen.util.BasicNameValuePair;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
 
@@ -160,6 +163,13 @@ public class Service {
 	}
 
 	// //////////////////////////////////////////////////HTTP///////////////////////////////////////////////////////////////////////
+	private Map<String, String> pair_to_map(List<BasicNameValuePair> name_value_pair) {
+		Map<String, String> map = new HashMap<>();
+		name_value_pair.forEach(pair -> {
+			map.put(pair.getName(), pair.getValue());
+		});
+		return map;
+	}
 
 	/**
 	 * 同步get调用
@@ -172,6 +182,11 @@ public class Service {
 		return blocking_http(url, name_value_pair, RequestType.GET, net_type);
 	}
 
+	@Deprecated
+	public Return get(String url, List<BasicNameValuePair> name_value_pair) {
+		return blocking_http(url, pair_to_map(name_value_pair), RequestType.GET, net_type);
+	}
+
 	/**
 	 * 同步post调用
 	 * 
@@ -181,6 +196,11 @@ public class Service {
 	 */
 	public Return post(String url, Map<String, String> name_value_pair) {
 		return blocking_http(url, name_value_pair, RequestType.POST, net_type);
+	}
+
+	@Deprecated
+	public Return post(String url, List<BasicNameValuePair> name_value_pair) {
+		return blocking_http(url, pair_to_map(name_value_pair), RequestType.POST, net_type);
 	}
 
 	/**

@@ -26,22 +26,21 @@ public class Redis {
 		// poolConfig.setLifo(false);
 
 		int timeout = 1000;
-		pool = new JedisPool(poolConfig, "172.16.8.182", 6379, timeout, "cUVI32CaxF");
+		pool = new JedisPool(poolConfig, "172.16.1.15", 6379, timeout, "cUxz897rt56EETF");
 		System.out.println("start");
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 1000; i++) {
 			Thread thread = new Thread(new Runnable() {
 				public void run() {
 					System.out.println("in");
 					Jedis take = pool.getResource();
 					try {
-						System.out.println(new Date());
+						long currentTimeMillis = System.currentTimeMillis();
 						take.blpop(3, "sadsad" + Math.random());// 阻塞
-						System.out.println(new Date());
+						System.out.println(System.currentTimeMillis() - currentTimeMillis);
 						// 设置10分钟自动删除
 					} finally {
 						pool.returnResourceObject(take);
 					}
-					System.out.println(Math.random());
 					// http://localhost:9091/get?token=sadas
 					// try {
 					// InfoGen_HTTP.do_get("http://localhost:9091/get?token=sadas", null);
