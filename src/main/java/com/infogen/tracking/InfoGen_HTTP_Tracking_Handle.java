@@ -34,9 +34,6 @@ public class InfoGen_HTTP_Tracking_Handle {
 	 * @see com.infogen.web.InfoGen_SOA_Filter_Handle#doFilter(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public CallChain doFilter(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		// cookie等用户标识 ,traceid,sequence,来源地址 ,来源ip,当前地址,当前ip,当前服务 ,调用时间 ,调用时长,调用状态 ,数据大小,sessionid(token),客户端类型
-		// a00000... ,tr00000,0 ,home.html ,xx ,send ,xx ,中控 ,2015050X ,300ms ,ok/error/auth,1.3k ,t0000,测试/京东/聚信立
-
 		CallChain callchain = new CallChain();
 
 		// traceid
@@ -46,9 +43,11 @@ public class InfoGen_HTTP_Tracking_Handle {
 			// identify
 			String identify = null;
 			Cookie[] cookies = request.getCookies();
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equalsIgnoreCase(Track.x_identify.key)) {
-					identify = cookie.getValue();
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if (cookie.getName().equalsIgnoreCase(Track.x_identify.key)) {
+						identify = cookie.getValue();
+					}
 				}
 			}
 			if (identify == null) {

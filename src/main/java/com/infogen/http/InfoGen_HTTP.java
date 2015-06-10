@@ -8,6 +8,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import com.infogen.http.callback.Http_Callback;
+import com.infogen.tracking.CallChain;
+import com.infogen.tracking.ThreadLocal_Tracking;
+import com.infogen.tracking.enum0.Track;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
 import com.larrylgq.aop.tools.Tool_Jackson;
@@ -43,23 +46,32 @@ public class InfoGen_HTTP {
 
 	// //////////////////////////////////////////////////////////////////////////////////////////////get/////////////////////////////////////////////////////////////
 	private static String concat_url_params(String url, Map<String, String> params) {
-		if (params != null) {
-			StringBuffer do_get_sbf = new StringBuffer();
-			do_get_sbf.append(url);
-			String[] keys = new String[params.size()];
-			params.keySet().toArray(keys);
-			for (int j = 0; j < keys.length; j++) {
-				if (j == 0) {
-					do_get_sbf.append("?");
-				} else {
-					do_get_sbf.append("&");
-				}
-				String key = keys[j];
-				String value = params.get(key);
-				do_get_sbf.append(key).append("=").append(value);
-			}
-			url = do_get_sbf.toString();
+		if (params == null) {
+			params = new HashMap<>();
 		}
+		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
+		if (callChain != null) {
+			params.put(Track.x_track_id.key, callChain.getTrackid());
+			params.put(Track.x_identify.key, callChain.getIdentify());
+			params.put(Track.x_sequence.key, callChain.getSequence().toString());
+			params.put(Track.x_referer.key, callChain.getReferer());
+		}
+
+		StringBuffer do_get_sbf = new StringBuffer();
+		do_get_sbf.append(url);
+		String[] keys = new String[params.size()];
+		params.keySet().toArray(keys);
+		for (int j = 0; j < keys.length; j++) {
+			if (j == 0) {
+				do_get_sbf.append("?");
+			} else {
+				do_get_sbf.append("&");
+			}
+			String key = keys[j];
+			String value = params.get(key);
+			do_get_sbf.append(key).append("=").append(value);
+		}
+		url = do_get_sbf.toString();
 		return url;
 	}
 
@@ -113,6 +125,14 @@ public class InfoGen_HTTP {
 		if (params == null) {
 			params = new HashMap<>();
 		}
+		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
+		if (callChain != null) {
+			params.put(Track.x_track_id.key, callChain.getTrackid());
+			params.put(Track.x_identify.key, callChain.getIdentify());
+			params.put(Track.x_sequence.key, callChain.getSequence().toString());
+			params.put(Track.x_referer.key, callChain.getReferer());
+		}
+
 		Request request = new Request.Builder().url(url).post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
 		Response response = client.newCall(request).execute();
 		if (response.isSuccessful()) {
@@ -127,6 +147,14 @@ public class InfoGen_HTTP {
 		if (params == null) {
 			params = new HashMap<>();
 		}
+		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
+		if (callChain != null) {
+			params.put(Track.x_track_id.key, callChain.getTrackid());
+			params.put(Track.x_identify.key, callChain.getIdentify());
+			params.put(Track.x_sequence.key, callChain.getSequence().toString());
+			params.put(Track.x_referer.key, callChain.getReferer());
+		}
+
 		Request request = new Request.Builder().url(url).post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
 		client.newCall(request).enqueue(new Callback() {
 			@Override

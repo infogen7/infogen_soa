@@ -27,8 +27,8 @@ public class Function {
 	private String describe;
 
 	private String tags; // 方法的分类 比如前端，数据库，中间件，测试
-	private Boolean authc;
-	private String[] roles;
+	private Boolean authc = false;
+	private String[] roles = new String[0];
 
 	// 参数
 	private List<InParameter> in_parameters = new ArrayList<>();

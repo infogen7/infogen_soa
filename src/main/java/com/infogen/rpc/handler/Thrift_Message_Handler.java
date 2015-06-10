@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
 
-import com.infogen.self_describing.InfoGen_Self_Describing;
+import com.infogen.InfoGen;
 import com.infogen.self_describing.component.Function;
 import com.infogen.self_describing.component.InParameter;
 import com.infogen.thrift.Message.Iface;
@@ -19,6 +19,7 @@ import com.larrylgq.aop.tools.Tool_Jackson;
 
 /**
  * thrift消息处理器
+ * 
  * @author larry
  * @email larrylv@outlook.com
  * @version 创建时间 2014年11月7日 上午10:54:29
@@ -26,7 +27,7 @@ import com.larrylgq.aop.tools.Tool_Jackson;
 public class Thrift_Message_Handler implements Iface {
 	public static final Logger logger = Logger.getLogger(Thrift_Message_Handler.class.getName());
 
-	private Map<String, Function> functions = InfoGen_Self_Describing.getInstance().functions;
+	private Map<String, Function> functions = InfoGen.getInstance().getConfiguration().register_server.getFunctions();
 
 	private String class_string = "class java.lang.String";
 

@@ -24,7 +24,7 @@ import com.infogen.util.Return;
  * @author larry
  * @email larry.lv.word@gmail.com
  */
-public class InfoGen_Authc_Handle  {
+public class InfoGen_Authc_Handle {
 	public final static Logger logger = Logger.getLogger(InfoGen_Authc_Handle.class.getName());
 
 	private static Subject_DAO subject_dao = new Default_Subject_DAO();
@@ -53,7 +53,7 @@ public class InfoGen_Authc_Handle  {
 				requestURI = requestURI.substring(contextPath.length());
 			}
 			Function function = functions.get(requestURI);
-			if (function == null) {
+			if (function == null || !function.getAuthc()) {
 				return true;
 			}
 

@@ -70,7 +70,7 @@ public class Subject {
 	 * @throws Roles_Fail_Exception
 	 */
 	public void hasRole(String[] roles) throws Roles_Fail_Exception {
-		if (roles.length == 0) {
+		if (roles == null || roles.length == 0) {
 			return;
 		}
 		if (this.roles == null) {
