@@ -276,4 +276,8 @@ public class InfoGen {
 		return configuration;
 	}
 
+	public void setConfiguration(InfoGen_Configuration configuration) {
+		this.configuration = configuration;
+	}
+
 }
