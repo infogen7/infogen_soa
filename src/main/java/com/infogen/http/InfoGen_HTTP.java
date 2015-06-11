@@ -13,7 +13,6 @@ import com.infogen.tracking.ThreadLocal_Tracking;
 import com.infogen.tracking.enum0.Track;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
-import com.larrylgq.aop.tools.Tool_Jackson;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -122,18 +121,8 @@ public class InfoGen_HTTP {
 	public static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
 
 	public static String do_post(String url, Map<String, String> params) throws IOException {
-		if (params == null) {
-			params = new HashMap<>();
-		}
-		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
-		if (callChain != null) {
-			params.put(Track.x_track_id.key, callChain.getTrackid());
-			params.put(Track.x_identify.key, callChain.getIdentify());
-			params.put(Track.x_sequence.key, callChain.getSequence().toString());
-			params.put(Track.x_referer.key, callChain.getReferer());
-		}
-
-		Request request = new Request.Builder().url(url).post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
+		url = concat_url_params(url, params);
+		Request request = new Request.Builder().url(url).post(RequestBody.create(MEDIA_TYPE_JSON, "")).build();
 		Response response = client.newCall(request).execute();
 		if (response.isSuccessful()) {
 			return response.body().string();
@@ -144,18 +133,10 @@ public class InfoGen_HTTP {
 
 	public static Http_Callback do_async_post(String url, Map<String, String> params) throws IOException {
 		Http_Callback callback = new Http_Callback();
-		if (params == null) {
-			params = new HashMap<>();
-		}
-		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
-		if (callChain != null) {
-			params.put(Track.x_track_id.key, callChain.getTrackid());
-			params.put(Track.x_identify.key, callChain.getIdentify());
-			params.put(Track.x_sequence.key, callChain.getSequence().toString());
-			params.put(Track.x_referer.key, callChain.getReferer());
-		}
 
-		Request request = new Request.Builder().url(url).post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
+		url = concat_url_params(url, params);
+
+		Request request = new Request.Builder().url(url).post(RequestBody.create(MEDIA_TYPE_JSON, "")).build();
 		client.newCall(request).enqueue(new Callback() {
 			@Override
 			public void onFailure(Request request, IOException e) {
