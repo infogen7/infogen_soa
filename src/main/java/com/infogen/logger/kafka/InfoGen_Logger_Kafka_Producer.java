@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 import com.infogen.InfoGen_Jetty;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.logger.Logger_Once;
-import com.larrylgq.aop.tools.Tool_Core;
 
 /**
  * 启动kafka生产者
@@ -25,7 +24,6 @@ import com.larrylgq.aop.tools.Tool_Core;
  */
 public class InfoGen_Logger_Kafka_Producer {
 	public final Logger logger = Logger.getLogger(InfoGen_Jetty.class.getName());
-	private final String IP = Tool_Core.getLocalIP();
 
 	private static class InnerInstance {
 		public static InfoGen_Logger_Kafka_Producer instance = new InfoGen_Logger_Kafka_Producer();
@@ -82,7 +80,7 @@ public class InfoGen_Logger_Kafka_Producer {
 	public void send(String topic, String key, String message) {
 		if (producer != null) {
 			try {
-				producer.send(new KeyedMessage<String, String>(topic, key, IP.concat(",").concat(message)));
+				producer.send(new KeyedMessage<String, String>(topic, key, message));
 			} catch (Exception e) {
 				logger.warn("kafka 发送失败");
 			}
