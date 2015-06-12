@@ -53,7 +53,7 @@ public class InfoGen_HTTP {
 			params.put(Track.x_track_id.key, callChain.getTrackid());
 			params.put(Track.x_identify.key, callChain.getIdentify());
 			params.put(Track.x_sequence.key, callChain.getSequence().toString());
-			params.put(Track.x_referer.key, callChain.getReferer());
+			params.put(Track.x_referer.key, callChain.getTarget());
 		}
 
 		StringBuffer do_get_sbf = new StringBuffer();
