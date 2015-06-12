@@ -1,10 +1,22 @@
 # 项目版本信息
-项目名称：infogen
-项目代码：infogen
+项目名称：infogen_soa
+项目代码：infogen_soa
 GIT库名称：infogen_zookeeper
 建议项目使用时配置JVM java -jar -XX:+UseG1GC  -XX:+UseStringDeduplication TM.jar
 
 中间倒序增加
+--------------------------------------------------------
+发布  日期：20150614
+发布版本号：V1.0.03R150614
+更新  内容：
+1:新增AUTHC认证框架
+2:新增tracking框架(通过Execution注解记录调用链)
+3:新增AOP框架(轻量级AOP和IOC以及获取对象占用内存空间大小等的API支持)
+4:去除thrift调用封装
+5:修改jetty支持http2调用
+6:优化调用代码
+7:新增本地LRU缓存类
+8:新增infogen的ServletContainerInitializer(继承后web容器中启动时执行)
 --------------------------------------------------------
 发布  日期：20150521
 发布版本号：V1.2.01R150521
@@ -30,3 +42,5 @@ Y infogen版本配置
 2:kafka 异常捕获
 *3:重复注册监听问题(重要)
 4:去掉return中tojson的异常
+--------------------------------------------------------
+

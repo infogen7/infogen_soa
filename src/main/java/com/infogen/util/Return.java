@@ -111,6 +111,11 @@ public class Return extends HashMap<String, Object> {
 		return this;
 	}
 
+	public Return add(String key, Object value) {
+		super.put(key, value);
+		return this;
+	}
+
 	public Boolean get_success() {
 		return (Boolean) this.getOrDefault(Return_Fields.success.name(), false);
 	}
