@@ -10,9 +10,10 @@ import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.logger.kafka.InfoGen_Logger_Kafka_Producer;
 import com.infogen.tracking.CallChain;
 import com.infogen.tracking.ThreadLocal_Tracking;
+import com.infogen.util.Return;
 import com.larrylgq.aop.advice.event_handle.AOP_Handle;
-import com.larrylgq.aop.agent.AOP_Agent;
 import com.larrylgq.aop.agent.Agent_Advice_Method;
+import com.larrylgq.aop.tools.Tool_Jackson;
 
 /**
  * 统计方法执行时间的处理器
@@ -74,8 +75,12 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		sbd.append(start_millis).append(",");
 		sbd.append(end_millis - start_millis).append(",");
 		sbd.append(0).append(",");
-		sbd.append(AOP_Agent.getObjectSize(return0)).append(",");
-
+		if (return0 instanceof String) {
+			sbd.append(return0.toString().getBytes().length);
+		} else if (return0 instanceof Return) {
+			sbd.append(Tool_Jackson.toJson(return0).getBytes().length);
+		}
+		sbd.append(",");
 		sbd.append(callChain.getIdentify()).append(",");
 		// 客户端类型
 		sbd.append(",");
