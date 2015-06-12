@@ -53,9 +53,8 @@ public class NativeNode extends AbstractNode {
 	 * @throws TException
 	 * @throws Exception
 	 */
-	@Deprecated
 	public Return call_once(String session, String method, Map<String, String> name_value_pair) throws TException {
-		TTransport transport = new TSocket(ip, rpc_port, connect_timeout);
+		TTransport transport = new TSocket(ip, rpc_port);
 		TProtocol protocol = new TCompactProtocol(transport);
 		Message.Client client = new Message.Client(protocol);
 		try {
