@@ -65,6 +65,8 @@ public class InfoGen_HTTP_Tracking_Handle {
 			// Referer
 			callchain.setReferer(request.getHeader("Referer"));
 		} else {
+			callchain.setTrackid(traceid);
+			// identify
 			callchain.setIdentify(request.getParameter(Track.x_identify.key));
 			// sequence
 			callchain.setSequence(Integer.valueOf(request.getParameter(Track.x_sequence.key)) + 1);
