@@ -32,32 +32,40 @@ public class InfoGen_Logger_Kafka_Consumer {
 	public final Logger logger = Logger.getLogger(InfoGen_Jetty.class.getName());
 
 	public static void consume(InfoGen_Configuration infogen_configuration, String group, String topic, InfoGen_Logger_Handle_Consume handle) {
-		Properties props = new Properties();
-		// zookeeper 配置
-		props.put("zookeeper.connect", infogen_configuration.zookeeper);
-		// group 代表一个消费组
-		props.put("group.id", group);
-		// zk连接超时
-		props.put("zookeeper.session.timeout.ms", "10000");
-		props.put("zookeeper.sync.time.ms", "2000"); // 从200修改成2000 太短有rebalance错误
-		props.put("auto.commit.interval.ms", "1000");
-		props.put("auto.offset.reset", "smallest");
-		// 序列化类
-		props.put("serializer.class", "kafka.serializer.StringEncoder");
-		ConsumerConfig config = new ConsumerConfig(props);
-		ConsumerConnector consumer = kafka.consumer.Consumer.createJavaConsumerConnector(config);
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Properties props = new Properties();
+				// zookeeper 配置
+				props.put("zookeeper.connect", infogen_configuration.zookeeper);
+				// group 代表一个消费组
+				props.put("group.id", group);
+				// zk连接超时
+				props.put("zookeeper.session.timeout.ms", "10000");
+				props.put("zookeeper.sync.time.ms", "2000"); // 从200修改成2000 太短有rebalance错误
+				props.put("auto.commit.interval.ms", "1000");
+				props.put("auto.offset.reset", "smallest");
+				// 序列化类
+				props.put("serializer.class", "kafka.serializer.StringEncoder");
+				ConsumerConfig config = new ConsumerConfig(props);
+				ConsumerConnector consumer = kafka.consumer.Consumer.createJavaConsumerConnector(config);
 
-		Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
-		topicCountMap.put(topic, new Integer(1));
+				Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
+				topicCountMap.put(topic, new Integer(1));
 
-		StringDecoder keyDecoder = new StringDecoder(new VerifiableProperties());
-		StringDecoder valueDecoder = new StringDecoder(new VerifiableProperties());
+				StringDecoder keyDecoder = new StringDecoder(new VerifiableProperties());
+				StringDecoder valueDecoder = new StringDecoder(new VerifiableProperties());
 
-		Map<String, List<KafkaStream<String, String>>> consumerMap = consumer.createMessageStreams(topicCountMap, keyDecoder, valueDecoder);
-		KafkaStream<String, String> stream = consumerMap.get(topic).get(0);
-		ConsumerIterator<String, String> it = stream.iterator();
-		while (it.hasNext()) {
-			handle.handle_event(it.next().message());
-		}
+				Map<String, List<KafkaStream<String, String>>> consumerMap = consumer.createMessageStreams(topicCountMap, keyDecoder, valueDecoder);
+				KafkaStream<String, String> stream = consumerMap.get(topic).get(0);
+				ConsumerIterator<String, String> it = stream.iterator();
+				while (it.hasNext()) {
+					handle.handle_event(it.next().message());
+				}
+			}
+		});
+		thread.setDaemon(true);
+		thread.start();
+
 	}
 }

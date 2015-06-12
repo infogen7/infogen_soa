@@ -37,6 +37,14 @@ public class Service {
 	private ConcurrentHashMap<String, NativeServer> depend_server = InfoGen_Cache_Server.getInstance().depend_server;
 	private NetType net_type = NetType.LOCAL;
 
+	public static Service create(String server_name) {
+		return new Service(server_name);
+	}
+
+	public static Service create(String server_name, NetType net_type) {
+		return new Service(server_name, net_type);
+	}
+
 	public Service(String server_name) {
 		this.server_name = server_name;
 		// 初始化
