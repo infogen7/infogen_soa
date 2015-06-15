@@ -20,10 +20,11 @@ import com.infogen.configuration.InfoGen_Configuration;
 public abstract class AbstractServer {
 	protected String path;
 	protected String name;
-	protected String protocol;
-	protected String describe;
+	protected String protocol = "rest";
+	protected String describe = "";
+	protected Integer min_nodes = 1;
 
-	protected String infogen_version = "V1.0.03R150610";
+	protected String infogen_version = "V1.0.03R150615";
 	// proxy
 	protected String http_domain;
 	protected String http_proxy;
@@ -101,6 +102,22 @@ public abstract class AbstractServer {
 
 	public void setHttp_proxy(String http_proxy) {
 		this.http_proxy = http_proxy;
+	}
+
+	public Integer getMin_nodes() {
+		return min_nodes;
+	}
+
+	public void setMin_nodes(Integer min_nodes) {
+		this.min_nodes = min_nodes;
+	}
+
+	public String getInfogen_version() {
+		return infogen_version;
+	}
+
+	public void setInfogen_version(String infogen_version) {
+		this.infogen_version = infogen_version;
 	}
 
 }

@@ -19,10 +19,10 @@ import com.infogen.configuration.InfoGen_Configuration;
  */
 public abstract class AbstractNode {
 	protected String path;
-	protected String name = "";
+	protected String name;
 	protected String server_room;// sh@youfu
 	protected String host;// 机器名
-	protected Integer ratio;// 1-10的整数 //类似一致性哈希实现负载均衡
+	protected Integer ratio = 10;// 1-10的整数 //类似一致性哈希实现负载均衡
 
 	protected String ip;
 	protected String net_ip;

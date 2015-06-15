@@ -57,6 +57,14 @@ public class NativeServer extends AbstractServer {
 		}
 	}
 
+	public void disabled(NativeNode node) {
+		synchronized (change_node_status_lock) {
+			disabled_nodes.add(node);
+			available_nodes.remove(node);
+			rehash();
+		}
+	}
+
 	public void rehash() {
 		load_balanc_map.clear();
 		Integer count = 0;
@@ -68,14 +76,6 @@ public class NativeServer extends AbstractServer {
 		}
 	}
 
-	public void disabled(NativeNode node) {
-		synchronized (change_node_status_lock) {
-			disabled_nodes.add(node);
-			available_nodes.remove(node);
-		}
-		rehash();
-	}
-
 	/**
 	 * 获取随机节点实现负载均衡
 	 * 
@@ -83,11 +83,12 @@ public class NativeServer extends AbstractServer {
 	 */
 
 	private long last_invoke_millis = Clock.system(InfoGen_Configuration.zoneid).millis();
+	private int disabled_timeout = 20 * 1000;// 超过zookeeper的session超时时间
 
 	public NativeNode random_node() {
 		long millis = Clock.system(InfoGen_Configuration.zoneid).millis();
 		// 没有可用节点或距离上一次调用超过指定时间
-		if (available_nodes.size() == 0 || (millis - last_invoke_millis) > 500000) {
+		if (available_nodes.size() == 0 || (millis - last_invoke_millis) > disabled_timeout) {
 			if (disabled_nodes.size() > 0) {
 				recover();
 			}

@@ -45,7 +45,7 @@ public class InfoGen_Server_Initializer implements WebApplicationInitializer {
 				DispatcherServlet dispatcherServlet = new DispatcherServlet(mvcContext);
 				ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher", dispatcherServlet);
 				dispatcher.setAsyncSupported(true);// 支持异步servlet
-				// dispatcher.setLoadOnStartup(1);// 确保在default servlet加载完成之后再加载
+				dispatcher.setLoadOnStartup(1);// 确保在default servlet加载完成之后再加载
 				dispatcher.addMapping(mapping);
 			}
 		} finally {

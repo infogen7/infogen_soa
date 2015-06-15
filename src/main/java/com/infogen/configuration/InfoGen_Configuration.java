@@ -87,31 +87,36 @@ public class InfoGen_Configuration {
 		register_server.setName(infogen_properties.getProperty("infogen.name"));
 		register_server.setPath(InfoGen_ZooKeeper.path(register_server.getName()));
 		register_server.setDescribe(infogen_properties.getProperty("infogen.describe"));
+		String min_nodes = infogen_properties.getProperty("infogen.min_nodes");
+		min_nodes = (min_nodes == null) ? "1" : min_nodes;
+		register_server.setMin_nodes(Integer.valueOf(min_nodes));
 		register_server.setProtocol(infogen_properties.getProperty("infogen.protocol"));
 		register_server.setHttp_domain(infogen_properties.getProperty("infogen.http.domain"));
 		register_server.setHttp_proxy(infogen_properties.getProperty("infogen.http.proxy"));
+		Map<String, Function> functions = InfoGen_Self_Describing.getInstance().self_describing(AOP.getInstance().getClasses());// 读取自描述
+		register_server.setFunctions(functions);
 		if (!register_server.available()) {
 			logger.error("服务配置不能为空:infogen.name,infogen.protocol");
 			System.exit(-1);
 		}
 		// node
-		register_node.setHost(System.getProperty("user.name").concat("@").concat(Tool_Core.getHostName()));
-		register_node.setHttp_protocol(infogen_properties.getProperty("infogen.http.protocol"));
-		register_node.setContext(infogen_properties.getProperty("infogen.http.context"));
-		register_node.setServer_room(infogen_properties.getProperty("infogen.server_room"));
-		register_node.setTime(new Timestamp(Clock.system(InfoGen_Configuration.zoneid).millis()));
 		String localIP = infogen_properties.getProperty("infogen.ip");
 		if (localIP == null || localIP.trim().isEmpty() || !Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(localIP).find()) {
 			localIP = Tool_Core.getLocalIP();
 		}
 		register_node.setIp(localIP);
-		register_node.setName(localIP.concat("-" + Clock.system(zoneid).millis()));
 		String net_ip = infogen_properties.getProperty("infogen.net_ip");
 		if (net_ip == null || net_ip.trim().isEmpty() || !Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(net_ip).find()) {
 		} else {
 			register_node.setNet_ip(net_ip);
 		}
-
+		register_node.setName(localIP.concat("-" + Clock.system(zoneid).millis()));
+		register_node.setPath(InfoGen_ZooKeeper.path(register_server.getName()).concat("/".concat(register_node.getName())));
+		register_node.setHost(System.getProperty("user.name").concat("@").concat(Tool_Core.getHostName()));
+		register_node.setHttp_protocol(infogen_properties.getProperty("infogen.http.protocol"));
+		register_node.setContext(infogen_properties.getProperty("infogen.http.context"));
+		register_node.setServer_room(infogen_properties.getProperty("infogen.server_room"));
+		register_node.setTime(new Timestamp(Clock.system(InfoGen_Configuration.zoneid).millis()));
 		Integer ratio = 10;
 		String ratio0 = infogen_properties.getProperty("infogen.ratio");
 		if (ratio0 != null) {
@@ -146,9 +151,6 @@ public class InfoGen_Configuration {
 		// @Resource(name="sqliteCarDao")
 		// 遍历项目所有class文件
 		AOP.getInstance().addClasses(com.infogen.Service.class);
-		// 读取自描述
-		Map<String, Function> functions = InfoGen_Self_Describing.getInstance().self_describing(AOP.getInstance().getClasses());
-		register_server.setFunctions(functions);
 
 		// AOP
 		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
