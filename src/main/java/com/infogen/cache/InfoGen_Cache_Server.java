@@ -126,13 +126,25 @@ public class InfoGen_Cache_Server {
 		if (get_childrens.isEmpty()) {
 			return;
 		}
-		List<NativeNode> get_nodes = server.get_nodes();
-		for (String node_path : get_childrens) {
+		List<NativeNode> get_nodes = server.get_all_nodes();
+		D: for (String node_path : get_childrens) {
 			for (NativeNode nativeNode : get_nodes) {
 				if (nativeNode.getPath().equals(node_path)) {
-					// TODO
+					get_nodes.remove(nativeNode);
+					continue D;
+				}
+				// add
+				String node_string = ZK.get_data(node_path);
+				try {
+					NativeNode node = Tool_Jackson.toObject(node_string, NativeNode.class);
+					server.add(node);
+				} catch (Exception e) {
+					logger.error("节点数据错误:", e);
 				}
 			}
+		}
+		for (NativeNode node : get_nodes) {
+			server.remove(node);
 		}
 	}
 

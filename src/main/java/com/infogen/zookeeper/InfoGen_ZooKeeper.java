@@ -247,6 +247,7 @@ public class InfoGen_ZooKeeper {
 	}
 
 	// //////////////////////////////////////////////节点数据 Watcher/////////////////////////////////////////////////////////////
+	private Set<String> all_watcher_data_paths = new HashSet<String>();
 	// 节点改变数据触发事件处理
 	private Map<String, InfoGen_Zookeeper_Handle_Watcher_Data> watcher_data_handle_map = new HashMap<>();
 
@@ -258,11 +259,11 @@ public class InfoGen_ZooKeeper {
 		if (watcher_data_handle != null) {
 			watcher_data_handle_map.put(path, watcher_data_handle);
 		}
+		all_watcher_data_paths.add(path);
 		watcher_data(path);
 	}
 
 	private void watcher_data(String path) {
-		all_watcher_data_paths.add(path);
 		try {
 			logger.info("启动节点数据监听:".concat(path));
 			zookeeper.getData(path, (event) -> {
@@ -288,6 +289,7 @@ public class InfoGen_ZooKeeper {
 	}
 
 	// //////////////////////////////////////////////子节点 Watcher////////////////////////////////////////////////////////////////
+	private Set<String> all_watcher_children_paths = new HashSet<String>();
 	// 子节点改变触发事件处理
 	private Map<String, InfoGen_Zookeeper_Handle_Watcher_Children> watcher_children_handle_map = new HashMap<>();
 
@@ -300,11 +302,11 @@ public class InfoGen_ZooKeeper {
 		if (watcher_children_handle != null) {
 			watcher_children_handle_map.put(path, watcher_children_handle);
 		}
+		all_watcher_children_paths.add(path);
 		watcher_children(path);
 	}
 
 	private void watcher_children(String path) {
-		all_watcher_children_paths.add(path);
 		try {
 			logger.info("启动子节点监听:".concat(path));
 			zookeeper.getChildren(path, (event) -> {
@@ -327,6 +329,7 @@ public class InfoGen_ZooKeeper {
 			watcher_children_paths.add(path);
 			logger.error("启动子节点监听错误: ", e);
 		}
+		System.out.println();
 	}
 
 	// ///////////////////////////////////////连接 Watcher///////////////////////////////////////////////////
@@ -381,9 +384,7 @@ public class InfoGen_ZooKeeper {
 
 	// ////////////////////////////////////////////Scheduled////////////////////////////////////////////////////////////////
 	// 定时重试监听失败的服务
-	private Set<String> all_watcher_children_paths = new HashSet<String>();
 	private Set<String> watcher_children_paths = new HashSet<String>();
-	private Set<String> all_watcher_data_paths = new HashSet<String>();
 	private Set<String> watcher_data_paths = new HashSet<String>();
 
 	public void schedule() {

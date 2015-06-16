@@ -4,10 +4,6 @@
 package com.infogen.server.model;
 
 import java.time.Clock;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.log4j.Logger;
@@ -15,6 +11,7 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.infogen.configuration.InfoGen_Configuration;
+import com.infogen.util.map.consistent_hash.ConsistentHash;
 import com.larrylgq.aop.tools.Tool_Jackson;
 
 /**
@@ -32,7 +29,8 @@ public class NativeServer extends AbstractServer {
 	private CopyOnWriteArrayList<NativeNode> disabled_nodes = new CopyOnWriteArrayList<>();
 
 	@JsonIgnore
-	private transient ConcurrentHashMap<Integer, NativeNode> load_balanc_map = new ConcurrentHashMap<>();
+	private transient ConsistentHash<NativeNode> consistent_hash = new ConsistentHash<>();
+
 	@JsonIgnore
 	private transient String change_node_status_lock = "";
 
@@ -40,28 +38,35 @@ public class NativeServer extends AbstractServer {
 	public void add(NativeNode node) {
 		if (node.available()) {
 			available_nodes.add(node);
+			consistent_hash.add(node);
 		} else {
 			logger.error("node unavailable:".concat(Tool_Jackson.toJson(node)));
 		}
 	}
 
-	public List<NativeNode> get_nodes() {
+	public void remove(NativeNode node) {
 		synchronized (change_node_status_lock) {
-			List<NativeNode> existing_childrens = new ArrayList<>();
-			existing_childrens.addAll(available_nodes);
-			existing_childrens.addAll(disabled_nodes);
-			return existing_childrens;
+			available_nodes.remove(node);
+			disabled_nodes.remove(node);
 		}
+		consistent_hash.remove(node);
+	}
+
+	public CopyOnWriteArrayList<NativeNode> get_all_nodes() {
+		CopyOnWriteArrayList<NativeNode> all_nodes = new CopyOnWriteArrayList<>();
+		synchronized (change_node_status_lock) {
+			all_nodes.addAll(disabled_nodes);
+			all_nodes.addAll(disabled_nodes);
+		}
+		return all_nodes;
 	}
 
 	private void recover() {
 		synchronized (change_node_status_lock) {
 			available_nodes.addAll(disabled_nodes);
-			Integer count = load_balanc_map.size();
 			for (NativeNode node : disabled_nodes) {
-				for (int i = 0; i < node.getRatio(); i++) {
-					load_balanc_map.put(count, node);
-					count++;
+				if ((Clock.system(InfoGen_Configuration.zoneid).millis() - node.disabled_time) > disabled_timeout) {
+					consistent_hash.add(node);
 				}
 			}
 			disabled_nodes.clear();
@@ -72,18 +77,8 @@ public class NativeServer extends AbstractServer {
 		synchronized (change_node_status_lock) {
 			disabled_nodes.add(node);
 			available_nodes.remove(node);
-			rehash();
-		}
-	}
-
-	public void rehash() {
-		load_balanc_map.clear();
-		Integer count = 0;
-		for (NativeNode node : available_nodes) {
-			for (int i = 0; i < node.getRatio(); i++) {
-				load_balanc_map.put(count, node);
-				count++;
-			}
+			consistent_hash.remove(node);
+			node.disabled_time = Clock.system(InfoGen_Configuration.zoneid).millis();
 		}
 	}
 
@@ -94,24 +89,18 @@ public class NativeServer extends AbstractServer {
 	 */
 
 	private long last_invoke_millis = Clock.system(InfoGen_Configuration.zoneid).millis();
-	private int disabled_timeout = 20 * 1000;// 超过zookeeper的session超时时间
+	private int disabled_timeout = 16 * 1000;// 超过zookeeper的session超时时间
 
-	public NativeNode random_node() {
+	public NativeNode random_node(String seed) {
 		long millis = Clock.system(InfoGen_Configuration.zoneid).millis();
 		// 没有可用节点或距离上一次调用超过指定时间
-		if (available_nodes.size() == 0 || (millis - last_invoke_millis) > disabled_timeout) {
+		if ((millis - last_invoke_millis) > disabled_timeout) {
 			if (disabled_nodes.size() > 0) {
 				recover();
 			}
+			last_invoke_millis = millis;
 		}
-		last_invoke_millis = millis;
-
-		NativeNode node = null;
-		int size = load_balanc_map.size();
-		if (size > 0) {
-			node = load_balanc_map.get(new Random().nextInt(size));
-		}
-		return node;
+		return consistent_hash.get(seed);
 	}
 
 	// ///////////////////////////////////////////////////////////getter setter////////////////////////////////////////

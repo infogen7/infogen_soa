@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
@@ -67,7 +68,7 @@ public class Service {
 	// ///////////////////////////////////////////////////NODE/////////////////////////////////////////////////////
 	public NativeNode get_node() {
 		NativeServer server = depend_server.get(server_name);
-		return server.random_node();
+		return server.random_node(UUID.randomUUID().toString());
 	}
 
 	public void disabled_node(NativeNode node) {
@@ -86,7 +87,7 @@ public class Service {
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			try {
-				node = server.random_node();
+				node = server.random_node(UUID.randomUUID().toString());
 				if (node == null) {
 					return Return.FAIL(CODE._403);
 				}
@@ -181,7 +182,7 @@ public class Service {
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			try {
-				node = server.random_node();
+				node = server.random_node(UUID.randomUUID().toString());
 				if (node == null) {
 					return Return.FAIL(CODE._403);
 				}
@@ -216,7 +217,7 @@ public class Service {
 		NativeNode node = null;
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
-			node = server.random_node();
+			node = server.random_node(UUID.randomUUID().toString());
 			if (node == null) {
 				callback.add(Return.FAIL(CODE._403).toJson());
 				return callback;

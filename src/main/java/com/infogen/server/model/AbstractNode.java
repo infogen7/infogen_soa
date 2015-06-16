@@ -18,12 +18,11 @@ import com.infogen.util.map.consistent_hash.ShardInfo;
  * @email larrylv@outlook.com
  * @version 创建时间 2014年12月29日 下午4:11:30
  */
-public abstract class AbstractNode extends ShardInfo{
+public abstract class AbstractNode extends ShardInfo {
 	protected String path;
-	protected String name;
+
 	protected String server_room;// sh@youfu
 	protected String host;// 机器名
-	protected Integer ratio = 10;// 1-10的整数 //类似一致性哈希实现负载均衡
 
 	protected String ip;
 	protected String net_ip;
@@ -47,6 +46,14 @@ public abstract class AbstractNode extends ShardInfo{
 		return true;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getServer_room() {
 		return server_room;
 	}
@@ -61,14 +68,6 @@ public abstract class AbstractNode extends ShardInfo{
 
 	public void setHost(String host) {
 		this.host = host;
-	}
-
-	public Integer getRatio() {
-		return ratio;
-	}
-
-	public void setRatio(Integer ratio) {
-		this.ratio = ratio;
 	}
 
 	public String getPath() {
@@ -89,14 +88,6 @@ public abstract class AbstractNode extends ShardInfo{
 
 	public String getHttp_protocol() {
 		return http_protocol;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public void setHttp_protocol(String http_protocol) {

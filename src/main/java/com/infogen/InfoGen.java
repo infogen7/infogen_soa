@@ -157,9 +157,7 @@ public class InfoGen {
 			return server;
 		}
 		return init_server(server_name, (native_server) -> {
-			// 本地缓存或服务端获取的服务节点数据转化为本地调用版本
-				native_server.rehash();
-				// 缓存
+			// 缓存
 				CACHE_SERVER.depend_server.put(server_name, native_server);
 				// 持久化
 				CACHE_SERVER.persistence();

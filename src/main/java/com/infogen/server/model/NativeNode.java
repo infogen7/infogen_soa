@@ -1,13 +1,10 @@
-/**
- * 
- */
 package com.infogen.server.model;
 
 import java.io.IOException;
+import java.time.Clock;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.LongAdder;
 
 import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
@@ -16,8 +13,11 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 
+import scala.util.Random;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.http.InfoGen_HTTP;
 import com.infogen.http.callback.Http_Callback;
 import com.infogen.thrift.Message;
@@ -39,9 +39,7 @@ public class NativeNode extends AbstractNode {
 	@JsonIgnore
 	public static final Logger logger = Logger.getLogger(NativeNode.class.getName());
 	@JsonIgnore
-	private transient LongAdder sequence = new LongAdder();
-	@JsonIgnore
-	private transient Integer connect_timeout = 3000;
+	public Long disabled_time = Clock.system(InfoGen_Configuration.zoneid).millis();
 
 	/**
 	 * 不推荐使用
@@ -53,6 +51,7 @@ public class NativeNode extends AbstractNode {
 	 * @throws TException
 	 * @throws Exception
 	 */
+
 	public Return call_once(String session, String method, Map<String, String> name_value_pair) throws TException {
 		TTransport transport = new TSocket(ip, rpc_port);
 		TProtocol protocol = new TCompactProtocol(transport);
@@ -61,8 +60,7 @@ public class NativeNode extends AbstractNode {
 			transport.open();
 			Request request = new Request();
 			request.setSessionID(session);
-			sequence.increment();
-			request.setSequence(sequence.longValue());
+			request.setSequence(new Random(Long.MAX_VALUE).nextLong());
 			request.setMethod(method);
 			Map<String, String> call_map = new HashMap<>();
 			for (Entry<String, String> basicNameValuePair : name_value_pair.entrySet()) {
