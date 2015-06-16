@@ -2,7 +2,7 @@ package com.infogen.authc.subject;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.cache.LRULinkedHashMap;
+import com.infogen.util.map.LRULinkedHashMap;
 
 /**
  * 

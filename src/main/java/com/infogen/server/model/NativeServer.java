@@ -4,6 +4,8 @@
 package com.infogen.server.model;
 
 import java.time.Clock;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -40,6 +42,15 @@ public class NativeServer extends AbstractServer {
 			available_nodes.add(node);
 		} else {
 			logger.error("node unavailable:".concat(Tool_Jackson.toJson(node)));
+		}
+	}
+
+	public List<NativeNode> get_nodes() {
+		synchronized (change_node_status_lock) {
+			List<NativeNode> existing_childrens = new ArrayList<>();
+			existing_childrens.addAll(available_nodes);
+			existing_childrens.addAll(disabled_nodes);
+			return existing_childrens;
 		}
 	}
 

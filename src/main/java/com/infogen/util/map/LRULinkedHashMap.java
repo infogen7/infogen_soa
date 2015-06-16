@@ -1,4 +1,4 @@
-package com.infogen.cache;
+package com.infogen.util.map;
 
 import java.util.ArrayList;
 import java.util.Collection;

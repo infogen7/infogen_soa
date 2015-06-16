@@ -76,7 +76,8 @@ public class InfoGen_Cache_Server {
 
 	private NativeServer cache_server(String server_name) {
 		try {
-			String get_data = ZK.get_data(InfoGen_ZooKeeper.path(server_name));
+			String server_path = InfoGen_ZooKeeper.path(server_name);
+			String get_data = ZK.get_data(server_path);
 			if (get_data == null || get_data.trim().isEmpty()) {
 				logger.error("服务节点数据为空:".concat(server_name));
 				reload_server_paths.add(server_name);
@@ -87,7 +88,7 @@ public class InfoGen_Cache_Server {
 				reload_server_paths.add(server_name);
 				return null;
 			}
-			List<String> get_server_state = ZK.get_childrens_data(InfoGen_ZooKeeper.path(server_name));
+			List<String> get_server_state = ZK.get_childrens_data(server_path);
 			if (get_server_state == null) {
 				reload_server_paths.add(server_name);
 				return null;
@@ -106,9 +107,10 @@ public class InfoGen_Cache_Server {
 			if (server_loaded_handle != null) {
 				server_loaded_handle.handle_event(server);
 			}
+
 			// 添加监听
 			ZK.watcher_children_single(InfoGen_ZooKeeper.path(server_name), (path) -> {
-				cache_server(path.replace(InfoGen_ZooKeeper.CONTEXT, ""));
+				reload_server(server);
 			});
 			return server;
 		} catch (Exception e) {
@@ -116,6 +118,22 @@ public class InfoGen_Cache_Server {
 			logger.error("重新加载服务信息失败", e);
 		}
 		return null;
+	}
+
+	private void reload_server(NativeServer server) {
+		String server_path = server.getPath();
+		List<String> get_childrens = ZK.get_childrens(server_path);
+		if (get_childrens.isEmpty()) {
+			return;
+		}
+		List<NativeNode> get_nodes = server.get_nodes();
+		for (String node_path : get_childrens) {
+			for (NativeNode nativeNode : get_nodes) {
+				if (nativeNode.getPath().equals(node_path)) {
+					// TODO
+				}
+			}
+		}
 	}
 
 	// ///////////////////////////////////////////////////读取本地缓存的依赖服务配置///////////////////////////////////////////////

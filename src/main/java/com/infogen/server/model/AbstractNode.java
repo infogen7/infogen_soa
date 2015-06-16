@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.infogen.configuration.InfoGen_Configuration;
+import com.infogen.util.map.consistent_hash.ShardInfo;
 
 /**
  * 节点基本属性
@@ -17,7 +18,7 @@ import com.infogen.configuration.InfoGen_Configuration;
  * @email larrylv@outlook.com
  * @version 创建时间 2014年12月29日 下午4:11:30
  */
-public abstract class AbstractNode {
+public abstract class AbstractNode extends ShardInfo{
 	protected String path;
 	protected String name;
 	protected String server_room;// sh@youfu
