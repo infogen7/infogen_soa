@@ -269,12 +269,13 @@ public class InfoGen_ZooKeeper {
 			zookeeper.getData(path, (event) -> {
 				logger.info("节点数据事件  path:" + event.getPath() + "  state:" + event.getState().name() + "  type:" + event.getType().name());
 				if (event.getType() == EventType.NodeDataChanged) {
+					logger.info("重新启动节点数据监听:".concat(path));
+					watcher_data(path);
 					logger.info("重新加载节点信息:".concat(path));
 					InfoGen_Zookeeper_Handle_Watcher_Data watcher_data_handle = watcher_data_handle_map.get(path);
 					if (watcher_data_handle != null) {
 						watcher_data_handle.handle_event(path);
 					}
-					watcher_data(path);
 				} else if (event.getType() != EventType.None) {
 					// EventType 为 None 的时候不需要重新监听
 					logger.info("重新启动节点数据监听:".concat(path));
@@ -312,12 +313,13 @@ public class InfoGen_ZooKeeper {
 			zookeeper.getChildren(path, (event) -> {
 				logger.info("子节点事件  path:" + event.getPath() + "  state:" + event.getState().name() + "  type:" + event.getType().name());
 				if (event.getType() == EventType.NodeChildrenChanged) {
+					logger.info("重新启动子节点监听:".concat(path));
+					watcher_children(path);
 					logger.info("重新加载服务信息:".concat(path));
 					InfoGen_Zookeeper_Handle_Watcher_Children watcher_children_handle = watcher_children_handle_map.get(path);
 					if (watcher_children_handle != null) {
 						watcher_children_handle.handle_event(path);
 					}
-					watcher_children(path);
 				} else if (event.getType() != EventType.None) {
 					logger.info("重新启动子节点监听:".concat(path));
 					watcher_children(path);
@@ -329,7 +331,6 @@ public class InfoGen_ZooKeeper {
 			watcher_children_paths.add(path);
 			logger.error("启动子节点监听错误: ", e);
 		}
-		System.out.println();
 	}
 
 	// ///////////////////////////////////////连接 Watcher///////////////////////////////////////////////////

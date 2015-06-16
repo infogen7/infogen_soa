@@ -119,31 +119,30 @@ public class InfoGen_Cache_Server {
 		}
 		return null;
 	}
-
+//TODO
 	private void reload_server(NativeServer server) {
 		String server_path = server.getPath();
 		List<String> get_childrens = ZK.get_childrens(server_path);
 		if (get_childrens.isEmpty()) {
 			return;
 		}
-		List<NativeNode> get_nodes = server.get_all_nodes();
+		List<NativeNode> tmp_all_nodes = server.get_all_nodes();
 		D: for (String node_path : get_childrens) {
-			for (NativeNode nativeNode : get_nodes) {
-				if (nativeNode.getPath().equals(node_path)) {
-					get_nodes.remove(nativeNode);
+			for (NativeNode nativeNode : tmp_all_nodes) {
+				if (nativeNode.getName().equals(node_path)) {
+					tmp_all_nodes.remove(nativeNode);
 					continue D;
 				}
-				// add
-				String node_string = ZK.get_data(node_path);
-				try {
-					NativeNode node = Tool_Jackson.toObject(node_string, NativeNode.class);
-					server.add(node);
-				} catch (Exception e) {
-					logger.error("节点数据错误:", e);
-				}
+			}
+			String node_string = ZK.get_data(server_path.concat("/").concat(node_path));
+			try {
+				NativeNode node = Tool_Jackson.toObject(node_string, NativeNode.class);
+				server.add(node);
+			} catch (Exception e) {
+				logger.error("节点数据错误:", e);
 			}
 		}
-		for (NativeNode node : get_nodes) {
+		for (NativeNode node : tmp_all_nodes) {
 			server.remove(node);
 		}
 	}

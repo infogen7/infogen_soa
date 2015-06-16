@@ -55,7 +55,7 @@ public class NativeServer extends AbstractServer {
 	public CopyOnWriteArrayList<NativeNode> get_all_nodes() {
 		CopyOnWriteArrayList<NativeNode> all_nodes = new CopyOnWriteArrayList<>();
 		synchronized (change_node_status_lock) {
-			all_nodes.addAll(disabled_nodes);
+			all_nodes.addAll(available_nodes);
 			all_nodes.addAll(disabled_nodes);
 		}
 		return all_nodes;
