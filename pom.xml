@@ -29,6 +29,11 @@
 	<properties>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
+
+		<sonar.exclusions>
+			/src/main/java/com/infogen/thrift/*
+		</sonar.exclusions>
+		<sonar.language>java</sonar.language>
 	</properties>
 	<dependencies>
 		<!-- core -->
@@ -271,6 +276,7 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
 	<profiles>
 		<profile>
 			<id>develop</id>
