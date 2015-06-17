@@ -55,8 +55,8 @@ public class InfoGen_ZooKeeper {
 	private String host_port;
 	private ZooKeeper zookeeper;
 	private InfoGen_Zookeeper_Handle_Expired expired_handle;
-	public static String CONTEXT = "/infogen/";
-	public static String CONTEXT_CONFIGURATION = "/infogen_configuration/";
+	public static final String CONTEXT = "/infogen/";
+	public static final String CONTEXT_CONFIGURATION = "/infogen_configuration/";
 
 	public static String path(String server_name) {
 		return CONTEXT.concat(server_name);
@@ -239,12 +239,10 @@ public class InfoGen_ZooKeeper {
 				}
 			});
 			LOGGER.info("获取子节点数据成功:".concat(path));
-			return list;
 		} catch (Exception e) {
 			LOGGER.error("获取子节点数据错误: ", e);
 		}
-
-		return null;
+		return list;
 	}
 
 	// //////////////////////////////////////////////节点数据 Watcher/////////////////////////////////////////////////////////////
@@ -363,7 +361,7 @@ public class InfoGen_ZooKeeper {
 							expired_handle.handle_event();
 						}
 					} catch (Exception e) {
-						LOGGER.error("zookeeper 重连错误");
+						LOGGER.error("zookeeper 重连错误", e);
 					}
 					break;
 				case Disconnected:

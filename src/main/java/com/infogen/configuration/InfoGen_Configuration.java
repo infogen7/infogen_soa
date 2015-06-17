@@ -106,8 +106,7 @@ public class InfoGen_Configuration {
 		}
 		register_node.setIp(localIP);
 		String net_ip = infogen_properties.getProperty("infogen.net_ip");
-		if (net_ip == null || net_ip.trim().isEmpty() || !Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(net_ip).find()) {
-		} else {
+		if (net_ip != null && !net_ip.trim().isEmpty() && Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(net_ip).find()) {
 			register_node.setNet_ip(net_ip);
 		}
 		register_node.setName(localIP.concat("-" + Clock.system(zoneid).millis()));

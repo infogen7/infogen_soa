@@ -28,11 +28,9 @@ import com.infogen.logger.kafka.event_handle.InfoGen_Logger_Handle_Consume;
 public class InfoGen_Logger_Kafka_Consumer {
 
 	public static void consume(InfoGen_Configuration infogen_configuration, String group, String topic, InfoGen_Logger_Handle_Consume handle) {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				Properties props = new Properties();
-				// zookeeper 配置
+		Thread thread = new Thread(() -> {
+			Properties props = new Properties();
+			// zookeeper 配置
 				props.put("zookeeper.connect", infogen_configuration.zookeeper);
 				// group 代表一个消费组
 				props.put("group.id", group);
@@ -58,8 +56,7 @@ public class InfoGen_Logger_Kafka_Consumer {
 				while (it.hasNext()) {
 					handle.handle_event(it.next().message());
 				}
-			}
-		});
+			});
 		thread.setDaemon(true);
 		thread.start();
 

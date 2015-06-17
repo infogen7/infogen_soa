@@ -23,6 +23,7 @@ public class Parameter extends HashMap<String, String> {
 		return this;
 	}
 
+	@Override
 	@Deprecated
 	public String put(String key, String value) {
 		super.put(key, value);

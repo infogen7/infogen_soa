@@ -28,7 +28,7 @@ public class ConsistentHash<T extends ShardInfo> {
 	public static final Pattern DEFAULT_KEY_TAG_PATTERN = Pattern.compile("\\{(.+?)\\}");// 获取 {} 中间的内容
 
 	private HashFunction algo = HashFunction.MURMUR_HASH;
-	private TreeMap<Long, T> nodes = new TreeMap<Long, T>();;
+	private TreeMap<Long, T> nodes = new TreeMap<>();
 
 	public ConsistentHash() {
 	}
@@ -43,7 +43,7 @@ public class ConsistentHash<T extends ShardInfo> {
 	}
 
 	// 默认的虚拟节点数目与 shardInfo.getWeight()一起使用
-	private final int basic_virtual_node_number = 16;
+	private static final int basic_virtual_node_number = 16;
 
 	private void initialize(List<T> shards) {
 		for (int i = 0; i != shards.size(); ++i) {

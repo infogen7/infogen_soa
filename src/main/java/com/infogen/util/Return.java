@@ -5,6 +5,7 @@ package com.infogen.util;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -30,7 +31,7 @@ public class Return extends HashMap<String, Object> {
 	public static Return create(String json) {
 		Return jo = new Return();
 		try {
-			HashMap<String, Object> fromJson = Tool_Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
+			Map<String, Object> fromJson = Tool_Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
 			});
 			fromJson.forEach((k, v) -> {
 				jo.put(k, v);
@@ -106,6 +107,7 @@ public class Return extends HashMap<String, Object> {
 		return jo;
 	}
 
+	@Override
 	public Return put(String key, Object value) {
 		super.put(key, value);
 		return this;

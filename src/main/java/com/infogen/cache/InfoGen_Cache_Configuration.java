@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
@@ -36,7 +37,7 @@ public class InfoGen_Cache_Configuration {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_Cache_Configuration.class.getName());
 
 	private static class InnerInstance {
-		public static InfoGen_Cache_Configuration instance = new InfoGen_Cache_Configuration();
+		public static final InfoGen_Cache_Configuration instance = new InfoGen_Cache_Configuration();
 	}
 
 	public static InfoGen_Cache_Configuration getInstance() {
@@ -49,9 +50,9 @@ public class InfoGen_Cache_Configuration {
 	private InfoGen_ZooKeeper ZK = com.infogen.zookeeper.InfoGen_ZooKeeper.getInstance();
 
 	// 依赖的配置
-	public ConcurrentHashMap<String, String> depend_configuration = new ConcurrentHashMap<>();
+	public ConcurrentMap<String, String> depend_configuration = new ConcurrentHashMap<>();
 	// 本地缓存的依赖配置
-	public ConcurrentHashMap<String, String> depend_configuration_cache = new ConcurrentHashMap<>();
+	public ConcurrentMap<String, String> depend_configuration_cache = new ConcurrentHashMap<>();
 
 	// ////////////////////////////////////////////cache_configuration////////////////////////////////////////////////////////////////
 	// 注册的cache完成事件处理器

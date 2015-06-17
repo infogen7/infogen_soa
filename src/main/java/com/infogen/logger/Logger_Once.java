@@ -12,8 +12,8 @@ import com.infogen.util.map.LRULinkedHashMap;
  * @version 1.0
  */
 public class Logger_Once {
-	private static Logger LOGGER = Logger.getLogger(Logger_Once.class.getName());
-	private static LRULinkedHashMap<String, Boolean> map = new LRULinkedHashMap<>(10000);
+	private static final Logger LOGGER = Logger.getLogger(Logger_Once.class.getName());
+	private static final LRULinkedHashMap<String, Boolean> map = new LRULinkedHashMap<>(10000);
 
 	private static Boolean has(String message) {
 		if (map.get(message) == null) {

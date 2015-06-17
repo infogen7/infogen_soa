@@ -1,7 +1,5 @@
 package com.infogen.aop;
 
-import org.apache.log4j.Logger;
-
 /**
  * AOP的工具类,可以获取存放在ThreadLocal中的对象
  * 
@@ -11,7 +9,7 @@ import org.apache.log4j.Logger;
  */
 public class InfoGen_AOP_Configuration {
 	@Deprecated
-	public final static String infogen_logger_topic_execution_time = "infogen_logger_topic_execution_time";
+	public static final String infogen_logger_topic_execution_time = "infogen_logger_topic_execution_time";
 
-	public final static String infogen_topic_tracking = "infogen_topic_tracking";
+	public static final String infogen_topic_tracking = "infogen_topic_tracking";
 }

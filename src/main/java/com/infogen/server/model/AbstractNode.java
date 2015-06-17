@@ -46,14 +46,6 @@ public abstract class AbstractNode extends ShardInfo {
 		return true;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getServer_room() {
 		return server_room;
 	}

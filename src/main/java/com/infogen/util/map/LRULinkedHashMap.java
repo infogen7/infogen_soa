@@ -15,11 +15,9 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> {
 	private static final long serialVersionUID = 3566536751086052834L;
 
-	private final int maxCapacity;
-
 	private static final float DEFAULT_LOAD_FACTOR = 0.75f;
-
-	private final Lock lock = new ReentrantLock();
+	private final int maxCapacity;
+	private final transient Lock lock = new ReentrantLock();
 
 	public LRULinkedHashMap(int maxCapacity) {
 		super(maxCapacity, DEFAULT_LOAD_FACTOR, true);
@@ -61,6 +59,7 @@ public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> {
 		}
 	}
 
+	@Override
 	public int size() {
 		try {
 			lock.lock();
@@ -70,6 +69,7 @@ public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> {
 		}
 	}
 
+	@Override
 	public void clear() {
 		try {
 			lock.lock();

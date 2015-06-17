@@ -23,10 +23,10 @@ import com.infogen.logger.Logger_Once;
  * @version 创建时间 2015年1月12日 上午10:00:46
  */
 public class InfoGen_Logger_Kafka_Producer {
-	private final Logger LOGGER = Logger.getLogger(InfoGen_Jetty.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_Jetty.class.getName());
 
 	private static class InnerInstance {
-		public static InfoGen_Logger_Kafka_Producer instance = new InfoGen_Logger_Kafka_Producer();
+		public static final InfoGen_Logger_Kafka_Producer instance = new InfoGen_Logger_Kafka_Producer();
 	}
 
 	public static InfoGen_Logger_Kafka_Producer getInstance() {
@@ -82,7 +82,7 @@ public class InfoGen_Logger_Kafka_Producer {
 			try {
 				producer.send(new KeyedMessage<String, String>(topic, key, message));
 			} catch (Exception e) {
-				LOGGER.warn("kafka 发送失败");
+				LOGGER.warn("kafka 发送失败", e);
 			}
 		} else {
 			Logger_Once.warn("kafka未初始化");

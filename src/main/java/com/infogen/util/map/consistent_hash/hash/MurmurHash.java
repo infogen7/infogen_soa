@@ -31,10 +31,12 @@ public class MurmurHash implements HashFunction {
 		return hash64A(ByteBuffer.wrap(data.getBytes("UTF-8")), default_seed);
 	}
 
+	@Override
 	public long hash(byte[] key) {
 		return hash64A(ByteBuffer.wrap(key), default_seed);
 	}
 
+	@Override
 	public long hash(String key, Charset charset) throws UnsupportedEncodingException {
 		return hash64A(ByteBuffer.wrap(key.getBytes(charset)), default_seed);
 	}

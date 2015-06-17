@@ -50,7 +50,7 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		return advice_method;
 	}
 
-	public static InfoGen_Logger_Kafka_Producer producer = InfoGen_Logger_Kafka_Producer.getInstance();
+	public static final InfoGen_Logger_Kafka_Producer producer = InfoGen_Logger_Kafka_Producer.getInstance();
 
 	public static void insert_before_call_back(String class_name, String method_name, String user_definition, long start_millis) {
 	}

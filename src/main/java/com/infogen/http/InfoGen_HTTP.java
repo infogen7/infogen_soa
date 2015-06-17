@@ -30,8 +30,8 @@ import com.squareup.okhttp.Response;
 public class InfoGen_HTTP {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP.class.getName());
 	// 当使用长轮循时需要注意不能超过此时间
-	private static Integer socket_timeout = 10_000;// 数据传输时间
-	private static Integer connect_timeout = 3_000;// 连接时间
+	private static final Integer socket_timeout = 10_000;// 数据传输时间
+	private static final Integer connect_timeout = 3_000;// 连接时间
 	private static final OkHttpClient client = new OkHttpClient();
 	static {
 		client.setConnectTimeout(connect_timeout, TimeUnit.SECONDS);

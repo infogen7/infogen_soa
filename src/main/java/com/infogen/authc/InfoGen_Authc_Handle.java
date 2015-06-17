@@ -26,11 +26,11 @@ import com.infogen.util.Return;
  * @email larry.lv.word@gmail.com
  */
 public class InfoGen_Authc_Handle {
-	private final static Logger LOGGER = Logger.getLogger(InfoGen_Authc_Handle.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_Authc_Handle.class.getName());
 
-	private static Subject_DAO subject_dao = new Default_Subject_DAO();
-	public static String TOKEN_NAME = "x-access-token";
-	public Map<String, Function> functions = InfoGen.getInstance().getConfiguration().register_server.getFunctions();
+	private static final Subject_DAO subject_dao = new Default_Subject_DAO();
+	public static final String TOKEN_NAME = "x-access-token";
+	public static final Map<String, Function> functions = InfoGen.getInstance().getConfiguration().register_server.getFunctions();
 
 	/**
 	 * js 前端页面加载时判断是否有 x-access-token 没有跳转到登录页面
@@ -76,6 +76,7 @@ public class InfoGen_Authc_Handle {
 			// 缓存
 			ThreadLocal_Auth.setSubject(subject);
 		} catch (InfoGen_Auth_Exception e) {
+			LOGGER.info("认证失败:", e);
 			response.getWriter().write(Return.FAIL(e.name(), e.note()).toJson());
 			return false;
 		} catch (Exception e) {

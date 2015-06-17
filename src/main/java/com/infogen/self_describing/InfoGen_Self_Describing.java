@@ -41,10 +41,10 @@ import com.infogen.self_describing.component.OutParameter;
  * @version 1.0
  */
 public class InfoGen_Self_Describing {
-	private final Logger LOGGER = Logger.getLogger(InfoGen_Self_Describing.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_Self_Describing.class.getName());
 
 	private static class InnerInstance {
-		public static InfoGen_Self_Describing instance = new InfoGen_Self_Describing();
+		public static final InfoGen_Self_Describing instance = new InfoGen_Self_Describing();
 	}
 
 	public static InfoGen_Self_Describing getInstance() {

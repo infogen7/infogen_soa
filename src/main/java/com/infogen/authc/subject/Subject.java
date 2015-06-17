@@ -51,17 +51,12 @@ public class Subject {
 		if (issued_at_overtime > max_overtime) {
 			throw new Session_Expiration_Exception();
 		}
-		if (remember) {
-			if (last_access_time_overtime > session_overtime && issued_at_overtime > remember_overtime) {
-				throw new Session_Expiration_Exception();
-			}
-		} else {
-			if (last_access_time_overtime > session_overtime) {
-				throw new Session_Expiration_Exception();
-			}
+		if (remember && issued_at_overtime > remember_overtime && last_access_time_overtime > session_overtime) {
+			throw new Session_Expiration_Exception();
+		} else if (!remember && last_access_time_overtime > session_overtime) {
+			throw new Session_Expiration_Exception();
 		}
-
-	};
+	}
 
 	/**
 	 * 授权
@@ -83,7 +78,7 @@ public class Subject {
 			}
 		}
 		throw new Roles_Fail_Exception();
-	};
+	}
 
 	public String getAudience() {
 		return audience;

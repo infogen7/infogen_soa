@@ -5,7 +5,7 @@ import java.time.Clock;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
@@ -30,9 +30,9 @@ import com.infogen.util.Return;
 public class Service {
 	private static final Logger LOGGER = Logger.getLogger(Service.class.getName());
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private static InfoGen instance = InfoGen.getInstance();
+	private static final InfoGen instance = InfoGen.getInstance();
+	private ConcurrentMap<String, NativeServer> depend_server = InfoGen_Cache_Server.getInstance().depend_server;
 	private String server_name;
-	private ConcurrentHashMap<String, NativeServer> depend_server = InfoGen_Cache_Server.getInstance().depend_server;
 	private NetType net_type = NetType.LOCAL;
 
 	public static Service create(String server_name) {
@@ -90,7 +90,7 @@ public class Service {
 				}
 				return node.call_once("", method, name_value_pair);
 			} catch (TException e) {
-				LOGGER.error("调用失败".concat(e.getMessage()));
+				LOGGER.error("调用失败", e);
 				server.disabled(node);
 				continue;
 			}
@@ -202,7 +202,7 @@ public class Service {
 				String http = node.http(method, name_value_pair, request_type, net_type);
 				return Return.create(http);
 			} catch (IOException e) {
-				LOGGER.error("调用失败".concat(e.getMessage()));
+				LOGGER.error("调用失败", e);
 				server.disabled(node);
 				continue;
 			}

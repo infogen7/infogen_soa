@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TProtocol;
@@ -36,8 +35,6 @@ import com.infogen.util.Return;
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class NativeNode extends AbstractNode {
-	@JsonIgnore
-	private static final Logger LOGGER = Logger.getLogger(NativeNode.class.getName());
 	@JsonIgnore
 	public Long disabled_time = Clock.system(InfoGen_Configuration.zoneid).millis();
 

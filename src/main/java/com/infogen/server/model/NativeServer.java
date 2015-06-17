@@ -5,6 +5,7 @@ package com.infogen.server.model;
 
 import java.time.Clock;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -27,8 +28,8 @@ import com.larrylgq.aop.tools.Tool_Jackson;
 public class NativeServer extends AbstractServer {
 	private static final Logger LOGGER = Logger.getLogger(NativeServer.class.getName());
 
-	private CopyOnWriteArrayList<NativeNode> available_nodes = new CopyOnWriteArrayList<>();
-	private CopyOnWriteArrayList<NativeNode> disabled_nodes = new CopyOnWriteArrayList<>();
+	private List<NativeNode> available_nodes = new CopyOnWriteArrayList<>();
+	private List<NativeNode> disabled_nodes = new CopyOnWriteArrayList<>();
 
 	@JsonIgnore
 	private transient ConsistentHash<NativeNode> consistent_hash = new ConsistentHash<>();
@@ -101,7 +102,7 @@ public class NativeServer extends AbstractServer {
 		long millis = Clock.system(InfoGen_Configuration.zoneid).millis();
 		// 没有可用节点或距离上一次调用超过指定时间
 		if ((millis - last_invoke_millis) > disabled_timeout) {
-			if (disabled_nodes.size() > 0) {
+			if (!disabled_nodes.isEmpty()) {
 				recover();
 			}
 			last_invoke_millis = millis;
@@ -110,19 +111,19 @@ public class NativeServer extends AbstractServer {
 	}
 
 	// ///////////////////////////////////////////////////////////getter setter////////////////////////////////////////
-	public CopyOnWriteArrayList<NativeNode> getAvailable_nodes() {
+	public List<NativeNode> getAvailable_nodes() {
 		return available_nodes;
 	}
 
-	public void setAvailable_nodes(CopyOnWriteArrayList<NativeNode> available_nodes) {
+	public void setAvailable_nodes(List<NativeNode> available_nodes) {
 		this.available_nodes = available_nodes;
 	}
 
-	public CopyOnWriteArrayList<NativeNode> getDisabled_nodes() {
+	public List<NativeNode> getDisabled_nodes() {
 		return disabled_nodes;
 	}
 
-	public void setDisabled_nodes(CopyOnWriteArrayList<NativeNode> disabled_nodes) {
+	public void setDisabled_nodes(List<NativeNode> disabled_nodes) {
 		this.disabled_nodes = disabled_nodes;
 	}
 

@@ -48,27 +48,24 @@ public class InfoGen_Thrift {
 	 * @return
 	 */
 	public InfoGen_Thrift start_asyn(InfoGen_Configuration infogen_configuration, Thrift_Message_Handler handler) {
-		Thread t = new Thread(new Runnable() {
-			@SuppressWarnings({ "rawtypes", "unchecked" })
-			@Override
-			public void run() {
-				try {
-					final Message.Processor processor = new Message.Processor(handler);
-					//
-					TNonblockingServerSocket socket = new TNonblockingServerSocket(infogen_configuration.rpc_port);
+		Thread t = new Thread(() -> {
+			try {
+				@SuppressWarnings({ "rawtypes", "unchecked" })
+				final Message.Processor processor = new Message.Processor(handler);
+				//
+				TNonblockingServerSocket socket = new TNonblockingServerSocket(infogen_configuration.rpc_port);
 
-					TThreadedSelectorServer.Args arg = new TThreadedSelectorServer.Args(socket);
-					arg.transportFactory(new TFramedTransport.Factory());// 以frame为单位进行传输，非阻塞式服务中使用
-					arg.protocolFactory(new TCompactProtocol.Factory());// 压缩格式
-					arg.processorFactory(new TProcessorFactory(processor));
+				TThreadedSelectorServer.Args arg = new TThreadedSelectorServer.Args(socket);
+				arg.transportFactory(new TFramedTransport.Factory());// 以frame为单位进行传输，非阻塞式服务中使用
+				arg.protocolFactory(new TCompactProtocol.Factory());// 压缩格式
+				arg.processorFactory(new TProcessorFactory(processor));
 
-					TServer server = new TThreadedSelectorServer(arg);
+				TServer server = new TThreadedSelectorServer(arg);
 
-					System.out.println("#服务启动-使用:非阻塞&高效二进制编码");
-					server.serve();
-				} catch (Exception e) {
-					LOGGER.error("启动失败", e);
-				}
+				System.out.println("#服务启动-使用:非阻塞&高效二进制编码");
+				server.serve();
+			} catch (Exception e) {
+				LOGGER.error("启动失败", e);
 			}
 		});
 		t.setDaemon(true);
@@ -84,27 +81,24 @@ public class InfoGen_Thrift {
 	 * @return
 	 */
 	public InfoGen_Thrift start_blocking(InfoGen_Configuration infogen_configuration, Thrift_Message_Handler handler) {
-		Thread t = new Thread(new Runnable() {
-			@SuppressWarnings({ "rawtypes", "unchecked" })
-			@Override
-			public void run() {
-				try {
-					final Message.Processor processor = new Message.Processor(handler);
-					//
-					TServerSocket socket = new TServerSocket(infogen_configuration.rpc_port);
+		Thread t = new Thread(() -> {
+			try {
+				@SuppressWarnings({ "rawtypes", "unchecked" })
+				final Message.Processor processor = new Message.Processor(handler);
+				//
+				TServerSocket socket = new TServerSocket(infogen_configuration.rpc_port);
 
-					TThreadPoolServer.Args arg = new TThreadPoolServer.Args(socket);
-					arg.transportFactory(new TTransportFactory());
-					arg.protocolFactory(new TCompactProtocol.Factory());
-					arg.processorFactory(new TProcessorFactory(processor));
+				TThreadPoolServer.Args arg = new TThreadPoolServer.Args(socket);
+				arg.transportFactory(new TTransportFactory());
+				arg.protocolFactory(new TCompactProtocol.Factory());
+				arg.processorFactory(new TProcessorFactory(processor));
 
-					TServer server = new TThreadPoolServer(arg);
+				TServer server = new TThreadPoolServer(arg);
 
-					System.out.println("#服务启动-使用:非阻塞&高效二进制编码");
-					server.serve();
-				} catch (Exception e) {
-					LOGGER.error("启动失败", e);
-				}
+				System.out.println("#服务启动-使用:非阻塞&高效二进制编码");
+				server.serve();
+			} catch (Exception e) {
+				LOGGER.error("启动失败", e);
 			}
 		});
 		t.setDaemon(true);

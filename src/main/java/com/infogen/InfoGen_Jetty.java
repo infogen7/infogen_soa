@@ -33,7 +33,7 @@ public class InfoGen_Jetty {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_Jetty.class.getName());
 
 	private static class InnerInstance {
-		public static InfoGen_Jetty instance = new InfoGen_Jetty();
+		public static final InfoGen_Jetty instance = new InfoGen_Jetty();
 	}
 
 	public static InfoGen_Jetty getInstance() {
@@ -53,17 +53,14 @@ public class InfoGen_Jetty {
 	 * @return
 	 */
 	public InfoGen_Jetty start(InfoGen_Configuration infogen_configuration, String CONTEXT, String DEFAULT_WEBAPP_PATH, String DESCRIPTOR) {
-		Thread t = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					final Server server = createServerInSource(infogen_configuration.http_port, CONTEXT, NativePath.get(DEFAULT_WEBAPP_PATH).toString(), NativePath.get(DESCRIPTOR).toString());
-					server.start();
-					server.join();
-				} catch (Exception e) {
-					LOGGER.error("启动jetty失败", e);
-					System.exit(-1);
-				}
+		Thread t = new Thread(() -> {
+			try {
+				final Server server = createServerInSource(infogen_configuration.http_port, CONTEXT, NativePath.get(DEFAULT_WEBAPP_PATH).toString(), NativePath.get(DESCRIPTOR).toString());
+				server.start();
+				server.join();
+			} catch (Exception e) {
+				LOGGER.error("启动jetty失败", e);
+				System.exit(-1);
 			}
 		});
 		t.setDaemon(true);

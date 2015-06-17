@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
  * @version 创建时间 2013-4-1 下午4:16:43
  */
 public class Tool_Context {
-	private static Logger LOGGER = Logger.getLogger(Tool_Context.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(Tool_Context.class.getName());
 
 	/**
 	 * 获取 web 客户端IP
@@ -43,10 +43,8 @@ public class Tool_Context {
 			}
 		}
 		// 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
-		if (ipAddress != null) { // "***.***.***.***".length() = 15
-			if (ipAddress.indexOf(",") > 0) {
-				ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
-			}
+		if (ipAddress != null && ipAddress.indexOf(",") > 0) { // "***.***.***.***".length() = 15
+			ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
 		}
 
 		if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
