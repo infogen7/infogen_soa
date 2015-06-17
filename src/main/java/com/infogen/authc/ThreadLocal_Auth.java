@@ -14,8 +14,7 @@ public class ThreadLocal_Auth {
 	private static final ThreadLocal<Subject> thread_local_subject = new ThreadLocal<>();
 
 	public static Subject getSubject() {
-		Subject subject = thread_local_subject.get();
-		return subject;
+		return thread_local_subject.get();
 	}
 
 	public static void setSubject(Subject subject) {
