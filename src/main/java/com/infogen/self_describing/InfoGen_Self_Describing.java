@@ -209,9 +209,16 @@ public class InfoGen_Self_Describing {
 		LocalVariableAttribute attr = (LocalVariableAttribute) codeAttribute.getAttribute(LocalVariableAttribute.tag);
 		String[] paramNames = new String[cm.getParameterTypes().length];
 		int pos = Modifier.isStatic(cm.getModifiers()) ? 0 : 1;
+		if (pos == 0) {
+			LOGGER.error(clazz.getName() + "::" + method_name + "是静态方法,可能无法获取准确的入参");
+		}
+		for (int j = 0; j < attr.tableLength(); j++) {
+			if (attr.variableName(j).equals("this")) {
+				pos = j + 1;
+			}
+		}
 		for (int i = 0; i < paramNames.length; i++) {
 			paramNames[i] = attr.variableName(i + pos);
-			System.out.println(attr.variableName(i + pos));
 		}
 		return paramNames;
 	}
