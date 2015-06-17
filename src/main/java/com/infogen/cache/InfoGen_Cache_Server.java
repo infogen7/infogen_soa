@@ -119,30 +119,31 @@ public class InfoGen_Cache_Server {
 		}
 		return null;
 	}
-//TODO
+
 	private void reload_server(NativeServer server) {
 		String server_path = server.getPath();
 		List<String> get_childrens = ZK.get_childrens(server_path);
 		if (get_childrens.isEmpty()) {
 			return;
 		}
-		List<NativeNode> tmp_all_nodes = server.get_all_nodes();
-		D: for (String node_path : get_childrens) {
-			for (NativeNode nativeNode : tmp_all_nodes) {
-				if (nativeNode.getName().equals(node_path)) {
-					tmp_all_nodes.remove(nativeNode);
-					continue D;
-				}
+		Map<String, NativeNode> tmp_all_nodes = server.get_all_nodes();
+		for (String node_path : get_childrens) {
+			NativeNode node = tmp_all_nodes.get(node_path);
+			if (node != null) {
+				// 本地存在该节点-在临时map中删除
+				tmp_all_nodes.remove(node_path);
+				continue;
 			}
+			// 本地不存在该节点
 			String node_string = ZK.get_data(server_path.concat("/").concat(node_path));
 			try {
-				NativeNode node = Tool_Jackson.toObject(node_string, NativeNode.class);
-				server.add(node);
+				server.add(Tool_Jackson.toObject(node_string, NativeNode.class));
 			} catch (Exception e) {
 				logger.error("节点数据错误:", e);
 			}
 		}
-		for (NativeNode node : tmp_all_nodes) {
+		// 注册中心不存在的节点
+		for (NativeNode node : tmp_all_nodes.values()) {
 			server.remove(node);
 		}
 	}

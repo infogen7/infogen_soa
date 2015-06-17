@@ -1,13 +1,10 @@
-/**
- * 
- */
 package com.infogen;
 
 import java.io.IOException;
+import java.time.Clock;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
@@ -66,9 +63,9 @@ public class Service {
 	}
 
 	// ///////////////////////////////////////////////////NODE/////////////////////////////////////////////////////
-	public NativeNode get_node() {
+	public NativeNode get_node(String seed) {
 		NativeServer server = depend_server.get(server_name);
-		return server.random_node(UUID.randomUUID().toString());
+		return server.random_node(seed);
 	}
 
 	public void disabled_node(NativeNode node) {
@@ -78,7 +75,7 @@ public class Service {
 
 	// //////////////////////////////////////////////////RPC////////////////////////////////////////////////////////////////////////
 	@Deprecated
-	public Return blocking_rpc(String method, Map<String, String> name_value_pair) {
+	public Return blocking_rpc(String method, Map<String, String> name_value_pair, String seed) {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
 			return Return.FAIL(CODE._402);
@@ -87,7 +84,7 @@ public class Service {
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			try {
-				node = server.random_node(UUID.randomUUID().toString());
+				node = server.random_node(seed);
 				if (node == null) {
 					return Return.FAIL(CODE._403);
 				}
@@ -118,12 +115,16 @@ public class Service {
 	 * @return
 	 */
 	public Return get(String url, Map<String, String> name_value_pair) {
-		return blocking_http(url, name_value_pair, RequestType.GET, net_type);
+		return blocking_http(url, name_value_pair, RequestType.GET, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
 	@Deprecated
 	public Return get(String url, List<BasicNameValuePair> name_value_pair) {
-		return blocking_http(url, pair_to_map(name_value_pair), RequestType.GET, net_type);
+		return blocking_http(url, pair_to_map(name_value_pair), RequestType.GET, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+	}
+
+	public Return get(String url, Map<String, String> name_value_pair, String seed) {
+		return blocking_http(url, name_value_pair, RequestType.GET, net_type, seed);
 	}
 
 	/**
@@ -134,12 +135,16 @@ public class Service {
 	 * @return
 	 */
 	public Return post(String url, Map<String, String> name_value_pair) {
-		return blocking_http(url, name_value_pair, RequestType.POST, net_type);
+		return blocking_http(url, name_value_pair, RequestType.POST, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
 	@Deprecated
 	public Return post(String url, List<BasicNameValuePair> name_value_pair) {
-		return blocking_http(url, pair_to_map(name_value_pair), RequestType.POST, net_type);
+		return blocking_http(url, pair_to_map(name_value_pair), RequestType.POST, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+	}
+
+	public Return post(String url, Map<String, String> name_value_pair, String seed) {
+		return blocking_http(url, name_value_pair, RequestType.POST, net_type, seed);
 	}
 
 	/**
@@ -150,7 +155,11 @@ public class Service {
 	 * @return
 	 */
 	public Http_Callback async_get(String url, Map<String, String> name_value_pair) {
-		return async_http(url, name_value_pair, RequestType.GET, net_type);
+		return async_http(url, name_value_pair, RequestType.GET, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+	}
+
+	public Http_Callback async_get(String url, Map<String, String> name_value_pair, String seed) {
+		return async_http(url, name_value_pair, RequestType.GET, net_type, seed);
 	}
 
 	/**
@@ -161,7 +170,11 @@ public class Service {
 	 * @return
 	 */
 	public Http_Callback async_post(String url, Map<String, String> name_value_pair) {
-		return async_http(url, name_value_pair, RequestType.POST, net_type);
+		return async_http(url, name_value_pair, RequestType.POST, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+	}
+
+	public Http_Callback async_post(String url, Map<String, String> name_value_pair, String seed) {
+		return async_http(url, name_value_pair, RequestType.POST, net_type, seed);
 	}
 
 	/**
@@ -173,7 +186,7 @@ public class Service {
 	 * @param net_type
 	 * @return
 	 */
-	private Return blocking_http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type) {
+	private Return blocking_http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type, String seed) {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
 			return Return.FAIL(CODE._402);
@@ -182,7 +195,7 @@ public class Service {
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			try {
-				node = server.random_node(UUID.randomUUID().toString());
+				node = server.random_node(seed);
 				if (node == null) {
 					return Return.FAIL(CODE._403);
 				}
@@ -206,7 +219,7 @@ public class Service {
 	 * @param net_type
 	 * @return
 	 */
-	private Http_Callback async_http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type) {
+	private Http_Callback async_http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type, String seed) {
 		Http_Callback callback = new Http_Callback();
 
 		NativeServer server = depend_server.get(server_name);
@@ -217,7 +230,7 @@ public class Service {
 		NativeNode node = null;
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
-			node = server.random_node(UUID.randomUUID().toString());
+			node = server.random_node(seed);
 			if (node == null) {
 				callback.add(Return.FAIL(CODE._403).toJson());
 				return callback;

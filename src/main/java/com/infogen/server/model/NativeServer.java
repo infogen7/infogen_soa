@@ -4,6 +4,8 @@
 package com.infogen.server.model;
 
 import java.time.Clock;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.log4j.Logger;
@@ -52,11 +54,15 @@ public class NativeServer extends AbstractServer {
 		consistent_hash.remove(node);
 	}
 
-	public CopyOnWriteArrayList<NativeNode> get_all_nodes() {
-		CopyOnWriteArrayList<NativeNode> all_nodes = new CopyOnWriteArrayList<>();
+	public Map<String, NativeNode> get_all_nodes() {
+		Map<String, NativeNode> all_nodes = new HashMap<>();
 		synchronized (change_node_status_lock) {
-			all_nodes.addAll(available_nodes);
-			all_nodes.addAll(disabled_nodes);
+			available_nodes.forEach((node) -> {
+				all_nodes.put(node.getName(), node);
+			});
+			disabled_nodes.forEach((node) -> {
+				all_nodes.put(node.getName(), node);
+			});
 		}
 		return all_nodes;
 	}

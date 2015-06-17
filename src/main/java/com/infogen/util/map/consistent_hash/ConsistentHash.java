@@ -73,8 +73,8 @@ public class ConsistentHash<T extends ShardInfo> {
 
 	// ////////////////////////////////////////////////////////////////////////get////////////////////////////////////////////////////////////////////////
 
-	public T get(String key) {
-		SortedMap<Long, T> tail = nodes.tailMap(algo.hash(key.getBytes(charset)));
+	public T get(String seed) {
+		SortedMap<Long, T> tail = nodes.tailMap(algo.hash(seed.getBytes(charset)));
 		if (tail.isEmpty()) {
 			return nodes.get(nodes.firstKey());
 		}
