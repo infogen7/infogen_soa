@@ -39,7 +39,7 @@ import com.infogen.zookeeper.event_handle.InfoGen_Zookeeper_Handle_Watcher_Data;
  * @version 创建时间 2014年10月24日 上午11:30:26
  */
 public class InfoGen_ZooKeeper {
-	public static final Logger logger = Logger.getLogger(InfoGen_ZooKeeper.class.getName());
+	private static final Logger logger = Logger.getLogger(InfoGen_ZooKeeper.class.getName());
 
 	private static class InnerInstance {
 		public static InfoGen_ZooKeeper instance = new InfoGen_ZooKeeper();

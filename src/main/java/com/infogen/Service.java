@@ -28,7 +28,7 @@ import com.infogen.util.Return;
  * @version 创建时间 2014年10月30日 下午1:48:19
  */
 public class Service {
-	public static final Logger logger = Logger.getLogger(Service.class.getName());
+	private static final Logger logger = Logger.getLogger(Service.class.getName());
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static InfoGen instance = InfoGen.getInstance();
 	private String server_name;

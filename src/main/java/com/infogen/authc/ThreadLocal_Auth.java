@@ -1,7 +1,5 @@
 package com.infogen.authc;
 
-import org.apache.log4j.Logger;
-
 import com.infogen.authc.subject.Subject;
 
 /**
@@ -12,7 +10,6 @@ import com.infogen.authc.subject.Subject;
  * @version 1.0
  */
 public class ThreadLocal_Auth {
-	public final Logger logger = Logger.getLogger(ThreadLocal_Auth.class.getName());
 
 	private static final ThreadLocal<Subject> thread_local_subject = new ThreadLocal<>();
 

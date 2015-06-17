@@ -21,7 +21,7 @@ import com.larrylgq.aop.tools.Tool_Jackson;
  */
 public class Return extends HashMap<String, Object> {
 	private static final long serialVersionUID = 2203513787220720192L;
-	public static final Logger logger = Logger.getLogger(Return.class.getName());
+	private static final Logger logger = Logger.getLogger(Return.class.getName());
 
 	public enum Return_Fields {
 		success, code, note

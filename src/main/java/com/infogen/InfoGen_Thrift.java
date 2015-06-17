@@ -27,7 +27,7 @@ import com.infogen.thrift.Message;
  */
 @Deprecated
 public class InfoGen_Thrift {
-	public static final Logger logger = Logger.getLogger(InfoGen_Thrift.class.getName());
+	private static final Logger logger = Logger.getLogger(InfoGen_Thrift.class.getName());
 
 	private static class InnerInstance {
 		public static InfoGen_Thrift instance = new InfoGen_Thrift();

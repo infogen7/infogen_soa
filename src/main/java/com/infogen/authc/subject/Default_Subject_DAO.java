@@ -1,7 +1,5 @@
 package com.infogen.authc.subject;
 
-import org.apache.log4j.Logger;
-
 import com.infogen.util.map.LRULinkedHashMap;
 
 /**
@@ -11,7 +9,6 @@ import com.infogen.util.map.LRULinkedHashMap;
  * @version 1.0
  */
 public class Default_Subject_DAO extends Subject_DAO {
-	public static final Logger logger = Logger.getLogger(Default_Subject_DAO.class.getName());
 	private LRULinkedHashMap<String, Subject> map = new LRULinkedHashMap<>(500000);
 
 	/*

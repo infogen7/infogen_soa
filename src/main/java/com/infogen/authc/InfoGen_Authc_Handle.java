@@ -16,6 +16,7 @@ import com.infogen.authc.subject.Default_Subject_DAO;
 import com.infogen.authc.subject.Subject;
 import com.infogen.authc.subject.Subject_DAO;
 import com.infogen.self_describing.component.Function;
+import com.infogen.util.CODE;
 import com.infogen.util.Return;
 
 /**
@@ -25,7 +26,7 @@ import com.infogen.util.Return;
  * @email larry.lv.word@gmail.com
  */
 public class InfoGen_Authc_Handle {
-	public final static Logger logger = Logger.getLogger(InfoGen_Authc_Handle.class.getName());
+	private final static Logger logger = Logger.getLogger(InfoGen_Authc_Handle.class.getName());
 
 	private static Subject_DAO subject_dao = new Default_Subject_DAO();
 	public static String TOKEN_NAME = "x-access-token";
@@ -76,6 +77,10 @@ public class InfoGen_Authc_Handle {
 			ThreadLocal_Auth.setSubject(subject);
 		} catch (InfoGen_Auth_Exception e) {
 			response.getWriter().write(Return.FAIL(e.name(), e.note()).toJson());
+			return false;
+		} catch (Exception e) {
+			logger.error("认证异常:", e);
+			response.getWriter().write(Return.FAIL(CODE._500).toJson());
 			return false;
 		}
 		return true;

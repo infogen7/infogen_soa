@@ -12,8 +12,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
-
 import com.infogen.authc.InfoGen_Authc_Handle;
 import com.infogen.tracking.InfoGen_HTTP_Tracking_Handle;
 
@@ -25,7 +23,6 @@ import com.infogen.tracking.InfoGen_HTTP_Tracking_Handle;
  */
 @WebFilter(filterName = "InfoGen_SOA_Filter", urlPatterns = { "/*" }, asyncSupported = true)
 public class InfoGen_SOA_Filter implements Filter {
-	public static Logger logger = Logger.getLogger(InfoGen_SOA_Filter.class.getName());
 	private InfoGen_HTTP_Tracking_Handle track = new InfoGen_HTTP_Tracking_Handle();
 	private InfoGen_Authc_Handle authc = new InfoGen_Authc_Handle();
 

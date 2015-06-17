@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public class InfoGen_AOP_Configuration {
-	public final Logger logger = Logger.getLogger(InfoGen_AOP_Configuration.class.getName());
 	@Deprecated
 	public final static String infogen_logger_topic_execution_time = "infogen_logger_topic_execution_time";
 

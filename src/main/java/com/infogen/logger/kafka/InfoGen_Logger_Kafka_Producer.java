@@ -23,7 +23,7 @@ import com.infogen.logger.Logger_Once;
  * @version 创建时间 2015年1月12日 上午10:00:46
  */
 public class InfoGen_Logger_Kafka_Producer {
-	public final Logger logger = Logger.getLogger(InfoGen_Jetty.class.getName());
+	private final Logger logger = Logger.getLogger(InfoGen_Jetty.class.getName());
 
 	private static class InnerInstance {
 		public static InfoGen_Logger_Kafka_Producer instance = new InfoGen_Logger_Kafka_Producer();

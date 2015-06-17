@@ -19,7 +19,7 @@ import com.infogen.util.Return;
  * @version 创建时间 2014年12月15日 下午3:38:49
  */
 public class Http_Callback {
-	public static final Logger logger = Logger.getLogger(Http_Callback.class.getName());
+	private static final Logger logger = Logger.getLogger(Http_Callback.class.getName());
 
 	private ArrayBlockingQueue<String> queue = new ArrayBlockingQueue<>(1);
 

@@ -25,7 +25,7 @@ import com.larrylgq.aop.tools.Tool_Jackson;
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class NativeServer extends AbstractServer {
-	public static final Logger logger = Logger.getLogger(NativeServer.class.getName());
+	private static final Logger logger = Logger.getLogger(NativeServer.class.getName());
 
 	private CopyOnWriteArrayList<NativeNode> available_nodes = new CopyOnWriteArrayList<>();
 	private CopyOnWriteArrayList<NativeNode> disabled_nodes = new CopyOnWriteArrayList<>();

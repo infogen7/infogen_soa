@@ -33,7 +33,7 @@ import com.larrylgq.aop.tools.Tool_Jackson;
  * @version 1.0
  */
 public class InfoGen {
-	public final Logger logger = Logger.getLogger(InfoGen.class.getName());
+	private final Logger logger = Logger.getLogger(InfoGen.class.getName());
 
 	private static class InnerInstance {
 		public static InfoGen instance = new InfoGen();

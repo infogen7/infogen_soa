@@ -3,8 +3,6 @@ package com.infogen.tracking;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
-
 /**
  * AOP的工具类,可以获取存放在ThreadLocal中的对象
  * 
@@ -13,7 +11,6 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public class ThreadLocal_Tracking {
-	public final Logger logger = Logger.getLogger(ThreadLocal_Tracking.class.getName());
 	private static final ThreadLocal<HttpServletRequest> request = new ThreadLocal<>();
 	private static final ThreadLocal<HttpServletResponse> response = new ThreadLocal<>();
 	private static final ThreadLocal<CallChain> callChain = new ThreadLocal<>();

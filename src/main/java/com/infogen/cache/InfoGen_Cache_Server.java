@@ -36,7 +36,7 @@ import com.larrylgq.aop.util.NativePath;
  * @version 创建时间 2014年12月1日 下午4:37:30
  */
 public class InfoGen_Cache_Server {
-	public static final Logger logger = Logger.getLogger(InfoGen_Cache_Server.class.getName());
+	private static final Logger logger = Logger.getLogger(InfoGen_Cache_Server.class.getName());
 
 	private static class InnerInstance {
 		public static InfoGen_Cache_Server instance = new InfoGen_Cache_Server();

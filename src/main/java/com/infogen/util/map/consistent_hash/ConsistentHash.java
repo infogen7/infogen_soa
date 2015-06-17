@@ -22,7 +22,7 @@ import com.infogen.util.map.consistent_hash.hash.HashFunction;
  * @version 1.0
  */
 public class ConsistentHash<T extends ShardInfo> {
-	public static final Logger logger = Logger.getLogger(ConsistentHash.class.getName());
+	private static final Logger logger = Logger.getLogger(ConsistentHash.class.getName());
 	public static final Charset charset = StandardCharsets.UTF_8;
 	public static final int DEFAULT_WEIGHT = 1;
 	public static final Pattern DEFAULT_KEY_TAG_PATTERN = Pattern.compile("\\{(.+?)\\}");// 获取 {} 中间的内容

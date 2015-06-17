@@ -2,8 +2,6 @@ package com.infogen.util;
 
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
-
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年6月12日 下午3:56:17
  * @since 1.0
@@ -11,7 +9,6 @@ import org.apache.log4j.Logger;
  */
 public class Parameter extends HashMap<String, String> {
 	private static final long serialVersionUID = -5436768657673377874L;
-	public static final Logger logger = Logger.getLogger(Return.class.getName());
 
 	public static Parameter create() {
 		return new Parameter();

@@ -17,7 +17,7 @@ import com.infogen.thrift.Response;
  * @version 创建时间 2014年12月15日 下午3:38:49
  */
 public class RPC_Callback {
-	public static final Logger logger = Logger.getLogger(RPC_Callback.class.getName());
+	private static final Logger logger = Logger.getLogger(RPC_Callback.class.getName());
 
 	private ArrayBlockingQueue<Response> queue = new ArrayBlockingQueue<Response>(1);
 

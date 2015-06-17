@@ -8,8 +8,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
-
 import com.infogen.InfoGen;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
@@ -24,7 +22,6 @@ import com.infogen.tracking.enum0.Track;
  * @version 1.0
  */
 public class InfoGen_HTTP_Tracking_Handle {
-	public final Logger logger = Logger.getLogger(InfoGen_HTTP_Tracking_Handle.class.getName());
 	public RegisterServer register_server = InfoGen.getInstance().getConfiguration().register_server;
 	public RegisterNode register_node = InfoGen.getInstance().getConfiguration().register_node;
 

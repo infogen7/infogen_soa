@@ -12,7 +12,7 @@ import com.infogen.util.map.LRULinkedHashMap;
  * @version 1.0
  */
 public class Logger_Once {
-	public static Logger logger = Logger.getLogger(Logger_Once.class.getName());
+	private static Logger logger = Logger.getLogger(Logger_Once.class.getName());
 	private static LRULinkedHashMap<String, Boolean> map = new LRULinkedHashMap<>(10000);
 
 	private static Boolean has(String message) {

@@ -16,7 +16,7 @@ import redis.clients.jedis.JedisPoolConfig;
  * @version 1.0
  */
 public class Redis_Subject_DAO extends Subject_DAO {
-	public static final Logger logger = Logger.getLogger(Redis_Subject_DAO.class.getName());
+	private static final Logger logger = Logger.getLogger(Redis_Subject_DAO.class.getName());
 	private JedisPool pool = null;
 
 	private JedisPoolConfig getJedisPoolConfig() {

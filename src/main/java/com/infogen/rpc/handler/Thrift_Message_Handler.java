@@ -25,7 +25,7 @@ import com.larrylgq.aop.tools.Tool_Jackson;
  * @version 创建时间 2014年11月7日 上午10:54:29
  */
 public class Thrift_Message_Handler implements Iface {
-	public static final Logger logger = Logger.getLogger(Thrift_Message_Handler.class.getName());
+	private static final Logger logger = Logger.getLogger(Thrift_Message_Handler.class.getName());
 
 	private Map<String, Function> functions = InfoGen.getInstance().getConfiguration().register_server.getFunctions();
 

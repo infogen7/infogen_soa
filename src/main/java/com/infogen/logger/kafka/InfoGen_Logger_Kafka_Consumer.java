@@ -15,9 +15,6 @@ import kafka.javaapi.consumer.ConsumerConnector;
 import kafka.serializer.StringDecoder;
 import kafka.utils.VerifiableProperties;
 
-import org.apache.log4j.Logger;
-
-import com.infogen.InfoGen_Jetty;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.logger.kafka.event_handle.InfoGen_Logger_Handle_Consume;
 
@@ -29,7 +26,6 @@ import com.infogen.logger.kafka.event_handle.InfoGen_Logger_Handle_Consume;
  * @version 创建时间 2015年1月12日 下午6:38:29
  */
 public class InfoGen_Logger_Kafka_Consumer {
-	public final Logger logger = Logger.getLogger(InfoGen_Jetty.class.getName());
 
 	public static void consume(InfoGen_Configuration infogen_configuration, String group, String topic, InfoGen_Logger_Handle_Consume handle) {
 		Thread thread = new Thread(new Runnable() {
