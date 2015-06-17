@@ -1,1 +1,1 @@
-com.infogen.web.ServletContainerInitializer.InfoGenServletContainerInitializer
+com.infogen.http.ServletContainerInitializer.InfoGenServletContainerInitializer
