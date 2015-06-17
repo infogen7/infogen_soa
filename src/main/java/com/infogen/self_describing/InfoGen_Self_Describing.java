@@ -41,7 +41,7 @@ import com.infogen.self_describing.component.OutParameter;
  * @version 1.0
  */
 public class InfoGen_Self_Describing {
-	public final Logger logger = Logger.getLogger(InfoGen_Self_Describing.class.getName());
+	private final Logger logger = Logger.getLogger(InfoGen_Self_Describing.class.getName());
 
 	private static class InnerInstance {
 		public static InfoGen_Self_Describing instance = new InfoGen_Self_Describing();
@@ -132,12 +132,7 @@ public class InfoGen_Self_Describing {
 					String[] get_in_parameter_names = reflect_parameters.length == 0 ? new String[] {} : get_in_parameter_names(clazz, method.getName(), reflect_parameters);
 					for (int i = 0; i < reflect_parameters.length; i++) {
 						java.lang.reflect.Parameter reflect_parameter = reflect_parameters[i];
-						String name = null;
-						try {
-							name = get_in_parameter_names[i];
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+						String name = get_in_parameter_names[i];
 						if (reflect_parameter.getType().equals(HttpServletRequest.class)) {
 							continue;
 						}
@@ -175,8 +170,7 @@ public class InfoGen_Self_Describing {
 					functions.put(function.getRequest_method(), function);
 				}
 			} catch (Exception e) {
-				logger.info("解析class失败:");
-				e.printStackTrace();
+				logger.error("解析class失败:", e);
 			}
 		});
 		return functions;

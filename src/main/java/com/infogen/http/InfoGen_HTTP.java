@@ -28,7 +28,7 @@ import com.squareup.okhttp.Response;
  * @version 创建时间 2014年10月30日 下午1:05:24
  */
 public class InfoGen_HTTP {
-	public static final Logger logger = Logger.getLogger(InfoGen_HTTP.class.getName());
+	private static final Logger logger = Logger.getLogger(InfoGen_HTTP.class.getName());
 	// 当使用长轮循时需要注意不能超过此时间
 	private static Integer socket_timeout = 10_000;// 数据传输时间
 	private static Integer connect_timeout = 3_000;// 连接时间
@@ -37,10 +37,7 @@ public class InfoGen_HTTP {
 		client.setConnectTimeout(connect_timeout, TimeUnit.SECONDS);
 		client.setReadTimeout(socket_timeout, TimeUnit.SECONDS);
 		client.setWriteTimeout(socket_timeout, TimeUnit.SECONDS);
-	}
-
-	public static void main(String[] args) throws Exception {
-		System.out.println(do_get("http://www.eclipse.org/jetty/documentation/current/http-client-api.html", null));
+		logger.info("初始化HTTP CLIENT");
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////////////////get/////////////////////////////////////////////////////////////
@@ -56,7 +53,7 @@ public class InfoGen_HTTP {
 			params.put(Track.x_referer.key, callChain.getTarget());
 		}
 
-		StringBuffer do_get_sbf = new StringBuffer();
+		StringBuilder do_get_sbf = new StringBuilder();
 		do_get_sbf.append(url);
 		String[] keys = new String[params.size()];
 		params.keySet().toArray(keys);

@@ -30,7 +30,7 @@ import com.infogen.configuration.InfoGen_Configuration;
 import com.larrylgq.aop.util.NativePath;
 
 public class InfoGen_Jetty {
-	public final Logger logger = Logger.getLogger(InfoGen_Jetty.class.getName());
+	private final Logger logger = Logger.getLogger(InfoGen_Jetty.class.getName());
 
 	private static class InnerInstance {
 		public static InfoGen_Jetty instance = new InfoGen_Jetty();

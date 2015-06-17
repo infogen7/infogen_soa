@@ -225,7 +225,7 @@ public class InfoGen_ZooKeeper {
 			logger.info("获取子节点数据:".concat(path));
 			zookeeper.getChildren(path, false).stream().forEach(service_path -> {
 				try {
-					StringBuffer service_path_sbf = new StringBuffer(path);
+					StringBuilder service_path_sbf = new StringBuilder(path);
 					if (!path.equals("/")) {
 						service_path_sbf.append("/");
 					}
@@ -235,7 +235,7 @@ public class InfoGen_ZooKeeper {
 						list.add(new String(data));
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error("获取字节点数据错误:", e);
 				}
 			});
 			logger.info("获取子节点数据成功:".concat(path));
@@ -243,6 +243,7 @@ public class InfoGen_ZooKeeper {
 		} catch (Exception e) {
 			logger.error("获取子节点数据错误: ", e);
 		}
+
 		return null;
 	}
 

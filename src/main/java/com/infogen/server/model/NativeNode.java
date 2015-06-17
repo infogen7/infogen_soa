@@ -88,7 +88,7 @@ public class NativeNode extends AbstractNode {
 	}
 
 	public Http_Callback async_http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type) throws IOException {
-		StringBuffer async_http_sbf = new StringBuffer();
+		StringBuilder async_http_sbf = new StringBuilder();
 		if (request_type == RequestType.GET) {
 			if (net_type == NetType.LOCAL) {
 				async_http_sbf.append(http_protocol).append("://").append(ip).append(":").append(http_port).append("/").append(method);
@@ -107,7 +107,7 @@ public class NativeNode extends AbstractNode {
 	}
 
 	public String http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type) throws IOException {
-		StringBuffer blocking_http_sbf = new StringBuffer();
+		StringBuilder blocking_http_sbf = new StringBuilder();
 		if (request_type == RequestType.GET) {
 			if (net_type == NetType.LOCAL) {
 				blocking_http_sbf.append(http_protocol).append("://").append(ip).append(":").append(http_port).append("/").append(method);

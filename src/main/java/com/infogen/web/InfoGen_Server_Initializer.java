@@ -7,6 +7,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
+import org.apache.log4j.Logger;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
@@ -19,6 +20,7 @@ import com.infogen.web.ServletContainerInitializer.WebApplicationInitializer;
  * @email larry.lv.word@gmail.com
  */
 public class InfoGen_Server_Initializer implements WebApplicationInitializer {
+	private static Logger logger = Logger.getLogger(InfoGen_Server_Initializer.class.getName());
 	public static ServletContext servletContext;
 	public static String config_path;
 	public static String mapping;
@@ -63,8 +65,7 @@ public class InfoGen_Server_Initializer implements WebApplicationInitializer {
 		try {
 			start_mvc(servletContext);
 		} catch (IOException e) {
-			e.printStackTrace();
-			servletContext.log("启动MVC框架失败");
+			logger.error("启动MVC框架失败:", e);
 			System.exit(1);
 		}
 	}

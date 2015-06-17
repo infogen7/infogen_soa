@@ -39,7 +39,7 @@ import com.larrylgq.aop.util.NativePath;
  */
 
 public class InfoGen_Configuration {
-	public final static Logger logger = Logger.getLogger(InfoGen_Configuration.class.getName());
+	private final static Logger logger = Logger.getLogger(InfoGen_Configuration.class.getName());
 	public final static ZoneId zoneid = ZoneId.of("GMT+08:00");
 	public final static Charset charset = StandardCharsets.UTF_8;
 
