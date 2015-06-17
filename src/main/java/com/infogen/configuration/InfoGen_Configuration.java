@@ -39,7 +39,7 @@ import com.larrylgq.aop.util.NativePath;
  */
 
 public class InfoGen_Configuration {
-	private final static Logger logger = Logger.getLogger(InfoGen_Configuration.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(InfoGen_Configuration.class.getName());
 	public final static ZoneId zoneid = ZoneId.of("GMT+08:00");
 	public final static Charset charset = StandardCharsets.UTF_8;
 
@@ -75,12 +75,12 @@ public class InfoGen_Configuration {
 	private void initialization(Properties infogen_properties) throws IOException, URISyntaxException {
 		zookeeper = infogen_properties.getProperty("infogen.zookeeper");
 		if (zookeeper == null || zookeeper.trim().isEmpty()) {
-			logger.error("zookeeper配置不能为空:infogen.zookeeper");
+			LOGGER.error("zookeeper配置不能为空:infogen.zookeeper");
 			System.exit(-1);
 		}
 		kafka = infogen_properties.getProperty("infogen.kafka");
 		if (kafka == null || kafka.trim().isEmpty()) {
-			logger.error("kafka配置不能为空:infogen.kafka");
+			LOGGER.error("kafka配置不能为空:infogen.kafka");
 			System.exit(-1);
 		}
 		// server
@@ -96,7 +96,7 @@ public class InfoGen_Configuration {
 		Map<String, Function> functions = InfoGen_Self_Describing.getInstance().self_describing(AOP.getInstance().getClasses());// 读取自描述
 		register_server.setFunctions(functions);
 		if (!register_server.available()) {
-			logger.error("服务配置不能为空:infogen.name,infogen.protocol");
+			LOGGER.error("服务配置不能为空:infogen.name,infogen.protocol");
 			System.exit(-1);
 		}
 		// node
@@ -137,7 +137,7 @@ public class InfoGen_Configuration {
 		}
 
 		if (!register_node.available()) {
-			logger.error("节点配置不可用:infogen.server_room,infogen.ratio,infogen.ip,infogen.http.port,infogen.rpc.port");
+			LOGGER.error("节点配置不可用:infogen.server_room,infogen.ratio,infogen.ip,infogen.http.port,infogen.rpc.port");
 			System.exit(-1);
 		}
 

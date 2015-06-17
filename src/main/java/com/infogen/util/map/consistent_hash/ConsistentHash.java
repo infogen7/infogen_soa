@@ -22,7 +22,7 @@ import com.infogen.util.map.consistent_hash.hash.HashFunction;
  * @version 1.0
  */
 public class ConsistentHash<T extends ShardInfo> {
-	private static final Logger logger = Logger.getLogger(ConsistentHash.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(ConsistentHash.class.getName());
 	public static final Charset charset = StandardCharsets.UTF_8;
 	public static final int DEFAULT_WEIGHT = 1;
 	public static final Pattern DEFAULT_KEY_TAG_PATTERN = Pattern.compile("\\{(.+?)\\}");// 获取 {} 中间的内容
@@ -56,7 +56,7 @@ public class ConsistentHash<T extends ShardInfo> {
 			try {
 				nodes.put(this.algo.hash(new StringBuilder(shardInfo.getName()).append("*").append(shardInfo.getRatio()).append("*").append(n).toString(), charset), shardInfo);
 			} catch (UnsupportedEncodingException e) {
-				logger.error("添加节点失败", e);
+				LOGGER.error("添加节点失败", e);
 			}
 		}
 	}
@@ -66,7 +66,7 @@ public class ConsistentHash<T extends ShardInfo> {
 			try {
 				nodes.remove(this.algo.hash(new StringBuilder(shardInfo.getName()).append("*").append(shardInfo.getRatio()).append("*").append(n).toString(), charset));
 			} catch (UnsupportedEncodingException e) {
-				logger.error("删除节点失败", e);
+				LOGGER.error("删除节点失败", e);
 			}
 		}
 	}

@@ -28,7 +28,7 @@ import com.infogen.util.Return;
  * @version 创建时间 2014年10月30日 下午1:48:19
  */
 public class Service {
-	private static final Logger logger = Logger.getLogger(Service.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(Service.class.getName());
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static InfoGen instance = InfoGen.getInstance();
 	private String server_name;
@@ -90,7 +90,7 @@ public class Service {
 				}
 				return node.call_once("", method, name_value_pair);
 			} catch (TException e) {
-				logger.error("调用失败".concat(e.getMessage()));
+				LOGGER.error("调用失败".concat(e.getMessage()));
 				server.disabled(node);
 				continue;
 			}
@@ -202,7 +202,7 @@ public class Service {
 				String http = node.http(method, name_value_pair, request_type, net_type);
 				return Return.create(http);
 			} catch (IOException e) {
-				logger.error("调用失败".concat(e.getMessage()));
+				LOGGER.error("调用失败".concat(e.getMessage()));
 				server.disabled(node);
 				continue;
 			}
@@ -238,7 +238,7 @@ public class Service {
 			try {
 				return node.async_http(method, name_value_pair, request_type, net_type);
 			} catch (IOException e) {
-				logger.error("调用失败", e);
+				LOGGER.error("调用失败", e);
 				server.disabled(node);
 				continue;
 			}

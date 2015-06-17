@@ -16,7 +16,7 @@ import redis.clients.jedis.JedisPoolConfig;
  * @version 1.0
  */
 public class Redis_Subject_DAO extends Subject_DAO {
-	private static final Logger logger = Logger.getLogger(Redis_Subject_DAO.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(Redis_Subject_DAO.class.getName());
 	private JedisPool pool = null;
 
 	private JedisPoolConfig getJedisPoolConfig() {
@@ -29,20 +29,20 @@ public class Redis_Subject_DAO extends Subject_DAO {
 	}
 
 	public Redis_Subject_DAO(String ip, Integer port) {
-		logger.info("#创建 redis 连接池");
+		LOGGER.info("#创建 redis 连接池");
 		pool = new JedisPool(getJedisPoolConfig(), ip, port, 1000);
-		logger.info("#创建 redis 连接池成功");
+		LOGGER.info("#创建 redis 连接池成功");
 	}
 
 	public Redis_Subject_DAO(String ip, Integer port, String password) {
-		logger.info("#创建 redis 连接池");
+		LOGGER.info("#创建 redis 连接池");
 		pool = new JedisPool(getJedisPoolConfig(), ip, port, 1000, password);
-		logger.info("#创建 redis 连接池成功");
+		LOGGER.info("#创建 redis 连接池成功");
 	}
 
 	public Jedis take() {
 		if (pool == null) {
-			logger.error("Redis 没有初始化");
+			LOGGER.error("Redis 没有初始化");
 			return null;
 		}
 		return pool.getResource();

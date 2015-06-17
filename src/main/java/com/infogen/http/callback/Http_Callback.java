@@ -19,7 +19,7 @@ import com.infogen.util.Return;
  * @version 创建时间 2014年12月15日 下午3:38:49
  */
 public class Http_Callback {
-	private static final Logger logger = Logger.getLogger(Http_Callback.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(Http_Callback.class.getName());
 
 	private ArrayBlockingQueue<String> queue = new ArrayBlockingQueue<>(1);
 
@@ -39,7 +39,7 @@ public class Http_Callback {
 				return Return.create(poll);
 			}
 		} catch (Exception e) {
-			logger.error("获取异步返回值异常", e);
+			LOGGER.error("获取异步返回值异常", e);
 			return Return.FAIL(CODE._510);
 		}
 	}

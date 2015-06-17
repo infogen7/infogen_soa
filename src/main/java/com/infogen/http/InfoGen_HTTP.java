@@ -28,7 +28,7 @@ import com.squareup.okhttp.Response;
  * @version 创建时间 2014年10月30日 下午1:05:24
  */
 public class InfoGen_HTTP {
-	private static final Logger logger = Logger.getLogger(InfoGen_HTTP.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP.class.getName());
 	// 当使用长轮循时需要注意不能超过此时间
 	private static Integer socket_timeout = 10_000;// 数据传输时间
 	private static Integer connect_timeout = 3_000;// 连接时间
@@ -37,7 +37,7 @@ public class InfoGen_HTTP {
 		client.setConnectTimeout(connect_timeout, TimeUnit.SECONDS);
 		client.setReadTimeout(socket_timeout, TimeUnit.SECONDS);
 		client.setWriteTimeout(socket_timeout, TimeUnit.SECONDS);
-		logger.info("初始化HTTP CLIENT");
+		LOGGER.info("初始化HTTP CLIENT");
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////////////////get/////////////////////////////////////////////////////////////

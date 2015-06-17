@@ -39,10 +39,10 @@ import com.infogen.zookeeper.event_handle.InfoGen_Zookeeper_Handle_Watcher_Data;
  * @version 创建时间 2014年10月24日 上午11:30:26
  */
 public class InfoGen_ZooKeeper {
-	private static final Logger logger = Logger.getLogger(InfoGen_ZooKeeper.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_ZooKeeper.class.getName());
 
 	private static class InnerInstance {
-		public static InfoGen_ZooKeeper instance = new InfoGen_ZooKeeper();
+		public static final InfoGen_ZooKeeper instance = new InfoGen_ZooKeeper();
 	}
 
 	public static InfoGen_ZooKeeper getInstance() {
@@ -79,14 +79,14 @@ public class InfoGen_ZooKeeper {
 	public void start_zookeeper(String host_port, InfoGen_Zookeeper_Handle_Expired expired_handle) throws IOException {
 		if (zookeeper == null) {
 			this.expired_handle = expired_handle;
-			logger.info("启动zookeeper:".concat(host_port));
+			LOGGER.info("启动zookeeper:".concat(host_port));
 			this.host_port = host_port;
 			this.zookeeper = new ZooKeeper(host_port, 10000, connect_watcher);
 
 			reload_auth_info();
-			logger.info("启动zookeeper成功:".concat(host_port));
+			LOGGER.info("启动zookeeper成功:".concat(host_port));
 		} else {
-			logger.info("已经存在一个运行的zookeeper实例");
+			LOGGER.info("已经存在一个运行的zookeeper实例");
 		}
 	}
 
@@ -115,10 +115,10 @@ public class InfoGen_ZooKeeper {
 	 * @throws InterruptedException
 	 */
 	public void stop_zookeeper() throws InterruptedException {
-		logger.info("关闭zookeeper");
+		LOGGER.info("关闭zookeeper");
 		zookeeper.close();
 		zookeeper = null;
-		logger.info("关闭zookeeper成功");
+		LOGGER.info("关闭zookeeper成功");
 	}
 
 	/**
@@ -133,24 +133,24 @@ public class InfoGen_ZooKeeper {
 	public String create(String path, byte[] data, List<ACL> acls, CreateMode create_mode) {
 		String _return = null;
 		try {
-			logger.info("创建节点:".concat(path));
+			LOGGER.info("创建节点:".concat(path));
 			_return = zookeeper.create(path, data, acls, create_mode);
-			logger.info("创建节点成功:".concat(_return));
+			LOGGER.info("创建节点成功:".concat(_return));
 		} catch (KeeperException e) {
 			switch (e.code()) {
 			case CONNECTIONLOSS:
 				create(path, data, create_mode);
-				logger.warn("连接中断,正在重试...: " + path);
+				LOGGER.warn("连接中断,正在重试...: " + path);
 				break;
 			case NODEEXISTS:
 				_return = Code.NODEEXISTS.name();
-				logger.warn("节点已经存在: " + path);
+				LOGGER.warn("节点已经存在: " + path);
 				break;
 			default:
-				logger.error("未知错误: ", KeeperException.create(e.code(), path));
+				LOGGER.error("未知错误: ", KeeperException.create(e.code(), path));
 			}
 		} catch (Exception e) {
-			logger.error("未知程序中断错误: ", e);
+			LOGGER.error("未知程序中断错误: ", e);
 		}
 		return _return;
 	}
@@ -162,47 +162,47 @@ public class InfoGen_ZooKeeper {
 	public Stat exists(String path) {
 		Stat exists = null;
 		try {
-			logger.info("判断节点是否存在:".concat(path));
+			LOGGER.info("判断节点是否存在:".concat(path));
 			exists = zookeeper.exists(path, false);
-			logger.info("判断节点是否存在成功:".concat(path));
+			LOGGER.info("判断节点是否存在成功:".concat(path));
 		} catch (Exception e) {
-			logger.error("判断节点是否存在错误: ", e);
+			LOGGER.error("判断节点是否存在错误: ", e);
 		}
 		return exists;
 	}
 
 	public void delete(String path) {
 		try {
-			logger.info("删除节点:".concat(path));
+			LOGGER.info("删除节点:".concat(path));
 			zookeeper.delete(path, -1);
-			logger.info("删除节点成功:".concat(path));
+			LOGGER.info("删除节点成功:".concat(path));
 		} catch (Exception e) {
-			logger.error("删除节点错误: ", e);
+			LOGGER.error("删除节点错误: ", e);
 		}
 	}
 
 	public String get_data(String path) {
 		try {
-			logger.info("获取节点数据:".concat(path));
+			LOGGER.info("获取节点数据:".concat(path));
 			byte[] data = zookeeper.getData(path, false, null);
 			if (data != null) {
-				logger.info("获取节点数据成功:".concat(path));
+				LOGGER.info("获取节点数据成功:".concat(path));
 				return new String(data);
 			}
 		} catch (Exception e) {
-			logger.error("获取节点数据错误: ", e);
+			LOGGER.error("获取节点数据错误: ", e);
 		}
 		return null;
 	}
 
 	public Stat set_data(String path, byte[] data, int version) {
 		try {
-			logger.info("写入节点数据:".concat(path));
+			LOGGER.info("写入节点数据:".concat(path));
 			Stat setData = zookeeper.setData(path, data, version);
-			logger.info("写入节点数据成功:".concat(path));
+			LOGGER.info("写入节点数据成功:".concat(path));
 			return setData;
 		} catch (Exception e) {
-			logger.error("写入节点数据失败: ", e);
+			LOGGER.error("写入节点数据失败: ", e);
 		}
 		return null;
 	}
@@ -210,11 +210,11 @@ public class InfoGen_ZooKeeper {
 	public List<String> get_childrens(String path) {
 		List<String> list = new ArrayList<String>();
 		try {
-			logger.info("获取子节点目录:".concat(path));
+			LOGGER.info("获取子节点目录:".concat(path));
 			list = zookeeper.getChildren(path, false).stream().filter(service_path -> !service_path.equals("zookeeper")).collect(Collectors.toList());
-			logger.info("获取子节点目录成功:".concat(path));
+			LOGGER.info("获取子节点目录成功:".concat(path));
 		} catch (Exception e) {
-			logger.error("获取子节点目录错误: ", e);
+			LOGGER.error("获取子节点目录错误: ", e);
 		}
 		return list;
 	}
@@ -222,7 +222,7 @@ public class InfoGen_ZooKeeper {
 	public List<String> get_childrens_data(String path) {
 		List<String> list = new ArrayList<String>();
 		try {
-			logger.info("获取子节点数据:".concat(path));
+			LOGGER.info("获取子节点数据:".concat(path));
 			zookeeper.getChildren(path, false).stream().forEach(service_path -> {
 				try {
 					StringBuilder service_path_sbf = new StringBuilder(path);
@@ -235,13 +235,13 @@ public class InfoGen_ZooKeeper {
 						list.add(new String(data));
 					}
 				} catch (Exception e) {
-					logger.error("获取字节点数据错误:", e);
+					LOGGER.error("获取字节点数据错误:", e);
 				}
 			});
-			logger.info("获取子节点数据成功:".concat(path));
+			LOGGER.info("获取子节点数据成功:".concat(path));
 			return list;
 		} catch (Exception e) {
-			logger.error("获取子节点数据错误: ", e);
+			LOGGER.error("获取子节点数据错误: ", e);
 		}
 
 		return null;
@@ -254,7 +254,7 @@ public class InfoGen_ZooKeeper {
 
 	public void watcher_data_single(String path, InfoGen_Zookeeper_Handle_Watcher_Data watcher_data_handle) {
 		if (watcher_data_handle_map.get(path) != null) {
-			logger.info("当前监听已经注册过:".concat(path));
+			LOGGER.info("当前监听已经注册过:".concat(path));
 			return;
 		}
 		if (watcher_data_handle != null) {
@@ -266,27 +266,27 @@ public class InfoGen_ZooKeeper {
 
 	private void watcher_data(String path) {
 		try {
-			logger.info("启动节点数据监听:".concat(path));
+			LOGGER.info("启动节点数据监听:".concat(path));
 			zookeeper.getData(path, (event) -> {
-				logger.info("节点数据事件  path:" + event.getPath() + "  state:" + event.getState().name() + "  type:" + event.getType().name());
+				LOGGER.info("节点数据事件  path:" + event.getPath() + "  state:" + event.getState().name() + "  type:" + event.getType().name());
 				if (event.getType() == EventType.NodeDataChanged) {
-					logger.info("重新启动节点数据监听:".concat(path));
+					LOGGER.info("重新启动节点数据监听:".concat(path));
 					watcher_data(path);
-					logger.info("重新加载节点信息:".concat(path));
+					LOGGER.info("重新加载节点信息:".concat(path));
 					InfoGen_Zookeeper_Handle_Watcher_Data watcher_data_handle = watcher_data_handle_map.get(path);
 					if (watcher_data_handle != null) {
 						watcher_data_handle.handle_event(path);
 					}
 				} else if (event.getType() != EventType.None) {
 					// EventType 为 None 的时候不需要重新监听
-					logger.info("重新启动节点数据监听:".concat(path));
+					LOGGER.info("重新启动节点数据监听:".concat(path));
 					watcher_data(path);
 				}
 			}, null);
-			logger.info("启动节点数据监听成功:".concat(path));
+			LOGGER.info("启动节点数据监听成功:".concat(path));
 		} catch (Exception e) {
 			watcher_data_paths.add(path);
-			logger.error("启动节点数据监听错误: ", e);
+			LOGGER.error("启动节点数据监听错误: ", e);
 		}
 	}
 
@@ -298,7 +298,7 @@ public class InfoGen_ZooKeeper {
 	// 创建子节点监听,如果已存在该字节点的监听直接返回
 	public void watcher_children_single(String path, InfoGen_Zookeeper_Handle_Watcher_Children watcher_children_handle) {
 		if (watcher_children_handle_map.get(path) != null) {
-			logger.info("当前监听已经注册过:".concat(path));
+			LOGGER.info("当前监听已经注册过:".concat(path));
 			return;
 		}
 		if (watcher_children_handle != null) {
@@ -310,27 +310,27 @@ public class InfoGen_ZooKeeper {
 
 	private void watcher_children(String path) {
 		try {
-			logger.info("启动子节点监听:".concat(path));
+			LOGGER.info("启动子节点监听:".concat(path));
 			zookeeper.getChildren(path, (event) -> {
-				logger.info("子节点事件  path:" + event.getPath() + "  state:" + event.getState().name() + "  type:" + event.getType().name());
+				LOGGER.info("子节点事件  path:" + event.getPath() + "  state:" + event.getState().name() + "  type:" + event.getType().name());
 				if (event.getType() == EventType.NodeChildrenChanged) {
-					logger.info("重新启动子节点监听:".concat(path));
+					LOGGER.info("重新启动子节点监听:".concat(path));
 					watcher_children(path);
-					logger.info("重新加载服务信息:".concat(path));
+					LOGGER.info("重新加载服务信息:".concat(path));
 					InfoGen_Zookeeper_Handle_Watcher_Children watcher_children_handle = watcher_children_handle_map.get(path);
 					if (watcher_children_handle != null) {
 						watcher_children_handle.handle_event(path);
 					}
 				} else if (event.getType() != EventType.None) {
-					logger.info("重新启动子节点监听:".concat(path));
+					LOGGER.info("重新启动子节点监听:".concat(path));
 					watcher_children(path);
 				}
 				// EventType 为 None 的时候不需要重新监听
 				});
-			logger.info("启动子节点监听成功:".concat(path));
+			LOGGER.info("启动子节点监听成功:".concat(path));
 		} catch (Exception e) {
 			watcher_children_paths.add(path);
-			logger.error("启动子节点监听错误: ", e);
+			LOGGER.error("启动子节点监听错误: ", e);
 		}
 	}
 
@@ -342,28 +342,28 @@ public class InfoGen_ZooKeeper {
 	private Watcher connect_watcher = new Watcher() {
 		@Override
 		public void process(WatchedEvent event) {
-			logger.info("连接事件  path:" + event.getPath() + "  state:" + event.getState().name() + "  type:" + event.getType().name());
+			LOGGER.info("连接事件  path:" + event.getPath() + "  state:" + event.getState().name() + "  type:" + event.getType().name());
 			if (event.getType() == Watcher.Event.EventType.None) {
 				switch (event.getState()) {
 				case SyncConnected:
 					break;
 				case Expired:
 					try {
-						logger.error("zookeeper 连接过期");
+						LOGGER.error("zookeeper 连接过期");
 
-						logger.info("重启zookeeper");
+						LOGGER.info("重启zookeeper");
 						stop_zookeeper();
 						start_zookeeper(host_port, expired_handle);
-						logger.info("重置所有子节点监听");
+						LOGGER.info("重置所有子节点监听");
 						watcher_children_paths.addAll(all_watcher_children_paths);
-						logger.info("重置所有节点数据监听");
+						LOGGER.info("重置所有节点数据监听");
 						watcher_data_paths.addAll(all_watcher_data_paths);
-						logger.info("其它定制处理");
+						LOGGER.info("其它定制处理");
 						if (expired_handle != null) {
 							expired_handle.handle_event();
 						}
 					} catch (Exception e) {
-						logger.error("zookeeper 重连错误");
+						LOGGER.error("zookeeper 重连错误");
 					}
 					break;
 				case Disconnected:
@@ -399,7 +399,7 @@ public class InfoGen_ZooKeeper {
 				try {
 					watcher_children(server_name);
 				} catch (Exception e) {
-					logger.error("重新执行子节点监听", e);
+					LOGGER.error("重新执行子节点监听", e);
 				}
 			});
 		}, 30, 30, TimeUnit.SECONDS);
@@ -413,7 +413,7 @@ public class InfoGen_ZooKeeper {
 				try {
 					watcher_data(configuration_name);
 				} catch (Exception e) {
-					logger.error("重新执行节点数据监听", e);
+					LOGGER.error("重新执行节点数据监听", e);
 				}
 			});
 		}, 30, 30, TimeUnit.SECONDS);

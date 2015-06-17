@@ -36,7 +36,7 @@ import com.larrylgq.aop.util.NativePath;
  * @version 创建时间 2014年12月1日 下午4:37:30
  */
 public class InfoGen_Cache_Server {
-	private static final Logger logger = Logger.getLogger(InfoGen_Cache_Server.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_Cache_Server.class.getName());
 
 	private static class InnerInstance {
 		public static InfoGen_Cache_Server instance = new InfoGen_Cache_Server();
@@ -64,7 +64,7 @@ public class InfoGen_Cache_Server {
 	// 未考虑并发
 	public NativeServer cache_server_single(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
 		if (server_loaded_handle_map.get(server_name) != null) {
-			logger.warn("当前缓存过该服务:".concat(server_name));
+			LOGGER.warn("当前缓存过该服务:".concat(server_name));
 			return depend_server.get(server_name);
 		}
 
@@ -79,7 +79,7 @@ public class InfoGen_Cache_Server {
 			String server_path = InfoGen_ZooKeeper.path(server_name);
 			String get_data = ZK.get_data(server_path);
 			if (get_data == null || get_data.trim().isEmpty()) {
-				logger.error("服务节点数据为空:".concat(server_name));
+				LOGGER.error("服务节点数据为空:".concat(server_name));
 				reload_server_paths.add(server_name);
 				return null;
 			}
@@ -99,7 +99,7 @@ public class InfoGen_Cache_Server {
 					NativeNode node = Tool_Jackson.toObject(node_string, NativeNode.class);
 					server.add(node);
 				} catch (Exception e) {
-					logger.error("节点数据错误:", e);
+					LOGGER.error("节点数据错误:", e);
 				}
 			}
 			// 事件处理
@@ -115,7 +115,7 @@ public class InfoGen_Cache_Server {
 			return server;
 		} catch (Exception e) {
 			reload_server_paths.add(server_name);
-			logger.error("重新加载服务信息失败", e);
+			LOGGER.error("重新加载服务信息失败", e);
 		}
 		return null;
 	}
@@ -139,7 +139,7 @@ public class InfoGen_Cache_Server {
 			try {
 				server.add(Tool_Jackson.toObject(node_string, NativeNode.class));
 			} catch (Exception e) {
-				logger.error("节点数据错误:", e);
+				LOGGER.error("节点数据错误:", e);
 			}
 		}
 		// 注册中心不存在的节点
@@ -180,10 +180,10 @@ public class InfoGen_Cache_Server {
 				Files.deleteIfExists(source_server_path);
 				Files.write(source_server_path, Tool_Jackson.toJson(depend_server).getBytes(InfoGen_Configuration.charset));
 				persistence_flag = false;
-				logger.info("持久化服务成功");
+				LOGGER.info("持久化服务成功");
 			}
 		} catch (IOException e) {
-			logger.error("持久化服务失败", e);
+			LOGGER.error("持久化服务失败", e);
 		}
 	}
 
@@ -198,7 +198,7 @@ public class InfoGen_Cache_Server {
 				try {
 					cache_server(server_name);
 				} catch (Exception e) {
-					logger.error("重新执行上次加载失败的服务", e);
+					LOGGER.error("重新执行上次加载失败的服务", e);
 				}
 			});
 		}, 30, 30, TimeUnit.SECONDS);

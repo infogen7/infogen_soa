@@ -21,7 +21,7 @@ import com.larrylgq.aop.tools.Tool_Jackson;
  */
 public class Return extends HashMap<String, Object> {
 	private static final long serialVersionUID = 2203513787220720192L;
-	private static final Logger logger = Logger.getLogger(Return.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(Return.class.getName());
 
 	public enum Return_Fields {
 		success, code, note
@@ -36,7 +36,7 @@ public class Return extends HashMap<String, Object> {
 				jo.put(k, v);
 			});
 		} catch (IOException e) {
-			logger.error("Return.create 解析 JSON 失败", e);
+			LOGGER.error("Return.create 解析 JSON 失败", e);
 			return Return.FAIL(CODE._510.code, CODE._510.name());
 		}
 		return jo;
@@ -132,7 +132,7 @@ public class Return extends HashMap<String, Object> {
 		try {
 			return Tool_Jackson.toJson(this);
 		} catch (Exception e) {
-			logger.error("json 解析失败:", e);
+			LOGGER.error("json 解析失败:", e);
 			return Tool_Jackson.toJson(Return.FAIL(CODE._510.code, CODE._510.name()));
 		}
 	}

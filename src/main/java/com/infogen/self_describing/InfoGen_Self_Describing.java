@@ -41,7 +41,7 @@ import com.infogen.self_describing.component.OutParameter;
  * @version 1.0
  */
 public class InfoGen_Self_Describing {
-	private final Logger logger = Logger.getLogger(InfoGen_Self_Describing.class.getName());
+	private final Logger LOGGER = Logger.getLogger(InfoGen_Self_Describing.class.getName());
 
 	private static class InnerInstance {
 		public static InfoGen_Self_Describing instance = new InfoGen_Self_Describing();
@@ -170,7 +170,7 @@ public class InfoGen_Self_Describing {
 					functions.put(function.getRequest_method(), function);
 				}
 			} catch (Exception e) {
-				logger.error("解析class失败:", e);
+				LOGGER.error("解析class失败:", e);
 			}
 		});
 		return functions;

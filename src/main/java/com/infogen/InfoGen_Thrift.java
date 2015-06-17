@@ -27,10 +27,10 @@ import com.infogen.thrift.Message;
  */
 @Deprecated
 public class InfoGen_Thrift {
-	private static final Logger logger = Logger.getLogger(InfoGen_Thrift.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_Thrift.class.getName());
 
 	private static class InnerInstance {
-		public static InfoGen_Thrift instance = new InfoGen_Thrift();
+		public static final InfoGen_Thrift instance = new InfoGen_Thrift();
 	}
 
 	public static InfoGen_Thrift getInstance() {
@@ -67,7 +67,7 @@ public class InfoGen_Thrift {
 					System.out.println("#服务启动-使用:非阻塞&高效二进制编码");
 					server.serve();
 				} catch (Exception e) {
-					logger.error("启动失败", e);
+					LOGGER.error("启动失败", e);
 				}
 			}
 		});
@@ -103,7 +103,7 @@ public class InfoGen_Thrift {
 					System.out.println("#服务启动-使用:非阻塞&高效二进制编码");
 					server.serve();
 				} catch (Exception e) {
-					logger.error("启动失败", e);
+					LOGGER.error("启动失败", e);
 				}
 			}
 		});

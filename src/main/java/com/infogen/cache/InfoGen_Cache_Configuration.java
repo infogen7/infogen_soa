@@ -33,7 +33,7 @@ import com.larrylgq.aop.util.NativePath;
  * @version 创建时间 2014年12月1日 下午4:37:30
  */
 public class InfoGen_Cache_Configuration {
-	private static final Logger logger = Logger.getLogger(InfoGen_Cache_Configuration.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_Cache_Configuration.class.getName());
 
 	private static class InnerInstance {
 		public static InfoGen_Cache_Configuration instance = new InfoGen_Cache_Configuration();
@@ -61,7 +61,7 @@ public class InfoGen_Cache_Configuration {
 	// 未考虑并发
 	public String cache_configuration_single(String configuration_name, InfoGen_Loaded_Handle_Configuration configuration_loaded_handle) {
 		if (configuration_loaded_handle_map.get(configuration_name) != null) {
-			logger.warn("当前缓存过该配置:".concat(configuration_name));
+			LOGGER.warn("当前缓存过该配置:".concat(configuration_name));
 			return depend_configuration.get(configuration_name);
 		}
 
@@ -90,7 +90,7 @@ public class InfoGen_Cache_Configuration {
 			return get_data;
 		} catch (Exception e) {
 			reload_configuration_paths.add(configuration_name);
-			logger.error("重新加载配置信息失败", e);
+			LOGGER.error("重新加载配置信息失败", e);
 		}
 		return null;
 	}
@@ -126,10 +126,10 @@ public class InfoGen_Cache_Configuration {
 				Files.deleteIfExists(source_configuration_path);
 				Files.write(source_configuration_path, Tool_Jackson.toJson(depend_configuration).getBytes(InfoGen_Configuration.charset));
 				persistence_flag = false;
-				logger.info("持久化配置成功");
+				LOGGER.info("持久化配置成功");
 			}
 		} catch (IOException e) {
-			logger.error("持久化配置失败", e);
+			LOGGER.error("持久化配置失败", e);
 		}
 	}
 
@@ -145,7 +145,7 @@ public class InfoGen_Cache_Configuration {
 				try {
 					cache_configuration(configuration_name);
 				} catch (Exception e) {
-					logger.error("重新执行上次加载失败的配置", e);
+					LOGGER.error("重新执行上次加载失败的配置", e);
 				}
 			});
 		}, 30, 30, TimeUnit.SECONDS);

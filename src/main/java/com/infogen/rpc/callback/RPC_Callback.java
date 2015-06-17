@@ -17,7 +17,7 @@ import com.infogen.thrift.Response;
  * @version 创建时间 2014年12月15日 下午3:38:49
  */
 public class RPC_Callback {
-	private static final Logger logger = Logger.getLogger(RPC_Callback.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(RPC_Callback.class.getName());
 
 	private ArrayBlockingQueue<Response> queue = new ArrayBlockingQueue<Response>(1);
 
@@ -33,7 +33,7 @@ public class RPC_Callback {
 			Response poll = queue.poll(seconds, TimeUnit.SECONDS);
 			return poll;
 		} catch (Exception e) {
-			logger.error("获取异步返回值异常", e);
+			LOGGER.error("获取异步返回值异常", e);
 		}
 		return null;
 	}

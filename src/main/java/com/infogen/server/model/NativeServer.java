@@ -25,7 +25,7 @@ import com.larrylgq.aop.tools.Tool_Jackson;
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class NativeServer extends AbstractServer {
-	private static final Logger logger = Logger.getLogger(NativeServer.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(NativeServer.class.getName());
 
 	private CopyOnWriteArrayList<NativeNode> available_nodes = new CopyOnWriteArrayList<>();
 	private CopyOnWriteArrayList<NativeNode> disabled_nodes = new CopyOnWriteArrayList<>();
@@ -42,7 +42,7 @@ public class NativeServer extends AbstractServer {
 			available_nodes.add(node);
 			consistent_hash.add(node);
 		} else {
-			logger.error("node unavailable:".concat(Tool_Jackson.toJson(node)));
+			LOGGER.error("node unavailable:".concat(Tool_Jackson.toJson(node)));
 		}
 	}
 

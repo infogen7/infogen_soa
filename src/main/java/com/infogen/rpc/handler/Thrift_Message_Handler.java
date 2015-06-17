@@ -25,7 +25,7 @@ import com.larrylgq.aop.tools.Tool_Jackson;
  * @version 创建时间 2014年11月7日 上午10:54:29
  */
 public class Thrift_Message_Handler implements Iface {
-	private static final Logger logger = Logger.getLogger(Thrift_Message_Handler.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(Thrift_Message_Handler.class.getName());
 
 	private Map<String, Function> functions = InfoGen.getInstance().getConfiguration().register_server.getFunctions();
 
@@ -77,7 +77,7 @@ public class Thrift_Message_Handler implements Iface {
 				response.setData(Tool_Jackson.toJson(invoke));
 			}
 		} catch (Exception e) {
-			logger.error("映射失败", e);
+			LOGGER.error("映射失败", e);
 			response.setSuccess(false);
 			response.setCode(CODE._500.code);
 			response.setNote(e.getMessage());

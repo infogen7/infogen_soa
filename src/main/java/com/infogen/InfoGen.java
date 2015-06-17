@@ -33,10 +33,10 @@ import com.larrylgq.aop.tools.Tool_Jackson;
  * @version 1.0
  */
 public class InfoGen {
-	private final Logger logger = Logger.getLogger(InfoGen.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(InfoGen.class.getName());
 
 	private static class InnerInstance {
-		public static InfoGen instance = new InfoGen();
+		public static final InfoGen instance = new InfoGen();
 	}
 
 	public static InfoGen getInstance() {
@@ -100,7 +100,7 @@ public class InfoGen {
 		// 创建或更新配置节点
 		String create_path = ZK.create(InfoGen_ZooKeeper.configuration_path(configuration_name), configuration_value.getBytes(), acls, CreateMode.PERSISTENT);
 		if (create_path == null) {
-			logger.error("注册配置失败");
+			LOGGER.error("注册配置失败");
 		} else if (create_path.equals(Code.NODEEXISTS.name())) {
 			ZK.add_auth_info("digest", digest);
 			ZK.set_data(InfoGen_ZooKeeper.configuration_path(configuration_name), configuration_value.getBytes(), -1);
@@ -120,7 +120,7 @@ public class InfoGen {
 		byte[] bytes = Tool_Jackson.toJson(register_server).getBytes();
 		String create_path = ZK.create(path, bytes, CreateMode.PERSISTENT);
 		if (create_path == null) {
-			logger.error("注册自身服务失败!");
+			LOGGER.error("注册自身服务失败!");
 			return;
 		} else if (create_path.equals(Code.NODEEXISTS.name())) {
 			// 更新服务节点数据
@@ -139,7 +139,7 @@ public class InfoGen {
 		String path = register_node.getPath();
 		String create_path = ZK.create(path, Tool_Jackson.toJson(register_node).getBytes(), CreateMode.EPHEMERAL);
 		if (create_path == null) {
-			logger.error("注册自身节点失败!");
+			LOGGER.error("注册自身节点失败!");
 			return;
 		}
 	}
@@ -191,13 +191,13 @@ public class InfoGen {
 		if (server != null) {
 			return server;
 		}
-		logger.warn("没有找到可用服务:".concat(server_name));
+		LOGGER.warn("没有找到可用服务:".concat(server_name));
 
 		// 获取不到,到本地缓存里查找 并触发 server 加载完成的事件
 		server = CACHE_SERVER.depend_server_cache.get(server_name);
 		if (server != null) {
 			CACHE_SERVER.depend_server.put(server_name, server);
-			logger.warn("使用本地缓存的服务:".concat(server_name));
+			LOGGER.warn("使用本地缓存的服务:".concat(server_name));
 		}
 		if (server != null && server_loaded_handle != null) {
 			server_loaded_handle.handle_event(server);
@@ -253,13 +253,13 @@ public class InfoGen {
 		if (data != null) {
 			return data;
 		}
-		logger.warn("没有找到可用配置:".concat(configuration_name));
+		LOGGER.warn("没有找到可用配置:".concat(configuration_name));
 
 		// 获取不到,到本地缓存里查找 并触发 configuration 加载完成的事件
 		data = CACHE_CONFIGURATION.depend_configuration_cache.get(configuration_name);
 		if (data != null) {
 			CACHE_CONFIGURATION.depend_configuration.put(configuration_name, data);
-			logger.warn("使用本地缓存的配置:".concat(configuration_name));
+			LOGGER.warn("使用本地缓存的配置:".concat(configuration_name));
 		}
 		if (data != null && configuration_loaded_handle != null) {
 			configuration_loaded_handle.handle_event(data);

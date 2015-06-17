@@ -30,7 +30,7 @@ import com.infogen.configuration.InfoGen_Configuration;
 import com.larrylgq.aop.util.NativePath;
 
 public class InfoGen_Jetty {
-	private final Logger logger = Logger.getLogger(InfoGen_Jetty.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_Jetty.class.getName());
 
 	private static class InnerInstance {
 		public static InfoGen_Jetty instance = new InfoGen_Jetty();
@@ -61,7 +61,7 @@ public class InfoGen_Jetty {
 					server.start();
 					server.join();
 				} catch (Exception e) {
-					e.printStackTrace();
+					LOGGER.error("启动jetty失败", e);
 					System.exit(-1);
 				}
 			}
@@ -100,8 +100,8 @@ public class InfoGen_Jetty {
 		webContext.setResourceBase(default_webapp_path);
 		webContext.setDescriptor(descriptor);
 		// 配置jetty扫描注解的目录 并去重
-		logger.info("add jetty annotation config dir => " + Resource.newResource(NativePath.get_class_path()));
-		logger.info("add jetty annotation config dir => " + Resource.newResource(get_infogen_class_path()));
+		LOGGER.info("add jetty annotation config dir => " + Resource.newResource(NativePath.get_class_path()));
+		LOGGER.info("add jetty annotation config dir => " + Resource.newResource(get_infogen_class_path()));
 		Set<Resource> set = new HashSet<>();
 		set.add(Resource.newResource(NativePath.get_class_path()));
 		set.add(Resource.newResource(get_infogen_class_path()));

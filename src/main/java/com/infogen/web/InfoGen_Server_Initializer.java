@@ -20,7 +20,7 @@ import com.infogen.web.ServletContainerInitializer.WebApplicationInitializer;
  * @email larry.lv.word@gmail.com
  */
 public class InfoGen_Server_Initializer implements WebApplicationInitializer {
-	private static Logger logger = Logger.getLogger(InfoGen_Server_Initializer.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_Server_Initializer.class.getName());
 	public static ServletContext servletContext;
 	public static String config_path;
 	public static String mapping;
@@ -65,7 +65,7 @@ public class InfoGen_Server_Initializer implements WebApplicationInitializer {
 		try {
 			start_mvc(servletContext);
 		} catch (IOException e) {
-			logger.error("启动MVC框架失败:", e);
+			LOGGER.error("启动MVC框架失败:", e);
 			System.exit(1);
 		}
 	}

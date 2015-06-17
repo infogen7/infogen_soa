@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
  * @version 创建时间 2013-4-1 下午4:16:43
  */
 public class Tool_Context {
-	private static Logger logger = Logger.getLogger(Tool_Context.class.getName());
+	private static Logger LOGGER = Logger.getLogger(Tool_Context.class.getName());
 
 	/**
 	 * 获取 web 客户端IP
@@ -38,7 +38,7 @@ public class Tool_Context {
 				try {
 					ipAddress = InetAddress.getLocalHost().getHostAddress();
 				} catch (UnknownHostException e) {
-					logger.warn("找不到主机名:", e);
+					LOGGER.warn("找不到主机名:", e);
 				}
 			}
 		}
