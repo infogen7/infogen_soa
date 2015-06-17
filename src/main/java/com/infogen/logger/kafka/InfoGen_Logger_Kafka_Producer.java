@@ -11,8 +11,8 @@ import kafka.producer.ProducerConfig;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.InfoGen_Jetty;
 import com.infogen.configuration.InfoGen_Configuration;
+import com.infogen.http.InfoGen_Jetty;
 import com.infogen.logger.Logger_Once;
 
 /**

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.infogen.cache.event_handle;
+package com.infogen.cache;
 
 import com.infogen.server.model.NativeServer;
 

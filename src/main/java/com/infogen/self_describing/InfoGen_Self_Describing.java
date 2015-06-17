@@ -211,6 +211,7 @@ public class InfoGen_Self_Describing {
 		int pos = Modifier.isStatic(cm.getModifiers()) ? 0 : 1;
 		for (int i = 0; i < paramNames.length; i++) {
 			paramNames[i] = attr.variableName(i + pos);
+			System.out.println(attr.variableName(i + pos));
 		}
 		return paramNames;
 	}

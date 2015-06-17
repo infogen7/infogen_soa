@@ -3,7 +3,6 @@ package com.infogen.aop.event_handle;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import com.infogen.aop.InfoGen_AOP_Configuration;
 import com.infogen.aop.annotation.Execution;
 import com.infogen.logger.kafka.InfoGen_Logger_Kafka_Producer;
 import com.infogen.tracking.CallChain;
@@ -51,6 +50,7 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 	}
 
 	public static final InfoGen_Logger_Kafka_Producer producer = InfoGen_Logger_Kafka_Producer.getInstance();
+	public static final String infogen_topic_tracking = "infogen_topic_tracking";
 
 	public static void insert_before_call_back(String class_name, String method_name, String user_definition, long start_millis) {
 	}
@@ -90,7 +90,7 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		// 客户端类型
 		sbd.append(",");
 		// session
-		producer.send(InfoGen_AOP_Configuration.infogen_topic_tracking, callChain.getTrackid(), sbd.toString());
+		producer.send(infogen_topic_tracking, callChain.getTrackid(), sbd.toString());
 	}
 
 	public static void add_catch_call_back(String class_name, String method_name, String user_definition, Throwable e) {
@@ -108,6 +108,6 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		// 客户端类型
 		sbd.append(",");
 		// session
-		producer.send(InfoGen_AOP_Configuration.infogen_topic_tracking, callChain.getTrackid(), sbd.toString());
+		producer.send(infogen_topic_tracking, callChain.getTrackid(), sbd.toString());
 	}
 }

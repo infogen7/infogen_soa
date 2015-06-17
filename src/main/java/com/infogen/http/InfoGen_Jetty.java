@@ -1,4 +1,4 @@
-package com.infogen;
+package com.infogen.http;
 
 /**
  * 启动jetty服务

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.infogen.zookeeper;
+package com.infogen.cache.zookeeper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,9 +27,6 @@ import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 
 import com.infogen.util.Scheduled;
-import com.infogen.zookeeper.event_handle.InfoGen_Zookeeper_Handle_Expired;
-import com.infogen.zookeeper.event_handle.InfoGen_Zookeeper_Handle_Watcher_Children;
-import com.infogen.zookeeper.event_handle.InfoGen_Zookeeper_Handle_Watcher_Data;
 
 /**
  * zookeeper调用封装

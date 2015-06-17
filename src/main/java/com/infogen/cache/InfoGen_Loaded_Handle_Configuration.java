@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.infogen.cache.event_handle;
+package com.infogen.cache;
 
 /**
  * 配置节点数据加载完毕处理器

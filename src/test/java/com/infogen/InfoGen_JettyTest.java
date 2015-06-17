@@ -7,6 +7,7 @@ import java.util.Properties;
 import org.testng.annotations.Test;
 
 import com.infogen.configuration.InfoGen_Configuration;
+import com.infogen.http.InfoGen_Jetty;
 
 public class InfoGen_JettyTest {
 

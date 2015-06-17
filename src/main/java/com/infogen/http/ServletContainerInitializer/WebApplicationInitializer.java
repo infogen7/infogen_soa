@@ -1,4 +1,4 @@
-package com.infogen.web.ServletContainerInitializer;
+package com.infogen.http.ServletContainerInitializer;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;

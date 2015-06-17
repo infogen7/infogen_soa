@@ -1,4 +1,4 @@
-package com.infogen.web.ServletContainerInitializer;
+package com.infogen.http.ServletContainerInitializer;
 
 import java.lang.reflect.Modifier;
 import java.util.Set;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.infogen;
+package com.infogen.rpc;
 
 import org.apache.log4j.Logger;
 import org.apache.thrift.TProcessorFactory;

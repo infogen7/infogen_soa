@@ -19,12 +19,11 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.infogen.cache.event_handle.InfoGen_Loaded_Handle_Server;
+import com.infogen.cache.zookeeper.InfoGen_ZooKeeper;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.server.model.NativeNode;
 import com.infogen.server.model.NativeServer;
 import com.infogen.util.Scheduled;
-import com.infogen.zookeeper.InfoGen_ZooKeeper;
 import com.larrylgq.aop.tools.Tool_Core;
 import com.larrylgq.aop.tools.Tool_Jackson;
 import com.larrylgq.aop.util.NativePath;
@@ -50,7 +49,7 @@ public class InfoGen_Cache_Server {
 	private InfoGen_Cache_Server() {
 	}
 
-	private InfoGen_ZooKeeper ZK = com.infogen.zookeeper.InfoGen_ZooKeeper.getInstance();
+	private InfoGen_ZooKeeper ZK = com.infogen.cache.zookeeper.InfoGen_ZooKeeper.getInstance();
 
 	// 依赖的服务
 	public ConcurrentMap<String, NativeServer> depend_server = new ConcurrentHashMap<>();

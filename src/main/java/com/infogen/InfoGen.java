@@ -16,13 +16,13 @@ import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 
 import com.infogen.cache.InfoGen_Cache_Configuration;
 import com.infogen.cache.InfoGen_Cache_Server;
-import com.infogen.cache.event_handle.InfoGen_Loaded_Handle_Configuration;
-import com.infogen.cache.event_handle.InfoGen_Loaded_Handle_Server;
+import com.infogen.cache.InfoGen_Loaded_Handle_Configuration;
+import com.infogen.cache.InfoGen_Loaded_Handle_Server;
+import com.infogen.cache.zookeeper.InfoGen_ZooKeeper;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.server.model.NativeServer;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
-import com.infogen.zookeeper.InfoGen_ZooKeeper;
 import com.larrylgq.aop.tools.Tool_Jackson;
 
 /**
@@ -46,7 +46,7 @@ public class InfoGen {
 	private InfoGen() {
 	}
 
-	private InfoGen_ZooKeeper ZK = com.infogen.zookeeper.InfoGen_ZooKeeper.getInstance();
+	private InfoGen_ZooKeeper ZK = com.infogen.cache.zookeeper.InfoGen_ZooKeeper.getInstance();
 	private InfoGen_Cache_Configuration CACHE_CONFIGURATION = InfoGen_Cache_Configuration.getInstance();
 	private InfoGen_Cache_Server CACHE_SERVER = InfoGen_Cache_Server.getInstance();
 	private InfoGen_Configuration configuration;
