@@ -102,6 +102,29 @@ public class Service {
 		return null;
 	}
 
+	public <T> T call_once(Thrift_Client_Handler<T> handle) throws Service_Notfound_Exception, Node_Notfound_Exception {
+		NativeServer server = depend_server.get(server_name);
+		if (server == null) {
+			throw new Service_Notfound_Exception();
+		}
+		NativeNode node = null;
+		// 调用出错重试3次
+		for (int i = 0; i < 3; i++) {
+			try {
+				node = server.random_node(String.valueOf(Clock.systemDefaultZone().millis()));
+				if (node == null) {
+					throw new Node_Notfound_Exception();
+				}
+				return node.call_once(handle);
+			} catch (TException e) {
+				LOGGER.error("调用失败", e);
+				server.disabled(node);
+				continue;
+			}
+		}
+		return null;
+	}
+
 	public <T> RPC_Callback<T> call_async(Thrift_Async_Client_Handler<T> handle) throws Service_Notfound_Exception, Node_Notfound_Exception {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {

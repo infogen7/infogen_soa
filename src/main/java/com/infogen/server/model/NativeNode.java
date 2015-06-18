@@ -40,11 +40,17 @@ public class NativeNode extends AbstractNode {
 
 	@JsonIgnore
 	private static final Integer connect_timeout = 3_000;// 连接时间
+	@JsonIgnore
+	private static final StampedLock call_lock = new StampedLock();
+	@JsonIgnore
+	private static final StampedLock call_async_lock = new StampedLock();
 
 	@JsonIgnore
 	private transient TTransport transport = null;
+	@JsonIgnore
+	private transient TNonblockingSocket async_transport = null;
 
-	private TTransport get_transport() throws IOException, TTransportException {
+	public TTransport get_transport() throws IOException, TTransportException {
 		if (transport == null) {
 			transport = new TFramedTransport(new TSocket(ip, rpc_port, connect_timeout));
 		}
@@ -54,7 +60,12 @@ public class NativeNode extends AbstractNode {
 		return transport;
 	}
 
-	private static final StampedLock call_lock = new StampedLock();
+	public TNonblockingSocket get_async_transport() throws IOException, TTransportException {
+		if (async_transport == null) {
+			async_transport = new TNonblockingSocket(ip, rpc_port, connect_timeout);
+		}
+		return async_transport;
+	}
 
 	public <T> T call(Thrift_Client_Handler<T> handle) throws TException, IOException {
 		T handle_event;
@@ -71,18 +82,6 @@ public class NativeNode extends AbstractNode {
 		}
 		return handle_event;
 	}
-
-	@JsonIgnore
-	private transient TNonblockingSocket async_transport = null;
-
-	private TNonblockingSocket get_async_transport() throws IOException, TTransportException {
-		if (async_transport == null) {
-			async_transport = new TNonblockingSocket(ip, rpc_port, connect_timeout);
-		}
-		return async_transport;
-	}
-
-	private static final StampedLock call_async_lock = new StampedLock();
 
 	public <T> RPC_Callback<T> call_async(Thrift_Async_Client_Handler<T> handle) throws TException, IOException {
 		RPC_Callback<T> callback = new RPC_Callback<>();
