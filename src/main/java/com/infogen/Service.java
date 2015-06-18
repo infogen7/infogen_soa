@@ -12,6 +12,11 @@ import org.apache.thrift.TException;
 
 import com.infogen.cache.InfoGen_Cache_Server;
 import com.infogen.http.callback.Http_Callback;
+import com.infogen.rpc.callback.RPC_Callback;
+import com.infogen.rpc.exception.impl.Node_Notfound_Exception;
+import com.infogen.rpc.exception.impl.Service_Notfound_Exception;
+import com.infogen.rpc.handler.Thrift_Async_Client_Handler;
+import com.infogen.rpc.handler.Thrift_Client_Handler;
 import com.infogen.server.model.NativeNode;
 import com.infogen.server.model.NativeNode.NetType;
 import com.infogen.server.model.NativeNode.RequestType;
@@ -31,7 +36,7 @@ public class Service {
 	private static final Logger LOGGER = Logger.getLogger(Service.class.getName());
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static final InfoGen instance = InfoGen.getInstance();
-	private ConcurrentMap<String, NativeServer> depend_server = InfoGen_Cache_Server.getInstance().depend_server;
+	private static ConcurrentMap<String, NativeServer> depend_server = InfoGen_Cache_Server.getInstance().depend_server;
 	private String server_name;
 	private NetType net_type = NetType.LOCAL;
 
@@ -74,28 +79,50 @@ public class Service {
 	}
 
 	// //////////////////////////////////////////////////RPC////////////////////////////////////////////////////////////////////////
-	@Deprecated
-	public Return blocking_rpc(String method, Map<String, String> name_value_pair, String seed) {
+	public <T> T call(Thrift_Client_Handler<T> handle) throws Service_Notfound_Exception, Node_Notfound_Exception {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
-			return Return.FAIL(CODE.not_found_service);
+			throw new Service_Notfound_Exception();
 		}
 		NativeNode node = null;
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			try {
-				node = server.random_node(seed);
+				node = server.random_node(String.valueOf(Clock.systemDefaultZone().millis()));
 				if (node == null) {
-					return Return.FAIL(CODE.not_found_node);
+					throw new Node_Notfound_Exception();
 				}
-				return node.call_once("", method, name_value_pair);
-			} catch (TException e) {
+				return node.call(handle);
+			} catch (TException | IOException e) {
 				LOGGER.error("调用失败", e);
 				server.disabled(node);
 				continue;
 			}
 		}
-		return Return.FAIL(CODE.error);
+		return null;
+	}
+
+	public <T> RPC_Callback<T> call_async(Thrift_Async_Client_Handler<T> handle) throws Service_Notfound_Exception, Node_Notfound_Exception {
+		NativeServer server = depend_server.get(server_name);
+		if (server == null) {
+			throw new Service_Notfound_Exception();
+		}
+		NativeNode node = null;
+		// 调用出错重试3次
+		for (int i = 0; i < 3; i++) {
+			try {
+				node = server.random_node(String.valueOf(Clock.systemDefaultZone().millis()));
+				if (node == null) {
+					throw new Node_Notfound_Exception();
+				}
+				return node.call_async(handle);
+			} catch (TException | IOException e) {
+				LOGGER.error("调用失败", e);
+				server.disabled(node);
+				continue;
+			}
+		}
+		return null;
 	}
 
 	// //////////////////////////////////////////////////HTTP///////////////////////////////////////////////////////////////////////
@@ -115,16 +142,16 @@ public class Service {
 	 * @return
 	 */
 	public Return get(String url, Map<String, String> name_value_pair) {
-		return blocking_http(url, name_value_pair, RequestType.GET, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+		return http_blocking(url, name_value_pair, RequestType.GET, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
 	@Deprecated
 	public Return get(String url, List<BasicNameValuePair> name_value_pair) {
-		return blocking_http(url, pair_to_map(name_value_pair), RequestType.GET, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+		return http_blocking(url, pair_to_map(name_value_pair), RequestType.GET, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
 	public Return get(String url, Map<String, String> name_value_pair, String seed) {
-		return blocking_http(url, name_value_pair, RequestType.GET, net_type, seed);
+		return http_blocking(url, name_value_pair, RequestType.GET, net_type, seed);
 	}
 
 	/**
@@ -135,16 +162,16 @@ public class Service {
 	 * @return
 	 */
 	public Return post(String url, Map<String, String> name_value_pair) {
-		return blocking_http(url, name_value_pair, RequestType.POST, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+		return http_blocking(url, name_value_pair, RequestType.POST, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
 	@Deprecated
 	public Return post(String url, List<BasicNameValuePair> name_value_pair) {
-		return blocking_http(url, pair_to_map(name_value_pair), RequestType.POST, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+		return http_blocking(url, pair_to_map(name_value_pair), RequestType.POST, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
 	public Return post(String url, Map<String, String> name_value_pair, String seed) {
-		return blocking_http(url, name_value_pair, RequestType.POST, net_type, seed);
+		return http_blocking(url, name_value_pair, RequestType.POST, net_type, seed);
 	}
 
 	/**
@@ -154,12 +181,12 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	public Http_Callback async_get(String url, Map<String, String> name_value_pair) {
-		return async_http(url, name_value_pair, RequestType.GET, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+	public Http_Callback get_async(String url, Map<String, String> name_value_pair) {
+		return http_async(url, name_value_pair, RequestType.GET, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
-	public Http_Callback async_get(String url, Map<String, String> name_value_pair, String seed) {
-		return async_http(url, name_value_pair, RequestType.GET, net_type, seed);
+	public Http_Callback get_async(String url, Map<String, String> name_value_pair, String seed) {
+		return http_async(url, name_value_pair, RequestType.GET, net_type, seed);
 	}
 
 	/**
@@ -169,12 +196,12 @@ public class Service {
 	 * @param map
 	 * @return
 	 */
-	public Http_Callback async_post(String url, Map<String, String> name_value_pair) {
-		return async_http(url, name_value_pair, RequestType.POST, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+	public Http_Callback post_async(String url, Map<String, String> name_value_pair) {
+		return http_async(url, name_value_pair, RequestType.POST, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
-	public Http_Callback async_post(String url, Map<String, String> name_value_pair, String seed) {
-		return async_http(url, name_value_pair, RequestType.POST, net_type, seed);
+	public Http_Callback post_async(String url, Map<String, String> name_value_pair, String seed) {
+		return http_async(url, name_value_pair, RequestType.POST, net_type, seed);
 	}
 
 	/**
@@ -186,10 +213,10 @@ public class Service {
 	 * @param net_type
 	 * @return
 	 */
-	private Return blocking_http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type, String seed) {
+	private Return http_blocking(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type, String seed) {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
-			return Return.FAIL(CODE.not_found_service);
+			return Return.FAIL(CODE.service_notfound);
 		}
 		NativeNode node = null;
 		// 调用出错重试3次
@@ -197,7 +224,7 @@ public class Service {
 			try {
 				node = server.random_node(seed);
 				if (node == null) {
-					return Return.FAIL(CODE.not_found_node);
+					return Return.FAIL(CODE.node_notfound);
 				}
 				String http = node.http(method, name_value_pair, request_type, net_type);
 				return Return.create(http);
@@ -219,12 +246,12 @@ public class Service {
 	 * @param net_type
 	 * @return
 	 */
-	private Http_Callback async_http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type, String seed) {
+	private Http_Callback http_async(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type, String seed) {
 		Http_Callback callback = new Http_Callback();
 
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
-			callback.add(Return.FAIL(CODE.not_found_service).toJson());
+			callback.add(Return.FAIL(CODE.service_notfound).toJson());
 			return callback;
 		}
 		NativeNode node = null;
@@ -232,11 +259,11 @@ public class Service {
 		for (int i = 0; i < 3; i++) {
 			node = server.random_node(seed);
 			if (node == null) {
-				callback.add(Return.FAIL(CODE.not_found_node).toJson());
+				callback.add(Return.FAIL(CODE.node_notfound).toJson());
 				return callback;
 			}
 			try {
-				return node.async_http(method, name_value_pair, request_type, net_type);
+				return node.http_async(method, name_value_pair, request_type, net_type);
 			} catch (IOException e) {
 				LOGGER.error("调用失败", e);
 				server.disabled(node);

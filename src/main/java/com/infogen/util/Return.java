@@ -118,6 +118,10 @@ public class Return extends HashMap<String, Object> {
 		return this;
 	}
 
+	public Boolean is_success() {
+		return (Boolean) this.getOrDefault(Return_Fields.success.name(), false);
+	}
+
 	public Boolean get_success() {
 		return (Boolean) this.getOrDefault(Return_Fields.success.name(), false);
 	}

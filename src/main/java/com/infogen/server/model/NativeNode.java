@@ -2,28 +2,28 @@ package com.infogen.server.model;
 
 import java.io.IOException;
 import java.time.Clock;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.concurrent.locks.StampedLock;
 
 import org.apache.thrift.TException;
+import org.apache.thrift.async.TAsyncClientManager;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.protocol.TProtocolFactory;
+import org.apache.thrift.transport.TFramedTransport;
+import org.apache.thrift.transport.TNonblockingSocket;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
-
-import scala.util.Random;
+import org.apache.thrift.transport.TTransportException;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.http.InfoGen_HTTP;
 import com.infogen.http.callback.Http_Callback;
-import com.infogen.thrift.Message;
-import com.infogen.thrift.Request;
-import com.infogen.thrift.Response;
-import com.infogen.util.CODE;
-import com.infogen.util.Return;
+import com.infogen.rpc.callback.RPC_Callback;
+import com.infogen.rpc.handler.Thrift_Async_Client_Handler;
+import com.infogen.rpc.handler.Thrift_Client_Handler;
 
 /**
  * 为本地调用处理扩展的节点属性
@@ -38,38 +38,78 @@ public class NativeNode extends AbstractNode {
 	@JsonIgnore
 	public Long disabled_time = Clock.system(InfoGen_Configuration.zoneid).millis();
 
-	/**
-	 * 不推荐使用
-	 * 
-	 * @param session
-	 * @param method
-	 * @param name_value_pair
-	 * @return
-	 * @throws TException
-	 * @throws Exception
-	 */
+	@JsonIgnore
+	private static final Integer connect_timeout = 3_000;// 连接时间
 
-	public Return call_once(String session, String method, Map<String, String> name_value_pair) throws TException {
+	@JsonIgnore
+	private transient TTransport transport = null;
+
+	private TTransport get_transport() throws IOException, TTransportException {
+		if (transport == null) {
+			transport = new TFramedTransport(new TSocket(ip, rpc_port, connect_timeout));
+		}
+		if (!transport.isOpen()) {
+			transport.open();
+		}
+		return transport;
+	}
+
+	private static final StampedLock call_lock = new StampedLock();
+
+	public <T> T call(Thrift_Client_Handler<T> handle) throws TException, IOException {
+		T handle_event;
+		long stamp = call_lock.writeLock();
+		try {
+			TProtocol protocol = new TCompactProtocol(get_transport());
+			handle_event = handle.handle_event(protocol);
+		} catch (IOException e) {
+			transport.close();
+			transport = null;
+			throw e;
+		} finally {
+			call_lock.unlockWrite(stamp);
+		}
+		return handle_event;
+	}
+
+	@JsonIgnore
+	private transient TNonblockingSocket async_transport = null;
+
+	private TNonblockingSocket get_async_transport() throws IOException, TTransportException {
+		if (async_transport == null) {
+			async_transport = new TNonblockingSocket(ip, rpc_port, connect_timeout);
+		}
+		return async_transport;
+	}
+
+	private static final StampedLock call_async_lock = new StampedLock();
+
+	public <T> RPC_Callback<T> call_async(Thrift_Async_Client_Handler<T> handle) throws TException, IOException {
+		RPC_Callback<T> callback = new RPC_Callback<>();
+		TAsyncClientManager clientManager = new TAsyncClientManager();
+		TProtocolFactory protocol = new TCompactProtocol.Factory();
+		RPC_Callback<T> handle_event;
+
+		long stamp = call_async_lock.writeLock();
+		try {
+			TNonblockingSocket get_async_transport = get_async_transport();
+			handle_event = handle.handle_event(protocol, clientManager, get_async_transport, callback);
+		} catch (IOException e) {
+			async_transport.close();
+			async_transport = null;
+			throw e;
+		} finally {
+			call_async_lock.unlockWrite(stamp);
+		}
+		return handle_event;
+	}
+
+	public <T> T call_once(Thrift_Client_Handler<T> handle) throws TException {
 		TTransport transport = new TSocket(ip, rpc_port);
 		TProtocol protocol = new TCompactProtocol(transport);
-		Message.Client client = new Message.Client(protocol);
+		transport.open();
 		try {
-			transport.open();
-			Request request = new Request();
-			request.setSessionID(session);
-			request.setSequence(new Random(Long.MAX_VALUE).nextLong());
-			request.setMethod(method);
-			Map<String, String> call_map = new HashMap<>();
-			for (Entry<String, String> basicNameValuePair : name_value_pair.entrySet()) {
-				call_map.put(basicNameValuePair.getKey(), basicNameValuePair.getValue());
-			}
-			request.setParameters(call_map);
-			Response call = client.call(request);
-			String data = call.getData();
-			if (data == null) {
-				return Return.SUCCESS(CODE.success.code, CODE.success.note);
-			}
-			return Return.create(data);
+			return handle.handle_event(protocol);
 		} finally {
 			transport.close();
 		}
@@ -84,7 +124,7 @@ public class NativeNode extends AbstractNode {
 		NET, LOCAL
 	}
 
-	public Http_Callback async_http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type) throws IOException {
+	public Http_Callback http_async(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type) throws IOException {
 		StringBuilder async_http_sbf = new StringBuilder();
 		if (request_type == RequestType.GET) {
 			if (net_type == NetType.LOCAL) {

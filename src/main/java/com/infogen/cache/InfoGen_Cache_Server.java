@@ -39,7 +39,7 @@ public class InfoGen_Cache_Server {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_Cache_Server.class.getName());
 
 	private static class InnerInstance {
-		public static final  InfoGen_Cache_Server instance = new InfoGen_Cache_Server();
+		public static final InfoGen_Cache_Server instance = new InfoGen_Cache_Server();
 	}
 
 	public static InfoGen_Cache_Server getInstance() {

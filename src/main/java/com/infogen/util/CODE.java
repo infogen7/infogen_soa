@@ -10,11 +10,11 @@ package com.infogen.util;
 public enum CODE {
 	success(200, "成功"), //
 
-	incorrect_parameters(400, "参数不正确"), //
-	invalid_parameters(401, "特定参数不符合条件(eg:没有这个用户)"), //
-	not_found_service(402, "没有这个服务"), //
-	not_found_node(403, "没有可用的服务节点"), //
-	not_found_method(404, "没有这个方法 (RPC调用)"), //
+	parameters_incorrect(400, "参数不正确"), //
+	parameters_invalid(401, "特定参数不符合条件(eg:没有这个用户)"), //
+	service_notfound(402, "没有这个服务"), //
+	node_notfound(403, "没有可用的服务节点"), //
+	method_notfound(404, "没有这个方法 (RPC调用)"), //
 
 	error(500, "执行错误"), //
 	authentication_fail(501, "认证失败"), //

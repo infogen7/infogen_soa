@@ -8,8 +8,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.thrift.Response;
-
 /**
  * rpc异步调用的返回值
  * 
@@ -17,19 +15,19 @@ import com.infogen.thrift.Response;
  * @email larrylv@outlook.com
  * @version 创建时间 2014年12月15日 下午3:38:49
  */
-public class RPC_Callback {
+public class RPC_Callback<T> {
 	private static final Logger LOGGER = Logger.getLogger(RPC_Callback.class.getName());
 
-	private ArrayBlockingQueue<Response> queue = new ArrayBlockingQueue<Response>(1);
+	private ArrayBlockingQueue<T> queue = new ArrayBlockingQueue<T>(1);
 
-	public Boolean add(Response value) {
+	public Boolean add(T value) {
 		if (value == null) {
 			return false;
 		}
 		return queue.add(value);
 	}
 
-	public Response get(Long seconds) {
+	public T get(Long seconds) {
 		try {
 			return queue.poll(seconds, TimeUnit.SECONDS);
 		} catch (Exception e) {

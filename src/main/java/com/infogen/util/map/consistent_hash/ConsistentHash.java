@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
@@ -76,7 +77,11 @@ public class ConsistentHash<T extends ShardInfo> {
 	public T get(String seed) {
 		SortedMap<Long, T> tail = nodes.tailMap(algo.hash(seed.getBytes(charset)));
 		if (tail.isEmpty()) {
-			return nodes.get(nodes.firstKey());
+			Entry<Long, T> firstEntry = nodes.firstEntry();
+			if (firstEntry != null) {
+				return firstEntry.getValue();
+			}
+			return null;
 		}
 		return tail.get(tail.firstKey());
 	}
