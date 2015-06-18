@@ -67,7 +67,7 @@ public class NativeNode extends AbstractNode {
 			Response call = client.call(request);
 			String data = call.getData();
 			if (data == null) {
-				return Return.SUCCESS(CODE._200.code, CODE._200.note);
+				return Return.SUCCESS(CODE.success.code, CODE.success.note);
 			}
 			return Return.create(data);
 		} finally {

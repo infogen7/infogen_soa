@@ -97,7 +97,7 @@ public class InfoGen_HTTP {
 		client.newCall(request).enqueue(new Callback() {
 			@Override
 			public void onFailure(Request request, IOException e) {
-				callback.add(Return.FAIL(CODE._500, e).toJson());
+				callback.add(Return.FAIL(CODE.error, e).toJson());
 			}
 
 			@Override
@@ -105,7 +105,7 @@ public class InfoGen_HTTP {
 				if (response.isSuccessful()) {
 					callback.add(response.body().string());
 				} else {
-					callback.add(Return.FAIL(CODE._500).toJson());
+					callback.add(Return.FAIL(CODE.error).toJson());
 				}
 			}
 		});
@@ -137,7 +137,7 @@ public class InfoGen_HTTP {
 		client.newCall(request).enqueue(new Callback() {
 			@Override
 			public void onFailure(Request request, IOException e) {
-				callback.add(Return.FAIL(CODE._500, e).toJson());
+				callback.add(Return.FAIL(CODE.error, e).toJson());
 			}
 
 			@Override
@@ -145,7 +145,7 @@ public class InfoGen_HTTP {
 				if (response.isSuccessful()) {
 					callback.add(response.body().string());
 				} else {
-					callback.add(Return.FAIL(CODE._500).toJson());
+					callback.add(Return.FAIL(CODE.error).toJson());
 				}
 			}
 		});

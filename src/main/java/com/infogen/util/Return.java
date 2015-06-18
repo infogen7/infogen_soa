@@ -38,7 +38,7 @@ public class Return extends HashMap<String, Object> {
 			});
 		} catch (IOException e) {
 			LOGGER.error("Return.create 解析 JSON 失败", e);
-			return Return.FAIL(CODE._510.code, CODE._510.name());
+			return Return.FAIL(CODE.generate_return_error.code, CODE.generate_return_error.name());
 		}
 		return jo;
 	}
@@ -123,7 +123,7 @@ public class Return extends HashMap<String, Object> {
 	}
 
 	public Integer get_code() {
-		return (Integer) this.getOrDefault(Return_Fields.code.name(), CODE._500.code);
+		return (Integer) this.getOrDefault(Return_Fields.code.name(), CODE.error.code);
 	}
 
 	public String get_note() {
@@ -135,7 +135,7 @@ public class Return extends HashMap<String, Object> {
 			return Tool_Jackson.toJson(this);
 		} catch (Exception e) {
 			LOGGER.error("json 解析失败:", e);
-			return Tool_Jackson.toJson(Return.FAIL(CODE._510.code, CODE._510.name()));
+			return Tool_Jackson.toJson(Return.FAIL(CODE.generate_return_error.code, CODE.generate_return_error.name()));
 		}
 	}
 

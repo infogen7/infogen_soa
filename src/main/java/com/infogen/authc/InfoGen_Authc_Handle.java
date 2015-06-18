@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.InfoGen;
 import com.infogen.authc.exception.InfoGen_Auth_Exception;
 import com.infogen.authc.exception.impl.Authentication_Fail_Exception;
 import com.infogen.authc.subject.Default_Subject_DAO;
@@ -30,7 +29,8 @@ public class InfoGen_Authc_Handle {
 
 	private static final Subject_DAO subject_dao = new Default_Subject_DAO();
 	public static final String TOKEN_NAME = "x-access-token";
-	public static final Map<String, Function> functions = InfoGen.getInstance().getConfiguration().register_server.getFunctions();
+	// 初始化配置时赋值
+	public static Map<String, Function> functions;
 
 	/**
 	 * js 前端页面加载时判断是否有 x-access-token 没有跳转到登录页面
@@ -81,7 +81,7 @@ public class InfoGen_Authc_Handle {
 			return false;
 		} catch (Exception e) {
 			LOGGER.error("认证异常:", e);
-			response.getWriter().write(Return.FAIL(CODE._500).toJson());
+			response.getWriter().write(Return.FAIL(CODE.error).toJson());
 			return false;
 		}
 		return true;

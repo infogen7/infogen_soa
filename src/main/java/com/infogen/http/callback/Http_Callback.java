@@ -34,13 +34,13 @@ public class Http_Callback {
 		try {
 			String poll = queue.poll(seconds, TimeUnit.SECONDS);
 			if (poll == null) {
-				return Return.FAIL(CODE._502);
+				return Return.FAIL(CODE.timeout);
 			} else {
 				return Return.create(poll);
 			}
 		} catch (Exception e) {
 			LOGGER.error("获取异步返回值异常", e);
-			return Return.FAIL(CODE._510);
+			return Return.FAIL(CODE.generate_return_error);
 		}
 	}
 }

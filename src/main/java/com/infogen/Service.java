@@ -78,7 +78,7 @@ public class Service {
 	public Return blocking_rpc(String method, Map<String, String> name_value_pair, String seed) {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
-			return Return.FAIL(CODE._402);
+			return Return.FAIL(CODE.not_found_service);
 		}
 		NativeNode node = null;
 		// 调用出错重试3次
@@ -86,7 +86,7 @@ public class Service {
 			try {
 				node = server.random_node(seed);
 				if (node == null) {
-					return Return.FAIL(CODE._403);
+					return Return.FAIL(CODE.not_found_node);
 				}
 				return node.call_once("", method, name_value_pair);
 			} catch (TException e) {
@@ -95,7 +95,7 @@ public class Service {
 				continue;
 			}
 		}
-		return Return.FAIL(CODE._500);
+		return Return.FAIL(CODE.error);
 	}
 
 	// //////////////////////////////////////////////////HTTP///////////////////////////////////////////////////////////////////////
@@ -189,7 +189,7 @@ public class Service {
 	private Return blocking_http(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type, String seed) {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
-			return Return.FAIL(CODE._402);
+			return Return.FAIL(CODE.not_found_service);
 		}
 		NativeNode node = null;
 		// 调用出错重试3次
@@ -197,7 +197,7 @@ public class Service {
 			try {
 				node = server.random_node(seed);
 				if (node == null) {
-					return Return.FAIL(CODE._403);
+					return Return.FAIL(CODE.not_found_node);
 				}
 				String http = node.http(method, name_value_pair, request_type, net_type);
 				return Return.create(http);
@@ -207,7 +207,7 @@ public class Service {
 				continue;
 			}
 		}
-		return Return.FAIL(CODE._500);
+		return Return.FAIL(CODE.error);
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class Service {
 
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
-			callback.add(Return.FAIL(CODE._402).toJson());
+			callback.add(Return.FAIL(CODE.not_found_service).toJson());
 			return callback;
 		}
 		NativeNode node = null;
@@ -232,7 +232,7 @@ public class Service {
 		for (int i = 0; i < 3; i++) {
 			node = server.random_node(seed);
 			if (node == null) {
-				callback.add(Return.FAIL(CODE._403).toJson());
+				callback.add(Return.FAIL(CODE.not_found_node).toJson());
 				return callback;
 			}
 			try {
@@ -243,7 +243,7 @@ public class Service {
 				continue;
 			}
 		}
-		callback.add(Return.FAIL(CODE._500).toJson());
+		callback.add(Return.FAIL(CODE.error).toJson());
 		return callback;
 	}
 

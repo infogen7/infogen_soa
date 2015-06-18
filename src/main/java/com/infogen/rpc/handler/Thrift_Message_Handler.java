@@ -55,7 +55,7 @@ public class Thrift_Message_Handler implements Iface {
 				String value = request_parameters.get(name);
 				if (value == null && parameter.getRequired()) {
 					response.setSuccess(false);
-					response.setCode(CODE._401.code);
+					response.setCode(CODE.invalid_parameters.code);
 					response.setNote(name.concat("不能为空"));
 					return response;
 				}
@@ -69,7 +69,7 @@ public class Thrift_Message_Handler implements Iface {
 			//
 			Object invoke = function.getMethod().invoke(function.getInstance(), value_parameters.toArray());
 			response.setSuccess(true);
-			response.setCode(CODE._200.code);
+			response.setCode(CODE.success.code);
 			if (invoke == null) {
 			} else if (invoke instanceof String) {
 				response.setData((String) invoke);
@@ -79,7 +79,7 @@ public class Thrift_Message_Handler implements Iface {
 		} catch (Exception e) {
 			LOGGER.error("映射失败", e);
 			response.setSuccess(false);
-			response.setCode(CODE._500.code);
+			response.setCode(CODE.error.code);
 			response.setNote(e.getMessage());
 			return response;
 		}

@@ -8,16 +8,22 @@ package com.infogen.util;
  * @version 1.0
  */
 public enum CODE {
-	_200(200, "成功"), //
-	_400(400, "参数不正确"), //
-	_401(401, "特定参数不符合条件(eg:没有这个用户)"), //
-	_402(402, "没有这个服务"), //
-	_403(403, "没有可用的服务节点"), //
-	_404(404, "没有这个方法 (RPC调用)"), //
-	_500(500, "执行错误"), //
-	_501(501, "权限验证失败,不在白名单内"), //
-	_502(502, "调用超时"), //
-	_510(510, "处理返回值错误");
+	success(200, "成功"), //
+
+	incorrect_parameters(400, "参数不正确"), //
+	invalid_parameters(401, "特定参数不符合条件(eg:没有这个用户)"), //
+	not_found_service(402, "没有这个服务"), //
+	not_found_node(403, "没有可用的服务节点"), //
+	not_found_method(404, "没有这个方法 (RPC调用)"), //
+
+	error(500, "执行错误"), //
+	authentication_fail(501, "认证失败"), //
+	roles_fail(502, "授权失败"), //
+	session_expiration(505, "Session 过期"), //
+	session_lose(506, "Session 丢失"), //
+
+	timeout(510, "调用超时"), //
+	generate_return_error(511, "处理返回值错误");
 	public String note;
 	public Integer code;
 

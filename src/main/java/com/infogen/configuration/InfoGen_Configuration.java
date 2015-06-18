@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import com.infogen.aop.annotation.Execution;
 import com.infogen.aop.event_handle.InfoGen_AOP_Handle_Execution;
+import com.infogen.authc.InfoGen_Authc_Handle;
 import com.infogen.cache.zookeeper.InfoGen_ZooKeeper;
 import com.infogen.http.InfoGen_Server_Initializer;
 import com.infogen.self_describing.InfoGen_Self_Describing;
@@ -26,6 +27,7 @@ import com.infogen.self_describing.component.Function;
 import com.infogen.self_describing.component.OutParameter;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
+import com.infogen.tracking.InfoGen_HTTP_Tracking_Handle;
 import com.larrylgq.aop.AOP;
 import com.larrylgq.aop.tools.Tool_Core;
 import com.larrylgq.aop.util.NativePath;
@@ -93,8 +95,6 @@ public class InfoGen_Configuration {
 		register_server.setProtocol(infogen_properties.getProperty("infogen.protocol"));
 		register_server.setHttp_domain(infogen_properties.getProperty("infogen.http.domain"));
 		register_server.setHttp_proxy(infogen_properties.getProperty("infogen.http.proxy"));
-		Map<String, Function> functions = InfoGen_Self_Describing.getInstance().self_describing(AOP.getInstance().getClasses());// 读取自描述
-		register_server.setFunctions(functions);
 		if (!register_server.available()) {
 			LOGGER.error("服务配置不能为空:infogen.name,infogen.protocol");
 			System.exit(-1);
@@ -140,19 +140,30 @@ public class InfoGen_Configuration {
 			System.exit(-1);
 		}
 
+		// /////////////////////////////////////////////////////初始化启动配置/////////////////////////////////////////////////////////////////////
+
+		// @Resource(name="")
+		// 遍历项目所有class文件
+		AOP aop = AOP.getInstance();
+		// 自描述
+		Map<String, Function> functions = InfoGen_Self_Describing.getInstance().self_describing(aop.getClasses());
+		register_server.setFunctions(functions);
+		// 调用链追踪
+		InfoGen_HTTP_Tracking_Handle.register_server = register_server;
+		InfoGen_HTTP_Tracking_Handle.register_node = register_node;
+		// 认证框架
+		InfoGen_Authc_Handle.functions = functions;
+		// 添加infogen自己的类到AOP的类集合
+		aop.addClasses(com.infogen.Service.class);
+		// AOP
+		aop.add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
+		aop.advice();
+
 		// 启动 mvc 框架
 		String spring_mvc_path = infogen_properties.getProperty("infogen.http.spring_mvc.path");
 		String spring_mvc_mapping = infogen_properties.getProperty("infogen.http.spring_mvc.mapping");
 		if (spring_mvc_path != null && !spring_mvc_path.trim().isEmpty()) {
 			InfoGen_Server_Initializer.start_mvc(spring_mvc_path, spring_mvc_mapping);
 		}
-
-		// @Resource(name="sqliteCarDao")
-		// 遍历项目所有class文件
-		AOP.getInstance().addClasses(com.infogen.Service.class);
-
-		// AOP
-		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
-		AOP.getInstance().advice();
 	}
 }
