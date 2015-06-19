@@ -4,9 +4,9 @@ import java.time.Clock;
 import java.util.Arrays;
 import java.util.List;
 
+import com.infogen.authc.InfoGen_Authc_Configuration;
 import com.infogen.authc.exception.impl.Roles_Fail_Exception;
 import com.infogen.authc.exception.impl.Session_Expiration_Exception;
-import com.infogen.configuration.InfoGen_Configuration;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年5月13日 下午3:14:24
@@ -45,7 +45,7 @@ public class Subject {
 	 * 认证
 	 */
 	public void checkExpiration() throws Session_Expiration_Exception {
-		long millis = Clock.system(InfoGen_Configuration.zoneid).millis();
+		long millis = Clock.system(InfoGen_Authc_Configuration.zoneid).millis();
 		long issued_at_overtime = millis - issued_at;
 		long last_access_time_overtime = millis - last_access_time;
 		if (issued_at_overtime > max_overtime) {

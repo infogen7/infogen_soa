@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ValueConstants;
 
-import com.infogen.self_describing.annotation.Authc;
+import com.infogen.authc.annotation.Authc;
 import com.infogen.self_describing.annotation.Describe;
 import com.infogen.self_describing.annotation.InParam;
 import com.infogen.self_describing.annotation.OutParam;

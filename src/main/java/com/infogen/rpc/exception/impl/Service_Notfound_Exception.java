@@ -1,7 +1,7 @@
 package com.infogen.rpc.exception.impl;
 
 import com.infogen.rpc.exception.InfoGen_RPC_Exception;
-import com.infogen.util.CODE;
+import com.larrylgq.aop.util.CODE;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年6月18日 下午4:51:31

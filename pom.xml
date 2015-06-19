@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>com.github.larrylgq</groupId>
 			<artifactId>infogen_aop</artifactId>
-			<version>V1.0.00R150614</version>
+			<version>V1.0.00R150618</version>
 		</dependency>
 
 		<!-- zookeeper -->

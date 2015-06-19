@@ -21,9 +21,9 @@ import com.infogen.server.model.NativeNode;
 import com.infogen.server.model.NativeNode.NetType;
 import com.infogen.server.model.NativeNode.RequestType;
 import com.infogen.server.model.NativeServer;
-import com.infogen.util.BasicNameValuePair;
-import com.infogen.util.CODE;
-import com.infogen.util.Return;
+import com.larrylgq.aop.util.BasicNameValuePair;
+import com.larrylgq.aop.util.CODE;
+import com.larrylgq.aop.util.Return;
 
 /**
  * 调用服务的封装 实现调度,错误重试,同步异步处理等
@@ -80,6 +80,10 @@ public class Service {
 
 	// //////////////////////////////////////////////////RPC////////////////////////////////////////////////////////////////////////
 	public <T> T call(Thrift_Client_Handler<T> handle) throws Service_Notfound_Exception, Node_Notfound_Exception {
+		return call(handle, String.valueOf(Clock.systemDefaultZone().millis()));
+	}
+
+	public <T> T call(Thrift_Client_Handler<T> handle, String seed) throws Service_Notfound_Exception, Node_Notfound_Exception {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
 			throw new Service_Notfound_Exception();
@@ -88,7 +92,7 @@ public class Service {
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			try {
-				node = server.random_node(String.valueOf(Clock.systemDefaultZone().millis()));
+				node = server.random_node(seed);
 				if (node == null) {
 					throw new Node_Notfound_Exception();
 				}
@@ -103,6 +107,10 @@ public class Service {
 	}
 
 	public <T> T call_once(Thrift_Client_Handler<T> handle) throws Service_Notfound_Exception, Node_Notfound_Exception {
+		return call_once(handle, String.valueOf(Clock.systemDefaultZone().millis()));
+	}
+
+	public <T> T call_once(Thrift_Client_Handler<T> handle, String seed) throws Service_Notfound_Exception, Node_Notfound_Exception {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
 			throw new Service_Notfound_Exception();
@@ -111,7 +119,7 @@ public class Service {
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			try {
-				node = server.random_node(String.valueOf(Clock.systemDefaultZone().millis()));
+				node = server.random_node(seed);
 				if (node == null) {
 					throw new Node_Notfound_Exception();
 				}
@@ -126,6 +134,10 @@ public class Service {
 	}
 
 	public <T> RPC_Callback<T> call_async(Thrift_Async_Client_Handler<T> handle) throws Service_Notfound_Exception, Node_Notfound_Exception {
+		return call_async(handle, String.valueOf(Clock.systemDefaultZone().millis()));
+	}
+
+	public <T> RPC_Callback<T> call_async(Thrift_Async_Client_Handler<T> handle, String seed) throws Service_Notfound_Exception, Node_Notfound_Exception {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
 			throw new Service_Notfound_Exception();
@@ -134,7 +146,7 @@ public class Service {
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			try {
-				node = server.random_node(String.valueOf(Clock.systemDefaultZone().millis()));
+				node = server.random_node(seed);
 				if (node == null) {
 					throw new Node_Notfound_Exception();
 				}

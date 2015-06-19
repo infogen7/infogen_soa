@@ -1,4 +1,4 @@
-package com.infogen.self_describing.annotation;
+package com.infogen.authc.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

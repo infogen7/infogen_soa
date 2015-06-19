@@ -1,6 +1,6 @@
 package com.infogen.authc.subject;
 
-import com.infogen.util.map.LRULinkedHashMap;
+import com.larrylgq.aop.util.map.LRULinkedHashMap;
 
 /**
  * 

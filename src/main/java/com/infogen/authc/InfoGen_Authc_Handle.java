@@ -15,8 +15,8 @@ import com.infogen.authc.subject.Default_Subject_DAO;
 import com.infogen.authc.subject.Subject;
 import com.infogen.authc.subject.Subject_DAO;
 import com.infogen.self_describing.component.Function;
-import com.infogen.util.CODE;
-import com.infogen.util.Return;
+import com.larrylgq.aop.util.CODE;
+import com.larrylgq.aop.util.Return;
 
 /**
  * API认证的过滤器
@@ -81,7 +81,7 @@ public class InfoGen_Authc_Handle {
 			return false;
 		} catch (Exception e) {
 			LOGGER.error("认证异常:", e);
-			response.getWriter().write(Return.FAIL(CODE.error).toJson());
+			response.getWriter().write(Return.FAIL(CODE.authentication_error).toJson());
 			return false;
 		}
 		return true;

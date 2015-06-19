@@ -8,8 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.util.CODE;
-import com.infogen.util.Return;
+import com.larrylgq.aop.util.CODE;
+import com.larrylgq.aop.util.Return;
 
 /**
  * http异步调用的返回值
