@@ -1,20 +1,9 @@
-package com.infogen.self_describing;
+package com.infogen.http.self_describing;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javassist.ClassClassPath;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.Modifier;
-import javassist.NotFoundException;
-import javassist.bytecode.CodeAttribute;
-import javassist.bytecode.LocalVariableAttribute;
-import javassist.bytecode.MethodInfo;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,12 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ValueConstants;
 
 import com.infogen.authc.annotation.Authc;
-import com.infogen.self_describing.annotation.Describe;
-import com.infogen.self_describing.annotation.InParam;
-import com.infogen.self_describing.annotation.OutParam;
-import com.infogen.self_describing.component.Function;
-import com.infogen.self_describing.component.InParameter;
-import com.infogen.self_describing.component.OutParameter;
+import com.larrylgq.aop.self_describing.Self_Describing;
+import com.larrylgq.aop.self_describing.annotation.Describe;
+import com.larrylgq.aop.self_describing.annotation.InParam;
+import com.larrylgq.aop.self_describing.annotation.OutParam;
+import com.larrylgq.aop.self_describing.component.Function;
+import com.larrylgq.aop.self_describing.component.InParameter;
+import com.larrylgq.aop.self_describing.component.OutParameter;
 
 /**
  * 启动时扫描自描述配置
@@ -40,21 +30,21 @@ import com.infogen.self_describing.component.OutParameter;
  * @since 1.0
  * @version 1.0
  */
-public class InfoGen_Self_Describing {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen_Self_Describing.class.getName());
+public class InfoGen_HTTP_Self_Describing extends Self_Describing {
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP_Self_Describing.class.getName());
 
 	private static class InnerInstance {
-		public static final InfoGen_Self_Describing instance = new InfoGen_Self_Describing();
+		public static final InfoGen_HTTP_Self_Describing instance = new InfoGen_HTTP_Self_Describing();
 	}
 
-	public static InfoGen_Self_Describing getInstance() {
+	public static InfoGen_HTTP_Self_Describing getInstance() {
 		return InnerInstance.instance;
 	}
 
-	private InfoGen_Self_Describing() {
+	private InfoGen_HTTP_Self_Describing() {
 	}
 
-	public Map<String, Function> self_describing(Set<Class<?>> class_set) throws IOException {
+	public Map<String, Function> self_describing(Set<Class<?>> class_set) {
 		Map<String, Function> functions = new HashMap<>();
 		class_set.forEach((clazz) -> {
 			try {
@@ -174,53 +164,6 @@ public class InfoGen_Self_Describing {
 			}
 		});
 		return functions;
-	}
-
-	// 使用javassist获取参数名
-	private ClassPool class_pool = ClassPool.getDefault();
-
-	private Map<String, CtClass> ctclass_maps = new HashMap<>();
-
-	private CtClass get_ctclass(String name) throws NotFoundException {
-		CtClass ctClass = ctclass_maps.get(name);
-		if (ctClass == null) {
-			ctClass = class_pool.get(name);
-			ctclass_maps.put(name, ctClass);
-		}
-		return ctClass;
-	}
-
-	private String[] get_in_parameter_names(Class<?> clazz, String method_name, java.lang.reflect.Parameter[] reflect_parameters) throws NotFoundException {
-		ClassPool class_pool = ClassPool.getDefault();
-		class_pool.insertClassPath(new ClassClassPath(clazz));// war包下使用必须
-		CtClass ct_class = class_pool.get(clazz.getName());
-		ct_class.defrost();
-
-		CtClass[] types = new CtClass[reflect_parameters.length];
-		for (int i = 0; i < reflect_parameters.length; i++) {
-			types[i] = get_ctclass(reflect_parameters[i].getType().getName());
-		}
-		CtMethod cm = ct_class.getDeclaredMethod(method_name, types);
-		if (cm == null) {
-			return new String[] {};
-		}
-		MethodInfo methodInfo = cm.getMethodInfo();
-		CodeAttribute codeAttribute = methodInfo.getCodeAttribute();
-		LocalVariableAttribute attr = (LocalVariableAttribute) codeAttribute.getAttribute(LocalVariableAttribute.tag);
-		String[] paramNames = new String[cm.getParameterTypes().length];
-		int pos = Modifier.isStatic(cm.getModifiers()) ? 0 : 1;
-		if (pos == 0) {
-			LOGGER.error(clazz.getName() + "::" + method_name + "是静态方法,可能无法获取准确的入参");
-		}
-		for (int j = 0; j < attr.tableLength(); j++) {
-			if (attr.variableName(j).equals("this")) {
-				pos = j + 1;
-			}
-		}
-		for (int i = 0; i < paramNames.length; i++) {
-			paramNames[i] = attr.variableName(i + pos);
-		}
-		return paramNames;
 	}
 
 }

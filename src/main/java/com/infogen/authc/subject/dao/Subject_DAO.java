@@ -1,4 +1,6 @@
-package com.infogen.authc.subject;
+package com.infogen.authc.subject.dao;
+
+import com.infogen.authc.subject.Subject;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年5月13日 下午5:10:20

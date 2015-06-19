@@ -11,10 +11,10 @@ import org.apache.log4j.Logger;
 
 import com.infogen.authc.exception.InfoGen_Auth_Exception;
 import com.infogen.authc.exception.impl.Authentication_Fail_Exception;
-import com.infogen.authc.subject.Default_Subject_DAO;
 import com.infogen.authc.subject.Subject;
-import com.infogen.authc.subject.Subject_DAO;
-import com.infogen.self_describing.component.Function;
+import com.infogen.authc.subject.dao.Subject_DAO;
+import com.infogen.authc.subject.dao.impl.Default_Subject_DAO;
+import com.larrylgq.aop.self_describing.component.Function;
 import com.larrylgq.aop.util.CODE;
 import com.larrylgq.aop.util.Return;
 

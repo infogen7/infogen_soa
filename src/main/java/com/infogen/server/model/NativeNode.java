@@ -19,8 +19,8 @@ import org.apache.thrift.transport.TTransportException;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.http.InfoGen_HTTP;
 import com.infogen.http.callback.Http_Callback;
+import com.infogen.http.tools.Tool_HTTP;
 import com.infogen.rpc.callback.RPC_Callback;
 import com.infogen.rpc.handler.Thrift_Async_Client_Handler;
 import com.infogen.rpc.handler.Thrift_Client_Handler;
@@ -131,14 +131,14 @@ public class NativeNode extends AbstractNode {
 			} else {
 				async_http_sbf.append(http_protocol).append("://").append(net_ip).append(":").append(http_port).append("/").append(method);
 			}
-			return InfoGen_HTTP.do_async_get(async_http_sbf.toString(), name_value_pair);
+			return Tool_HTTP.do_async_get(async_http_sbf.toString(), name_value_pair);
 		} else {
 			if (net_type == NetType.LOCAL) {
 				async_http_sbf.append(http_protocol).append("://").append(ip).append(":").append(http_port).append("/").append(method);
 			} else {
 				async_http_sbf.append(http_protocol).append("://").append(net_ip).append(":").append(http_port).append("/").append(method);
 			}
-			return InfoGen_HTTP.do_async_post(async_http_sbf.toString(), name_value_pair);
+			return Tool_HTTP.do_async_post(async_http_sbf.toString(), name_value_pair);
 		}
 	}
 
@@ -150,14 +150,14 @@ public class NativeNode extends AbstractNode {
 			} else {
 				blocking_http_sbf.append(http_protocol).append("://").append(net_ip).append(":").append(http_port).append("/").append(method);
 			}
-			return InfoGen_HTTP.do_get(blocking_http_sbf.toString(), name_value_pair);
+			return Tool_HTTP.do_get(blocking_http_sbf.toString(), name_value_pair);
 		} else {
 			if (net_type == NetType.LOCAL) {
 				blocking_http_sbf.append(http_protocol).append("://").append(ip).append(":").append(http_port).append("/").append(method);
 			} else {
 				blocking_http_sbf.append(http_protocol).append("://").append(net_ip).append(":").append(http_port).append("/").append(method);
 			}
-			return InfoGen_HTTP.do_post(blocking_http_sbf.toString(), name_value_pair);
+			return Tool_HTTP.do_post(blocking_http_sbf.toString(), name_value_pair);
 		}
 	}
 

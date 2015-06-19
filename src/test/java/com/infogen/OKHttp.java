@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.time.Clock;
 
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.http.InfoGen_HTTP;
+import com.infogen.http.tools.Tool_HTTP;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年6月4日 上午11:10:29
@@ -23,7 +23,7 @@ public class OKHttp {
 			Thread thread = new Thread(new Runnable() {
 				public void run() {
 					try {
-						InfoGen_HTTP.do_get("http://localhost:9091/get?token=123", null);
+						Tool_HTTP.do_get("http://localhost:9091/get?token=123", null);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

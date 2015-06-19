@@ -4,7 +4,7 @@ import java.time.Clock;
 import java.util.Arrays;
 import java.util.List;
 
-import com.infogen.authc.InfoGen_Authc_Configuration;
+import com.infogen.authc.configuration.InfoGen_Authc_Configuration;
 import com.infogen.authc.exception.impl.Roles_Fail_Exception;
 import com.infogen.authc.exception.impl.Session_Expiration_Exception;
 

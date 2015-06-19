@@ -20,15 +20,15 @@ import org.apache.log4j.Logger;
 import com.infogen.authc.InfoGen_Authc_Handle;
 import com.infogen.cache.zookeeper.InfoGen_ZooKeeper;
 import com.infogen.http.InfoGen_Server_Initializer;
-import com.infogen.self_describing.InfoGen_Self_Describing;
-import com.infogen.self_describing.component.Function;
-import com.infogen.self_describing.component.OutParameter;
+import com.infogen.http.self_describing.InfoGen_HTTP_Self_Describing;
+import com.infogen.http.tracking.InfoGen_HTTP_Tracking_Handle;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
-import com.infogen.tracking.InfoGen_HTTP_Tracking_Handle;
 import com.infogen.tracking.aop.annotation.Execution;
 import com.infogen.tracking.aop.event_handle.InfoGen_AOP_Handle_Execution;
 import com.larrylgq.aop.AOP;
+import com.larrylgq.aop.self_describing.component.Function;
+import com.larrylgq.aop.self_describing.component.OutParameter;
 import com.larrylgq.aop.tools.Tool_Core;
 import com.larrylgq.aop.util.NativePath;
 
@@ -68,7 +68,7 @@ public class InfoGen_Configuration {
 	}
 
 	public void add_basic_outparameter(OutParameter basic_outparameter) {
-		for (Function function : register_server.getFunctions().values()) {
+		for (Function function : register_server.getHttp_functions().values()) {
 			function.getOut_parameters().add(basic_outparameter);
 		}
 	}
@@ -146,8 +146,8 @@ public class InfoGen_Configuration {
 		// 遍历项目所有class文件
 		AOP aop = AOP.getInstance();
 		// 自描述
-		Map<String, Function> functions = InfoGen_Self_Describing.getInstance().self_describing(aop.getClasses());
-		register_server.setFunctions(functions);
+		Map<String, Function> functions = InfoGen_HTTP_Self_Describing.getInstance().self_describing(aop.getClasses());
+		register_server.setHttp_functions(functions);
 		// 调用链追踪
 		InfoGen_HTTP_Tracking_Handle.register_server = register_server;
 		InfoGen_HTTP_Tracking_Handle.register_node = register_node;

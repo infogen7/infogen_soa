@@ -1,4 +1,4 @@
-package com.infogen.http;
+package com.infogen.http.tools;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -27,8 +27,8 @@ import com.squareup.okhttp.Response;
  * @email larrylv@outlook.com
  * @version 创建时间 2014年10月30日 下午1:05:24
  */
-public class InfoGen_HTTP {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP.class.getName());
+public class Tool_HTTP {
+	private static final Logger LOGGER = Logger.getLogger(Tool_HTTP.class.getName());
 	// 当使用长轮循时需要注意不能超过此时间
 	private static final Integer socket_timeout = 10_000;// 数据传输时间
 	private static final Integer connect_timeout = 3_000;// 连接时间

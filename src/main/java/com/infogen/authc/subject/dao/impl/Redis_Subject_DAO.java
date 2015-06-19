@@ -1,9 +1,12 @@
-package com.infogen.authc.subject;
+package com.infogen.authc.subject.dao.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import com.infogen.authc.subject.Subject;
+import com.infogen.authc.subject.dao.Subject_DAO;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;

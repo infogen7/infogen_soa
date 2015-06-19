@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.infogen.authc.InfoGen_Authc_Handle;
-import com.infogen.tracking.InfoGen_HTTP_Tracking_Handle;
+import com.infogen.http.tracking.InfoGen_HTTP_Tracking_Handle;
 
 /**
  * 
