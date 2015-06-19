@@ -21,7 +21,7 @@ import com.larrylgq.aop.util.map.consistent_hash.ShardInfo;
 public abstract class AbstractNode extends ShardInfo {
 	protected String path;
 
-	protected String server_room;// sh@youfu
+	protected String server_room = "";// sh@youfu
 	protected String host;// 机器名
 
 	protected String ip;
@@ -30,7 +30,7 @@ public abstract class AbstractNode extends ShardInfo {
 	protected Integer http_port;
 	protected Integer rpc_port;
 
-	protected String context;// tomcat的context path,使用tomcat的应该配置，jetty如果有特殊的路径，也可以配置
+	protected String context = "";// tomcat的context path,使用tomcat的应该配置，jetty如果有特殊的路径，也可以配置
 
 	// 节点的元数据,支持的功能等个性化配置
 	protected Map<String, Object> metadata = new HashMap<>();
@@ -38,7 +38,7 @@ public abstract class AbstractNode extends ShardInfo {
 	protected Timestamp time = new Timestamp(Clock.system(InfoGen_Configuration.zoneid).millis());
 
 	public Boolean available() {
-		if (ratio == null || server_room == null || ip == null) {
+		if (ratio == null || name == null || name.isEmpty() || ip == null || ip.isEmpty() || path == null || path.isEmpty()) {
 			return false;
 		} else if (http_port == null && rpc_port == null) {
 			return false;

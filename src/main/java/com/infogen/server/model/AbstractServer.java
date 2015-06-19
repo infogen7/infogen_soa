@@ -24,7 +24,7 @@ public abstract class AbstractServer {
 	protected String describe = "";
 	protected Integer min_nodes = 1;
 
-	protected String infogen_version = "V1.0.03R150615";
+	protected String infogen_version = "V1.0.03R150618";
 	// proxy
 	protected String http_domain;
 	protected String http_proxy;
@@ -34,7 +34,7 @@ public abstract class AbstractServer {
 	protected Timestamp time = new Timestamp(Clock.system(InfoGen_Configuration.zoneid).millis());
 
 	public Boolean available() {
-		if (name == null) {
+		if (name == null || name.isEmpty() || path == null || path.isEmpty()) {
 			return false;
 		}
 		return true;

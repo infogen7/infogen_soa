@@ -8,6 +8,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.http.tools.Tool_Context;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
@@ -24,8 +25,8 @@ import com.infogen.tracking.enum0.Track;
  */
 public class InfoGen_HTTP_Tracking_Handle {
 	// 初始化配置时赋值
-	public static RegisterServer register_server;
-	public static RegisterNode register_node;
+	public static RegisterServer register_server = InfoGen_Configuration.register_server;;
+	public static RegisterNode register_node = InfoGen_Configuration.register_node;;
 
 	/*
 	 * (non-Javadoc)

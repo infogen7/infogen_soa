@@ -11,7 +11,6 @@ import java.nio.file.StandardOpenOption;
 import java.sql.Timestamp;
 import java.time.Clock;
 import java.time.ZoneId;
-import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -21,7 +20,6 @@ import com.infogen.authc.InfoGen_Authc_Handle;
 import com.infogen.cache.zookeeper.InfoGen_ZooKeeper;
 import com.infogen.http.InfoGen_Server_Initializer;
 import com.infogen.http.self_describing.InfoGen_HTTP_Self_Describing;
-import com.infogen.http.tracking.InfoGen_HTTP_Tracking_Handle;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
 import com.infogen.tracking.aop.annotation.Execution;
@@ -45,8 +43,8 @@ public class InfoGen_Configuration {
 	public final static ZoneId zoneid = ZoneId.of("GMT+08:00");
 	public final static Charset charset = StandardCharsets.UTF_8;
 
-	public RegisterNode register_node = new RegisterNode();
-	public RegisterServer register_server = new RegisterServer();
+	public static RegisterNode register_node = new RegisterNode();
+	public static RegisterServer register_server = new RegisterServer();
 	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
 
 	public String zookeeper;
@@ -90,13 +88,13 @@ public class InfoGen_Configuration {
 		register_server.setPath(InfoGen_ZooKeeper.path(register_server.getName()));
 		register_server.setDescribe(infogen_properties.getProperty("infogen.describe"));
 		String min_nodes = infogen_properties.getProperty("infogen.min_nodes");
-		min_nodes = (min_nodes == null) ? "1" : min_nodes;
-		register_server.setMin_nodes(Integer.valueOf(min_nodes));
+		register_server.setMin_nodes((min_nodes == null) ? 1 : Integer.valueOf(min_nodes));
 		register_server.setProtocol(infogen_properties.getProperty("infogen.protocol"));
 		register_server.setHttp_domain(infogen_properties.getProperty("infogen.http.domain"));
 		register_server.setHttp_proxy(infogen_properties.getProperty("infogen.http.proxy"));
+		register_server.setHttp_functions(InfoGen_HTTP_Self_Describing.getInstance().self_describing(AOP.getInstance().getClasses()));// 自描述
 		if (!register_server.available()) {
-			LOGGER.error("服务配置不能为空:infogen.name,infogen.protocol");
+			LOGGER.error("服务配置不能为空:infogen.name");
 			System.exit(-1);
 		}
 		// node
@@ -116,48 +114,25 @@ public class InfoGen_Configuration {
 		register_node.setContext(infogen_properties.getProperty("infogen.http.context"));
 		register_node.setServer_room(infogen_properties.getProperty("infogen.server_room"));
 		register_node.setTime(new Timestamp(Clock.system(InfoGen_Configuration.zoneid).millis()));
-		Integer ratio = 10;
-		String ratio0 = infogen_properties.getProperty("infogen.ratio");
-		if (ratio0 != null) {
-			ratio = Integer.valueOf(ratio0);
-			ratio = Math.min(10, ratio);
-			ratio = Math.max(0, ratio);
-		}
-		register_node.setRatio(ratio);
-		String string_http_port = infogen_properties.getProperty("infogen.http.port");
-		if (string_http_port != null) {
-			http_port = Integer.valueOf(string_http_port);
-			register_node.setHttp_port(http_port);
-		}
-		String string_rpc_port = infogen_properties.getProperty("infogen.rpc.port");
-		if (string_rpc_port != null) {
-			rpc_port = Integer.valueOf(string_rpc_port);
-			register_node.setRpc_port(rpc_port);
-		}
+		String ratio = infogen_properties.getProperty("infogen.ratio");
+		register_node.setRatio((ratio == null) ? 10 : Math.max(0, Math.min(10, Integer.valueOf(ratio))));
+		String http_port = infogen_properties.getProperty("infogen.http.port");
+		register_node.setHttp_port((http_port == null) ? null : Integer.valueOf(http_port));
+		String rpc_port = infogen_properties.getProperty("infogen.rpc.port");
+		register_node.setRpc_port((rpc_port == null) ? null : Integer.valueOf(rpc_port));
 
 		if (!register_node.available()) {
-			LOGGER.error("节点配置不可用:infogen.server_room,infogen.ratio,infogen.ip,infogen.http.port,infogen.rpc.port");
+			LOGGER.error("节点配置配置不能为空:infogen.name,infogen.ratio,infogen.ip,infogen.http.port或infogen.rpc.port");
 			System.exit(-1);
 		}
 
 		// /////////////////////////////////////////////////////初始化启动配置/////////////////////////////////////////////////////////////////////
 
-		// @Resource(name="")
-		// 遍历项目所有class文件
-		AOP aop = AOP.getInstance();
-		// 自描述
-		Map<String, Function> functions = InfoGen_HTTP_Self_Describing.getInstance().self_describing(aop.getClasses());
-		register_server.setHttp_functions(functions);
-		// 调用链追踪
-		InfoGen_HTTP_Tracking_Handle.register_server = register_server;
-		InfoGen_HTTP_Tracking_Handle.register_node = register_node;
-		// 认证框架
-		InfoGen_Authc_Handle.functions = functions;
 		// 添加infogen自己的类到AOP的类集合
-		aop.addClasses(com.infogen.Service.class);
+		AOP.getInstance().addClasses(com.infogen.Service.class);
 		// AOP
-		aop.add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
-		aop.advice();
+		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
+		AOP.getInstance().advice();
 
 		// 延迟启动 mvc 框架
 		String spring_mvc_path = infogen_properties.getProperty("infogen.http.spring_mvc.path");
@@ -165,5 +140,9 @@ public class InfoGen_Configuration {
 		if (spring_mvc_path != null && !spring_mvc_path.trim().isEmpty()) {
 			InfoGen_Server_Initializer.start_mvc(spring_mvc_path, spring_mvc_mapping);
 		}
+
+		// TODO
+		// 认证框架
+		InfoGen_Authc_Handle.functions = register_server.getHttp_functions();
 	}
 }
