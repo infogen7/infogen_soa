@@ -6,7 +6,7 @@ package com.infogen.server.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.larrylgq.aop.self_description.component.Function;
+import com.infogen.self_description.component.Function;
 
 /**
  * 为注册服务扩展的服务属性

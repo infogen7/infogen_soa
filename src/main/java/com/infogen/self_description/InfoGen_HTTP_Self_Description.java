@@ -1,4 +1,4 @@
-package com.infogen;
+package com.infogen.self_description;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -15,13 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ValueConstants;
 
-import com.larrylgq.aop.self_description.Self_Description;
-import com.larrylgq.aop.self_description.annotation.Describe;
-import com.larrylgq.aop.self_description.annotation.InParam;
-import com.larrylgq.aop.self_description.annotation.OutParam;
-import com.larrylgq.aop.self_description.component.Function;
-import com.larrylgq.aop.self_description.component.InParameter;
-import com.larrylgq.aop.self_description.component.OutParameter;
+import com.infogen.self_description.annotation.Describe;
+import com.infogen.self_description.annotation.InParam;
+import com.infogen.self_description.annotation.OutParam;
+import com.infogen.self_description.component.Function;
+import com.infogen.self_description.component.InParameter;
+import com.infogen.self_description.component.OutParameter;
 
 /**
  * 启动时扫描自描述配置
@@ -30,18 +29,18 @@ import com.larrylgq.aop.self_description.component.OutParameter;
  * @since 1.0
  * @version 1.0
  */
-public class InfoGen_Self_Description extends Self_Description {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen_Self_Description.class.getName());
+public class InfoGen_HTTP_Self_Description extends Self_Description {
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP_Self_Description.class.getName());
 
 	private static class InnerInstance {
-		public static final InfoGen_Self_Description instance = new InfoGen_Self_Description();
+		public static final InfoGen_HTTP_Self_Description instance = new InfoGen_HTTP_Self_Description();
 	}
 
-	public static InfoGen_Self_Description getInstance() {
+	public static InfoGen_HTTP_Self_Description getInstance() {
 		return InnerInstance.instance;
 	}
 
-	private InfoGen_Self_Description() {
+	private InfoGen_HTTP_Self_Description() {
 	}
 
 	public Map<String, Function> self_description(Set<Class<?>> class_set) {

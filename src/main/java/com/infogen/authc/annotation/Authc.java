@@ -1,4 +1,4 @@
-package com.infogen.tracking.aop.annotation;
+package com.infogen.authc.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 统计方法执行时间的注解
+ * API 认证的注解
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年4月2日 下午12:06:40
  * @since 1.0
@@ -16,6 +16,6 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Execution {
-	String value() default "";
+public @interface Authc {
+	String roles() default "";
 }

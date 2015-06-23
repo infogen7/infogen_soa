@@ -16,16 +16,16 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.InfoGen_Self_Description;
 import com.infogen.cache.zookeeper.InfoGen_ZooKeeper;
 import com.infogen.http.InfoGen_Server_Initializer;
+import com.infogen.self_description.InfoGen_HTTP_Self_Description;
+import com.infogen.self_description.component.Function;
+import com.infogen.self_description.component.OutParameter;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
-import com.infogen.tracking.aop.annotation.Execution;
-import com.infogen.tracking.aop.event_handle.InfoGen_AOP_Handle_Execution;
+import com.infogen.tracking.annotation.Execution;
+import com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution;
 import com.larrylgq.aop.AOP;
-import com.larrylgq.aop.self_description.component.Function;
-import com.larrylgq.aop.self_description.component.OutParameter;
 import com.larrylgq.aop.tools.Tool_Core;
 import com.larrylgq.aop.util.NativePath;
 
@@ -89,7 +89,7 @@ public class InfoGen_Configuration {
 		register_server.setProtocol(infogen_properties.getProperty("infogen.protocol"));
 		register_server.setHttp_domain(infogen_properties.getProperty("infogen.http.domain"));
 		register_server.setHttp_proxy(infogen_properties.getProperty("infogen.http.proxy"));
-		register_server.setHttp_functions(InfoGen_Self_Description.getInstance().self_description(AOP.getInstance().getClasses()));// 自描述
+		register_server.setHttp_functions(InfoGen_HTTP_Self_Description.getInstance().self_description(AOP.getInstance().getClasses()));// 自描述
 		if (!register_server.available()) {
 			LOGGER.error("服务配置不能为空:infogen.name");
 			System.exit(-1);
