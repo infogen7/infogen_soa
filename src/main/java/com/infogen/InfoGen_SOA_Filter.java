@@ -1,4 +1,4 @@
-package com.infogen.http;
+package com.infogen;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.infogen.authc.InfoGen_Authc_Handle;
+import com.infogen.authc.InfoGen_Authc_HTTP_Handle;
 import com.infogen.http.tracking.InfoGen_HTTP_Tracking_Handle;
 
 /**
@@ -24,7 +24,7 @@ import com.infogen.http.tracking.InfoGen_HTTP_Tracking_Handle;
 @WebFilter(filterName = "InfoGen_SOA_Filter", urlPatterns = { "/*" }, asyncSupported = true)
 public class InfoGen_SOA_Filter implements Filter {
 	private InfoGen_HTTP_Tracking_Handle track = new InfoGen_HTTP_Tracking_Handle();
-	private InfoGen_Authc_Handle authc = new InfoGen_Authc_Handle();
+	private InfoGen_Authc_HTTP_Handle authc = new InfoGen_Authc_HTTP_Handle();
 
 	public void doFilter(ServletRequest srequset, ServletResponse sresponse, FilterChain filterChain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) srequset;

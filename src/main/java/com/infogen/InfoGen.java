@@ -53,7 +53,6 @@ public class InfoGen {
 
 	// //////////////////////////////////////////初始化/////////////////////////////////////////////////////
 	public InfoGen start_and_watch(InfoGen_Configuration infogen_configuration) throws IOException, URISyntaxException {
-		this.configuration = infogen_configuration;
 		// 初始化 zookeeper
 		ZK.start_zookeeper(infogen_configuration.zookeeper, () -> {// zookeeper 因连接session过期重启后定制处理
 					register();
@@ -78,8 +77,8 @@ public class InfoGen {
 	 * @return
 	 */
 	public InfoGen register() {
-		create_server(configuration.register_server);
-		create_node(configuration.register_node);
+		create_server(InfoGen_Configuration.register_server);
+		create_node(InfoGen_Configuration.register_node);
 		return this;
 	}
 

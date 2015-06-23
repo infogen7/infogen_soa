@@ -16,17 +16,16 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.authc.InfoGen_Authc_Handle;
+import com.infogen.InfoGen_Self_Description;
 import com.infogen.cache.zookeeper.InfoGen_ZooKeeper;
 import com.infogen.http.InfoGen_Server_Initializer;
-import com.infogen.http.self_describing.InfoGen_HTTP_Self_Describing;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
 import com.infogen.tracking.aop.annotation.Execution;
 import com.infogen.tracking.aop.event_handle.InfoGen_AOP_Handle_Execution;
 import com.larrylgq.aop.AOP;
-import com.larrylgq.aop.self_describing.component.Function;
-import com.larrylgq.aop.self_describing.component.OutParameter;
+import com.larrylgq.aop.self_description.component.Function;
+import com.larrylgq.aop.self_description.component.OutParameter;
 import com.larrylgq.aop.tools.Tool_Core;
 import com.larrylgq.aop.util.NativePath;
 
@@ -43,14 +42,12 @@ public class InfoGen_Configuration {
 	public final static ZoneId zoneid = ZoneId.of("GMT+08:00");
 	public final static Charset charset = StandardCharsets.UTF_8;
 
-	public static RegisterNode register_node = new RegisterNode();
-	public static RegisterServer register_server = new RegisterServer();
+	public static final RegisterNode register_node = new RegisterNode();
+	public static final RegisterServer register_server = new RegisterServer();
 	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
 
 	public String zookeeper;
 	public String kafka;
-	public Integer http_port;
-	public Integer rpc_port;
 
 	public InfoGen_Configuration(String infogen_path) throws IOException, URISyntaxException {
 		Properties infogen_properties = new Properties();
@@ -92,7 +89,7 @@ public class InfoGen_Configuration {
 		register_server.setProtocol(infogen_properties.getProperty("infogen.protocol"));
 		register_server.setHttp_domain(infogen_properties.getProperty("infogen.http.domain"));
 		register_server.setHttp_proxy(infogen_properties.getProperty("infogen.http.proxy"));
-		register_server.setHttp_functions(InfoGen_HTTP_Self_Describing.getInstance().self_describing(AOP.getInstance().getClasses()));// 自描述
+		register_server.setHttp_functions(InfoGen_Self_Description.getInstance().self_description(AOP.getInstance().getClasses()));// 自描述
 		if (!register_server.available()) {
 			LOGGER.error("服务配置不能为空:infogen.name");
 			System.exit(-1);
@@ -141,8 +138,5 @@ public class InfoGen_Configuration {
 			InfoGen_Server_Initializer.start_mvc(spring_mvc_path, spring_mvc_mapping);
 		}
 
-		// TODO
-		// 认证框架
-		InfoGen_Authc_Handle.functions = register_server.getHttp_functions();
 	}
 }

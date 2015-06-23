@@ -55,7 +55,7 @@ public class InfoGen_Jetty {
 	public InfoGen_Jetty start(InfoGen_Configuration infogen_configuration, String CONTEXT, String DEFAULT_WEBAPP_PATH, String DESCRIPTOR) {
 		Thread t = new Thread(() -> {
 			try {
-				final Server server = createServerInSource(infogen_configuration.http_port, CONTEXT, NativePath.get(DEFAULT_WEBAPP_PATH).toString(), NativePath.get(DESCRIPTOR).toString());
+				final Server server = createServerInSource(InfoGen_Configuration.register_node.getHttp_port(), CONTEXT, NativePath.get(DEFAULT_WEBAPP_PATH).toString(), NativePath.get(DESCRIPTOR).toString());
 				server.start();
 				server.join();
 			} catch (Exception e) {

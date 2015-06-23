@@ -45,7 +45,7 @@ public class InfoGen_Thrift {
 	public InfoGen_Thrift start_asyn(InfoGen_Configuration infogen_configuration, TProcessor processor) {
 		Thread t = new Thread(() -> {
 			try {
-				TNonblockingServerSocket socket = new TNonblockingServerSocket(infogen_configuration.rpc_port);
+				TNonblockingServerSocket socket = new TNonblockingServerSocket(InfoGen_Configuration.register_node.getRpc_port());
 				TThreadedSelectorServer.Args arg = new TThreadedSelectorServer.Args(socket);
 				arg.transportFactory(new TFramedTransport.Factory());// 以frame为单位进行传输，非阻塞式服务中使用
 				arg.protocolFactory(new TCompactProtocol.Factory());// 压缩格式
@@ -75,7 +75,7 @@ public class InfoGen_Thrift {
 	public InfoGen_Thrift start_blocking(InfoGen_Configuration infogen_configuration, TProcessor processor) {
 		Thread t = new Thread(() -> {
 			try {
-				TServerSocket socket = new TServerSocket(infogen_configuration.rpc_port);
+				TServerSocket socket = new TServerSocket(InfoGen_Configuration.register_node.getRpc_port());
 
 				TThreadPoolServer.Args arg = new TThreadPoolServer.Args(socket);
 				arg.transportFactory(new TTransportFactory());

@@ -4,7 +4,7 @@
 	<groupId>com.infogen</groupId>
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
-	<version>V1.0.03R150618</version>
+	<version>V1.0.03R150623</version>
 
 	<name>infogen_soa</name>
 	<url>https://github.com/larrylgq/infogen_soa</url>
@@ -52,9 +52,13 @@
 		<dependency>
 			<groupId>com.github.larrylgq</groupId>
 			<artifactId>infogen_aop</artifactId>
-			<version>V1.0.00R150618</version>
+			<version>V1.0.00R150623</version>
 		</dependency>
-
+		<dependency> 
+			<groupId>com.github.larrylgq</groupId> 
+			<artifactId>infogen_authc</artifactId>
+			<version>V1.0.03R150623</version>
+		</dependency>
 		<!-- zookeeper -->
 		<dependency>
 			<groupId>org.apache.zookeeper</groupId>
@@ -70,12 +74,7 @@
 
 
 
-		<!-- redis -->
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-			<version>2.7.2</version>
-		</dependency>
+
 
 
 		<!-- spring -->
