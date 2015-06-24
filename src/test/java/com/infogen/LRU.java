@@ -1,6 +1,6 @@
 package com.infogen;
 
-import com.larrylgq.aop.util.map.LRULinkedHashMap;
+import com.infogen.util.map.LRULinkedHashMap;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年5月29日 下午2:18:27

@@ -15,8 +15,8 @@ import com.infogen.authc.exception.impl.Authentication_Fail_Exception;
 import com.infogen.authc.subject.Subject;
 import com.infogen.authc.subject.dao.Subject_DAO;
 import com.infogen.authc.subject.dao.impl.Default_Subject_DAO;
-import com.larrylgq.aop.util.CODE;
-import com.larrylgq.aop.util.Return;
+import com.infogen.util.CODE;
+import com.infogen.util.Return;
 
 /**
  * API认证的过滤器

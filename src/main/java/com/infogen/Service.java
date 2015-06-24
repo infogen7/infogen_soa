@@ -21,9 +21,9 @@ import com.infogen.server.model.NativeNode;
 import com.infogen.server.model.NativeNode.NetType;
 import com.infogen.server.model.NativeNode.RequestType;
 import com.infogen.server.model.NativeServer;
-import com.larrylgq.aop.util.BasicNameValuePair;
-import com.larrylgq.aop.util.CODE;
-import com.larrylgq.aop.util.Return;
+import com.infogen.util.BasicNameValuePair;
+import com.infogen.util.CODE;
+import com.infogen.util.Return;
 
 /**
  * 调用服务的封装 实现调度,错误重试,同步异步处理等

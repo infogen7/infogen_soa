@@ -14,8 +14,8 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.infogen.configuration.InfoGen_Configuration;
+import com.infogen.util.map.consistent_hash.ConsistentHash;
 import com.larrylgq.aop.tools.Tool_Jackson;
-import com.larrylgq.aop.util.map.consistent_hash.ConsistentHash;
 
 /**
  * 为本地调用扩展的服务属性

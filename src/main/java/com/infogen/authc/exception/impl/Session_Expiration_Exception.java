@@ -1,7 +1,7 @@
 package com.infogen.authc.exception.impl;
 
 import com.infogen.authc.exception.InfoGen_Auth_Exception;
-import com.larrylgq.aop.util.CODE;
+import com.infogen.util.CODE;
 
 /**
  * 会话超时
