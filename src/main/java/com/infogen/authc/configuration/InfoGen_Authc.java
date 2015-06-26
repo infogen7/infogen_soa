@@ -1,4 +1,4 @@
-package com.infogen.authc;
+package com.infogen.authc.configuration;
 
 import java.io.BufferedReader;
 import java.io.IOException;
