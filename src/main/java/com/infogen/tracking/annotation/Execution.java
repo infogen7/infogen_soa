@@ -6,6 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.infogen.tracking.enum0.Function_Type;
+
 /**
  * 统计方法执行时间的注解
  * 
@@ -17,5 +19,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Execution {
-	String value() default "";
+	Function_Type type() default Function_Type.INTERFACE;
+
+	String user_definition() default "";
 }
