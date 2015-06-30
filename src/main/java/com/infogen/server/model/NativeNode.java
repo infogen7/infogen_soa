@@ -85,7 +85,9 @@ public class NativeNode extends AbstractNode {
 			TProtocol protocol = new TCompactProtocol(get_transport());
 			handle_event = handle.handle_event(protocol);
 		} catch (IOException e) {
-			transport.close();
+			if (transport.isOpen()) {
+				transport.close();
+			}
 			transport = null;
 			throw e;
 		} finally {
@@ -105,7 +107,9 @@ public class NativeNode extends AbstractNode {
 			TNonblockingSocket get_async_transport = get_async_transport();
 			handle_event = handle.handle_event(protocol, clientManager, get_async_transport, callback);
 		} catch (IOException e) {
-			async_transport.close();
+			if (async_transport.isOpen()) {
+				async_transport.close();
+			}
 			async_transport = null;
 			throw e;
 		} finally {
