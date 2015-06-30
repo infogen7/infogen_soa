@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.infogen.cache;
+package com.infogen.server.cache;
 
 import com.infogen.server.model.NativeServer;
 

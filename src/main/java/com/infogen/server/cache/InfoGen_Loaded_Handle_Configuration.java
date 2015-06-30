@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.infogen.cache;
+package com.infogen.server.cache;
 
 /**
  * 配置节点数据加载完毕处理器

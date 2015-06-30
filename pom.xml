@@ -126,17 +126,22 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.3.0.RC1</version>
+			<version>9.3.0.v20150612</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.3.0.RC1</version>
+			<version>9.3.0.v20150612</version>
 		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.eclipse.jetty</groupId> -->
+		<!-- <artifactId>jetty-server</artifactId> -->
+		<!-- <version>9.3.0.v20150612</version> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.eclipse.jetty.http2</groupId>
 			<artifactId>http2-server</artifactId>
-			<version>9.3.0.RC1</version>
+			<version>9.3.0.v20150612</version>
 		</dependency>
 
 		<!-- httpclient -->

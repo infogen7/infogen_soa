@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.http.tools.Tool_Context;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
+import com.infogen.tools.Tool_Context;
 import com.infogen.tracking.enum0.Track;
 
 /**
@@ -26,6 +25,8 @@ public class InfoGen_HTTP_Tracking_Handle {
 	public static RegisterServer register_server = InfoGen_Configuration.register_server;;
 	public static RegisterNode register_node = InfoGen_Configuration.register_node;;
 
+	public String x_session_id_key = "token";
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -38,24 +39,13 @@ public class InfoGen_HTTP_Tracking_Handle {
 		String traceid = request.getParameter(Track.x_track_id.key);
 		if (traceid == null) {// 客户端调用
 			callchain.setTrackid(UUID.randomUUID().toString().replaceAll("-", ""));
+			// session id
+			callchain.setSessionid(Tool_Context.get_cookie(request, x_session_id_key));
 			// identify
-			String identify = null;
-			Cookie[] cookies = request.getCookies();
-			if (cookies != null) {
-				for (Cookie cookie : cookies) {
-					if (cookie.getName().equalsIgnoreCase(Track.x_identify.key)) {
-						identify = cookie.getValue();
-					}
-				}
-			}
+			String identify = Tool_Context.get_cookie(request, Track.x_identify.key);
 			if (identify == null) {
 				identify = UUID.randomUUID().toString().replaceAll("-", "");
-				int day = 24 * 60 * 60;
-				Cookie cookie = new Cookie(Track.x_identify.key, UUID.randomUUID().toString().replaceAll("-", ""));
-				cookie.setMaxAge(7 * day);
-				cookie.setPath("/");
-				cookie.setHttpOnly(true);
-				response.addCookie(cookie);
+				Tool_Context.set_cookie(response, Track.x_identify.key, identify);
 			}
 			callchain.setIdentify(identify);
 			// sequence
@@ -64,12 +54,14 @@ public class InfoGen_HTTP_Tracking_Handle {
 			callchain.setReferer(request.getHeader("Referer"));
 		} else {
 			callchain.setTrackid(traceid);
+			// session id
+			callchain.setSessionid(request.getHeader(Track.x_session_id.key));
 			// identify
-			callchain.setIdentify(request.getParameter(Track.x_identify.key));
+			callchain.setIdentify(request.getHeader(Track.x_identify.key));
 			// sequence
-			callchain.setSequence(Integer.valueOf(request.getParameter(Track.x_sequence.key)) + 1);
+			callchain.setSequence(Integer.valueOf(request.getHeader(Track.x_sequence.key)) + 1);
 			// Referer
-			callchain.setReferer(request.getParameter(Track.x_referer.key));
+			callchain.setReferer(request.getHeader(Track.x_referer.key));
 		}
 
 		// referer ip
@@ -87,8 +79,6 @@ public class InfoGen_HTTP_Tracking_Handle {
 		callchain.setTarget_server(register_server.getName());
 
 		//
-		ThreadLocal_Tracking.setRequest(request);
-		ThreadLocal_Tracking.setResponse(response);
 		ThreadLocal_Tracking.setCallchain(callchain);
 		return callchain;
 	}

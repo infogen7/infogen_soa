@@ -13,8 +13,8 @@ import com.infogen.authc.configuration.handle.impl.Properties_Methods_Handle;
 import com.infogen.authc.exception.InfoGen_Auth_Exception;
 import com.infogen.authc.exception.impl.Authentication_Fail_Exception;
 import com.infogen.authc.subject.Subject;
+import com.infogen.authc.subject.dao.Default_Subject_DAO;
 import com.infogen.authc.subject.dao.Subject_DAO;
-import com.infogen.authc.subject.dao.impl.Default_Subject_DAO;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
 

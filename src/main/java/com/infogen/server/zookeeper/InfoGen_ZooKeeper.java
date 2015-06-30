@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.infogen.cache.zookeeper;
+package com.infogen.server.zookeeper;
 
 import java.io.IOException;
 import java.util.ArrayList;

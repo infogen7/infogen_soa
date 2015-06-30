@@ -10,8 +10,9 @@ public class CallChain {
 	// a00000... ,t0000,测试/京东/聚信立,tr00000,0 ,home.html ,xx ,send ,xx ,中控 ,2015050X ,300ms ,ok/error/auth,1.3k
 	private String trackid;
 	private String identify;// cookie等用户标识
+	private String sessionid = "";// session id
 	private Integer sequence;
-	private String referer;
+	private String referer = "";
 
 	private String referer_ip;
 	private String target;
@@ -32,6 +33,14 @@ public class CallChain {
 
 	public void setTrackid(String trackid) {
 		this.trackid = trackid;
+	}
+
+	public String getSessionid() {
+		return sessionid;
+	}
+
+	public void setSessionid(String sessionid) {
+		this.sessionid = sessionid;
 	}
 
 	public Integer getSequence() {

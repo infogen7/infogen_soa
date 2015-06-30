@@ -1,9 +1,11 @@
-package com.infogen.http.tools;
+package com.infogen.tools;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
@@ -16,6 +18,27 @@ import org.apache.log4j.Logger;
  */
 public class Tool_Context {
 	private static final Logger LOGGER = Logger.getLogger(Tool_Context.class.getName());
+
+	public static String get_cookie(HttpServletRequest request, String key) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equalsIgnoreCase(key)) {
+					return cookie.getValue();
+				}
+			}
+		}
+		return null;
+	}
+
+	public static void set_cookie(HttpServletResponse response, String key, String value) {
+		int day = 24 * 60 * 60;
+		Cookie cookie = new Cookie(key, value);
+		cookie.setMaxAge(7 * day);
+		cookie.setPath("/");
+		cookie.setHttpOnly(true);
+		response.addCookie(cookie);
+	}
 
 	/**
 	 * 获取 web 客户端IP

@@ -7,6 +7,7 @@ package com.infogen.tracking.enum0;
  */
 public enum Track {
 	x_track_id("x-track", "trackid"), //
+	x_session_id("x-session", "session id"), //
 	x_identify("x-iden", "identify"), //
 	x_sequence("x-seq", "sequence"), //
 	x_referer("x-ref", "referer");

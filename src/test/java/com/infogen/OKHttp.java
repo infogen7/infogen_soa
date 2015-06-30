@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.time.Clock;
 
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.http.tools.Tool_HTTP;
+import com.infogen.http.Tool_HTTP;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年6月4日 上午11:10:29

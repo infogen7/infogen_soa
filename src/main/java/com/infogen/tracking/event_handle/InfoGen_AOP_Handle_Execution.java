@@ -51,6 +51,7 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 
 	public static final InfoGen_Logger_Kafka_Producer producer = InfoGen_Logger_Kafka_Producer.getInstance();
 	public static final String infogen_topic_tracking = "infogen_topic_tracking";
+	public static Boolean open_return_size = false;
 
 	public static void insert_before_call_back(String class_name, String method_name, String user_definition, long start_millis) {
 	}
@@ -79,17 +80,17 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		sbd.append(start_millis).append(",");
 		sbd.append(end_millis - start_millis).append(",");
 		sbd.append(1).append(",");
-		//
 		if (return0 instanceof String) {
-			sbd.append(return0.toString().getBytes().length);
-		} else if (return0 instanceof Return) {
+			sbd.append(return0.toString().length());
+		} else if (open_return_size && return0 instanceof Return) {
 			sbd.append(Tool_Jackson.toJson(return0).getBytes().length);
 		}
 		sbd.append(",");
+
 		sbd.append(callChain.getIdentify()).append(",");
+		String sessionid = callChain.getSessionid();
+		sbd.append(sessionid == null ? "" : sessionid).append(",");
 		// 客户端类型
-		sbd.append(",");
-		// session
 		producer.send(infogen_topic_tracking, callChain.getTrackid(), sbd.toString());
 	}
 
@@ -105,9 +106,9 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		sbd.append(0).append(",");
 
 		sbd.append(callChain.getIdentify()).append(",");
+		String sessionid = callChain.getSessionid();
+		sbd.append(sessionid == null ? "" : sessionid).append(",");
 		// 客户端类型
-		sbd.append(",");
-		// session
 		producer.send(infogen_topic_tracking, callChain.getTrackid(), sbd.toString());
 	}
 }

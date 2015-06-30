@@ -84,8 +84,8 @@ public class InfoGen_Jetty {
 		// HTTP/1.1 support.
 		HttpConnectionFactory http1_1 = new HttpConnectionFactory(config);
 		// HTTP/2 cleartext support.
-		HTTP2CServerConnectionFactory http2 = new HTTP2CServerConnectionFactory(config);
-		ServerConnector connector = new ServerConnector(server, http1_1, http2);
+		 HTTP2CServerConnectionFactory http2 = new HTTP2CServerConnectionFactory(config);
+		ServerConnector connector = new ServerConnector(server, http1_1,http2);
 		connector.setPort(port);
 		// 解决Windows下重复启动Jetty居然不报告端口冲突的问题. 但是可能会造成linux上产生僵尸进程
 		// connector.setReuseAddress(false);

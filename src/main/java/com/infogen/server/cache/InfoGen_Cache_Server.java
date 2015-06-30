@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.infogen.cache;
+package com.infogen.server.cache;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -19,10 +19,10 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.infogen.cache.zookeeper.InfoGen_ZooKeeper;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.server.model.NativeNode;
 import com.infogen.server.model.NativeServer;
+import com.infogen.server.zookeeper.InfoGen_ZooKeeper;
 import com.infogen.util.Scheduled;
 import com.larrylgq.aop.tools.Tool_Core;
 import com.larrylgq.aop.tools.Tool_Jackson;
@@ -49,7 +49,7 @@ public class InfoGen_Cache_Server {
 	private InfoGen_Cache_Server() {
 	}
 
-	private InfoGen_ZooKeeper ZK = com.infogen.cache.zookeeper.InfoGen_ZooKeeper.getInstance();
+	private InfoGen_ZooKeeper ZK = com.infogen.server.zookeeper.InfoGen_ZooKeeper.getInstance();
 
 	// 依赖的服务
 	public ConcurrentMap<String, NativeServer> depend_server = new ConcurrentHashMap<>();

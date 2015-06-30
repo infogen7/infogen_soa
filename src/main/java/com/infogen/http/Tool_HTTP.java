@@ -1,4 +1,4 @@
-package com.infogen.http.tools;
+package com.infogen.http;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,10 +13,12 @@ import com.infogen.tracking.ThreadLocal_Tracking;
 import com.infogen.tracking.enum0.Track;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
+import com.larrylgq.aop.tools.Tool_Jackson;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Request.Builder;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
@@ -45,14 +47,6 @@ public class Tool_HTTP {
 		if (params == null) {
 			params = new HashMap<>();
 		}
-		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
-		if (callChain != null) {
-			params.put(Track.x_track_id.key, callChain.getTrackid());
-			params.put(Track.x_identify.key, callChain.getIdentify());
-			params.put(Track.x_sequence.key, callChain.getSequence().toString());
-			params.put(Track.x_referer.key, callChain.getTarget());
-		}
-
 		StringBuilder do_get_sbf = new StringBuilder();
 		do_get_sbf.append(url);
 		String[] keys = new String[params.size()];
@@ -71,6 +65,17 @@ public class Tool_HTTP {
 		return url;
 	}
 
+	private static void add_headers(Builder builder) {
+		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
+		if (callChain != null) {
+			builder.header(Track.x_session_id.key, callChain.getSessionid())//
+					.header(Track.x_track_id.key, callChain.getTrackid())//
+					.header(Track.x_identify.key, callChain.getIdentify())//
+					.header(Track.x_sequence.key, callChain.getSequence().toString())//
+					.header(Track.x_referer.key, callChain.getTarget());//
+		}
+	}
+
 	/**
 	 * get 获取 rest 资源
 	 * 
@@ -80,7 +85,9 @@ public class Tool_HTTP {
 	 */
 	public static String do_get(String url, Map<String, String> params) throws IOException {
 		url = concat_url_params(url, params);
-		Request request = new Request.Builder().url(url).build();
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder);
+		Request request = builder.build();
 		Response response = client.newCall(request).execute();
 		if (response.isSuccessful()) {
 			return response.body().string();
@@ -93,7 +100,9 @@ public class Tool_HTTP {
 		Http_Callback callback = new Http_Callback();
 		url = concat_url_params(url, params);
 
-		Request request = new Request.Builder().url(url).build();
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder);
+		Request request = builder.build();
 		client.newCall(request).enqueue(new Callback() {
 			@Override
 			public void onFailure(Request request, IOException e) {
@@ -113,13 +122,41 @@ public class Tool_HTTP {
 	}
 
 	// ////////////////////////////////////////////////////////post///////////////////////////////////////////////////////////////////////////
-	public static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
+	private static String concat_params(Map<String, String> params) {
+		if (params == null) {
+			params = new HashMap<>();
+		}
+		StringBuilder do_get_sbf = new StringBuilder();
+		String[] keys = new String[params.size()];
+		params.keySet().toArray(keys);
+		for (int j = 0; j < keys.length; j++) {
+			if (j != 0) {
+				do_get_sbf.append("&");
+			}
+			String key = keys[j];
+			String value = params.get(key);
+			do_get_sbf.append(key).append("=").append(value);
+		}
+		return do_get_sbf.toString();
+	}
+
+	public static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");//
 	public static final MediaType MEDIA_TYPE_MARKDOWN = MediaType.parse("text/x-markdown; charset=utf-8");
-	public static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
+	public static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");//
+	public static final MediaType MEDIA_TYPE_FORM = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");//
 
 	public static String do_post(String url, Map<String, String> params) throws IOException {
-		url = concat_url_params(url, params);
-		Request request = new Request.Builder().url(url).post(RequestBody.create(MEDIA_TYPE_JSON, "")).build();
+		return do_post_bytype(url, MEDIA_TYPE_FORM, concat_params(params));
+	}
+
+	public static String do_post_json(String url, Map<String, String> params) throws IOException {
+		return do_post_bytype(url, MEDIA_TYPE_JSON, Tool_Jackson.toJson(params));
+	}
+
+	private static String do_post_bytype(String url, MediaType type, String params) throws IOException {
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder);
+		Request request = builder.post(RequestBody.create(type, params)).build();
 		Response response = client.newCall(request).execute();
 		if (response.isSuccessful()) {
 			return response.body().string();
@@ -129,11 +166,18 @@ public class Tool_HTTP {
 	}
 
 	public static Http_Callback do_async_post(String url, Map<String, String> params) throws IOException {
+		return do_async_post_bytype(url, MEDIA_TYPE_FORM, concat_params(params));
+	}
+
+	public static Http_Callback do_async_post_json(String url, Map<String, String> params) throws IOException {
+		return do_async_post_bytype(url, MEDIA_TYPE_JSON, Tool_Jackson.toJson(params));
+	}
+
+	private static Http_Callback do_async_post_bytype(String url, MediaType type, String params) throws IOException {
 		Http_Callback callback = new Http_Callback();
-
-		url = concat_url_params(url, params);
-
-		Request request = new Request.Builder().url(url).post(RequestBody.create(MEDIA_TYPE_JSON, "")).build();
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder);
+		Request request = builder.post(RequestBody.create(type, params)).build();
 		client.newCall(request).enqueue(new Callback() {
 			@Override
 			public void onFailure(Request request, IOException e) {
