@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import com.infogen.http.callback.Http_Callback;
 import com.infogen.tracking.CallChain;
 import com.infogen.tracking.ThreadLocal_Tracking;
-import com.infogen.tracking.enum0.Track;
+import com.infogen.tracking.enum0.Track_Header;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
 import com.larrylgq.aop.tools.Tool_Jackson;
@@ -32,8 +32,8 @@ import com.squareup.okhttp.Response;
 public class Tool_HTTP {
 	private static final Logger LOGGER = Logger.getLogger(Tool_HTTP.class.getName());
 	// 当使用长轮循时需要注意不能超过此时间
-	private static final Integer socket_timeout = 10_000;// 数据传输时间
-	private static final Integer connect_timeout = 3_000;// 连接时间
+	public static Integer socket_timeout = 10_000;// 数据传输时间
+	public static Integer connect_timeout = 3_000;// 连接时间
 	private static final OkHttpClient client = new OkHttpClient();
 	static {
 		client.setConnectTimeout(connect_timeout, TimeUnit.SECONDS);
@@ -68,11 +68,11 @@ public class Tool_HTTP {
 	private static void add_headers(Builder builder) {
 		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
 		if (callChain != null) {
-			builder.header(Track.x_session_id.key, callChain.getSessionid())//
-					.header(Track.x_track_id.key, callChain.getTrackid())//
-					.header(Track.x_identify.key, callChain.getIdentify())//
-					.header(Track.x_sequence.key, callChain.getSequence().toString())//
-					.header(Track.x_referer.key, callChain.getTarget());//
+			builder.header(Track_Header.x_session_id.key, callChain.getSessionid())//
+					.header(Track_Header.x_track_id.key, callChain.getTrackid())//
+					.header(Track_Header.x_identify.key, callChain.getIdentify())//
+					.header(Track_Header.x_sequence.key, callChain.getSequence().toString())//
+					.header(Track_Header.x_referer.key, callChain.getTarget());//
 		}
 	}
 

@@ -5,7 +5,7 @@ package com.infogen.tracking.enum0;
  * @since 1.0
  * @version 1.0
  */
-public enum Track {
+public enum Track_Header {
 	x_track_id("x-track", "trackid"), //
 	x_session_id("x-session", "session id"), //
 	x_identify("x-iden", "identify"), //
@@ -14,7 +14,7 @@ public enum Track {
 	public String key;
 	public String note;
 
-	private Track(String key, String note) {
+	private Track_Header(String key, String note) {
 		this.key = key;
 		this.note = note;
 	}

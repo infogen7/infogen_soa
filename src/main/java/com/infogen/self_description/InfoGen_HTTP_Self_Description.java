@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,12 +59,6 @@ public class InfoGen_HTTP_Self_Description extends Self_Description {
 				if (class_url_annotation != null) {
 					pre_url = class_url_annotation.value()[0].trim();
 				}
-				if (pre_url.endsWith("/")) {
-					pre_url = pre_url.substring(0, pre_url.length() - 1);
-				}
-				if (pre_url.length() > 0 && !pre_url.startsWith("/")) {
-					pre_url = "/".concat(pre_url);
-				}
 
 				for (Method method : clazz.getDeclaredMethods()) {// 遍历clazz对应类里面的所有方法
 					RequestMapping request_mapping_annotation = method.getAnnotation(RequestMapping.class);// 方法映射路径和调用方式
@@ -76,15 +71,14 @@ public class InfoGen_HTTP_Self_Description extends Self_Description {
 					String suf_url = "";// URL a/b/c/ 转化为 /a/b/c 地一个/会被补齐,最后一个/会被过滤掉
 					String[] values = request_mapping_annotation.value();
 					if (values.length != 0) {
-						suf_url = values[0];
+						suf_url = values[0].trim();
 					}
-					if (suf_url.endsWith("/")) {
-						suf_url = suf_url.substring(0, suf_url.length() - 1);
+					String url = new StringBuilder("/").append(pre_url).append("/").append(suf_url).toString();
+					if (url.endsWith("/")) {
+						url.substring(0, url.length());
 					}
-					if (suf_url.length() > 0 && !suf_url.startsWith("/")) {
-						suf_url = "/".concat(suf_url);
-					}
-					function.setRequest_method(new StringBuilder(pre_url).append(suf_url).toString());
+					url = Pattern.compile("['/']+").matcher(url).replaceAll("/").trim();
+					function.setRequest_method(url);
 					//
 					RequestMethod[] get_post_methods = request_mapping_annotation.method();
 					if (get_post_methods.length == 0) {
