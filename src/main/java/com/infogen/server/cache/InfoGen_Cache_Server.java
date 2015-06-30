@@ -129,12 +129,12 @@ public class InfoGen_Cache_Server {
 		Map<String, NativeNode> tmp_all_nodes = server.get_all_nodes();
 		for (String node_path : get_childrens) {
 			NativeNode node = tmp_all_nodes.get(node_path);
+			// 本地存在该节点 - 继续
 			if (node != null) {
-				// 本地存在该节点-在临时map中删除
 				tmp_all_nodes.remove(node_path);
 				continue;
 			}
-			// 本地不存在该节点
+			// 本地不存在该节点 - 添加到本地
 			String node_string = ZK.get_data(server_path.concat("/").concat(node_path));
 			try {
 				server.add(Tool_Jackson.toObject(node_string, NativeNode.class));
@@ -144,6 +144,7 @@ public class InfoGen_Cache_Server {
 		}
 		// 注册中心不存在的节点
 		for (NativeNode node : tmp_all_nodes.values()) {
+			node.clean();
 			server.remove(node);
 		}
 	}

@@ -39,7 +39,7 @@ public class NativeNode extends AbstractNode {
 	public Long disabled_time = Clock.system(InfoGen_Configuration.zoneid).millis();
 
 	@JsonIgnore
-	private static final Integer connect_timeout = 3_000;// 连接时间
+	private static final Integer connect_timeout = 3_000;// 连接超时时间
 	@JsonIgnore
 	private static final StampedLock call_lock = new StampedLock();
 	@JsonIgnore
@@ -49,6 +49,17 @@ public class NativeNode extends AbstractNode {
 	private transient TTransport transport = null;
 	@JsonIgnore
 	private transient TNonblockingSocket async_transport = null;
+
+	public void clean() {
+		if (transport != null && transport.isOpen()) {
+			transport.close();
+			transport = null;
+		}
+		if (async_transport != null && async_transport.isOpen()) {
+			async_transport.close();
+			async_transport = null;
+		}
+	}
 
 	public TTransport get_transport() throws IOException, TTransportException {
 		if (transport == null) {
@@ -103,6 +114,7 @@ public class NativeNode extends AbstractNode {
 		return handle_event;
 	}
 
+	@Deprecated
 	public <T> T call_once(Thrift_Client_Handler<T> handle) throws TException {
 		TTransport transport = new TSocket(ip, rpc_port);
 		TProtocol protocol = new TCompactProtocol(transport);

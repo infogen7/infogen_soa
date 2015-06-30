@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.infogen.server.model;
 
 import java.time.Clock;
@@ -33,9 +30,14 @@ public class NativeServer extends AbstractServer {
 
 	@JsonIgnore
 	private transient ConsistentHash<NativeNode> consistent_hash = new ConsistentHash<>();
-
 	@JsonIgnore
 	private transient String change_node_status_lock = "";
+	@JsonIgnore
+	private long last_success_invoke_millis = Clock.system(InfoGen_Configuration.zoneid).millis();// 最近一次调用成功的时间戳
+	@JsonIgnore
+	private int disabled_timeout = 16 * 1000;// 重置失效节点的时间间隔 - 超过zookeeper的session超时时间
+	@JsonIgnore
+	private int min_disabled_timeout = 3 * 1000;// 最小的节点恢复使用的间隔时间
 
 	// ////////////////////////////////////////// 定时修正不可用的节点/////////////////////////////////////////////////////
 	public void add(NativeNode node) {
@@ -45,14 +47,6 @@ public class NativeServer extends AbstractServer {
 		} else {
 			LOGGER.error("node unavailable:".concat(Tool_Jackson.toJson(node)));
 		}
-	}
-
-	public void remove(NativeNode node) {
-		synchronized (change_node_status_lock) {
-			available_nodes.remove(node);
-			disabled_nodes.remove(node);
-		}
-		consistent_hash.remove(node);
 	}
 
 	public Map<String, NativeNode> get_all_nodes() {
@@ -68,11 +62,19 @@ public class NativeServer extends AbstractServer {
 		return all_nodes;
 	}
 
+	public void remove(NativeNode node) {
+		synchronized (change_node_status_lock) {
+			available_nodes.remove(node);
+			disabled_nodes.remove(node);
+		}
+		consistent_hash.remove(node);
+	}
+
 	private void recover() {
 		synchronized (change_node_status_lock) {
 			available_nodes.addAll(disabled_nodes);
 			for (NativeNode node : disabled_nodes) {
-				if ((Clock.system(InfoGen_Configuration.zoneid).millis() - node.disabled_time) > disabled_timeout) {
+				if ((Clock.system(InfoGen_Configuration.zoneid).millis() - node.disabled_time) > min_disabled_timeout) {
 					consistent_hash.add(node);
 				}
 			}
@@ -84,9 +86,9 @@ public class NativeServer extends AbstractServer {
 		synchronized (change_node_status_lock) {
 			disabled_nodes.add(node);
 			available_nodes.remove(node);
-			consistent_hash.remove(node);
-			node.disabled_time = Clock.system(InfoGen_Configuration.zoneid).millis();
 		}
+		consistent_hash.remove(node);
+		node.disabled_time = Clock.system(InfoGen_Configuration.zoneid).millis();
 	}
 
 	/**
@@ -95,17 +97,12 @@ public class NativeServer extends AbstractServer {
 	 * @return
 	 */
 
-	private long last_invoke_millis = Clock.system(InfoGen_Configuration.zoneid).millis();
-	private int disabled_timeout = 16 * 1000;// 超过zookeeper的session超时时间
-
 	public NativeNode random_node(String seed) {
 		long millis = Clock.system(InfoGen_Configuration.zoneid).millis();
-		// 没有可用节点或距离上一次调用超过指定时间
-		if ((millis - last_invoke_millis) > disabled_timeout) {
-			if (!disabled_nodes.isEmpty()) {
-				recover();
-			}
-			last_invoke_millis = millis;
+		// 没有可用节点或距离上一次成功调用超过指定时间
+		if (!disabled_nodes.isEmpty() && (available_nodes.isEmpty() || (millis - last_success_invoke_millis) > disabled_timeout)) {
+			recover();
+			last_success_invoke_millis = millis;
 		}
 		return consistent_hash.get(seed);
 	}
