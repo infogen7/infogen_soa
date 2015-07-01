@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -242,51 +243,10 @@ public class InfoGen_ZooKeeper {
 		return list;
 	}
 
-	// //////////////////////////////////////////////节点数据 Watcher/////////////////////////////////////////////////////////////
-	private Set<String> all_watcher_data_paths = new HashSet<String>();
-	// 节点改变数据触发事件处理
-	private Map<String, InfoGen_Zookeeper_Handle_Watcher_Data> watcher_data_handle_map = new HashMap<>();
-
-	public void watcher_data_single(String path, InfoGen_Zookeeper_Handle_Watcher_Data watcher_data_handle) {
-		if (watcher_data_handle_map.get(path) != null) {
-			LOGGER.info("当前监听已经注册过:".concat(path));
-			return;
-		}
-		if (watcher_data_handle != null) {
-			watcher_data_handle_map.put(path, watcher_data_handle);
-		}
-		all_watcher_data_paths.add(path);
-		watcher_data(path);
-	}
-
-	private void watcher_data(String path) {
-		try {
-			LOGGER.info("启动节点数据监听:".concat(path));
-			zookeeper.getData(path, (event) -> {
-				LOGGER.info("节点数据事件  path:" + event.getPath() + "  state:" + event.getState().name() + "  type:" + event.getType().name());
-				if (event.getType() == EventType.NodeDataChanged) {
-					LOGGER.info("重新启动节点数据监听:".concat(path));
-					watcher_data(path);
-					LOGGER.info("重新加载节点信息:".concat(path));
-					InfoGen_Zookeeper_Handle_Watcher_Data watcher_data_handle = watcher_data_handle_map.get(path);
-					if (watcher_data_handle != null) {
-						watcher_data_handle.handle_event(path);
-					}
-				} else if (event.getType() != EventType.None) {
-					// EventType 为 None 的时候不需要重新监听
-					LOGGER.info("重新启动节点数据监听:".concat(path));
-					watcher_data(path);
-				}
-			}, null);
-			LOGGER.info("启动节点数据监听成功:".concat(path));
-		} catch (Exception e) {
-			watcher_data_paths.add(path);
-			LOGGER.error("启动节点数据监听错误: ", e);
-		}
-	}
-
 	// //////////////////////////////////////////////子节点 Watcher////////////////////////////////////////////////////////////////
 	private Set<String> all_watcher_children_paths = new HashSet<String>();
+	// 定时重试监听失败的服务
+	private Set<String> rewatcher_children_paths = new HashSet<String>();
 	// 子节点改变触发事件处理
 	private Map<String, InfoGen_Zookeeper_Handle_Watcher_Children> watcher_children_handle_map = new HashMap<>();
 
@@ -324,7 +284,7 @@ public class InfoGen_ZooKeeper {
 				});
 			LOGGER.info("启动子节点监听成功:".concat(path));
 		} catch (Exception e) {
-			watcher_children_paths.add(path);
+			rewatcher_children_paths.add(path);
 			LOGGER.error("启动子节点监听错误: ", e);
 		}
 	}
@@ -350,9 +310,9 @@ public class InfoGen_ZooKeeper {
 						stop_zookeeper();
 						start_zookeeper(host_port, expired_handle);
 						LOGGER.info("重置所有子节点监听");
-						watcher_children_paths.addAll(all_watcher_children_paths);
-						LOGGER.info("重置所有节点数据监听");
-						watcher_data_paths.addAll(all_watcher_data_paths);
+						rewatcher_children_paths.addAll(all_watcher_children_paths);
+						rewatcher_children_paths_schedule.cancel(true);
+						rewatcher_children_paths_schedule = Scheduled.executors_single.scheduleWithFixedDelay(rewatcher_children_paths_runable, 30, 30, TimeUnit.SECONDS);
 						LOGGER.info("其它定制处理");
 						if (expired_handle != null) {
 							expired_handle.handle_event();
@@ -380,38 +340,22 @@ public class InfoGen_ZooKeeper {
 	}
 
 	// ////////////////////////////////////////////Scheduled////////////////////////////////////////////////////////////////
-	// 定时重试监听失败的服务
-	private Set<String> watcher_children_paths = new HashSet<String>();
-	private Set<String> watcher_data_paths = new HashSet<String>();
-
-	public void schedule() {
-		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
+	private final Runnable rewatcher_children_paths_runable = new Runnable() {
+		@Override
+		public void run() {
 			Set<String> paths = new HashSet<String>();
-			paths.addAll(watcher_children_paths);
-			watcher_children_paths.clear();
-
-			paths.forEach(server_name -> {
+			paths.addAll(rewatcher_children_paths);
+			for (String server_name : paths) {
 				try {
 					watcher_children(server_name);
+					rewatcher_children_paths.remove(server_name);
 				} catch (Exception e) {
 					LOGGER.error("重新执行子节点监听", e);
 				}
-			});
-		}, 30, 30, TimeUnit.SECONDS);
-
-		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
-			Set<String> paths = new HashSet<String>();
-			paths.addAll(watcher_data_paths);
-			watcher_data_paths.clear();
-
-			paths.forEach(configuration_name -> {
-				try {
-					watcher_data(configuration_name);
-				} catch (Exception e) {
-					LOGGER.error("重新执行节点数据监听", e);
-				}
-			});
-		}, 30, 30, TimeUnit.SECONDS);
-	}
+			}
+		}
+	};
+	// 定时修正监听失败
+	private ScheduledFuture<?> rewatcher_children_paths_schedule = Scheduled.executors_single.scheduleWithFixedDelay(rewatcher_children_paths_runable, 30, 30, TimeUnit.SECONDS);
 
 }

@@ -37,13 +37,12 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		String user_definition = ((Execution) annotation).user_definition().replaceAll(",", "|");
 		LOGGER.warn("注解Execution中user_definition字段不能出现 ',' 将被替换成 '|'");
 		Function_Type type = ((Execution) annotation).type();
-
 		StringBuilder sbd = new StringBuilder();
 		sbd.append("com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution.insert_after_call_back(");
 		sbd.append("\"").append(class_name).append("\"").append(",");
 		sbd.append("\"").append(method_name).append("\"").append(",");
 		sbd.append("\"").append(user_definition).append("\"").append(",");
-		sbd.append("\"").append(type).append("\"").append(",");
+		sbd.append(type.ordinal()).append(",");
 		sbd.append("infogen_logger_attach_start_millis, System.currentTimeMillis(),$_);");
 		advice_method.setInsert_after(sbd.toString());
 
@@ -52,7 +51,7 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		sbd.append("\"").append(class_name).append("\"").append(",");
 		sbd.append("\"").append(method_name).append("\"").append(",");
 		sbd.append("\"").append(user_definition).append("\"").append(",");
-		sbd.append("\"").append(type).append("\"").append(",");
+		sbd.append(type.ordinal()).append(",");
 		sbd.append("$e);throw $e;");
 		advice_method.setAdd_catch(sbd.toString());
 
@@ -78,7 +77,7 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 
 	// traceid,sequence,来源地址 ,来源ip,当前地址,当前ip,当前服务 ,当前类,当前方法,调用时间 ,调用时长,调用状态(成功/失败) ,返回数据大小,cookie等用户标识,sessionid(token),方法类型(mysql/redis/interface)
 	// tr00000,0 ,home.html ,xx ,send ,xx ,中控 ,2015050X ,300ms ,ok/error/auth,1.3k ,t0000,测试/京东/聚信立, a00000...
-	public static void insert_after_call_back(String class_name, String method_name, String user_definition, Function_Type type, long start_millis, long end_millis, Object return0) {
+	public static void insert_after_call_back(String class_name, String method_name, String user_definition, int type, long start_millis, long end_millis, Object return0) {
 		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
 
 		StringBuilder sbd = get_callchain(callChain);
@@ -97,12 +96,12 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		sbd.append(callChain.getIdentify()).append(",");
 		String sessionid = callChain.getSessionid();
 		sbd.append(sessionid == null ? "" : sessionid).append(",");
-		sbd.append(type.ordinal());
+		sbd.append(type);
 		// 客户端类型
 		producer.send(infogen_topic_tracking, callChain.getTrackid(), sbd.toString());
 	}
 
-	public static void add_catch_call_back(String class_name, String method_name, String user_definition, Function_Type type, Throwable e) {
+	public static void add_catch_call_back(String class_name, String method_name, String user_definition, int type, Throwable e) {
 		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
 
 		StringBuilder sbd = get_callchain(callChain);
@@ -116,7 +115,7 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		sbd.append(callChain.getIdentify()).append(",");
 		String sessionid = callChain.getSessionid();
 		sbd.append(sessionid == null ? "" : sessionid).append(",");
-		sbd.append(type.ordinal());
+		sbd.append(type);
 		// 客户端类型
 		producer.send(infogen_topic_tracking, callChain.getTrackid(), sbd.toString());
 	}
