@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
 
 import com.infogen.http.callback.Http_Callback;
+import com.infogen.http.exception.HTTP_Fail_Exception;
 import com.infogen.rpc.callback.RPC_Callback;
 import com.infogen.rpc.exception.impl.Node_Notfound_Exception;
 import com.infogen.rpc.exception.impl.Service_Notfound_Exception;
@@ -236,6 +237,9 @@ public class Service {
 				}
 				String http = node.http(method, name_value_pair, request_type, net_type);
 				return Return.create(http);
+			} catch (HTTP_Fail_Exception e) {
+				LOGGER.warn("调用失败", e);
+				return Return.FAIL(e.getCode(), e.getMessage());
 			} catch (IOException e) {
 				LOGGER.error("调用失败", e);
 				server.disabled(node);

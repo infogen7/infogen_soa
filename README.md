@@ -11,9 +11,11 @@ GIT库名称：infogen_zookeeper
 更新  内容：
 1:限速
 2:流控
-3:infogen内部调试接口
-4:dopost 工具类添加json类型
-5:监控添加token字段
+3:infogen内部调试接口(默认接口可以获取当前infogen所有native_server的情况  url:/infogen/native_server)
+4:dopost 工具类添加发送json类型的工具方法
+5:调用链监控添加token字段(需客户端设置token到cookie中或链接中)
+6:根据ip端口获取调用的节点
+7:调用超时的节点不会被踢除,但需要打印error级别的日志
 --------------------------------------------------------
 发布  日期：20150623
 发布版本号：V1.1.00R150623

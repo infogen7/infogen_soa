@@ -1,7 +1,7 @@
 package com.infogen.authc.subject.dao;
 
 import com.infogen.authc.subject.Subject;
-import com.infogen.util.map.LRULinkedHashMap;
+import com.larrylgq.aop.util.map.LRULinkedHashMap;
 
 /**
  * 

@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import com.infogen.http.callback.Http_Callback;
+import com.infogen.http.exception.HTTP_Fail_Exception;
 import com.infogen.tracking.CallChain;
 import com.infogen.tracking.ThreadLocal_Tracking;
 import com.infogen.tracking.enum0.Track_Header;
@@ -32,7 +33,7 @@ import com.squareup.okhttp.Response;
 public class Tool_HTTP {
 	private static final Logger LOGGER = Logger.getLogger(Tool_HTTP.class.getName());
 	// 当使用长轮循时需要注意不能超过此时间
-	public static Integer socket_timeout = 10_000;// 数据传输时间
+	public static Integer socket_timeout = 16_000;// 数据传输时间
 	public static Integer connect_timeout = 3_000;// 连接时间
 	private static final OkHttpClient client = new OkHttpClient();
 	static {
@@ -92,7 +93,7 @@ public class Tool_HTTP {
 		if (response.isSuccessful()) {
 			return response.body().string();
 		} else {
-			throw new IOException("Unexpected code " + response);
+			throw new HTTP_Fail_Exception(response.code(), response.message());
 		}
 	}
 
@@ -161,7 +162,7 @@ public class Tool_HTTP {
 		if (response.isSuccessful()) {
 			return response.body().string();
 		} else {
-			throw new IOException("Unexpected code " + response);
+			throw new HTTP_Fail_Exception(response.code(), response.message());
 		}
 	}
 

@@ -82,27 +82,28 @@ public class InfoGen_Cache_Server {
 	private Map<String, InfoGen_Loaded_Handle_Server> server_loaded_handle_map = new HashMap<>();
 	private Set<String> reload_server_paths = new HashSet<>();
 
-	// 未考虑并发
 	public NativeServer cache_server_single(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
 		if (server_loaded_handle_map.get(server_name) != null) {
 			LOGGER.warn("当前缓存过该服务:".concat(server_name));
 			return depend_server.get(server_name);
 		}
-		NativeServer cache_server = cache_server(server_name);
 
-		// 获取不到,到本地缓存里查找
-		cache_server = depend_server_cache.get(server_name);
-		if (cache_server != null) {
-			depend_server.put(server_name, cache_server);
-			if (server_loaded_handle != null) {
-				server_loaded_handle.handle_event(cache_server);
-			}
-			LOGGER.warn("使用本地缓存的服务:".concat(server_name));
+		// 注册 server 加载完成的事件
+		if (server_loaded_handle == null) {
+			server_loaded_handle = (native_server) -> {
+			};
 		}
+		server_loaded_handle_map.put(server_name, server_loaded_handle);
 
-		// 触发 server 加载完成的事件
-		if (server_loaded_handle != null) {
-			server_loaded_handle_map.put(server_name, server_loaded_handle);
+		NativeServer cache_server = cache_server(server_name);
+		// 获取不到,到本地缓存里查找
+		if (cache_server == null) {
+			cache_server = depend_server_cache.get(server_name);
+			if (cache_server != null) {
+				depend_server.put(server_name, cache_server);
+				server_loaded_handle.handle_event(cache_server);
+				LOGGER.warn("使用本地缓存的服务:".concat(server_name));
+			}
 		}
 		return cache_server;
 	}

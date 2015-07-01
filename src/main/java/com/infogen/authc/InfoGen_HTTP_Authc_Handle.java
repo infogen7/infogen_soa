@@ -69,6 +69,8 @@ public class InfoGen_HTTP_Authc_Handle {
 				requestURI = requestURI.substring(contextPath.length());
 			}
 			String[] roles = authc(requestURI);
+
+			// 该方法不需要任何角色验证直接返回认证成功
 			if (roles == null) {
 				return true;
 			}
