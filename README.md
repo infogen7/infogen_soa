@@ -16,8 +16,8 @@ GIT库名称：infogen_zookeeper
 5:服务依赖关系提取
 6:服务根据业务重要性的应用评级(用于系统自动降级)
 --------------------------------------------------------
-发布  日期：20150701
-发布版本号：V1.1.00R150701
+发布  日期：20150702
+发布版本号：V1.1.00R150702
 更新  内容：
 1:infogen开放内部调试接口(可以获取当前infogen所有native_server的情况  url:/infogen/native_server)
 2:dopost 工具类添加发送application/json类型的工具方法 (Tool_HTTP中do_post_json方法)
