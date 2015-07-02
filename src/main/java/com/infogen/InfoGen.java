@@ -44,6 +44,7 @@ public class InfoGen {
 	private InfoGen() {
 	}
 
+	public static final String VERSION = "V1.1.00R150702";
 	private InfoGen_ZooKeeper ZK = com.infogen.server.zookeeper.InfoGen_ZooKeeper.getInstance();
 	private InfoGen_Cache_Server CACHE_SERVER = InfoGen_Cache_Server.getInstance();
 

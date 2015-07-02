@@ -6,41 +6,53 @@ GIT库名称：infogen_zookeeper
 
 中间倒序增加
 --------------------------------------------------------
-发布  日期：20150625
-发布版本号：V1.1.00R150625
+发布  日期：TODO
+发布版本号：TODO(尚未发布)
 更新  内容：
-1:限速
-2:流控
-3:infogen内部调试接口(默认接口可以获取当前infogen所有native_server的情况  url:/infogen/native_server)
-4:dopost 工具类添加发送json类型的工具方法
-5:调用链监控添加token字段(需客户端设置token到cookie中或链接中)
-6:根据ip端口获取调用的节点
-7:调用超时的节点不会被踢除,但需要打印error级别的日志
+1:*接口需要验证调用者的权限
+2:服务端接口调用阀值配置
+3:客户端接口调用阀值配置
+4:压力过载时自动降级优先级不高的服务的调用
+5:服务依赖关系提取
+6:服务根据业务重要性的应用评级(用于系统自动降级)
+--------------------------------------------------------
+发布  日期：20150701
+发布版本号：V1.1.00R150701
+更新  内容：
+1:infogen开放内部调试接口(可以获取当前infogen所有native_server的情况  url:/infogen/native_server)
+2:dopost 工具类添加发送application/json类型的工具方法 (Tool_HTTP中do_post_json方法)
+3:调用链监控添加token字段(需客户端设置token到cookie或链接中)
+4:调用超时和返回400+/500+的节点不会被踢除,但需要打印error级别的日志
+5:Service添加根据ip或者hash seed获取调用的节点
+
 --------------------------------------------------------
 发布  日期：20150623
 发布版本号：V1.1.00R150623
 更新  内容：
 1:监控服务池中疑似不稳定的节点移除过多从而导致的雪崩(添加min_nodes字段,实现在监控中实现)
-2:日志自定义部分(session)
-3:性能定时监控
-4:添加RPC支持
-5:zookeeper监听字节点数据改变
-6:增加负载均衡算法
-7;新增一致性hash数据结构实现
-8:添加加解密和签名工具类
+2:添加RPC支持(thrift) 
+eg:
+Response blocking_rpc = demo.call((protocol) -> {
+					Message.Client client = new Message.Client(protocol);
+					return client.call(request);
+				});
+3:zookeeper监听字节点数据改变(每次只增量加载改动的节点)
+4:修改获取节点的负载均衡算法为一致性hash
+5;新增一致性hash数据结构实现  ConsistentHash
+6:添加加解密和签名工具类 com.infogen.encryption包下
 
 --------------------------------------------------------
 发布  日期：20150614
 发布版本号：V1.0.03R150614
 更新  内容：
-1:新增AUTHC认证框架
-2:新增tracking框架(通过Execution注解记录调用链)
+1:新增AUTHC认证框架使用: InfoGen_Authc.getInstance().authc("authc.ini"); 具体配置见infogen_demo示例项目
+2:新增tracking框架(通过Execution注解记录调用链,type属性可以指定方法类型)
 3:新增AOP框架(轻量级AOP和IOC以及获取对象占用内存空间大小等的API支持)
 4:去除thrift调用封装
-5:修改jetty支持http2调用
-6:优化调用代码
-7:新增本地LRU缓存类
-8:新增infogen的ServletContainerInitializer(继承后web容器中启动时执行)
+5:修改jetty服务支持http2调用
+6:优化调用代码添加 Parameter.create().add("account", "a").add("password", "sadas") 返回一个map
+7:新增本地LRU缓存map类  LRULinkedHashMap
+8:新增infogen的ServletContainerInitializer(自定义的对象继承后会在web容器启动时被调用)
 --------------------------------------------------------
 发布  日期：20150521
 发布版本号：V1.2.01R150521

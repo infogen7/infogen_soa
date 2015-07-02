@@ -24,7 +24,7 @@ public abstract class AbstractServer {
 	protected String describe = "";
 	protected Integer min_nodes = 1;
 
-	protected String infogen_version = "V1.0.03R150618";
+	protected String infogen_version = "";
 	// proxy
 	protected String http_domain;
 	protected String http_proxy;

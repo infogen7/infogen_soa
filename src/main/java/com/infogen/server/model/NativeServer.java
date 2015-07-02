@@ -43,15 +43,6 @@ public class NativeServer extends AbstractServer {
 	private int min_disabled_timeout = 5 * 1000;// 最小的节点恢复使用的间隔时间
 
 	// ////////////////////////////////////////// 定时修正不可用的节点/////////////////////////////////////////////////////
-	public void add(NativeNode node) {
-		if (node.available()) {
-			available_nodes.add(node);
-			consistent_hash.add(node);
-		} else {
-			LOGGER.error("node unavailable:".concat(Tool_Jackson.toJson(node)));
-		}
-	}
-
 	public Map<String, NativeNode> get_all_nodes() {
 		Map<String, NativeNode> all_nodes = new HashMap<>();
 		synchronized (change_node_status_lock) {
@@ -65,23 +56,26 @@ public class NativeServer extends AbstractServer {
 		return all_nodes;
 	}
 
-	public void remove(NativeNode node) {
-		synchronized (change_node_status_lock) {
-			available_nodes.remove(node);
-			disabled_nodes.remove(node);
+	public void add(NativeNode node) {
+		if (node.available()) {
+			available_nodes.add(node);
+			consistent_hash.add(node);
+		} else {
+			LOGGER.error("node unavailable:".concat(Tool_Jackson.toJson(node)));
 		}
+	}
+
+	public void remove(NativeNode node) {
+		available_nodes.remove(node);
+		disabled_nodes.remove(node);
 		consistent_hash.remove(node);
 	}
 
-	private void recover() {
-		for (NativeNode node : disabled_nodes) {
-			if ((Clock.system(InfoGen_Configuration.zoneid).millis() - node.disabled_time) > min_disabled_timeout) {
-				consistent_hash.add(node);
-			}
-		}
+	public void enable(NativeNode node) {
+		consistent_hash.add(node);
 		synchronized (change_node_status_lock) {
-			available_nodes.addAll(disabled_nodes);
-			disabled_nodes.clear();
+			disabled_nodes.remove(node);
+			available_nodes.add(node);
 		}
 	}
 
@@ -104,7 +98,11 @@ public class NativeServer extends AbstractServer {
 		long millis = Clock.system(InfoGen_Configuration.zoneid).millis();
 		// 没有可用节点或距离上一次成功调用超过指定时间
 		if (!disabled_nodes.isEmpty() && (available_nodes.isEmpty() || (millis - last_success_invoke_millis) > disabled_timeout)) {
-			recover();
+			for (NativeNode node : disabled_nodes) {
+				if ((Clock.system(InfoGen_Configuration.zoneid).millis() - node.disabled_time) > min_disabled_timeout) {
+					enable(node);
+				}
+			}
 			last_success_invoke_millis = millis;
 		}
 		return consistent_hash.get(seed);

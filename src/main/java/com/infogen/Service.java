@@ -74,6 +74,17 @@ public class Service {
 		return server.random_node(seed);
 	}
 
+	public NativeNode get_node_byip(String ip) {
+		NativeServer server = depend_server.get(server_name);
+		List<NativeNode> available_nodes = server.getAvailable_nodes();
+		for (NativeNode nativeNode : available_nodes) {
+			if (nativeNode.getIp().equals(ip)) {
+				return nativeNode;
+			}
+		}
+		return null;
+	}
+
 	public void disabled_node(NativeNode node) {
 		NativeServer server = depend_server.get(server_name);
 		server.disabled(node);

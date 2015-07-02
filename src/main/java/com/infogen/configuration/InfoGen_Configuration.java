@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import com.infogen.InfoGen;
 import com.infogen.http.InfoGen_Server_Initializer;
 import com.infogen.self_description.InfoGen_HTTP_Self_Description;
 import com.infogen.self_description.component.Function;
@@ -81,6 +82,7 @@ public class InfoGen_Configuration {
 			System.exit(-1);
 		}
 		// server
+		register_server.setInfogen_version(InfoGen.VERSION);
 		register_server.setName(infogen_properties.getProperty("infogen.name"));
 		register_server.setPath(InfoGen_ZooKeeper.path(register_server.getName()));
 		register_server.setDescribe(infogen_properties.getProperty("infogen.describe"));
@@ -104,19 +106,22 @@ public class InfoGen_Configuration {
 		if (net_ip != null && !net_ip.trim().isEmpty() && Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(net_ip).find()) {
 			register_node.setNet_ip(net_ip);
 		}
-		register_node.setName(localIP.concat("-" + Clock.system(zoneid).millis()));
-		register_node.setPath(InfoGen_ZooKeeper.path(register_server.getName()).concat("/".concat(register_node.getName())));
-		register_node.setHost(System.getProperty("user.name").concat("@").concat(Tool_Core.getHostName()));
-		register_node.setHttp_protocol(infogen_properties.getProperty("infogen.http.protocol"));
-		register_node.setContext(infogen_properties.getProperty("infogen.http.context"));
-		register_node.setServer_room(infogen_properties.getProperty("infogen.server_room"));
-		register_node.setTime(new Timestamp(Clock.system(InfoGen_Configuration.zoneid).millis()));
-		String ratio = infogen_properties.getProperty("infogen.ratio");
-		register_node.setRatio((ratio == null) ? 10 : Math.max(0, Math.min(10, Integer.valueOf(ratio))));
 		String http_port = infogen_properties.getProperty("infogen.http.port");
 		register_node.setHttp_port((http_port == null) ? null : Integer.valueOf(http_port));
 		String rpc_port = infogen_properties.getProperty("infogen.rpc.port");
 		register_node.setRpc_port((rpc_port == null) ? null : Integer.valueOf(rpc_port));
+		register_node.setHost(System.getProperty("user.name").concat("@").concat(Tool_Core.getHostName()));
+
+		register_node.setSeed(localIP.concat("-" + Clock.system(zoneid).millis()));
+		String ratio = infogen_properties.getProperty("infogen.ratio");
+		register_node.setRatio((ratio == null) ? 10 : Math.max(0, Math.min(10, Integer.valueOf(ratio))));
+
+		register_node.setName(localIP.concat("-" + Clock.system(zoneid).millis()));
+		register_node.setPath(InfoGen_ZooKeeper.path(register_server.getName()).concat("/".concat(register_node.getName())));
+		register_node.setHttp_protocol(infogen_properties.getProperty("infogen.http.protocol"));
+		register_node.setContext(infogen_properties.getProperty("infogen.http.context"));
+		register_node.setServer_room(infogen_properties.getProperty("infogen.server_room"));
+		register_node.setTime(new Timestamp(Clock.system(InfoGen_Configuration.zoneid).millis()));
 
 		if (!register_node.available()) {
 			LOGGER.error("节点配置配置不能为空:infogen.name,infogen.ratio,infogen.ip,infogen.http.port或infogen.rpc.port");
