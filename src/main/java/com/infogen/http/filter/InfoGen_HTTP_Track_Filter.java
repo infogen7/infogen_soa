@@ -1,4 +1,4 @@
-package com.infogen.tracking;
+package com.infogen.http.filter;
 
 import java.io.IOException;
 
@@ -11,6 +11,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.infogen.tracking.InfoGen_HTTP_Tracking_Handle;
 
 /**
  * 

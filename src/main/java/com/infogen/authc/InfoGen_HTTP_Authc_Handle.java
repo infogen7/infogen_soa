@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.authc.configuration.handle.impl.Properties_Methods_Handle;
+import com.infogen.authc.configuration.handle.impl.Authc_Properties_Handle_Methods;
 import com.infogen.authc.exception.InfoGen_Auth_Exception;
 import com.infogen.authc.exception.impl.Authentication_Fail_Exception;
 import com.infogen.authc.subject.Subject;
@@ -30,8 +30,8 @@ public class InfoGen_HTTP_Authc_Handle {
 	private static final Subject_DAO subject_dao = new Default_Subject_DAO();
 	public static final String TOKEN_NAME = "x-access-token";
 	// 初始化配置时赋值
-	public static final Map<String, String[]> urls_equal = Properties_Methods_Handle.urls_equal;
-	public static final Map<String, String[]> urls_rule = Properties_Methods_Handle.urls_rule;
+	public static final Map<String, String[]> urls_equal = Authc_Properties_Handle_Methods.urls_equal;
+	public static final Map<String, String[]> urls_rule = Authc_Properties_Handle_Methods.urls_rule;
 
 	public String[] authc(String requestURI) {
 		String[] roles = urls_equal.get(requestURI);
@@ -54,7 +54,7 @@ public class InfoGen_HTTP_Authc_Handle {
 	 * 
 	 * 只有存在 x-access-token 并通过有效期验证的才生成用于验证权限的subject
 	 */
-	public Boolean doFilter(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	public Boolean doFilter(String requestURI, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		// request.getRealPath("/")); F:\Tomcat 6.0\webapps\news\test
 		// System.out.println(request.getRequestURL()); // http://localhost:8080/news/main/list.jsp
 		// System.out.println(request.getContextPath()); // /news
@@ -63,11 +63,6 @@ public class InfoGen_HTTP_Authc_Handle {
 
 		try {
 			// 当前请求页面 判断是否需要认证
-			String requestURI = request.getRequestURI();
-			String contextPath = request.getContextPath();
-			if (requestURI.startsWith(contextPath)) {
-				requestURI = requestURI.substring(contextPath.length());
-			}
 			String[] roles = authc(requestURI);
 
 			// 该方法不需要任何角色验证直接返回认证成功
@@ -96,7 +91,7 @@ public class InfoGen_HTTP_Authc_Handle {
 			return false;
 		} catch (Exception e) {
 			LOGGER.error("认证异常:", e);
-			response.getWriter().write(Return.FAIL(CODE.authentication_error).toJson());
+			response.getWriter().write(Return.FAIL(CODE.error).toJson());
 			return false;
 		}
 		return true;

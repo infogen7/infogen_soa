@@ -35,25 +35,17 @@ public class Return extends HashMap<String, Object> {
 			});
 		} catch (IOException e) {
 			LOGGER.error("Return.create 解析 JSON 失败", e);
-			return Return.FAIL(CODE.generate_return_error.code, CODE.generate_return_error.name());
+			return Return.FAIL(CODE.generate_return_error);
 		}
 		return jo;
 	}
 
 	public static Return SUCCESS(CODE code) {
-		Return jo = new Return();
-		jo.put(Return_Fields.success.name(), true);
-		jo.put(Return_Fields.note.name(), code.note);
-		jo.put(Return_Fields.code.name(), code.code);
-		return jo;
+		return SUCCESS(code.code, code.note);
 	}
 
 	public static Return SUCCESS(CODE code, Exception e) {
-		Return jo = new Return();
-		jo.put(Return_Fields.success.name(), true);
-		jo.put(Return_Fields.note.name(), Tool_Core.stacktrace(e));
-		jo.put(Return_Fields.code.name(), code.code);
-		return jo;
+		return SUCCESS(code.code, Tool_Core.stacktrace(e));
 	}
 
 	public static Return SUCCESS(String code, String note) {
@@ -73,19 +65,11 @@ public class Return extends HashMap<String, Object> {
 	}
 
 	public static Return FAIL(CODE code) {
-		Return jo = new Return();
-		jo.put(Return_Fields.success.name(), false);
-		jo.put(Return_Fields.note.name(), code.note);
-		jo.put(Return_Fields.code.name(), code.code);
-		return jo;
+		return FAIL(code.code, code.note);
 	}
 
 	public static Return FAIL(CODE code, Exception e) {
-		Return jo = new Return();
-		jo.put(Return_Fields.success.name(), false);
-		jo.put(Return_Fields.note.name(), Tool_Core.stacktrace(e));
-		jo.put(Return_Fields.code.name(), code.code);
-		return jo;
+		return FAIL(code.code, Tool_Core.stacktrace(e));
 	}
 
 	public static Return FAIL(String code, String note) {
@@ -136,7 +120,7 @@ public class Return extends HashMap<String, Object> {
 			return Tool_Jackson.toJson(this);
 		} catch (Exception e) {
 			LOGGER.error("json 解析失败:", e);
-			return Tool_Jackson.toJson(Return.FAIL(CODE.generate_return_error.code, CODE.generate_return_error.name()));
+			return Tool_Jackson.toJson(Return.FAIL(CODE.generate_return_error));
 		}
 	}
 

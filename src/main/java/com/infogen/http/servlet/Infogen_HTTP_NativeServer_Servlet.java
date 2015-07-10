@@ -1,4 +1,4 @@
-package com.infogen.http;
+package com.infogen.http.servlet;
 
 import java.io.IOException;
 

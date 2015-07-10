@@ -1,6 +1,6 @@
 package com.infogen.authc.configuration.handle.impl;
 
-import com.infogen.authc.configuration.handle.Properties_Handle;
+import com.infogen.authc.configuration.handle.Authc_Properties_Handle;
 import com.larrylgq.aop.AOP;
 import com.larrylgq.aop.tools.Tool_Core;
 
@@ -9,7 +9,7 @@ import com.larrylgq.aop.tools.Tool_Core;
  * @since 1.0
  * @version 1.0
  */
-public class Properties_Main_Handle extends Properties_Handle {
+public class Authc_Properties_Handle_Main extends Authc_Properties_Handle {
 
 	/*
 	 * (non-Javadoc)
@@ -18,9 +18,6 @@ public class Properties_Main_Handle extends Properties_Handle {
 	 */
 	@Override
 	public void handle(String line) {
-		if (line == null || line.isEmpty()) {
-			return;
-		}
 		String[] split = line.split("=");
 		if (split.length > 1) {
 			String key = Tool_Core.trim(split[0]);

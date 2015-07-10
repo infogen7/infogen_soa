@@ -3,7 +3,6 @@ package com.infogen.server.model;
 import java.io.IOException;
 import java.time.Clock;
 import java.util.Map;
-import java.util.concurrent.locks.StampedLock;
 
 import org.apache.thrift.TException;
 import org.apache.thrift.async.TAsyncClientManager;
@@ -19,7 +18,7 @@ import org.apache.thrift.transport.TTransportException;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.http.Tool_HTTP;
+import com.infogen.http.InfoGen_HTTP;
 import com.infogen.http.callback.Http_Callback;
 import com.infogen.rpc.callback.RPC_Callback;
 import com.infogen.rpc.handler.Thrift_Async_Client_Handler;
@@ -41,9 +40,9 @@ public class NativeNode extends AbstractNode {
 	@JsonIgnore
 	private static final Integer connect_timeout = 3_000;// 连接超时时间
 	@JsonIgnore
-	private static final StampedLock call_lock = new StampedLock();
+	private static final String call_lock = "";
 	@JsonIgnore
-	private static final StampedLock call_async_lock = new StampedLock();
+	private static final String call_async_lock = "";
 
 	@JsonIgnore
 	private transient TTransport transport = null;
@@ -51,47 +50,57 @@ public class NativeNode extends AbstractNode {
 	private transient TNonblockingSocket async_transport = null;
 
 	public void clean() {
-		if (transport != null && transport.isOpen()) {
-			transport.close();
+		clean_transport();
+		clean_async_transport();
+	}
+
+	public void clean_transport() {
+		synchronized (call_lock) {
+			if (transport != null && transport.isOpen()) {
+				transport.close();
+			}
 			transport = null;
 		}
-		if (async_transport != null && async_transport.isOpen()) {
-			async_transport.close();
+	}
+
+	public void clean_async_transport() {
+		synchronized (call_async_lock) {
+			if (async_transport != null && async_transport.isOpen()) {
+				async_transport.close();
+			}
 			async_transport = null;
 		}
 	}
 
 	public TTransport get_transport() throws IOException, TTransportException {
-		if (transport == null) {
-			transport = new TFramedTransport(new TSocket(ip, rpc_port, connect_timeout));
-		}
-		if (!transport.isOpen()) {
-			transport.open();
+		synchronized (call_lock) {
+			if (transport == null) {
+				transport = new TFramedTransport(new TSocket(ip, rpc_port, connect_timeout));
+			}
+			if (!transport.isOpen()) {
+				transport.open();
+			}
 		}
 		return transport;
 	}
 
 	public TNonblockingSocket get_async_transport() throws IOException, TTransportException {
-		if (async_transport == null) {
-			async_transport = new TNonblockingSocket(ip, rpc_port, connect_timeout);
+		synchronized (call_async_lock) {
+			if (async_transport == null) {
+				async_transport = new TNonblockingSocket(ip, rpc_port, connect_timeout);
+			}
 		}
 		return async_transport;
 	}
 
 	public <T> T call(Thrift_Client_Handler<T> handle) throws TException, IOException {
 		T handle_event;
-		long stamp = call_lock.writeLock();
 		try {
 			TProtocol protocol = new TCompactProtocol(get_transport());
 			handle_event = handle.handle_event(protocol);
 		} catch (IOException e) {
-			if (transport.isOpen()) {
-				transport.close();
-			}
-			transport = null;
+			clean_transport();
 			throw e;
-		} finally {
-			call_lock.unlockWrite(stamp);
 		}
 		return handle_event;
 	}
@@ -102,18 +111,12 @@ public class NativeNode extends AbstractNode {
 		TProtocolFactory protocol = new TCompactProtocol.Factory();
 		RPC_Callback<T> handle_event;
 
-		long stamp = call_async_lock.writeLock();
 		try {
 			TNonblockingSocket get_async_transport = get_async_transport();
 			handle_event = handle.handle_event(protocol, clientManager, get_async_transport, callback);
 		} catch (IOException e) {
-			if (async_transport.isOpen()) {
-				async_transport.close();
-			}
-			async_transport = null;
+			clean_async_transport();
 			throw e;
-		} finally {
-			call_async_lock.unlockWrite(stamp);
 		}
 		return handle_event;
 	}
@@ -147,14 +150,14 @@ public class NativeNode extends AbstractNode {
 			} else {
 				async_http_sbf.append(http_protocol).append("://").append(net_ip).append(":").append(http_port).append("/").append(method);
 			}
-			return Tool_HTTP.do_async_get(async_http_sbf.toString(), name_value_pair);
+			return InfoGen_HTTP.do_async_get(async_http_sbf.toString(), name_value_pair);
 		} else {
 			if (net_type == NetType.LOCAL) {
 				async_http_sbf.append(http_protocol).append("://").append(ip).append(":").append(http_port).append("/").append(method);
 			} else {
 				async_http_sbf.append(http_protocol).append("://").append(net_ip).append(":").append(http_port).append("/").append(method);
 			}
-			return Tool_HTTP.do_async_post(async_http_sbf.toString(), name_value_pair);
+			return InfoGen_HTTP.do_async_post(async_http_sbf.toString(), name_value_pair);
 		}
 	}
 
@@ -166,14 +169,14 @@ public class NativeNode extends AbstractNode {
 			} else {
 				blocking_http_sbf.append(http_protocol).append("://").append(net_ip).append(":").append(http_port).append("/").append(method);
 			}
-			return Tool_HTTP.do_get(blocking_http_sbf.toString(), name_value_pair);
+			return InfoGen_HTTP.do_get(blocking_http_sbf.toString(), name_value_pair);
 		} else {
 			if (net_type == NetType.LOCAL) {
 				blocking_http_sbf.append(http_protocol).append("://").append(ip).append(":").append(http_port).append("/").append(method);
 			} else {
 				blocking_http_sbf.append(http_protocol).append("://").append(net_ip).append(":").append(http_port).append("/").append(method);
 			}
-			return Tool_HTTP.do_post(blocking_http_sbf.toString(), name_value_pair);
+			return InfoGen_HTTP.do_post(blocking_http_sbf.toString(), name_value_pair);
 		}
 	}
 

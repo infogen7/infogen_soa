@@ -34,8 +34,11 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 
 		advice_method.setInsert_before("infogen_logger_attach_start_millis =System.currentTimeMillis();");
 
-		String user_definition = ((Execution) annotation).user_definition().replaceAll(",", "|");
-		LOGGER.warn("注解Execution中user_definition字段不能出现 ',' 将被替换成 '|'");
+		String user_definition = ((Execution) annotation).user_definition();
+		if (user_definition.contains(",")) {
+			user_definition.replaceAll(",", "|");
+			LOGGER.warn("注解Execution中user_definition字段不能出现 ',' 将被替换成 '|' ".concat(class_name).concat(".").concat(method_name));
+		}
 		Function_Type type = ((Execution) annotation).type();
 		StringBuilder sbd = new StringBuilder();
 		sbd.append("com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution.insert_after_call_back(");

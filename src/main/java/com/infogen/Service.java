@@ -247,7 +247,12 @@ public class Service {
 					return Return.FAIL(CODE.node_notfound);
 				}
 				String http = node.http(method, name_value_pair, request_type, net_type);
-				return Return.create(http);
+				Return create = Return.create(http);
+				if (create.get_code() == CODE.limit.code) {
+					LOGGER.info(new StringBuilder("接口调用超过限制:").append(method).toString());
+					continue;
+				}
+				return create;
 			} catch (HTTP_Fail_Exception e) {
 				LOGGER.warn("调用失败", e);
 				return Return.FAIL(e.getCode(), e.getMessage());

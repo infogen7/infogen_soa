@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 import com.infogen.InfoGen;
-import com.infogen.http.InfoGen_Server_Initializer;
+import com.infogen.http.ServletContainerInitializer.InfoGen_Server_Initializer;
 import com.infogen.self_description.InfoGen_HTTP_Self_Description;
 import com.infogen.self_description.component.Function;
 import com.infogen.self_description.component.OutParameter;

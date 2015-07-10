@@ -1,4 +1,4 @@
-package com.infogen.authc;
+package com.infogen.http.filter;
 
 import java.io.IOException;
 
@@ -11,6 +11,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.infogen.authc.InfoGen_HTTP_Authc_Handle;
 
 /**
  * 
@@ -25,7 +27,14 @@ public class InfoGen_HTTP_Authc_Filter implements Filter {
 	public void doFilter(ServletRequest srequset, ServletResponse sresponse, FilterChain filterChain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) srequset;
 		HttpServletResponse response = (HttpServletResponse) sresponse;
-		if (authc.doFilter(request, response)) {
+
+		String requestURI = request.getRequestURI();
+		String contextPath = request.getContextPath();
+		if (requestURI.startsWith(contextPath)) {
+			requestURI = requestURI.substring(contextPath.length());
+		}
+
+		if (authc.doFilter(requestURI, request, response)) {
 			filterChain.doFilter(srequset, sresponse);
 		}
 	}

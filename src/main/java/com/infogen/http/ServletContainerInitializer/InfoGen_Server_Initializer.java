@@ -1,4 +1,4 @@
-package com.infogen.http;
+package com.infogen.http.ServletContainerInitializer;
 
 import java.io.IOException;
 import java.util.concurrent.locks.StampedLock;
@@ -10,8 +10,6 @@ import javax.servlet.ServletRegistration;
 import org.apache.log4j.Logger;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
-
-import com.infogen.http.ServletContainerInitializer.WebApplicationInitializer;
 
 /**
  * 用于启动mvc框架的监听器
