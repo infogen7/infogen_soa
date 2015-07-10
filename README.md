@@ -16,6 +16,7 @@ GIT库名称：infogen_zookeeper
 5:服务依赖关系提取
 6:服务根据业务重要性的应用评级(用于系统自动降级)
 7:调用链日志添加当前方法调用并发数
+8:tools.jar重复加载引起的问题(一个jvm当中不允许加载一个dll两次 xxx NOT loaded java.lang.UnsatisfiedLinkError : Native Library XXX.dll already loaded in another classloader)
 --------------------------------------------------------
 发布  日期：20150702
 发布版本号：V1.1.00R150702

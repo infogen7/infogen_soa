@@ -82,6 +82,9 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 	// tr00000,0 ,home.html ,xx ,send ,xx ,中控 ,2015050X ,300ms ,ok/error/auth,1.3k ,t0000,测试/京东/聚信立, a00000...
 	public static void insert_after_call_back(String class_name, String method_name, String user_definition, int type, long start_millis, long end_millis, Object return0) {
 		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
+		if (callChain == null) {
+			return;
+		}
 
 		StringBuilder sbd = get_callchain(callChain);
 		sbd.append(class_name).append(",");
@@ -93,6 +96,8 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 			sbd.append(return0.toString().length());
 		} else if (open_return_size && return0 instanceof Return) {
 			sbd.append(Tool_Jackson.toJson(return0).getBytes().length);
+		} else {
+			sbd.append(-1);
 		}
 		sbd.append(",");
 
