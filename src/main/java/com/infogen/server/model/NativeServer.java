@@ -40,7 +40,7 @@ public class NativeServer extends AbstractServer {
 	@JsonIgnore
 	private int disabled_timeout = 16 * 1000;// 重置失效节点的时间间隔 - 超过zookeeper的session超时时间
 	@JsonIgnore
-	private int min_disabled_timeout = 5 * 1000;// 最小的节点恢复使用的间隔时间
+	private int min_disabled_timeout = 3 * 1000;// 最小的节点恢复使用的间隔时间
 
 	// ////////////////////////////////////////// 定时修正不可用的节点/////////////////////////////////////////////////////
 	public Map<String, NativeNode> get_all_nodes() {
@@ -66,9 +66,11 @@ public class NativeServer extends AbstractServer {
 	}
 
 	public void remove(NativeNode node) {
-		available_nodes.remove(node);
-		disabled_nodes.remove(node);
 		consistent_hash.remove(node);
+		synchronized (change_node_status_lock) {
+			available_nodes.remove(node);
+			disabled_nodes.remove(node);
+		}
 	}
 
 	public void enable(NativeNode node) {
