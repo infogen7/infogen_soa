@@ -30,8 +30,8 @@ import com.squareup.okhttp.Response;
  * @email larrylv@outlook.com
  * @version 创建时间 2014年10月30日 下午1:05:24
  */
-public class Tool_HTTP {
-	private static final Logger LOGGER = Logger.getLogger(Tool_HTTP.class.getName());
+public class InfoGen_HTTP {
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP.class.getName());
 	// 当使用长轮循时需要注意不能超过此时间
 	public static Integer socket_timeout = 10_000;// 数据传输时间
 	public static Integer connect_timeout = 3_000;// 连接时间
