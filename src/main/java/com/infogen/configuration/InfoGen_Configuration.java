@@ -112,11 +112,12 @@ public class InfoGen_Configuration {
 		register_node.setRpc_port((rpc_port == null) ? null : Integer.valueOf(rpc_port));
 		register_node.setHost(System.getProperty("user.name").concat("@").concat(Tool_Core.getHostName()));
 
-		register_node.setSeed(localIP.concat("-" + Clock.system(zoneid).millis()));
+		String name = localIP.concat("-" + Clock.system(zoneid).millis());
+		register_node.setName(name);
+		register_node.setSeed(name);
 		String ratio = infogen_properties.getProperty("infogen.ratio");
 		register_node.setRatio((ratio == null) ? 10 : Math.max(0, Math.min(10, Integer.valueOf(ratio))));
 
-		register_node.setName(localIP.concat("-" + Clock.system(zoneid).millis()));
 		register_node.setPath(InfoGen_ZooKeeper.path(register_server.getName()).concat("/".concat(register_node.getName())));
 		register_node.setHttp_protocol(infogen_properties.getProperty("infogen.http.protocol"));
 		register_node.setContext(infogen_properties.getProperty("infogen.http.context"));

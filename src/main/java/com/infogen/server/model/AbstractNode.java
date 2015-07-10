@@ -19,7 +19,7 @@ import com.larrylgq.aop.util.map.consistent_hash.ShardInfo;
  * @version 创建时间 2014年12月29日 下午4:11:30
  */
 public abstract class AbstractNode extends ShardInfo {
-	protected String name;// 节点名称 注意:不能重复!!!
+	
 	protected String path;
 
 	protected String server_room = "";// sh@youfu
@@ -55,13 +55,7 @@ public abstract class AbstractNode extends ShardInfo {
 		this.server_room = server_room;
 	}
 
-	public String getName() {
-		return name;
-	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public String getHost() {
 		return host;

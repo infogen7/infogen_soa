@@ -4,7 +4,7 @@
 	<groupId>com.infogen</groupId>
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
-	<version>V1.1.00R150711</version>
+	<version>V1.1.00R150713</version>
 
 	<name>infogen_soa</name>
 	<url>https://github.com/larrylgq/infogen_soa</url>
@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>com.github.larrylgq</groupId> 
 			<artifactId>infogen_aop</artifactId>
-			<version>V1.1.00R150711</version>
+			<version>V1.1.00R150712</version>
 		</dependency>
 
 		<!-- zookeeper -->
