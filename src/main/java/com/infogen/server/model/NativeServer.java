@@ -58,35 +58,37 @@ public class NativeServer extends AbstractServer {
 
 	public void add(NativeNode node) {
 		if (node.available()) {
-			available_nodes.add(node);
-			consistent_hash.add(node);
+			synchronized (change_node_status_lock) {
+				available_nodes.add(node);
+				consistent_hash.add(node);
+			}
 		} else {
 			LOGGER.error("node unavailable:".concat(Tool_Jackson.toJson(node)));
 		}
 	}
 
 	public void remove(NativeNode node) {
-		consistent_hash.remove(node);
 		synchronized (change_node_status_lock) {
 			available_nodes.remove(node);
 			disabled_nodes.remove(node);
+			consistent_hash.remove(node);
 		}
 	}
 
 	public void enable(NativeNode node) {
-		consistent_hash.add(node);
 		synchronized (change_node_status_lock) {
 			disabled_nodes.remove(node);
 			available_nodes.add(node);
+			consistent_hash.add(node);
 		}
 	}
 
 	public void disabled(NativeNode node) {
-		consistent_hash.remove(node);
 		node.disabled_time = Clock.system(InfoGen_Configuration.zoneid).millis();
 		synchronized (change_node_status_lock) {
 			disabled_nodes.add(node);
 			available_nodes.remove(node);
+			consistent_hash.remove(node);
 		}
 	}
 

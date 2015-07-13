@@ -114,7 +114,6 @@ public class InfoGen_Configuration {
 
 		String name = localIP.concat("-" + Clock.system(zoneid).millis());
 		register_node.setName(name);
-		register_node.setSeed(name);
 		String ratio = infogen_properties.getProperty("infogen.ratio");
 		register_node.setRatio((ratio == null) ? 10 : Math.max(0, Math.min(10, Integer.valueOf(ratio))));
 

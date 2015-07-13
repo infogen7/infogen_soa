@@ -4,7 +4,7 @@
 	<groupId>com.infogen</groupId>
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
-	<version>V1.1.00R150714</version>
+	<version>V1.1.00R150715</version>
 
 	<name>infogen_soa</name>
 	<url>https://github.com/larrylgq/infogen_soa</url>
@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>com.github.larrylgq</groupId> 
 			<artifactId>infogen_aop</artifactId>
-			<version>V1.1.00R150712</version>
+			<version>V1.1.00R150715</version>
 		</dependency>
 
 		<!-- zookeeper -->
@@ -77,17 +77,17 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>4.1.6.RELEASE</version>
+			<version>4.1.7.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>4.1.6.RELEASE</version>
+			<version>4.1.7.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>4.1.6.RELEASE</version>
+			<version>4.1.7.RELEASE</version>
 		</dependency>
 
 		<!-- thrift -->
