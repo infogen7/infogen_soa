@@ -1,10 +1,9 @@
-package com.infogen.limit.dao;
+package com.infogen.cluster_limit.group_dao;
 
 import org.apache.log4j.Logger;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * 
@@ -16,25 +15,9 @@ public class Redis_Group_DAO extends Group_DAO {
 	private static final Logger LOGGER = Logger.getLogger(Redis_Group_DAO.class.getName());
 	private JedisPool pool = null;
 
-	private JedisPoolConfig getJedisPoolConfig() {
-		JedisPoolConfig poolConfig = new JedisPoolConfig();
-		poolConfig.setMaxIdle(50);
-		poolConfig.setMaxTotal(500);
-		poolConfig.setMinIdle(10);
-		poolConfig.setMaxWaitMillis(1000 * 100);
-		return poolConfig;
-	}
-
-	public Redis_Group_DAO(String ip, Integer port) {
-		LOGGER.info("#创建 redis 连接池");
-		pool = new JedisPool(getJedisPoolConfig(), ip, port, 1000);
-		LOGGER.info("#创建 redis 连接池成功");
-	}
-
-	public Redis_Group_DAO(String ip, Integer port, String password) {
-		LOGGER.info("#创建 redis 连接池");
-		pool = new JedisPool(getJedisPoolConfig(), ip, port, 1000, password);
-		LOGGER.info("#创建 redis 连接池成功");
+	public Redis_Group_DAO(JedisPool pool) {
+		super();
+		this.pool = pool;
 	}
 
 	public Jedis take() {

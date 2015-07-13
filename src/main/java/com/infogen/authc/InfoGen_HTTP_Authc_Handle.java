@@ -27,7 +27,7 @@ import com.infogen.util.Return;
 public class InfoGen_HTTP_Authc_Handle {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP_Authc_Handle.class.getName());
 
-	private static final Subject_DAO subject_dao = new Default_Subject_DAO();
+	public static Subject_DAO subject_dao = new Default_Subject_DAO();
 	public static final String TOKEN_NAME = "x-access-token";
 	// 初始化配置时赋值
 	public static final Map<String, String[]> urls_equal = Authc_Properties_Handle_Methods.urls_equal;

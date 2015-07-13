@@ -1,4 +1,4 @@
-package com.infogen.limit;
+package com.infogen.cluster_limit;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.limit.dao.Default_Group_DAO;
-import com.infogen.limit.dao.Group_DAO;
+import com.infogen.cluster_limit.group_dao.Default_Group_DAO;
+import com.infogen.cluster_limit.group_dao.Group_DAO;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
 
@@ -20,12 +20,12 @@ import com.infogen.util.Return;
  * @author larry
  * @email larry.lv.word@gmail.com
  */
-public class InfoGen_HTTP_Limit_Handle {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP_Limit_Handle.class.getName());
+public class InfoGen_HTTP_Cluster_Limit_Handle {
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP_Cluster_Limit_Handle.class.getName());
 
 	// 初始化配置时赋值
 	public static final Map<String, Limit_Model> limit_models = new HashMap<>();
-	public static final Group_DAO group_dao = new Default_Group_DAO();
+	public static Group_DAO group_dao = new Default_Group_DAO();
 
 	public Boolean doFilter(String requestURI, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Limit_Model limit_Model = limit_models.get(requestURI);

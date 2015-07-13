@@ -12,9 +12,11 @@ import java.time.ZoneId;
 
 import org.apache.log4j.Logger;
 
+import com.infogen.authc.InfoGen_HTTP_Authc_Handle;
 import com.infogen.authc.configuration.handle.Authc_Properties_Handle;
 import com.infogen.authc.configuration.handle.impl.Authc_Properties_Handle_Main;
 import com.infogen.authc.configuration.handle.impl.Authc_Properties_Handle_Methods;
+import com.infogen.authc.subject.dao.Subject_DAO;
 import com.larrylgq.aop.tools.Tool_Core;
 import com.larrylgq.aop.util.NativePath;
 
@@ -44,6 +46,12 @@ public class InfoGen_Authc {
 
 	public void authc(String authc_path) throws IOException {
 		load_configuration(authc_path);
+		LOGGER.info("初始化权限配置");
+	}
+
+	public void authc(String authc_path, Subject_DAO subject_dao) throws IOException {
+		load_configuration(authc_path);
+		InfoGen_HTTP_Authc_Handle.subject_dao = subject_dao;
 		LOGGER.info("初始化权限配置");
 	}
 

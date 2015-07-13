@@ -1,4 +1,4 @@
-package com.infogen.limit.dao;
+package com.infogen.cluster_limit.group_dao;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -20,7 +20,6 @@ public class Default_Group_DAO extends Group_DAO {
 	 */
 	@Override
 	public Long increment_and_get(String group_by) {
-		// TODO Auto-generated method stub
 		AtomicLong atomic_long = map.get(group_by);
 		if (atomic_long == null) {
 			atomic_long = new AtomicLong(0);

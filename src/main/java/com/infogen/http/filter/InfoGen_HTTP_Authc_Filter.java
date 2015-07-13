@@ -33,10 +33,10 @@ public class InfoGen_HTTP_Authc_Filter implements Filter {
 		if (requestURI.startsWith(contextPath)) {
 			requestURI = requestURI.substring(contextPath.length());
 		}
-
-		if (authc.doFilter(requestURI, request, response)) {
-			filterChain.doFilter(srequset, sresponse);
+		if (!authc.doFilter(requestURI, request, response)) {
+			return;
 		}
+		filterChain.doFilter(srequset, sresponse);
 	}
 
 	/*

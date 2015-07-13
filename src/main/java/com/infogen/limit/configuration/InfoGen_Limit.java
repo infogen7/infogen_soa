@@ -42,10 +42,18 @@ public class InfoGen_Limit {
 	private final Limit_Properties_Handle_Main properties_main = new Limit_Properties_Handle_Main();
 	private final Limit_Properties_Handle_Limit properties_limit = new Limit_Properties_Handle_Limit();
 
+	/**
+	 * 限制本地接口的调用并发数
+	 * 
+	 * @param limit_path
+	 * @throws IOException
+	 */
 	public void limit(String limit_path) throws IOException {
 		load_configuration(limit_path);
 		LOGGER.info("初始化权限配置");
 	}
+
+
 
 	private void load_configuration(String limit_path) throws IOException {
 		try (InputStream resourceAsStream = Files.newInputStream(NativePath.get(limit_path), StandardOpenOption.READ);//

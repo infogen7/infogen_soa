@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 
 import com.infogen.authc.subject.Subject;
 
@@ -21,25 +20,9 @@ public class Redis_Subject_DAO extends Subject_DAO {
 	private static final Logger LOGGER = Logger.getLogger(Redis_Subject_DAO.class.getName());
 	private JedisPool pool = null;
 
-	private JedisPoolConfig getJedisPoolConfig() {
-		JedisPoolConfig poolConfig = new JedisPoolConfig();
-		poolConfig.setMaxIdle(50);
-		poolConfig.setMaxTotal(500);
-		poolConfig.setMinIdle(10);
-		poolConfig.setMaxWaitMillis(1000 * 100);
-		return poolConfig;
-	}
-
-	public Redis_Subject_DAO(String ip, Integer port) {
-		LOGGER.info("#创建 redis 连接池");
-		pool = new JedisPool(getJedisPoolConfig(), ip, port, 1000);
-		LOGGER.info("#创建 redis 连接池成功");
-	}
-
-	public Redis_Subject_DAO(String ip, Integer port, String password) {
-		LOGGER.info("#创建 redis 连接池");
-		pool = new JedisPool(getJedisPoolConfig(), ip, port, 1000, password);
-		LOGGER.info("#创建 redis 连接池成功");
+	public Redis_Subject_DAO(JedisPool pool) {
+		super();
+		this.pool = pool;
 	}
 
 	public Jedis take() {
@@ -59,6 +42,8 @@ public class Redis_Subject_DAO extends Subject_DAO {
 	 * 
 	 * @see com.infogen.authc.cache.Subject_DAO#save(com.infogen.authc.subject.Subject)
 	 */
+	private Integer expire = 60 * 60 * 12;
+
 	@Override
 	public void save(Subject subject) {
 		Jedis take = take();
@@ -70,7 +55,7 @@ public class Redis_Subject_DAO extends Subject_DAO {
 		try {
 			String key = subject.getSubject();
 			take.hmset(key, map);
-			take.expire(key, 60 * 60 * 12);
+			take.expire(key, expire);
 		} finally {
 			returnResource(take);
 		}
@@ -108,10 +93,10 @@ public class Redis_Subject_DAO extends Subject_DAO {
 	 * @see com.infogen.authc.cache.Subject_DAO#delete(java.lang.String)
 	 */
 	@Override
-	public void delete(String user) {
+	public void delete(String subject_name) {
 		Jedis take = take();
 		try {
-			take.expire(user, 1);
+			take.hdel(subject_name);
 		} finally {
 			returnResource(take);
 		}

@@ -1,4 +1,4 @@
-package com.infogen.limit;
+package com.infogen.cluster_limit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,8 +9,8 @@ import java.util.Map;
  * @version 1.0
  */
 public class Limit_Model {
-	public Map<String, Long> limits = new HashMap<>();
-	private String group;
+	public Map<String, Long> limits = new HashMap<>();// key:分组值 value:当前分组的限制
+	private String group;// 分组名称
 	private Long default_limit = Long.MAX_VALUE;
 
 	public Map<String, Long> getLimits() {

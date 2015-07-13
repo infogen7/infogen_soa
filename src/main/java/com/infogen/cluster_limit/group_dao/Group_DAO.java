@@ -1,4 +1,4 @@
-package com.infogen.limit.dao;
+package com.infogen.cluster_limit.group_dao;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年5月13日 下午5:10:20

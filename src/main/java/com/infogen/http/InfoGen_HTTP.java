@@ -69,14 +69,21 @@ public class InfoGen_HTTP {
 	private static void add_headers(Builder builder) {
 		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
 		if (callChain != null) {
+			// 注意:builder.header 不能写入空值,会报异常
 			String sessionid = callChain.getSessionid();
 			if (sessionid != null) {
 				builder.header(Track_Header.x_session_id.key, sessionid);
 			}
-			builder.header(Track_Header.x_track_id.key, callChain.getTrackid())//
-					.header(Track_Header.x_identify.key, callChain.getIdentify())//
-					.header(Track_Header.x_sequence.key, callChain.getSequence().toString())//
-					.header(Track_Header.x_referer.key, callChain.getTarget());//
+			String referer = callChain.getReferer();
+			if (referer != null) {
+				builder.header(Track_Header.x_referer.key, callChain.getTarget());//
+			}
+			String trackid = callChain.getTrackid();
+			if (trackid != null) {
+				builder.header(Track_Header.x_track_id.key, callChain.getTrackid())//
+						.header(Track_Header.x_identify.key, callChain.getIdentify())//
+						.header(Track_Header.x_sequence.key, callChain.getSequence().toString());
+			}
 		}
 	}
 

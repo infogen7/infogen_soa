@@ -37,24 +37,8 @@ public class InfoGen_HTTP_Tracking_Handle {
 
 		// traceid
 		String traceid = request.getParameter(Track_Header.x_track_id.key);
-		if (traceid != null) {
-			callchain.setTrackid(traceid);
-			// session id
-			callchain.setSessionid(request.getHeader(Track_Header.x_session_id.key));
-			// identify
-			callchain.setIdentify(request.getHeader(Track_Header.x_identify.key));
-			// sequence
-			callchain.setSequence(Integer.valueOf(request.getHeader(Track_Header.x_sequence.key)) + 1);
-			// Referer
-			callchain.setReferer(request.getHeader(Track_Header.x_referer.key));
-		} else {// 客户端调用
+		if (traceid == null || traceid.isEmpty()) {
 			callchain.setTrackid(UUID.randomUUID().toString().replaceAll("-", ""));
-			// session id
-			String sessionid = request.getParameter(sessionid_name);
-			if (sessionid == null) {
-				sessionid = Tool_Context.get_cookie(request, sessionid_name);
-			}
-			callchain.setSessionid(sessionid);
 			// identify
 			String identify = Tool_Context.get_cookie(request, Track_Header.x_identify.key);
 			if (identify == null) {
@@ -64,8 +48,29 @@ public class InfoGen_HTTP_Tracking_Handle {
 			callchain.setIdentify(identify);
 			// sequence
 			callchain.setSequence(0);
+
+			// 注意:可能为空
 			// Referer
 			callchain.setReferer(request.getHeader("Referer"));
+			// session id
+			String sessionid = request.getParameter(sessionid_name);
+			if (sessionid == null) {
+				sessionid = Tool_Context.get_cookie(request, sessionid_name);
+			}
+			callchain.setSessionid(sessionid);
+		} else {
+			callchain.setTrackid(traceid);
+			// identify
+			callchain.setIdentify(request.getHeader(Track_Header.x_identify.key));
+			// sequence
+			String x_sequence = request.getHeader(Track_Header.x_sequence.key);
+			Integer sequence = x_sequence == null ? 0 : Integer.valueOf(x_sequence);
+			callchain.setSequence(sequence + 1);
+
+			// Referer
+			callchain.setReferer(request.getHeader(Track_Header.x_referer.key));
+			// session id
+			callchain.setSessionid(request.getHeader(Track_Header.x_session_id.key));
 		}
 
 		// referer ip

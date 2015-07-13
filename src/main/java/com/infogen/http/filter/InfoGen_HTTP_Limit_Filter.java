@@ -27,7 +27,7 @@ import com.infogen.util.Return;
  * @since 1.0
  * @version 1.0
  */
-@WebFilter(filterName = "InfoGen_HTTP_Filter_2", urlPatterns = { "/*" }, asyncSupported = true)
+@WebFilter(filterName = "InfoGen_HTTP_Filter_3", urlPatterns = { "/*" }, asyncSupported = true)
 public class InfoGen_HTTP_Limit_Filter implements Filter {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP_Limit_Filter.class.getName());
 	private static final Map<String, AtomicInteger> map = new HashMap<>();
