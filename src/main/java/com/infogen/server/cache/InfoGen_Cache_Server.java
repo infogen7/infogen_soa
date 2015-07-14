@@ -175,7 +175,7 @@ public class InfoGen_Cache_Server {
 	}
 
 	private void reload_server(NativeServer server) {
-		String server_path = server.getPath();
+		String server_path = InfoGen_ZooKeeper.path(server.getName());
 		List<String> get_childrens = ZK.get_childrens(server_path);
 		if (get_childrens.isEmpty()) {
 			return;
