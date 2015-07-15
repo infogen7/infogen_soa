@@ -21,6 +21,7 @@ import com.infogen.server.model.NativeNode;
 import com.infogen.server.model.NativeServer;
 import com.infogen.server.zookeeper.InfoGen_ZooKeeper;
 import com.infogen.server.zookeeper.InfoGen_Zookeeper_Handle_Expired;
+import com.infogen.tools.Mail;
 import com.infogen.util.Scheduled;
 import com.larrylgq.aop.tools.Tool_Core;
 import com.larrylgq.aop.tools.Tool_Jackson;
@@ -124,13 +125,18 @@ public class InfoGen_Cache_Server {
 			if (server_data == null || server_data.trim().isEmpty()) {
 				reload_server_paths.add(server_name);
 				LOGGER.error("服务节点数据为空:".concat(server_name));
+
+				Mail.getInstance().sendAndCc("online@juxinli.com", "chenjian@juxinli.com", "infogen节点错误", "服务节点数据为空:".concat(server_name));
 				return null;
 			}
 
 			NativeServer native_server = Tool_Jackson.toObject(server_data, NativeServer.class);
 			if (!native_server.available()) {
 				reload_server_paths.add(server_name);
+				
 				LOGGER.error("服务节点数据不可用:".concat(server_name));
+				Mail.sendAndCc("online@juxinli.com", "chenjian@juxinli.com", "infogen节点错误", "服务节点数据不可用:".concat(server_name));
+				
 				return null;
 			}
 
@@ -138,6 +144,8 @@ public class InfoGen_Cache_Server {
 			if (get_server_state.isEmpty()) {
 				reload_server_paths.add(server_name);
 				LOGGER.error("服务子节点为空:".concat(server_name));
+				Mail.sendAndCc("online@juxinli.com", "chenjian@juxinli.com", "infogen节点错误", "服务子节点为空:".concat(server_name));
+				
 				return null;
 			}
 
@@ -146,7 +154,9 @@ public class InfoGen_Cache_Server {
 					NativeNode node = Tool_Jackson.toObject(node_string, NativeNode.class);
 					native_server.add(node);
 				} catch (Exception e) {
+					
 					LOGGER.error("转换节点数据错误:", e);
+					Mail.sendAndCc("online@juxinli.com", "chenjian@juxinli.com", "infogen节点错误","转换节点数据错误:".concat(e.getMessage()));
 				}
 			}
 

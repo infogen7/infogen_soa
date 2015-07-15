@@ -22,6 +22,7 @@ import com.infogen.server.model.NativeNode;
 import com.infogen.server.model.NativeServer;
 import com.infogen.server.model.NativeNode.NetType;
 import com.infogen.server.model.NativeNode.RequestType;
+import com.infogen.tools.Mail;
 import com.infogen.util.BasicNameValuePair;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
@@ -236,6 +237,7 @@ public class Service {
 	private Return http_blocking(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type, String seed) {
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
+			Mail.getInstance().sendAndCc("online@juxinli.com", "chenjian@juxinli.com", "infogen节点错误", server_name + CODE.service_notfound.toString());
 			return Return.FAIL(CODE.service_notfound);
 		}
 		NativeNode node = null;
@@ -244,6 +246,8 @@ public class Service {
 			try {
 				node = server.random_node(seed);
 				if (node == null) {
+
+					Mail.getInstance().sendAndCc("online@juxinli.com", "chenjian@juxinli.com", "infogen节点错误", server_name + CODE.node_notfound.toString());
 					return Return.FAIL(CODE.node_notfound);
 				}
 				String http = node.http(method, name_value_pair, request_type, net_type);
@@ -279,6 +283,8 @@ public class Service {
 
 		NativeServer server = depend_server.get(server_name);
 		if (server == null) {
+			
+			Mail.getInstance().sendAndCc("online@juxinli.com", "chenjian@juxinli.com", "infogen节点错误", server_name + CODE.service_notfound.toString());
 			callback.add(Return.FAIL(CODE.service_notfound).toJson());
 			return callback;
 		}
@@ -287,6 +293,8 @@ public class Service {
 		for (int i = 0; i < 3; i++) {
 			node = server.random_node(seed);
 			if (node == null) {
+
+				Mail.getInstance().sendAndCc("online@juxinli.com", "chenjian@juxinli.com", "infogen节点错误", server_name + CODE.node_notfound.toString());
 				callback.add(Return.FAIL(CODE.node_notfound).toJson());
 				return callback;
 			}
