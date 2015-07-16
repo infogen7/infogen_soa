@@ -1,6 +1,11 @@
 package com.infogen.tools;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import javax.mail.Address;
 import javax.mail.BodyPart;
@@ -16,19 +21,21 @@ import javax.mail.internet.MimeMultipart;
 import org.apache.log4j.Logger;
 
 
-public class Mail { 
 
-	private static Mail instance;
+public class NoNodeMail { 
+
+	private static NoNodeMail instance;
 	
-	private static final Logger logger = Logger.getLogger(Mail.class.getName());
+	private static final Logger logger = Logger.getLogger(NoNodeMail.class.getName());
 	
 	private MimeMessage mimeMsg; //MIME邮件对象 
 	private Session session; //邮件会话对象 
 	private Properties props; //系统属性 
 	//smtp认证用户名和密码 
-	private static String username; 
-	private static String password; 
-	private static String from;
+	private String username; 
+	private String password; 
+	private String from;
+	private String localIP;
 	
 	private Multipart mp; //Multipart对象,邮件内容,标题,附件等内容均添加到其中后再生成MimeMessage对象 
 	 
@@ -36,43 +43,52 @@ public class Mail {
 	 * Constructor
 	 * @param smtp 邮件发送服务器
 	 */
-	public Mail(){ 
+	public NoNodeMail(){ 
 		
 	}
-	public Mail(String smtp){ 
+	public NoNodeMail(String smtp){ 
 		setSmtpHost(smtp); 
 		createMimeMessage();
 	}
 	
-	public Mail(String smtp,String from,String username,String password){ 
+	public NoNodeMail(String smtp,String from,String username,String password){ 
 		setSmtpHost(smtp); 
 		createMimeMessage(); 
 		this.from = from ;
 		this.password = password;
 		this.username = username;
+		this.localIP = getLocalIp().concat("上:");
 		
 	}
 	
-    //双重校验
-    public static Mail getInstance(String smtp,String from,String username,String password){
+    public static NoNodeMail getInstance(String smtp,String from,String username,String password){
         if(instance ==null){
-            synchronized (Mail.class){
+            synchronized (NoNodeMail.class){
                 if(instance ==null){
-                    instance = new Mail(smtp,from,username,password);
+                    instance = new NoNodeMail(smtp,from,username,password);
                 }
             }
         }
         return instance;
     }
-
-    //双重校验
-    public static Mail getInstance(){
+    
+    public static NoNodeMail getInstance(){
         if(instance ==null){
            logger.error("邮件配置没有初始化");   
         }
 
         return instance;
     }
+    
+    public static final Executor pool = Executors.newFixedThreadPool(10, new ThreadFactory() {// 使用守护进程创建进程池
+		public Thread newThread(Runnable r) {
+			Thread s = Executors.defaultThreadFactory().newThread(r);
+			s.setDaemon(true);
+			return s;
+		}
+	});
+    
+    
 
 	/**
 	 * 设置邮件发送服务器
@@ -273,7 +289,7 @@ public class Mail {
 	 * @return boolean
 	 */
 	public static boolean send(String smtp,String from,String to,String subject,String content,String username,String password) {
-		Mail theMail = new Mail(smtp);
+		NoNodeMail theMail = new NoNodeMail(smtp);
 		theMail.setNeedAuth(true); //需要验证
 		
 		if(!theMail.setSubject(subject)) return false;
@@ -298,23 +314,31 @@ public class Mail {
 	 * @param password
 	 * @return boolean
 	 */
-	public static boolean sendAndCc(String to,String copyto,String subject,String content) {
-		Mail theMail = Mail.getInstance();
+	public void send(String to,String subject,String content) {
+		NoNodeMail theMail = NoNodeMail.getInstance();
 		if(theMail!=null){
 			theMail.setNeedAuth(true); //需要验证
 			
-			if(!theMail.setSubject(subject)) return false;
-			if(!theMail.setBody(content)) return false;
-			if(!theMail.setTo(to)) return false;
-			if(!theMail.setCopyTo(copyto)) return false;
-			if(!theMail.setFrom(from)) return false;
+			theMail.setSubject(subject);
+			theMail.setBody(localIP.concat(content));
+			theMail.setTo(to) ;
+			theMail.setFrom(from); 
 			theMail.setNamePass(username,password);
 			
-			if(!theMail.sendOut()) return false;
-			return true;
+			Runnable r = new Runnable() {
+				public void run() {
+					try {
+						theMail.sendOut();
+					} catch (Exception ex) {
+						logger.error("写日志失败", ex);
+					}
+				}
+			};
+			pool.execute(r);
+			
 		}else{
 			logger.info("跳过发送邮件");
-			return true;
+			
 		}
 		
 	}
@@ -396,6 +420,14 @@ public class Mail {
 //		return true;
 //	}
 	
+	private String getLocalIp(){
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	public static void main(String[] args){
 		String smtp = "smtp.exmail.qq.com";
@@ -405,7 +437,7 @@ public class Mail {
 		String content = "馨浩就是大逗比";       //内容
 		String username="zhashiwen@juxinli.com";  //邮箱账户
 		String password="a921005b930518";         //邮箱密码
-		Mail.send(smtp, from, to, subject, content, username, password);
+		NoNodeMail.send(smtp, from, to, subject, content, username, password);
 	}
 } 
 

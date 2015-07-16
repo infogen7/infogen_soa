@@ -175,6 +175,7 @@ public class InfoGen {
 			return server;
 		}
 		LOGGER.warn("没有找到可用服务:".concat(server_name));
+		
 		if (server_loaded_handle != null) {
 			server_loaded_handle.handle_event(server);
 		}
