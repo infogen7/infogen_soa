@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.infogen.server.zookeeper;
 
 import java.io.IOException;
@@ -13,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
@@ -209,7 +205,7 @@ public class InfoGen_ZooKeeper {
 		List<String> list = new ArrayList<String>();
 		try {
 			LOGGER.info("获取子节点目录:".concat(path));
-			list = zookeeper.getChildren(path, false).stream().filter(service_path -> !service_path.equals("zookeeper")).collect(Collectors.toList());
+			list = zookeeper.getChildren(path, false);
 			LOGGER.info("获取子节点目录成功:".concat(path));
 		} catch (Exception e) {
 			LOGGER.error("获取子节点目录错误: ", e);
@@ -221,7 +217,8 @@ public class InfoGen_ZooKeeper {
 		List<String> list = new ArrayList<String>();
 		try {
 			LOGGER.info("获取子节点数据:".concat(path));
-			zookeeper.getChildren(path, false).stream().forEach(service_path -> {
+			List<String> childrens = zookeeper.getChildren(path, false);
+			for (String service_path : childrens) {
 				try {
 					StringBuilder service_path_sbf = new StringBuilder(path);
 					if (!path.equals("/")) {
@@ -235,7 +232,7 @@ public class InfoGen_ZooKeeper {
 				} catch (Exception e) {
 					LOGGER.error("获取字节点数据错误:", e);
 				}
-			});
+			}
 			LOGGER.info("获取子节点数据成功:".concat(path));
 		} catch (Exception e) {
 			LOGGER.error("获取子节点数据错误: ", e);
