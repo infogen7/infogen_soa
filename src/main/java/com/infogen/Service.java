@@ -250,6 +250,7 @@ public class Service {
 					NoNodeMail.getInstance().send("online@juxinli.com", "infogen节点错误", server_name + CODE.node_notfound.toString());
 					return Return.FAIL(CODE.node_notfound);
 				}
+				LOGGER.info("调用"+ node.getIp() + "的"+method);
 				String http = node.http(method, name_value_pair, request_type, net_type);
 				Return create = Return.create(http);
 				if (create.get_code() == CODE.limit.code) {

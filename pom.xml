@@ -4,7 +4,7 @@
 	<groupId>com.infogen</groupId>
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
-	<version>V1.1.01R150717</version>
+	<version>V1.1.02R150717</version>
 
 	<name>infogen_soa</name>
 	<url>https://github.com/larrylgq/infogen_soa</url>
