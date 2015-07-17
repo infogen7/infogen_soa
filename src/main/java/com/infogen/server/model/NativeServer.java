@@ -73,6 +73,7 @@ public class NativeServer extends AbstractServer {
 			disabled_nodes.remove(node);
 			consistent_hash.remove(node);
 		}
+		node.clean();
 	}
 
 	public void enable(NativeNode node) {

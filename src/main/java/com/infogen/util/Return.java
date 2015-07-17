@@ -30,9 +30,9 @@ public class Return extends HashMap<String, Object> {
 		try {
 			Map<String, Object> fromJson = Tool_Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
 			});
-			fromJson.forEach((k, v) -> {
-				jo.put(k, v);
-			});
+			for (Entry<String, Object> entry : fromJson.entrySet()) {
+				jo.put(entry.getKey(), entry.getValue());
+			}
 		} catch (IOException e) {
 			LOGGER.error("Return.create 解析 JSON 失败", e);
 			return Return.FAIL(CODE.generate_return_error);
