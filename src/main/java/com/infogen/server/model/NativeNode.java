@@ -27,10 +27,9 @@ import com.infogen.rpc.handler.Thrift_Client_Handler;
 /**
  * 为本地调用处理扩展的节点属性
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年10月24日 下午4:27:17
- * @当前版本只支持 rest,rpc调用,只支持对等式
+ * @author larry/larrylv@outlook.com/创建时间 2015年7月17日 下午5:30:01
+ * @since 1.0
+ * @version 1.0
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class NativeNode extends AbstractNode {
@@ -40,21 +39,24 @@ public class NativeNode extends AbstractNode {
 	@JsonIgnore
 	private static final Integer connect_timeout = 3_000;// 连接超时时间
 	@JsonIgnore
-	private static final String call_lock = "";
+	private final String call_lock = "";
 	@JsonIgnore
-	private static final String call_async_lock = "";
+	private final String call_async_lock = "";
 
 	@JsonIgnore
 	private transient TTransport transport = null;
 	@JsonIgnore
 	private transient TNonblockingSocket async_transport = null;
 
+	/**
+	 * 清理占用的资源
+	 */
 	public void clean() {
 		clean_transport();
 		clean_async_transport();
 	}
 
-	public void clean_transport() {
+	private void clean_transport() {
 		synchronized (call_lock) {
 			if (transport != null && transport.isOpen()) {
 				transport.close();
@@ -63,7 +65,7 @@ public class NativeNode extends AbstractNode {
 		}
 	}
 
-	public void clean_async_transport() {
+	private void clean_async_transport() {
 		synchronized (call_async_lock) {
 			if (async_transport != null && async_transport.isOpen()) {
 				async_transport.close();
@@ -97,7 +99,9 @@ public class NativeNode extends AbstractNode {
 		T handle_event;
 		try {
 			TProtocol protocol = new TCompactProtocol(get_transport());
-			handle_event = handle.handle_event(protocol);
+			synchronized (call_lock) {
+				handle_event = handle.handle_event(protocol);
+			}
 		} catch (IOException e) {
 			clean_transport();
 			throw e;
@@ -113,7 +117,9 @@ public class NativeNode extends AbstractNode {
 
 		try {
 			TNonblockingSocket get_async_transport = get_async_transport();
-			handle_event = handle.handle_event(protocol, clientManager, get_async_transport, callback);
+			synchronized (call_async_lock) {
+				handle_event = handle.handle_event(protocol, clientManager, get_async_transport, callback);
+			}
 		} catch (IOException e) {
 			clean_async_transport();
 			throw e;

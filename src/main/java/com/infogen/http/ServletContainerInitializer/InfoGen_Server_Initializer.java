@@ -1,7 +1,6 @@
 package com.infogen.http.ServletContainerInitializer;
 
 import java.io.IOException;
-import java.util.concurrent.locks.StampedLock;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -22,7 +21,7 @@ public class InfoGen_Server_Initializer implements WebApplicationInitializer {
 	public static ServletContext servletContext;
 	public static String config_path;
 	public static String mapping;
-	private static final StampedLock lock = new StampedLock();
+	private static String lock = "";
 
 	public static void start_mvc(String config_path, String mapping) throws IOException {
 		InfoGen_Server_Initializer.config_path = config_path;
@@ -36,8 +35,7 @@ public class InfoGen_Server_Initializer implements WebApplicationInitializer {
 	}
 
 	private static void start_mvc(ServletContext servletContext, String config_path) throws IOException {
-		long stamp = lock.writeLock();
-		try {
+		synchronized (lock) {
 			if (servletContext != null && config_path != null && !config_path.trim().isEmpty()) {
 				XmlWebApplicationContext mvcContext = new XmlWebApplicationContext();
 				mvcContext.setConfigLocation(config_path);
@@ -48,8 +46,6 @@ public class InfoGen_Server_Initializer implements WebApplicationInitializer {
 				dispatcher.setLoadOnStartup(1);// 确保在default servlet加载完成之后再加载
 				dispatcher.addMapping(mapping);
 			}
-		} finally {
-			lock.unlockWrite(stamp);
 		}
 	}
 
