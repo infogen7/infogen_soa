@@ -150,12 +150,6 @@ public class InfoGen_Cache_Server {
 				}
 			}
 
-			// 事件处理
-			InfoGen_Loaded_Handle_Server server_loaded_handle = server_loaded_handle_map.get(server_name);
-			if (server_loaded_handle != null) {
-				server_loaded_handle.handle_event(native_server);
-			}
-
 			// 添加监听
 			ZK.watcher_children_single(InfoGen_ZooKeeper.path(server_name), (path) -> {
 				reload_server(native_server);
@@ -163,6 +157,12 @@ public class InfoGen_Cache_Server {
 
 			// 缓存
 			depend_server.put(server_name, native_server);
+
+			// 加载成功事件处理
+			InfoGen_Loaded_Handle_Server server_loaded_handle = server_loaded_handle_map.get(server_name);
+			if (server_loaded_handle != null) {
+				server_loaded_handle.handle_event(native_server);
+			}
 
 			// 持久化
 			persistence();
@@ -174,13 +174,14 @@ public class InfoGen_Cache_Server {
 		return null;
 	}
 
-	private void reload_server(NativeServer server) {
-		String server_path = InfoGen_ZooKeeper.path(server.getName());
+	private void reload_server(NativeServer native_server) {
+		String server_name = native_server.getName();
+		String server_path = InfoGen_ZooKeeper.path(server_name);
 		List<String> get_childrens = ZK.get_childrens(server_path);
 		if (get_childrens.isEmpty()) {
 			return;
 		}
-		Map<String, NativeNode> tmp_all_nodes = server.get_all_nodes();
+		Map<String, NativeNode> tmp_all_nodes = native_server.get_all_nodes();
 		for (String node_path : get_childrens) {
 			NativeNode node = tmp_all_nodes.get(node_path);
 			// 本地存在该节点 - 继续
@@ -191,7 +192,7 @@ public class InfoGen_Cache_Server {
 			// 本地不存在该节点 - 添加到本地
 			String node_string = ZK.get_data(server_path.concat("/").concat(node_path));
 			try {
-				server.add(Tool_Jackson.toObject(node_string, NativeNode.class));
+				native_server.add(Tool_Jackson.toObject(node_string, NativeNode.class));
 			} catch (Exception e) {
 				LOGGER.error("节点数据错误:", e);
 			}
@@ -199,8 +200,17 @@ public class InfoGen_Cache_Server {
 		// 注册中心不存在的节点 - 删除
 		for (NativeNode native_node : tmp_all_nodes.values()) {
 			native_node.clean();
-			server.remove(native_node);
+			native_server.remove(native_node);
 		}
+
+		// 加载成功事件处理
+		InfoGen_Loaded_Handle_Server server_loaded_handle = server_loaded_handle_map.get(server_name);
+		if (server_loaded_handle != null) {
+			server_loaded_handle.handle_event(native_server);
+		}
+
+		// 持久化
+		persistence();
 	}
 
 	// ////////////////////////////////////////////////////持久化依赖的服务///////////////////////////////////////////////////////////////////////
