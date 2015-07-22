@@ -32,7 +32,7 @@ import com.infogen.rpc.handler.Thrift_Client_Handler;
  * @version 1.0
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class NativeNode extends AbstractNode {
+public class RemoteNode extends AbstractNode {
 	@JsonIgnore
 	public Long disabled_time = Clock.system(InfoGen_Configuration.zoneid).millis();
 

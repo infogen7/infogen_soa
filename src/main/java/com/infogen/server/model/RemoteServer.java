@@ -22,17 +22,17 @@ import com.larrylgq.aop.util.map.consistent_hash.ConsistentHash;
  * @version 创建时间 2014年10月28日 上午10:03:46
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class NativeServer extends AbstractServer {
-	private static final Logger LOGGER = Logger.getLogger(NativeServer.class.getName());
+public class RemoteServer extends AbstractServer {
+	private static final Logger LOGGER = Logger.getLogger(RemoteServer.class.getName());
 
-	private List<NativeNode> available_nodes = new CopyOnWriteArrayList<>();
-	private List<NativeNode> disabled_nodes = new CopyOnWriteArrayList<>();
+	private List<RemoteNode> available_nodes = new CopyOnWriteArrayList<>();
+	private List<RemoteNode> disabled_nodes = new CopyOnWriteArrayList<>();
 
-	private NativeServer() {
+	private RemoteServer() {
 	}
 
 	@JsonIgnore
-	private transient ConsistentHash<NativeNode> consistent_hash = new ConsistentHash<>();
+	private transient ConsistentHash<RemoteNode> consistent_hash = new ConsistentHash<>();
 	@JsonIgnore
 	private transient String change_node_status_lock = "";
 	@JsonIgnore
@@ -43,8 +43,8 @@ public class NativeServer extends AbstractServer {
 	private int min_disabled_timeout = 3 * 1000;// 最小的节点恢复使用的间隔时间
 
 	// ////////////////////////////////////////// 定时修正不可用的节点/////////////////////////////////////////////////////
-	public Map<String, NativeNode> get_all_nodes() {
-		Map<String, NativeNode> all_nodes = new HashMap<>();
+	public Map<String, RemoteNode> get_all_nodes() {
+		Map<String, RemoteNode> all_nodes = new HashMap<>();
 		synchronized (change_node_status_lock) {
 			available_nodes.forEach((node) -> {
 				all_nodes.put(node.getName(), node);
@@ -56,7 +56,7 @@ public class NativeServer extends AbstractServer {
 		return all_nodes;
 	}
 
-	public void add(NativeNode node) {
+	public void add(RemoteNode node) {
 		if (node.available()) {
 			synchronized (change_node_status_lock) {
 				available_nodes.add(node);
@@ -67,7 +67,7 @@ public class NativeServer extends AbstractServer {
 		}
 	}
 
-	public void remove(NativeNode node) {
+	public void remove(RemoteNode node) {
 		synchronized (change_node_status_lock) {
 			available_nodes.remove(node);
 			disabled_nodes.remove(node);
@@ -76,7 +76,7 @@ public class NativeServer extends AbstractServer {
 		node.clean();
 	}
 
-	public void enable(NativeNode node) {
+	public void enable(RemoteNode node) {
 		synchronized (change_node_status_lock) {
 			disabled_nodes.remove(node);
 			available_nodes.add(node);
@@ -84,7 +84,7 @@ public class NativeServer extends AbstractServer {
 		}
 	}
 
-	public void disabled(NativeNode node) {
+	public void disabled(RemoteNode node) {
 		node.disabled_time = Clock.system(InfoGen_Configuration.zoneid).millis();
 		synchronized (change_node_status_lock) {
 			disabled_nodes.add(node);
@@ -99,11 +99,11 @@ public class NativeServer extends AbstractServer {
 	 * @return
 	 */
 
-	public NativeNode random_node(String seed) {
+	public RemoteNode random_node(String seed) {
 		long millis = Clock.system(InfoGen_Configuration.zoneid).millis();
 		// 没有可用节点或距离上一次成功调用超过指定时间
 		if (!disabled_nodes.isEmpty() && (available_nodes.isEmpty() || (millis - last_success_invoke_millis) > disabled_timeout)) {
-			for (NativeNode node : disabled_nodes) {
+			for (RemoteNode node : disabled_nodes) {
 				if ((Clock.system(InfoGen_Configuration.zoneid).millis() - node.disabled_time) > min_disabled_timeout) {
 					enable(node);
 				}
@@ -114,19 +114,19 @@ public class NativeServer extends AbstractServer {
 	}
 
 	// ///////////////////////////////////////////////////////////getter setter////////////////////////////////////////
-	public List<NativeNode> getAvailable_nodes() {
+	public List<RemoteNode> getAvailable_nodes() {
 		return available_nodes;
 	}
 
-	public void setAvailable_nodes(List<NativeNode> available_nodes) {
+	public void setAvailable_nodes(List<RemoteNode> available_nodes) {
 		this.available_nodes = available_nodes;
 	}
 
-	public List<NativeNode> getDisabled_nodes() {
+	public List<RemoteNode> getDisabled_nodes() {
 		return disabled_nodes;
 	}
 
-	public void setDisabled_nodes(List<NativeNode> disabled_nodes) {
+	public void setDisabled_nodes(List<RemoteNode> disabled_nodes) {
 		this.disabled_nodes = disabled_nodes;
 	}
 

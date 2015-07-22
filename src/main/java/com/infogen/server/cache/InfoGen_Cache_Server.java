@@ -17,8 +17,8 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.server.model.NativeNode;
-import com.infogen.server.model.NativeServer;
+import com.infogen.server.model.RemoteNode;
+import com.infogen.server.model.RemoteServer;
 import com.infogen.server.zookeeper.InfoGen_ZooKeeper;
 import com.infogen.server.zookeeper.InfoGen_Zookeeper_Handle_Expired;
 import com.infogen.util.Scheduled;
@@ -53,9 +53,9 @@ public class InfoGen_Cache_Server {
 	private InfoGen_ZooKeeper ZK = com.infogen.server.zookeeper.InfoGen_ZooKeeper.getInstance();
 
 	// 依赖的服务
-	public final ConcurrentMap<String, NativeServer> depend_server = new ConcurrentHashMap<>();
+	public final ConcurrentMap<String, RemoteServer> depend_server = new ConcurrentHashMap<>();
 	// 本地缓存的依赖服务
-	private ConcurrentMap<String, NativeServer> depend_server_cache = new ConcurrentHashMap<>();
+	private ConcurrentMap<String, RemoteServer> depend_server_cache = new ConcurrentHashMap<>();
 
 	// ///////////////////////////////////////////////////初始化///////////////////////////////////////////////
 	private Path source_server_path = NativePath.get("infogen.cache.server.js");
@@ -71,7 +71,7 @@ public class InfoGen_Cache_Server {
 		// 获取缓存的服务
 		String server_json = Tool_Core.load_file(source_server_path);
 		if (!server_json.isEmpty()) {
-			ConcurrentHashMap<String, NativeServer> fromJson = Tool_Jackson.toObject(server_json, new TypeReference<ConcurrentHashMap<String, NativeServer>>() {
+			ConcurrentHashMap<String, RemoteServer> fromJson = Tool_Jackson.toObject(server_json, new TypeReference<ConcurrentHashMap<String, RemoteServer>>() {
 			});
 			depend_server_cache = fromJson;
 		}
@@ -82,7 +82,7 @@ public class InfoGen_Cache_Server {
 	private Map<String, InfoGen_Loaded_Handle_Server> server_loaded_handle_map = new HashMap<>();
 	private Set<String> reload_server_paths = new HashSet<>();
 
-	public NativeServer cache_server_single(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
+	public RemoteServer cache_server_single(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
 		if (server_loaded_handle_map.get(server_name) != null) {
 			LOGGER.warn("当前缓存过该服务:".concat(server_name));
 			return depend_server.get(server_name);
@@ -95,7 +95,7 @@ public class InfoGen_Cache_Server {
 		}
 		server_loaded_handle_map.put(server_name, server_loaded_handle);
 
-		NativeServer cache_server = cache_server(server_name);
+		RemoteServer cache_server = cache_server(server_name);
 		// 获取不到,到本地缓存里查找
 		if (cache_server == null) {
 			cache_server = depend_server_cache.get(server_name);
@@ -112,12 +112,12 @@ public class InfoGen_Cache_Server {
 	 * 重新加载所有服务
 	 */
 	public void reload_all_server() {
-		for (NativeServer server : depend_server.values()) {
+		for (RemoteServer server : depend_server.values()) {
 			reload_server(server);
 		}
 	}
 
-	private NativeServer cache_server(String server_name) {
+	private RemoteServer cache_server(String server_name) {
 		try {
 			String server_path = InfoGen_ZooKeeper.path(server_name);
 			String server_data = ZK.get_data(server_path);
@@ -127,7 +127,7 @@ public class InfoGen_Cache_Server {
 				return null;
 			}
 
-			NativeServer native_server = Tool_Jackson.toObject(server_data, NativeServer.class);
+			RemoteServer native_server = Tool_Jackson.toObject(server_data, RemoteServer.class);
 			if (!native_server.available()) {
 				reload_server_paths.add(server_name);
 				LOGGER.error("服务节点数据不可用:".concat(server_name));
@@ -143,7 +143,7 @@ public class InfoGen_Cache_Server {
 
 			for (String node_string : get_server_state) {
 				try {
-					NativeNode node = Tool_Jackson.toObject(node_string, NativeNode.class);
+					RemoteNode node = Tool_Jackson.toObject(node_string, RemoteNode.class);
 					native_server.add(node);
 				} catch (Exception e) {
 					LOGGER.error("转换节点数据错误:", e);
@@ -174,16 +174,16 @@ public class InfoGen_Cache_Server {
 		return null;
 	}
 
-	private void reload_server(NativeServer native_server) {
+	private void reload_server(RemoteServer native_server) {
 		String server_name = native_server.getName();
 		String server_path = InfoGen_ZooKeeper.path(server_name);
 		List<String> get_childrens = ZK.get_childrens(server_path);
 		if (get_childrens.isEmpty()) {
 			return;
 		}
-		Map<String, NativeNode> tmp_all_nodes = native_server.get_all_nodes();
+		Map<String, RemoteNode> tmp_all_nodes = native_server.get_all_nodes();
 		for (String node_path : get_childrens) {
-			NativeNode node = tmp_all_nodes.get(node_path);
+			RemoteNode node = tmp_all_nodes.get(node_path);
 			// 本地存在该节点 - 继续
 			if (node != null) {
 				tmp_all_nodes.remove(node_path);
@@ -192,13 +192,13 @@ public class InfoGen_Cache_Server {
 			// 本地不存在该节点 - 添加到本地
 			String node_string = ZK.get_data(server_path.concat("/").concat(node_path));
 			try {
-				native_server.add(Tool_Jackson.toObject(node_string, NativeNode.class));
+				native_server.add(Tool_Jackson.toObject(node_string, RemoteNode.class));
 			} catch (Exception e) {
 				LOGGER.error("节点数据错误:", e);
 			}
 		}
 		// 注册中心不存在的节点 - 删除
-		for (NativeNode native_node : tmp_all_nodes.values()) {
+		for (RemoteNode native_node : tmp_all_nodes.values()) {
 			native_node.clean();
 			native_server.remove(native_node);
 		}

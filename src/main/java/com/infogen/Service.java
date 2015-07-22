@@ -18,10 +18,10 @@ import com.infogen.rpc.exception.impl.Service_Notfound_Exception;
 import com.infogen.rpc.handler.Thrift_Async_Client_Handler;
 import com.infogen.rpc.handler.Thrift_Client_Handler;
 import com.infogen.server.cache.InfoGen_Cache_Server;
-import com.infogen.server.model.NativeNode;
-import com.infogen.server.model.NativeServer;
-import com.infogen.server.model.NativeNode.NetType;
-import com.infogen.server.model.NativeNode.RequestType;
+import com.infogen.server.model.RemoteNode;
+import com.infogen.server.model.RemoteServer;
+import com.infogen.server.model.RemoteNode.NetType;
+import com.infogen.server.model.RemoteNode.RequestType;
 import com.infogen.util.BasicNameValuePair;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
@@ -37,7 +37,7 @@ public class Service {
 	private static final Logger LOGGER = Logger.getLogger(Service.class.getName());
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static final InfoGen instance = InfoGen.getInstance();
-	private static ConcurrentMap<String, NativeServer> depend_server = InfoGen_Cache_Server.getInstance().depend_server;
+	private static ConcurrentMap<String, RemoteServer> depend_server = InfoGen_Cache_Server.getInstance().depend_server;
 	private String server_name;
 	private NetType net_type = NetType.LOCAL;
 
@@ -68,16 +68,21 @@ public class Service {
 		instance.get_server(server_name);
 	}
 
+	// /////////////////////////////////////////////////HTTPFunction/////////////////////////////////////////////
+	public RemoteHTTPFunction get_http_function(String url) {
+		return new RemoteHTTPFunction(this, url);
+	}
+
 	// ///////////////////////////////////////////////////NODE/////////////////////////////////////////////////////
-	public NativeNode get_node(String seed) {
-		NativeServer server = depend_server.get(server_name);
+	public RemoteNode get_node(String seed) {
+		RemoteServer server = depend_server.get(server_name);
 		return server.random_node(seed);
 	}
 
-	public NativeNode get_node_byip(String ip) {
-		NativeServer server = depend_server.get(server_name);
-		List<NativeNode> available_nodes = server.getAvailable_nodes();
-		for (NativeNode nativeNode : available_nodes) {
+	public RemoteNode get_node_byip(String ip) {
+		RemoteServer server = depend_server.get(server_name);
+		List<RemoteNode> available_nodes = server.getAvailable_nodes();
+		for (RemoteNode nativeNode : available_nodes) {
 			if (nativeNode.getIp().equals(ip)) {
 				return nativeNode;
 			}
@@ -85,8 +90,8 @@ public class Service {
 		return null;
 	}
 
-	public void disabled_node(NativeNode node) {
-		NativeServer server = depend_server.get(server_name);
+	public void disabled_node(RemoteNode node) {
+		RemoteServer server = depend_server.get(server_name);
 		server.disabled(node);
 	}
 
@@ -96,11 +101,11 @@ public class Service {
 	}
 
 	public <T> T call(Thrift_Client_Handler<T> handle, String seed) throws Service_Notfound_Exception, Node_Notfound_Exception {
-		NativeServer server = depend_server.get(server_name);
+		RemoteServer server = depend_server.get(server_name);
 		if (server == null) {
 			throw new Service_Notfound_Exception();
 		}
-		NativeNode node = null;
+		RemoteNode node = null;
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			try {
@@ -123,11 +128,11 @@ public class Service {
 	}
 
 	public <T> RPC_Callback<T> call_async(Thrift_Async_Client_Handler<T> handle, String seed) throws Service_Notfound_Exception, Node_Notfound_Exception {
-		NativeServer server = depend_server.get(server_name);
+		RemoteServer server = depend_server.get(server_name);
 		if (server == null) {
 			throw new Service_Notfound_Exception();
 		}
-		NativeNode node = null;
+		RemoteNode node = null;
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			try {
@@ -162,16 +167,16 @@ public class Service {
 	 * @return
 	 */
 	public Return get(String url, Map<String, String> name_value_pair) {
-		return http_blocking(url, name_value_pair, RequestType.GET, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+		return http_blocking(url, name_value_pair, RequestType.GET, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
 	@Deprecated
 	public Return get(String url, List<BasicNameValuePair> name_value_pair) {
-		return http_blocking(url, pair_to_map(name_value_pair), RequestType.GET, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+		return http_blocking(url, pair_to_map(name_value_pair), RequestType.GET, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
 	public Return get(String url, Map<String, String> name_value_pair, String seed) {
-		return http_blocking(url, name_value_pair, RequestType.GET, net_type, seed);
+		return http_blocking(url, name_value_pair, RequestType.GET, seed);
 	}
 
 	/**
@@ -182,16 +187,16 @@ public class Service {
 	 * @return
 	 */
 	public Return post(String url, Map<String, String> name_value_pair) {
-		return http_blocking(url, name_value_pair, RequestType.POST, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+		return http_blocking(url, name_value_pair, RequestType.POST, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
 	@Deprecated
 	public Return post(String url, List<BasicNameValuePair> name_value_pair) {
-		return http_blocking(url, pair_to_map(name_value_pair), RequestType.POST, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+		return http_blocking(url, pair_to_map(name_value_pair), RequestType.POST, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
 	public Return post(String url, Map<String, String> name_value_pair, String seed) {
-		return http_blocking(url, name_value_pair, RequestType.POST, net_type, seed);
+		return http_blocking(url, name_value_pair, RequestType.POST, seed);
 	}
 
 	/**
@@ -202,11 +207,11 @@ public class Service {
 	 * @return
 	 */
 	public Http_Callback get_async(String url, Map<String, String> name_value_pair) {
-		return http_async(url, name_value_pair, RequestType.GET, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+		return http_async(url, name_value_pair, RequestType.GET, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
 	public Http_Callback get_async(String url, Map<String, String> name_value_pair, String seed) {
-		return http_async(url, name_value_pair, RequestType.GET, net_type, seed);
+		return http_async(url, name_value_pair, RequestType.GET, seed);
 	}
 
 	/**
@@ -217,11 +222,11 @@ public class Service {
 	 * @return
 	 */
 	public Http_Callback post_async(String url, Map<String, String> name_value_pair) {
-		return http_async(url, name_value_pair, RequestType.POST, net_type, String.valueOf(Clock.systemDefaultZone().millis()));
+		return http_async(url, name_value_pair, RequestType.POST, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
 	public Http_Callback post_async(String url, Map<String, String> name_value_pair, String seed) {
-		return http_async(url, name_value_pair, RequestType.POST, net_type, seed);
+		return http_async(url, name_value_pair, RequestType.POST, seed);
 	}
 
 	/**
@@ -233,12 +238,12 @@ public class Service {
 	 * @param net_type
 	 * @return
 	 */
-	private Return http_blocking(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type, String seed) {
-		NativeServer server = depend_server.get(server_name);
+	private Return http_blocking(String method, Map<String, String> name_value_pair, RequestType request_type, String seed) {
+		RemoteServer server = depend_server.get(server_name);
 		if (server == null) {
 			return Return.FAIL(CODE.service_notfound);
 		}
-		NativeNode node = null;
+		RemoteNode node = null;
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			try {
@@ -274,15 +279,15 @@ public class Service {
 	 * @param net_type
 	 * @return
 	 */
-	private Http_Callback http_async(String method, Map<String, String> name_value_pair, RequestType request_type, NetType net_type, String seed) {
+	private Http_Callback http_async(String method, Map<String, String> name_value_pair, RequestType request_type, String seed) {
 		Http_Callback callback = new Http_Callback();
 
-		NativeServer server = depend_server.get(server_name);
+		RemoteServer server = depend_server.get(server_name);
 		if (server == null) {
 			callback.add(Return.FAIL(CODE.service_notfound).toJson());
 			return callback;
 		}
-		NativeNode node = null;
+		RemoteNode node = null;
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			node = server.random_node(seed);

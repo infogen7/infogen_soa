@@ -95,8 +95,7 @@ public class InfoGen_HTTP {
 	 * @throws IOException
 	 */
 	public static String do_get(String url, Map<String, String> params) throws IOException {
-		url = concat_url_params(url, params);
-		Builder builder = new Request.Builder().url(url);
+		Builder builder = new Request.Builder().url(concat_url_params(url, params));
 		add_headers(builder);
 		Request request = builder.build();
 		Response response = client.newCall(request).execute();
@@ -109,9 +108,8 @@ public class InfoGen_HTTP {
 
 	public static Http_Callback do_async_get(String url, Map<String, String> params) {
 		Http_Callback callback = new Http_Callback();
-		url = concat_url_params(url, params);
 
-		Builder builder = new Request.Builder().url(url);
+		Builder builder = new Request.Builder().url(concat_url_params(url, params));
 		add_headers(builder);
 		Request request = builder.build();
 		client.newCall(request).enqueue(new Callback() {

@@ -17,7 +17,7 @@ import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.server.cache.InfoGen_Cache_Server;
 import com.infogen.server.cache.InfoGen_Loaded_Handle_Server;
-import com.infogen.server.model.NativeServer;
+import com.infogen.server.model.RemoteServer;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
 import com.infogen.server.zookeeper.InfoGen_ZooKeeper;
@@ -138,8 +138,8 @@ public class InfoGen {
 	 * @param server_name
 	 * @return
 	 */
-	public NativeServer get_server(String server_name) {
-		NativeServer server = CACHE_SERVER.depend_server.get(server_name);
+	public RemoteServer get_server(String server_name) {
+		RemoteServer server = CACHE_SERVER.depend_server.get(server_name);
 		if (server != null) {
 			return server;
 		}
@@ -154,8 +154,8 @@ public class InfoGen {
 	 * @param server_loaded_handle
 	 * @return
 	 */
-	public NativeServer get_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
-		NativeServer server = CACHE_SERVER.depend_server.get(server_name);
+	public RemoteServer get_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
+		RemoteServer server = CACHE_SERVER.depend_server.get(server_name);
 		if (server != null) {
 			return server;
 		}
@@ -169,8 +169,8 @@ public class InfoGen {
 	 * @param server_loaded_handle
 	 * @return
 	 */
-	private NativeServer init_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
-		NativeServer server = CACHE_SERVER.cache_server_single(server_name, server_loaded_handle);
+	private RemoteServer init_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
+		RemoteServer server = CACHE_SERVER.cache_server_single(server_name, server_loaded_handle);
 		if (server != null) {
 			return server;
 		}
