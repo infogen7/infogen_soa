@@ -19,9 +19,10 @@ import com.infogen.rpc.handler.Thrift_Async_Client_Handler;
 import com.infogen.rpc.handler.Thrift_Client_Handler;
 import com.infogen.server.cache.InfoGen_Cache_Server;
 import com.infogen.server.model.RemoteNode;
-import com.infogen.server.model.RemoteServer;
 import com.infogen.server.model.RemoteNode.NetType;
 import com.infogen.server.model.RemoteNode.RequestType;
+import com.infogen.server.model.RemoteServer;
+import com.infogen.tools.NoNodeMail;
 import com.infogen.util.BasicNameValuePair;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
@@ -241,6 +242,7 @@ public class Service {
 	private Return http_blocking(String method, Map<String, String> name_value_pair, RequestType request_type, String seed) {
 		RemoteServer server = depend_server.get(server_name);
 		if (server == null) {
+			NoNodeMail.getInstance().send("online@juxinli.com", "infogen节点错误", server_name + CODE.service_notfound.toString());
 			return Return.FAIL(CODE.service_notfound);
 		}
 		RemoteNode node = null;
@@ -249,8 +251,11 @@ public class Service {
 			try {
 				node = server.random_node(seed);
 				if (node == null) {
+
+					NoNodeMail.getInstance().send("online@juxinli.com", "infogen节点错误", server_name + CODE.node_notfound.toString());
 					return Return.FAIL(CODE.node_notfound);
 				}
+				LOGGER.info("调用"+ node.getIp() + "的"+method);
 				String http = node.http(method, name_value_pair, request_type, net_type);
 				Return create = Return.create(http);
 				if (create.get_code() == CODE.limit.code) {
@@ -284,6 +289,8 @@ public class Service {
 
 		RemoteServer server = depend_server.get(server_name);
 		if (server == null) {
+			
+			NoNodeMail.getInstance().send("online@juxinli.com","infogen节点错误", server_name + CODE.service_notfound.toString());
 			callback.add(Return.FAIL(CODE.service_notfound).toJson());
 			return callback;
 		}
@@ -292,6 +299,8 @@ public class Service {
 		for (int i = 0; i < 3; i++) {
 			node = server.random_node(seed);
 			if (node == null) {
+
+				NoNodeMail.getInstance().send("online@juxinli.com", "infogen节点错误", server_name + CODE.node_notfound.toString());
 				callback.add(Return.FAIL(CODE.node_notfound).toJson());
 				return callback;
 			}
