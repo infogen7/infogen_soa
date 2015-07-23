@@ -1,8 +1,8 @@
 package com.infogen.authc.configuration.handle.impl;
 
+import com.infogen.aop.AOP;
+import com.infogen.aop.tools.Tool_Core;
 import com.infogen.authc.configuration.handle.Authc_Properties_Handle;
-import com.larrylgq.aop.AOP;
-import com.larrylgq.aop.tools.Tool_Core;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年6月19日 下午12:47:45

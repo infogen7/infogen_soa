@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
+import com.infogen.aop.tools.Tool_Jackson;
 import com.infogen.http.callback.Http_Callback;
 import com.infogen.http.exception.HTTP_Fail_Exception;
 import com.infogen.tracking.CallChain;
@@ -14,7 +15,6 @@ import com.infogen.tracking.ThreadLocal_Tracking;
 import com.infogen.tracking.enum0.Track_Header;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
-import com.larrylgq.aop.tools.Tool_Jackson;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;

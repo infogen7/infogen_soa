@@ -8,8 +8,8 @@ import java.time.Clock;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.infogen.aop.util.map.consistent_hash.ShardInfo;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.larrylgq.aop.util.map.consistent_hash.ShardInfo;
 
 /**
  * 节点基本属性

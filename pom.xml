@@ -52,7 +52,7 @@
 		</dependency>
 		<!-- aop -->
 		<dependency>
-			<groupId>com.github.larrylgq</groupId>
+			<groupId>com.infogen</groupId>
 			<artifactId>infogen_aop</artifactId>
 			<version>V1.1.04R150723</version>
 		</dependency>

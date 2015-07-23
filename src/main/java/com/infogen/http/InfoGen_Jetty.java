@@ -26,8 +26,8 @@ import org.eclipse.jetty.webapp.JettyWebXmlConfiguration;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
 
+import com.infogen.aop.util.NativePath;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.larrylgq.aop.util.NativePath;
 
 public class InfoGen_Jetty {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_Jetty.class.getName());

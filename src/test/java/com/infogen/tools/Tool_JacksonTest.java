@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.larrylgq.aop.tools.Tool_Jackson;
+import com.infogen.aop.tools.Tool_Jackson;
 
 @RestController
 public class Tool_JacksonTest {

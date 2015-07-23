@@ -2,7 +2,7 @@ package com.infogen.cluster_limit.group_dao;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.larrylgq.aop.util.map.LRULinkedHashMap;
+import com.infogen.aop.util.map.LRULinkedHashMap;
 
 /**
  * 

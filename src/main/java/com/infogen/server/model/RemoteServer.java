@@ -10,9 +10,9 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.infogen.aop.tools.Tool_Jackson;
+import com.infogen.aop.util.map.consistent_hash.ConsistentHash;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.larrylgq.aop.tools.Tool_Jackson;
-import com.larrylgq.aop.util.map.consistent_hash.ConsistentHash;
 
 /**
  * 为本地调用扩展的服务属性
