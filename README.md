@@ -6,20 +6,15 @@ GIT库名称：infogen_zookeeper
 
 中间倒序增加
 --------------------------------------------------------
-发布  日期：TODO
-发布版本号：TODO(尚未发布)
+发布  日期：V1.1.04R150724
+发布版本号：V1.1.04R150724
 更新  内容：
-1:*接口需要验证调用者的权限
-2:服务端接口调用阀值配置
-3:客户端接口调用阀值配置
-4:压力过载时自动降级优先级不高的服务的调用
-5:服务依赖关系提取
-6:服务根据业务重要性的应用评级(用于系统自动降级)
-7:调用链日志添加当前方法调用并发数
-8:tools.jar重复加载引起的问题(一个jvm当中不允许加载一个dll两次 xxx NOT loaded java.lang.UnsatisfiedLinkError : Native Library XXX.dll already loaded in another classloader)
-9:remotefunction对象,将远程方法可以单例出来,方便方法名修改
-10:通过注解增加方法级别的session关闭
-11:服务调用大量错误报警
+1:服务端接口调用阀值配置
+2:客户端接口调用阀值配置
+3:调用链日志添加当前方法调用并发数
+4:tools.jar重复加载引起的问题(一个jvm当中不允许加载一个dll两次 xxx NOT loaded java.lang.UnsatisfiedLinkError : Native Library XXX.dll already loaded in another classloader)
+5:remotefunction对象,将远程方法可以单例出来,方便方法名修改
+6:新增infogen_hibernate项目通过注解增加方法级别的session关闭
 --------------------------------------------------------
 发布  日期：20150702
 发布版本号：V1.1.00R150702

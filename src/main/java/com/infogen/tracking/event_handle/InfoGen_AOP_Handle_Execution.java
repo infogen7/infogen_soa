@@ -2,6 +2,9 @@ package com.infogen.tracking.event_handle;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
@@ -32,7 +35,14 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		advice_method.setMethod_name(method_name);
 		advice_method.setLong_local_variable("infogen_logger_attach_start_millis");
 
-		advice_method.setInsert_before("infogen_logger_attach_start_millis =System.currentTimeMillis();");
+		Class<?>[] parameterTypes = method.getParameterTypes();
+		StringBuilder stringbuilder = new StringBuilder();
+		for (Class<?> type : parameterTypes) {
+			stringbuilder.append(type.getName()).append(" ");
+		}
+		String full_method_name = stringbuilder.toString();
+		map.put(full_method_name, new AtomicInteger(1));
+		advice_method.setInsert_before("infogen_logger_attach_start_millis =System.currentTimeMillis();com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution.insert_before_call_back(\"" + full_method_name + "\");");
 
 		String user_definition = ((Execution) annotation).user_definition();
 		if (user_definition.contains(",")) {
@@ -46,6 +56,7 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		sbd.append("\"").append(method_name).append("\"").append(",");
 		sbd.append("\"").append(user_definition).append("\"").append(",");
 		sbd.append(type.ordinal()).append(",");
+		sbd.append("\"").append(full_method_name).append("\"").append(",");
 		sbd.append("infogen_logger_attach_start_millis, System.currentTimeMillis(),$_);");
 		advice_method.setInsert_after(sbd.toString());
 
@@ -55,10 +66,17 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		sbd.append("\"").append(method_name).append("\"").append(",");
 		sbd.append("\"").append(user_definition).append("\"").append(",");
 		sbd.append(type.ordinal()).append(",");
+		sbd.append("\"").append(full_method_name).append("\"").append(",");
 		sbd.append("$e);throw $e;");
 		advice_method.setAdd_catch(sbd.toString());
 
 		return advice_method;
+	}
+
+	private static final Map<String, AtomicInteger> map = new HashMap<>();
+
+	public static void insert_before_call_back(String full_method_name) {
+		map.get(full_method_name).incrementAndGet();
 	}
 
 	public static final InfoGen_Logger_Kafka_Producer producer = InfoGen_Logger_Kafka_Producer.getInstance();
@@ -78,9 +96,9 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		return sbd;
 	}
 
-	// traceid,sequence,来源地址 ,来源ip,当前地址,当前ip,当前服务 ,当前类,当前方法,调用时间 ,调用时长,调用状态(成功/失败) ,返回数据大小,cookie等用户标识,sessionid(token),方法类型(mysql/redis/interface)
+	// traceid,sequence,来源地址 ,来源ip,当前地址,当前ip,当前服务 ,当前类,当前方法,调用时间 ,调用时长,调用状态(成功/失败) ,返回数据大小,cookie等用户标识,sessionid(token),方法类型(mysql/redis/interface),当前并发数
 	// tr00000,0 ,home.html ,xx ,send ,xx ,中控 ,2015050X ,300ms ,ok/error/auth,1.3k ,t0000,测试/京东/聚信立, a00000...
-	public static void insert_after_call_back(String class_name, String method_name, String user_definition, int type, long start_millis, long end_millis, Object return0) {
+	public static void insert_after_call_back(String class_name, String method_name, String user_definition, int type, String full_method_name, long start_millis, long end_millis, Object return0) {
 		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
 		if (callChain == null) {
 			return;
@@ -100,16 +118,19 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 			sbd.append(-1);
 		}
 		sbd.append(",");
-
+		// 用户标识
 		sbd.append(callChain.getIdentify()).append(",");
+		// 会话ID
 		String sessionid = callChain.getSessionid();
 		sbd.append(sessionid == null ? "" : sessionid).append(",");
-		sbd.append(type);
 		// 客户端类型
+		sbd.append(type).append(",");
+		// 当前并发数
+		sbd.append(map.get(full_method_name).decrementAndGet());
 		producer.send(infogen_topic_tracking, callChain.getTrackid(), sbd.toString());
 	}
 
-	public static void add_catch_call_back(String class_name, String method_name, String user_definition, int type, Throwable e) {
+	public static void add_catch_call_back(String class_name, String method_name, String user_definition, int type, String full_method_name, Throwable e) {
 		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
 
 		StringBuilder sbd = get_callchain(callChain);
@@ -119,12 +140,15 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		sbd.append(0).append(",");
 		sbd.append(0).append(",");
 		sbd.append(0).append(",");
-
+		// 用户标识
 		sbd.append(callChain.getIdentify()).append(",");
+		// 会话ID
 		String sessionid = callChain.getSessionid();
 		sbd.append(sessionid == null ? "" : sessionid).append(",");
-		sbd.append(type);
 		// 客户端类型
+		sbd.append(type).append(",");
+		// 当前并发数
+		sbd.append(map.get(full_method_name).decrementAndGet());
 		producer.send(infogen_topic_tracking, callChain.getTrackid(), sbd.toString());
 	}
 }
