@@ -3,7 +3,7 @@ package com.infogen.http.exception;
 import java.io.IOException;
 
 /**
- * 角色授权失败的错误
+ * response.isSuccessful()为false的错误
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年5月11日 上午11:44:55
  * @since 1.0
@@ -27,7 +27,6 @@ public class HTTP_Fail_Exception extends IOException {
 	public void setCode(Integer code) {
 		this.code = code;
 	}
-
 
 	public String getMessage() {
 		return message;

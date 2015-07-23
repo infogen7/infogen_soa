@@ -5,7 +5,7 @@
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
 
-	<version>V1.1.04R150723</version>
+	<version>V1.1.04R150724</version>
 
 
 	<name>infogen_soa</name>
@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>com.infogen</groupId>
 			<artifactId>infogen_aop</artifactId>
-			<version>V1.1.04R150723</version>
+			<version>V1.1.04R150724</version>
 		</dependency>
 
 		<!-- zookeeper -->
@@ -82,10 +82,11 @@
 
 
 		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.5.0-b01</version>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.5.4</version>
 		</dependency>
+
 
 
 
