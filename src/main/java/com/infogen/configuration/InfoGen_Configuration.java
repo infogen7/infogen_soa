@@ -134,7 +134,7 @@ public class InfoGen_Configuration {
 		AOP.getInstance().addClasses(com.infogen.Service.class);
 		// AOP
 		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
-		AOP.getInstance().advice();
+		
 
 		// 延迟启动 mvc 框架
 		String spring_mvc_path = infogen_properties.getProperty("infogen.http.spring_mvc.path");

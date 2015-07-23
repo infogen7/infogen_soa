@@ -14,6 +14,7 @@ import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Id;
 import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 
+import com.infogen.aop.AOP;
 import com.infogen.aop.tools.Tool_Jackson;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.server.cache.InfoGen_Cache_Server;
@@ -50,6 +51,7 @@ public class InfoGen {
 
 	// //////////////////////////////////////////初始化/////////////////////////////////////////////////////
 	public InfoGen start_and_watch(InfoGen_Configuration infogen_configuration) throws IOException, URISyntaxException {
+		AOP.getInstance().advice();
 		// 初始化缓存的服务
 		CACHE_SERVER.init(infogen_configuration, () -> {// zookeeper 因连接session过期重启后定制处理
 					register();
@@ -175,7 +177,7 @@ public class InfoGen {
 			return server;
 		}
 		LOGGER.warn("没有找到可用服务:".concat(server_name));
-		
+
 		if (server_loaded_handle != null) {
 			server_loaded_handle.handle_event(server);
 		}

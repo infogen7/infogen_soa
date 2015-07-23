@@ -29,20 +29,20 @@ public class NoNodeMail {
 	private Session session; // 邮件会话对象
 	private Properties props; // 系统属性
 	// smtp认证用户名和密码
-	private String username;
-	private String password;
-	private String from;
-	private String localIP;
+	private static String username;
+	private static String password;
+	private static String from;
+	private static String localIP;
 
 	private Multipart mp; // Multipart对象,邮件内容,标题,附件等内容均添加到其中后再生成MimeMessage对象
 
 	public NoNodeMail(String smtp, String from, String username, String password) {
 		setSmtpHost(smtp);
 		createMimeMessage();
-		this.from = from;
-		this.password = password;
-		this.username = username;
-		this.localIP = Tool_Core.getLocalIP().concat("上:");
+		NoNodeMail.from = from;
+		NoNodeMail.password = password;
+		NoNodeMail.username = username;
+		NoNodeMail.localIP = Tool_Core.getLocalIP().concat("上:");
 
 	}
 
@@ -54,14 +54,6 @@ public class NoNodeMail {
 				}
 			}
 		}
-		return instance;
-	}
-
-	public static NoNodeMail getInstance() {
-		if (instance == null) {
-			Logger_Once.error("邮件配置没有初始化");
-		}
-
 		return instance;
 	}
 
@@ -247,21 +239,24 @@ public class NoNodeMail {
 	 * @param password
 	 * @return boolean
 	 */
-	public void send(String to, String subject, String content) {
-		NoNodeMail theMail = NoNodeMail.getInstance();
-		if (theMail != null) {
-			theMail.setNeedAuth(true); // 需要验证
+	public static void send(String to, String subject, String content) {
+		if (instance == null) {
+			Logger_Once.error("邮件配置没有初始化");
+			return;
+		}
+		if (instance != null) {
+			instance.setNeedAuth(true); // 需要验证
 
-			theMail.setSubject(subject);
-			theMail.setBody(localIP.concat(content));
-			theMail.setTo(to);
-			theMail.setFrom(from);
-			theMail.setNamePass(username, password);
+			instance.setSubject(subject);
+			instance.setBody(localIP.concat(content));
+			instance.setTo(to);
+			instance.setFrom(from);
+			instance.setNamePass(username, password);
 
 			Runnable r = new Runnable() {
 				public void run() {
 					try {
-						theMail.sendOut();
+						instance.sendOut();
 					} catch (Exception ex) {
 						logger.error("写日志失败", ex);
 					}

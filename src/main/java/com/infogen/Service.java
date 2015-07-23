@@ -245,6 +245,9 @@ public class Service {
 			LOGGER.error(CODE.service_notfound.note);
 			return Return.FAIL(CODE.service_notfound);
 		}
+		if (method.startsWith("/")) {
+			method = method.substring(1);
+		}
 		RemoteNode node = null;
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
@@ -252,7 +255,7 @@ public class Service {
 				node = server.random_node(seed);
 				if (node == null) {
 					LOGGER.error(CODE.node_notfound.note);
-					NoNodeMail.getInstance().send("online@juxinli.com", "infogen节点错误", server_name + CODE.node_notfound.toString());
+					NoNodeMail.send("online@juxinli.com", "infogen节点错误", server_name + CODE.node_notfound.toString());
 					return Return.FAIL(CODE.node_notfound);
 				}
 				LOGGER.debug(new StringBuilder(node.getIp()).append("-->").append(method).toString());
@@ -293,13 +296,16 @@ public class Service {
 			callback.add(Return.FAIL(CODE.service_notfound).toJson());
 			return callback;
 		}
+		if (method.startsWith("/")) {
+			method = method.substring(1);
+		}
 		RemoteNode node = null;
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			node = server.random_node(seed);
 			if (node == null) {
 				LOGGER.error(CODE.node_notfound.note);
-				NoNodeMail.getInstance().send("online@juxinli.com", "infogen节点错误", server_name + CODE.node_notfound.toString());
+				NoNodeMail.send("online@juxinli.com", "infogen节点错误", server_name + CODE.node_notfound.toString());
 				callback.add(Return.FAIL(CODE.node_notfound).toJson());
 				return callback;
 			}
