@@ -1,16 +1,19 @@
 package com.infogen.tracking;
 
+import com.infogen.configuration.InfoGen_Configuration;
+
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年6月8日 下午12:24:19
  * @since 1.0
  * @version 1.0
  */
 public class CallChain {
-	// cookie等用户标识,*sessionid(token),*客户端类型 ,traceid,sequence,来源地址 ,来源ip,当前地址,当前ip,当前服务 ,调用时间 ,调用时长,调用状态 ,数据大小
-	// a00000... ,t0000,测试/京东/聚信立,tr00000,0 ,home.html ,xx ,send ,xx ,中控 ,2015050X ,300ms ,ok/error/auth,1.3k
+	// 初始化配置时赋值
+	// traceid,sequence,来源地址 ,来源ip,当前地址,当前ip,当前服务 ,当前类,当前方法,调用时间 ,调用时长,调用状态(成功/失败) ,返回数据大小,cookie等用户标识,sessionid(token),方法类型(mysql/redis/interface),当前并发数
+	// tr00000,0 ,home.html ,xx ,send ,xx ,中控 ,2015050X ,300ms ,ok/error/auth,1.3k ,t0000,测试/京东/聚信立, a00000...
 	private String trackid;
 	private String identify;// cookie等用户标识
-	private String sessionid = "";// session id
+	private String sessionid = "";// session id(token等会话标识)
 	private Integer sequence;
 	private String referer = "";
 
@@ -18,6 +21,24 @@ public class CallChain {
 	private String target;
 	private String target_ip;
 	private String target_server;
+
+	public CallChain() {
+		// target ip
+		setTarget_ip(InfoGen_Configuration.register_node.getIp());
+		// target server 当前服务
+		setTarget_server(InfoGen_Configuration.register_server.getName());
+	}
+
+	public CallChain(String trackid, String identify, String sessionid, Integer sequence, String referer, String referer_ip, String target) {
+		this();
+		this.trackid = trackid;
+		this.identify = identify;
+		this.sessionid = sessionid;
+		this.sequence = sequence;
+		this.referer = referer;
+		this.referer_ip = referer_ip;
+		this.target = target;
+	}
 
 	public String getIdentify() {
 		return identify;
