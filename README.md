@@ -15,7 +15,7 @@ GIT库名称：infogen_zookeeper
 4:tools.jar重复加载引起的问题(一个jvm当中不允许加载一个dll两次 xxx NOT loaded java.lang.UnsatisfiedLinkError : Native Library XXX.dll already loaded in another classloader)
 5:remotefunction对象,将远程方法可以单例出来,方便方法名修改
 6:新增infogen_hibernate项目通过注解增加方法级别的session关闭
-7:tomcat下spring已经加载过的类,注入属性后不可用
+7:tomcat下spring已经加载过的类,注入属性后不可用的问题
 --------------------------------------------------------
 发布  日期：20150702
 发布版本号：V1.1.00R150702
