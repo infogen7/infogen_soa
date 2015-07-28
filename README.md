@@ -16,6 +16,7 @@ GIT库名称：infogen_zookeeper
 5:remotefunction对象,将远程方法可以单例出来,方便方法名修改
 6:新增infogen_hibernate项目通过注解增加方法级别的session关闭
 7:tomcat下spring已经加载过的类,注入属性后不可用的问题
+8:NativeNode更名为RemoteNode/NativeServer更名为RemoteServer
 --------------------------------------------------------
 发布  日期：20150702
 发布版本号：V1.1.00R150702
