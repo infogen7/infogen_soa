@@ -64,6 +64,10 @@ public class InfoGen_ZooKeeper {
 		return CONTEXT.concat(server_name).concat("/").concat(node_name);
 	}
 
+	public Boolean available() {
+		return (zookeeper != null);
+	}
+
 	/**
 	 * 在服务启动时调用
 	 * 
@@ -278,7 +282,7 @@ public class InfoGen_ZooKeeper {
 					watcher_children(path);
 				}
 				// EventType 为 None 的时候不需要重新监听
-				});
+			});
 			LOGGER.info("启动子节点监听成功:".concat(path));
 		} catch (Exception e) {
 			rewatcher_children_paths.add(path);

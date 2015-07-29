@@ -50,14 +50,22 @@ public class InfoGen {
 	private InfoGen_Cache_Server CACHE_SERVER = InfoGen_Cache_Server.getInstance();
 
 	// //////////////////////////////////////////初始化/////////////////////////////////////////////////////
+	private Boolean start_and_watch = false;
+
 	public InfoGen start_and_watch(InfoGen_Configuration infogen_configuration) throws IOException, URISyntaxException {
+		if (start_and_watch) {
+			LOGGER.warn("InfoGen 已经启动并开启监听服务");
+			return this;
+		}
+		start_and_watch = true;
+
 		AOP.getInstance().advice();
 		// 初始化缓存的服务
 		CACHE_SERVER.init(infogen_configuration, () -> {// zookeeper 因连接session过期重启后定制处理
-					register();
-					// 这期间漏掉的Watch消息回调无法恢复 重新加载所有的服务和配置
-				CACHE_SERVER.reload_all_server();
-			});
+			register();
+			// 这期间漏掉的Watch消息回调无法恢复 重新加载所有的服务和配置
+			CACHE_SERVER.reload_all_server();
+		});
 		return this;
 	}
 

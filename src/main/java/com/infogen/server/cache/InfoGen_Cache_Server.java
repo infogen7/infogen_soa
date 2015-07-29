@@ -118,6 +118,10 @@ public class InfoGen_Cache_Server {
 	}
 
 	private RemoteServer cache_server(String server_name) {
+		if (!ZK.available()) {
+			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
+			return null;
+		}
 		try {
 			String server_path = InfoGen_ZooKeeper.path(server_name);
 			String server_data = ZK.get_data(server_path);
@@ -176,6 +180,11 @@ public class InfoGen_Cache_Server {
 	}
 
 	private void reload_server(RemoteServer native_server) {
+		if (!ZK.available()) {
+			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
+			return;
+		}
+
 		String server_name = native_server.getName();
 		String server_path = InfoGen_ZooKeeper.path(server_name);
 		List<String> get_childrens = ZK.get_childrens(server_path);
