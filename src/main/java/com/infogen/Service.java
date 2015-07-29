@@ -30,9 +30,9 @@ import com.infogen.util.Return;
 /**
  * 调用服务的封装 实现调度,错误重试,同步异步处理等
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年10月30日 下午1:48:19
+ * @author larry/larrylv@outlook.com/创建时间 2015年7月29日 下午5:34:17
+ * @since 1.0
+ * @version 1.0
  */
 public class Service {
 	private static final Logger LOGGER = Logger.getLogger(Service.class.getName());
