@@ -36,6 +36,7 @@ public class InfoGen_HTTP {
 	public static Integer socket_timeout = 30_000;// 数据传输时间
 	public static Integer connect_timeout = 3_000;// 连接时间
 	private static final OkHttpClient client = new OkHttpClient();
+
 	static {
 		client.setConnectTimeout(connect_timeout, TimeUnit.MILLISECONDS);
 		client.setReadTimeout(socket_timeout, TimeUnit.MILLISECONDS);
@@ -115,6 +116,7 @@ public class InfoGen_HTTP {
 		client.newCall(request).enqueue(new Callback() {
 			@Override
 			public void onFailure(Request request, IOException e) {
+				LOGGER.error("do_async_get 报错:".concat(url), e);
 				callback.add(Return.FAIL(CODE.error, e).toJson());
 			}
 
@@ -123,6 +125,7 @@ public class InfoGen_HTTP {
 				if (response.isSuccessful()) {
 					callback.add(response.body().string());
 				} else {
+					LOGGER.error("do_async_get 错误-返回非2xx:".concat(url));
 					callback.add(Return.FAIL(CODE.error).toJson());
 				}
 			}
@@ -190,6 +193,7 @@ public class InfoGen_HTTP {
 		client.newCall(request).enqueue(new Callback() {
 			@Override
 			public void onFailure(Request request, IOException e) {
+				LOGGER.error("do_async_post_bytype 报错:".concat(url), e);
 				callback.add(Return.FAIL(CODE.error, e).toJson());
 			}
 
@@ -198,6 +202,7 @@ public class InfoGen_HTTP {
 				if (response.isSuccessful()) {
 					callback.add(response.body().string());
 				} else {
+					LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(url));
 					callback.add(Return.FAIL(CODE.error).toJson());
 				}
 			}
