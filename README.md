@@ -17,6 +17,7 @@ GIT库名称：infogen_zookeeper
 6:新增infogen_hibernate项目通过注解增加方法级别的session关闭
 7:tomcat下spring已经加载过的类,注入属性后不可用的问题
 8:NativeNode更名为RemoteNode/NativeServer更名为RemoteServer
+9:infogen的rest调用方式调用端返回值改成Return继承自己实现的JSONObject和JSONArray
 --------------------------------------------------------
 发布  日期：20150702
 发布版本号：V1.1.00R150702
