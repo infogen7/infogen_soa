@@ -40,9 +40,9 @@ public class InfoGen_HTTP_Cluster_Limit_Handle {
 
 		String group_by = request.getParameter(group);
 		Long limit = limit_Model.getLimits().getOrDefault(group_by, Long.MAX_VALUE);
-		Long increment_and_get = group_dao.increment_and_get(group_by, 1);
+		Long increment_and_get = group_dao.increment_and_get(group_by, limit_Model.getTimeslice());
 		if (increment_and_get > limit) {
-			LOGGER.info("用户调用次数超过限制:".concat(requestURI).concat("-").concat(limit.toString()));
+			LOGGER.info("用户调用次数超过限制:".concat(requestURI).concat("-").concat(limit.toString()).concat("-").concat(increment_and_get.toString()));
 			response.getWriter().write(Return.FAIL(CODE.limit_by_group).toJson());
 			return false;
 		}
