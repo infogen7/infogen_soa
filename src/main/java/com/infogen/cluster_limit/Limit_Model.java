@@ -11,7 +11,24 @@ import java.util.Map;
 public class Limit_Model {
 	public Map<String, Long> limits = new HashMap<>();// key:分组值 value:当前分组的限制
 	private String group;// 分组名称
-	private Long default_limit = Long.MAX_VALUE;
+
+	protected Limit_Model() {
+		super();
+	}
+
+	public Limit_Model(String group) {
+		super();
+		this.group = group;
+	}
+
+	public static Limit_Model create(String group) {
+		return new Limit_Model(group);
+	}
+
+	public Limit_Model put(String key, Long limit) {
+		limits.put(key, limit);
+		return this;
+	}
 
 	public Map<String, Long> getLimits() {
 		return limits;
@@ -23,14 +40,6 @@ public class Limit_Model {
 
 	public void setGroup(String group) {
 		this.group = group;
-	}
-
-	public Long getDefault_limit() {
-		return default_limit;
-	}
-
-	public void setDefault_limit(Long default_limit) {
-		this.default_limit = default_limit;
 	}
 
 }

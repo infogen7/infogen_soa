@@ -23,7 +23,7 @@ import com.infogen.util.Return;
 public class InfoGen_HTTP_Cluster_Limit_Handle {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP_Cluster_Limit_Handle.class.getName());
 
-	// 初始化配置时赋值
+	// 初始化配置时赋值 <requestURI,<key-[value-limit]>>
 	public static final Map<String, Limit_Model> limit_models = new HashMap<>();
 	public static Group_DAO group_dao = new Default_Group_DAO();
 
@@ -39,8 +39,8 @@ public class InfoGen_HTTP_Cluster_Limit_Handle {
 		}
 
 		String group_by = request.getParameter(group);
-		Long limit = limit_Model.getLimits().getOrDefault(group_by, limit_Model.getDefault_limit());
-		Long increment_and_get = group_dao.increment_and_get(group_by);
+		Long limit = limit_Model.getLimits().getOrDefault(group_by, Long.MAX_VALUE);
+		Long increment_and_get = group_dao.increment_and_get(group_by, 1);
 		if (increment_and_get > limit) {
 			LOGGER.info("用户调用次数超过限制:".concat(requestURI).concat("-").concat(limit.toString()));
 			response.getWriter().write(Return.FAIL(CODE.limit_by_group).toJson());

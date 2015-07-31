@@ -10,8 +10,5 @@ import com.infogen.cluster_limit.Limit_Model;
  * @version 1.0
  */
 public abstract class Configuration_Sync_DAO {
-	public abstract Boolean check();
-
-	// 方法名->group key->group value->limit
-	public abstract Map<String, Limit_Model> load();
+	public abstract Map<String, Limit_Model> update();
 }

@@ -1,8 +1,10 @@
 package com.infogen.cluster_limit.group_dao;
 
+import java.time.Clock;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.infogen.aop.util.map.LRULinkedHashMap;
+import com.infogen.configuration.InfoGen_Configuration;
 
 /**
  * 
@@ -19,8 +21,10 @@ public class Default_Group_DAO extends Group_DAO {
 	 * @see com.infogen.limit.dao.Group_DAO#increment_and_get(java.lang.String)
 	 */
 	@Override
-	public Long increment_and_get(String group_by) {
-		AtomicLong atomic_long = map.get(group_by);
+	public Long increment_and_get(String group_by, Integer timeslice) {
+		long millis = Clock.system(InfoGen_Configuration.zoneid).millis();
+		timeslice = timeslice * 1000;
+		AtomicLong atomic_long = map.get(new StringBuilder(group_by).append("_").append(millis - (millis % timeslice)));
 		if (atomic_long == null) {
 			atomic_long = new AtomicLong(0);
 			map.put(group_by, atomic_long);

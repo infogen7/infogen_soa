@@ -17,12 +17,20 @@ import com.infogen.aop.tools.Tool_Jackson;
  * @since 1.0
  * @version 1.0
  */
-public class Return extends HashMap<String, Object> {
+public class Return extends JSONObject {
 	private static final long serialVersionUID = 2203513787220720192L;
 	private static final Logger LOGGER = Logger.getLogger(Return.class.getName());
 
 	public enum Return_Fields {
 		success, code, note
+	}
+
+	public static Return create() {
+		return new Return();
+	}
+
+	public static Return create(String key, Object value) {
+		return new Return().add(key, value);
 	}
 
 	public static Return create(String json) {
@@ -88,17 +96,6 @@ public class Return extends HashMap<String, Object> {
 		return jo;
 	}
 
-	@Override
-	public Return put(String key, Object value) {
-		super.put(key, value);
-		return this;
-	}
-
-	public Return add(String key, Object value) {
-		super.put(key, value);
-		return this;
-	}
-
 	public Boolean is_success() {
 		return (Boolean) this.getOrDefault(Return_Fields.success.name(), false);
 	}
@@ -115,6 +112,17 @@ public class Return extends HashMap<String, Object> {
 		return (String) this.getOrDefault(Return_Fields.note.name(), "");
 	}
 
+	@Override
+	public Return put(String key, Object value) {
+		super.put(key, value);
+		return this;
+	}
+
+	public Return add(String key, Object value) {
+		super.put(key, value);
+		return this;
+	}
+
 	public String toJson() {
 		try {
 			return Tool_Jackson.toJson(this);
@@ -123,5 +131,4 @@ public class Return extends HashMap<String, Object> {
 			return Tool_Jackson.toJson(Return.FAIL(CODE.generate_return_error));
 		}
 	}
-
 }

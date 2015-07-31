@@ -6,6 +6,13 @@ package com.infogen.cluster_limit.group_dao;
  * @version 1.0
  */
 public abstract class Group_DAO {
-	// 如DefaultSessionManager在创建完session后会调用该方法；如保存到关系数据库/文件系统/NoSQL数据库；即可以实现会话的持久化；返回会话ID；主要此处返回的ID.equals(session.getId())；
-	public abstract Long increment_and_get(String group_by);
+	/**
+	 * 如DefaultSessionManager在创建完session后会调用该方法；如保存到关系数据库/文件系统/NoSQL数据库；即可以实现会话的持久化；返回会话ID；主要此处返回的ID.equals(session.getId())；
+	 * 
+	 * @param group_by
+	 * @param timeslice
+	 *            滑动时间分片大小 单位为:秒
+	 * @return
+	 */
+	public abstract Long increment_and_get(String group_by, Integer timeslice);
 }

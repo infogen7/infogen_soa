@@ -1,6 +1,10 @@
 package com.infogen.cluster_limit.group_dao;
 
+import java.time.Clock;
+
 import org.apache.log4j.Logger;
+
+import com.infogen.configuration.InfoGen_Configuration;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -40,12 +44,16 @@ public class Redis_Group_DAO extends Group_DAO {
 	private Integer expire = 60 * 60 * 12;
 
 	@Override
-	public Long increment_and_get(String group_by) {
+	public Long increment_and_get(String group_by, Integer timeslice) {
 		Jedis take = take();
 		Long incr;
 		try {
+			long millis = Clock.system(InfoGen_Configuration.zoneid).millis();
+			timeslice = timeslice * 1000;
+			group_by = new StringBuilder(group_by).append("_").append(millis - (millis % timeslice)).toString();
 			incr = take.incr(group_by);
 			take.expire(group_by, expire);
+			System.out.println(group_by + "-----------------------");
 		} finally {
 			returnResource(take);
 		}

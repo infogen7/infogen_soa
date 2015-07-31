@@ -46,8 +46,8 @@ public class InfoGen_Cluster_Limit {
 		Runnable group_sync_dao_runable = new Runnable() {
 			@Override
 			public void run() {
-				if (group_sync_dao.check()) {
-					Map<String, Limit_Model> load = group_sync_dao.load();
+				Map<String, Limit_Model> load = group_sync_dao.update();
+				if (load != null) {
 					InfoGen_HTTP_Cluster_Limit_Handle.limit_models.putAll(load);
 				}
 			}

@@ -5,7 +5,7 @@
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
 
-	<version>V1.1.04R150727</version>
+	<version>V1.1.04R150731</version>
 
 
 	<name>infogen_soa</name>
@@ -38,6 +38,12 @@
 		<sonar.language>java</sonar.language>
 	</properties>
 	<dependencies>
+		<!-- aop -->
+		<dependency>
+			<groupId>com.infogen</groupId>
+			<artifactId>infogen_aop</artifactId>
+			<version>V1.1.04R150731</version>
+		</dependency>
 		<!-- core -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -49,12 +55,6 @@
 			<artifactId>testng</artifactId>
 			<version>6.9.6</version>
 			<scope>test</scope>
-		</dependency>
-		<!-- aop -->
-		<dependency>
-			<groupId>com.infogen</groupId>
-			<artifactId>infogen_aop</artifactId>
-			<version>V1.1.04R150727</version>
 		</dependency>
 
 		<!-- zookeeper -->
