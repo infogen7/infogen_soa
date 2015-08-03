@@ -13,14 +13,14 @@ import com.infogen.configuration.InfoGen_Configuration;
 /**
  * 服务基本属性
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年12月29日 下午4:09:16
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:28:11
+ * @since 1.0
+ * @version 1.0
  */
 public abstract class AbstractServer {
 	protected String path;
 	protected String name;
-	protected String protocol = "rest";
+	protected String protocol = "";
 	protected String describe = "";
 	protected Integer min_nodes = 1;
 

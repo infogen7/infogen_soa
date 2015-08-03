@@ -10,12 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.cluster_limit.group_dao.Default_Group_DAO;
-import com.infogen.cluster_limit.group_dao.Group_DAO;
+import com.infogen.cluster_limit.counter_dao.Counter_DAO;
+import com.infogen.cluster_limit.counter_dao.Local_Counter_DAO;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
 
 /**
+ * HTTP协议的滑动时间片限流实现
  * 
  * @author larry
  * @email larry.lv.word@gmail.com
@@ -25,7 +26,7 @@ public class InfoGen_HTTP_Cluster_Limit_Handle {
 
 	// 初始化配置时赋值 <requestURI,<key-[value-limit]>>
 	public static final Map<String, Limit_Model> limit_models = new HashMap<>();
-	public static Group_DAO group_dao = new Default_Group_DAO();
+	public static Counter_DAO counter_dao = new Local_Counter_DAO();
 
 	public Boolean doFilter(String requestURI, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		Limit_Model limit_Model = limit_models.get(requestURI);
@@ -40,7 +41,7 @@ public class InfoGen_HTTP_Cluster_Limit_Handle {
 
 		String group_by = request.getParameter(group);
 		Long limit = limit_Model.getLimits().getOrDefault(group_by, Long.MAX_VALUE);
-		Long increment_and_get = group_dao.increment_and_get(group_by, limit_Model.getTimeslice());
+		Long increment_and_get = counter_dao.increment_and_get(group_by, limit_Model.getTimeslice());
 		if (increment_and_get > limit) {
 			LOGGER.info("用户调用次数超过限制:".concat(requestURI).concat("-").concat(limit.toString()).concat("-").concat(increment_and_get.toString()));
 			response.getWriter().write(Return.FAIL(CODE.limit_by_group).toJson());

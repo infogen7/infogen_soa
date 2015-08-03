@@ -18,9 +18,9 @@ import com.infogen.logger.Logger_Once;
 /**
  * 启动kafka生产者
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2015年1月12日 上午10:00:46
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:17:34
+ * @since 1.0
+ * @version 1.0
  */
 public class InfoGen_Logger_Kafka_Producer {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_Jetty.class.getName());

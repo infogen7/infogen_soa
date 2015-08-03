@@ -1,7 +1,7 @@
 package com.infogen.rpc.exception;
 
 /**
- * 认证失败的异常
+ * rpc调用中的异常接口
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年5月11日 上午11:43:15
  * @since 1.0

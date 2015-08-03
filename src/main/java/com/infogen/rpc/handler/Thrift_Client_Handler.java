@@ -4,7 +4,7 @@ import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TProtocol;
 
 /**
- * thrift消息处理器
+ * 用于自定义thrift同步消息处理的接口
  * 
  * @author larry
  * @email larrylv@outlook.com

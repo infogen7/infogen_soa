@@ -1,17 +1,14 @@
-/**
- * 
- */
 package com.infogen.self_description.component;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * 返回值的属性描述
+ * 方法返回值描述
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年12月9日 下午4:07:08
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:22:21
+ * @since 1.0
+ * @version 1.0
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class OutParameter {

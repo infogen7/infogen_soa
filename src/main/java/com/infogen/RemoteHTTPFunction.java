@@ -6,6 +6,8 @@ import com.infogen.http.callback.Http_Callback;
 import com.infogen.util.Return;
 
 /**
+ * http协议下远程方法的映射
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年7月22日 下午5:28:57
  * @since 1.0
  * @version 1.0

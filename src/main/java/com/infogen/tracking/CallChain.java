@@ -3,6 +3,8 @@ package com.infogen.tracking;
 import com.infogen.configuration.InfoGen_Configuration;
 
 /**
+ * 调用链记录类
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年6月8日 下午12:24:19
  * @since 1.0
  * @version 1.0

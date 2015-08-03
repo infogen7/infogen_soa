@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import com.infogen.cluster_limit.InfoGen_HTTP_Cluster_Limit_Handle;
 
 /**
- * 
+ * HTTP方式的滑动时间片限流的过滤器
  * @author larry/larrylv@outlook.com/创建时间 2015年3月27日 下午4:09:09
  * @since 1.0
  * @version 1.0

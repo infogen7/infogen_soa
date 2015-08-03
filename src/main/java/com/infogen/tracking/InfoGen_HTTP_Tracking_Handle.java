@@ -11,7 +11,7 @@ import com.infogen.tools.Tool_Context;
 import com.infogen.tracking.enum0.Track_Header;
 
 /**
- * Track的工具类,可以获取存放在ThreadLocal中的对象
+ * HTTP协议下记录调用链的处理类
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年5月4日 下午2:11:06
  * @since 1.0

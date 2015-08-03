@@ -22,6 +22,7 @@ import com.infogen.util.CODE;
 import com.infogen.util.Return;
 
 /**
+ * HTTP方式的接口并发数限流的过滤器
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年3月27日 下午4:09:09
  * @since 1.0

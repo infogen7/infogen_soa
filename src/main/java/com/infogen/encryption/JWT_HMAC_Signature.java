@@ -13,6 +13,8 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 /**
+ * HMAC方式的签名和验签
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年6月23日 下午5:13:24
  * @since 1.0
  * @version 1.0

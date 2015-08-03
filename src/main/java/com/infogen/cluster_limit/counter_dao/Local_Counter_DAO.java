@@ -1,4 +1,4 @@
-package com.infogen.cluster_limit.group_dao;
+package com.infogen.cluster_limit.counter_dao;
 
 import java.time.Clock;
 import java.util.concurrent.atomic.AtomicLong;
@@ -7,12 +7,13 @@ import com.infogen.aop.util.map.LRULinkedHashMap;
 import com.infogen.configuration.InfoGen_Configuration;
 
 /**
+ * 本地限流计数器实现
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年5月13日 下午5:06:34
  * @since 1.0
  * @version 1.0
  */
-public class Default_Group_DAO extends Group_DAO {
+public class Local_Counter_DAO extends Counter_DAO {
 	private LRULinkedHashMap<String, AtomicLong> map = new LRULinkedHashMap<>(500000);
 
 	/*

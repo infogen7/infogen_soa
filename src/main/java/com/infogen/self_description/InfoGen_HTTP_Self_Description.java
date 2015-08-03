@@ -24,7 +24,7 @@ import com.infogen.self_description.component.InParameter;
 import com.infogen.self_description.component.OutParameter;
 
 /**
- * 启动时扫描自描述配置
+ * HTTP协议中启动时扫描自描述配置
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年5月21日 下午5:20:06
  * @since 1.0

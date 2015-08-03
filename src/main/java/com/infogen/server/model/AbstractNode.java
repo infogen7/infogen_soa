@@ -12,14 +12,14 @@ import com.infogen.aop.util.map.consistent_hash.ShardInfo;
 import com.infogen.configuration.InfoGen_Configuration;
 
 /**
- * 节点基本属性
+ * 节点基本属性 继承了用于一致性hash算法的接口
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年12月29日 下午4:11:30
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:27:18
+ * @since 1.0
+ * @version 1.0
  */
 public abstract class AbstractNode extends ShardInfo {
-	
+
 	protected String path;
 
 	protected String server_room = "";// sh@youfu
@@ -54,8 +54,6 @@ public abstract class AbstractNode extends ShardInfo {
 	public void setServer_room(String server_room) {
 		this.server_room = server_room;
 	}
-
-
 
 	public String getHost() {
 		return host;

@@ -8,7 +8,7 @@ import org.apache.thrift.transport.TNonblockingSocket;
 import com.infogen.rpc.callback.RPC_Callback;
 
 /**
- * thrift消息处理器
+ * 用于自定义thrift异步消息处理的接口
  * 
  * @author larry
  * @email larrylv@outlook.com

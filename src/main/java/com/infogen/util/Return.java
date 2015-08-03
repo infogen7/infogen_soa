@@ -11,7 +11,7 @@ import com.infogen.aop.tools.Tool_Core;
 import com.infogen.aop.tools.Tool_Jackson;
 
 /**
- * 接口返回值封装
+ * HTTP协议返回值封装
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年5月19日 下午2:50:30
  * @since 1.0

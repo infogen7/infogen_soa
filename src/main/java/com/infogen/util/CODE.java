@@ -1,7 +1,7 @@
 package com.infogen.util;
 
 /**
- * 返回值错误码
+ * infogen框架的返回值错误码
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年4月2日 下午12:34:23
  * @since 1.0

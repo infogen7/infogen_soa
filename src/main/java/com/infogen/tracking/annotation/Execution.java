@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 import com.infogen.tracking.enum0.Function_Type;
 
 /**
- * 统计方法执行时间的注解
+ * 统计方法执行时间和调用链记录的注解
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年4月2日 下午12:06:40
  * @since 1.0

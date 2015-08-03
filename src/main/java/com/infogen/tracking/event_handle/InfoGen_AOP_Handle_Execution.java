@@ -19,7 +19,7 @@ import com.infogen.tracking.enum0.Function_Type;
 import com.infogen.util.Return;
 
 /**
- * 统计方法执行时间的处理器
+ * 统计方法执行时间和调用链记录的处理器
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年2月27日 下午6:11:09
  * @since 1.0

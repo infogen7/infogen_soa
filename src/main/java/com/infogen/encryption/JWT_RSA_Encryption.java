@@ -20,12 +20,13 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
 
 /**
+ * RSA方式的加密和解密
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年6月23日 下午5:41:51
  * @since 1.0
  * @version 1.0
  */
 public class JWT_RSA_Encryption {
-
 
 	public String encryption(byte[] publicKeyBytes, JWTClaimsSet claimsSet) throws NoSuchAlgorithmException, InvalidKeySpecException, JOSEException {
 		X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);

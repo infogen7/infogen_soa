@@ -21,6 +21,8 @@ import com.infogen.authc.configuration.handle.impl.Authc_Properties_Handle_Metho
 import com.infogen.authc.subject.dao.Subject_DAO;
 
 /**
+ * 读取安全框架ini配置中的各个部分并分给对应的解析器
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年6月19日 上午11:49:48
  * @since 1.0
  * @version 1.0
@@ -56,8 +58,8 @@ public class InfoGen_Authc {
 	}
 
 	private void load_configuration(String authc_path) throws IOException {
-		try (InputStream resourceAsStream = Files.newInputStream(NativePath.get(authc_path), StandardOpenOption.READ);//
-				InputStreamReader inputstreamreader = new InputStreamReader(resourceAsStream, charset);//
+		try (InputStream resourceAsStream = Files.newInputStream(NativePath.get(authc_path), StandardOpenOption.READ); //
+				InputStreamReader inputstreamreader = new InputStreamReader(resourceAsStream, charset); //
 				BufferedReader reader = new BufferedReader(inputstreamreader)) {
 			Authc_Properties_Handle properties_current = null;
 			String line;

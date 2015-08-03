@@ -17,9 +17,9 @@ import com.infogen.configuration.InfoGen_Configuration;
 /**
  * 启动thrift服务
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年10月30日 下午12:22:45
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:20:53
+ * @since 1.0
+ * @version 1.0
  */
 public class InfoGen_Thrift {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_Thrift.class.getName());

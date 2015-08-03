@@ -27,11 +27,11 @@ import com.infogen.server.zookeeper.InfoGen_Zookeeper_Handle_Expired;
 import com.infogen.util.Scheduled;
 
 /**
- * 加载和缓存服务及配置数据
+ * 加载和缓存服务
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年12月1日 下午4:37:30
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:25:01
+ * @since 1.0
+ * @version 1.0
  */
 public class InfoGen_Cache_Server {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_Cache_Server.class.getName());

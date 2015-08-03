@@ -10,6 +10,7 @@ import com.infogen.aop.tools.Tool_Core;
 import com.infogen.authc.configuration.handle.Authc_Properties_Handle;
 
 /**
+ * 解析安全框架ini配置中[authc]方法权限配置的部分
  * @author larry/larrylv@outlook.com/创建时间 2015年6月19日 下午12:48:48
  * @since 1.0
  * @version 1.0

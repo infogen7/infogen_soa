@@ -1,4 +1,4 @@
-package com.infogen.cluster_limit.group_dao;
+package com.infogen.cluster_limit.counter_dao;
 
 import java.time.Clock;
 
@@ -10,16 +10,17 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 /**
+ * 基于redis的限流计数器实现
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年5月13日 下午5:06:34
  * @since 1.0
  * @version 1.0
  */
-public class Redis_Group_DAO extends Group_DAO {
-	private static final Logger LOGGER = Logger.getLogger(Redis_Group_DAO.class.getName());
+public class Redis_Counter_DAO extends Counter_DAO {
+	private static final Logger LOGGER = Logger.getLogger(Redis_Counter_DAO.class.getName());
 	private JedisPool pool = null;
 
-	public Redis_Group_DAO(JedisPool pool) {
+	public Redis_Counter_DAO(JedisPool pool) {
 		super();
 		this.pool = pool;
 	}

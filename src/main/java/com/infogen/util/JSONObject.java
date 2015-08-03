@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.infogen.aop.tools.Tool_Jackson;
 
 /**
+ * HTTP协议调用端json处理类
  * @author larry/larrylv@outlook.com/创建时间 2015年7月31日 上午9:44:55
  * @since 1.0
  * @version 1.0

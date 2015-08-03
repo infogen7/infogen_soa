@@ -11,9 +11,9 @@ import org.apache.log4j.Logger;
 /**
  * rpc异步调用的返回值
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年12月15日 下午3:38:49
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:18:34
+ * @since 1.0
+ * @version 1.0
  */
 public class RPC_Callback<T> {
 	private static final Logger LOGGER = Logger.getLogger(RPC_Callback.class.getName());

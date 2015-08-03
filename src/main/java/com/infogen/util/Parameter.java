@@ -3,6 +3,8 @@ package com.infogen.util;
 import java.util.HashMap;
 
 /**
+ * HTTP协议调用端输入参数类
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年6月12日 下午3:56:17
  * @since 1.0
  * @version 1.0

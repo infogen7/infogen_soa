@@ -19,6 +19,8 @@ import org.apache.log4j.Logger;
 import com.infogen.self_description.component.Function;
 
 /**
+ * 扫描本地方法自描述的接口
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年6月19日 下午4:39:00
  * @since 1.0
  * @version 1.0

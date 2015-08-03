@@ -9,11 +9,11 @@ import java.util.Map;
 import com.infogen.self_description.component.Function;
 
 /**
- * 为注册服务扩展的服务属性
+ * 写入注册中心的服务扩展属性
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年10月28日 上午10:03:46
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:29:20
+ * @since 1.0
+ * @version 1.0
  */
 public class RegisterServer extends AbstractServer {
 	private Map<String, Function> http_functions = new HashMap<>();

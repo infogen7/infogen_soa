@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import com.infogen.tracking.InfoGen_HTTP_Tracking_Handle;
 
 /**
+ * HTTP方式的调用链日志框架的过滤器
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年3月27日 下午4:09:09
  * @since 1.0

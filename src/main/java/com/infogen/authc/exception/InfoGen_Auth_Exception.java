@@ -3,7 +3,7 @@ package com.infogen.authc.exception;
 import java.io.IOException;
 
 /**
- * 认证失败的异常
+ * 认证相关的异常
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年5月11日 上午11:43:15
  * @since 1.0

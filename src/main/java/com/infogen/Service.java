@@ -22,13 +22,12 @@ import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteNode.NetType;
 import com.infogen.server.model.RemoteNode.RequestType;
 import com.infogen.server.model.RemoteServer;
-import com.infogen.tools.NoNodeMail;
 import com.infogen.util.BasicNameValuePair;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
 
 /**
- * 调用服务的封装 实现调度,错误重试,同步异步处理等
+ * http协议下远程服务的映射,实现调度,错误重试,同步异步处理等
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年7月29日 下午5:34:17
  * @since 1.0
@@ -255,7 +254,6 @@ public class Service {
 				node = server.random_node(seed);
 				if (node == null) {
 					LOGGER.error(CODE.node_notfound.note);
-					NoNodeMail.send("online@juxinli.com", "infogen节点错误", server_name + CODE.node_notfound.toString());
 					return Return.FAIL(CODE.node_notfound);
 				}
 				LOGGER.debug(new StringBuilder(node.getIp()).append("-->").append(method).toString());
@@ -305,7 +303,6 @@ public class Service {
 			node = server.random_node(seed);
 			if (node == null) {
 				LOGGER.error(CODE.node_notfound.note);
-				NoNodeMail.send("online@juxinli.com", "infogen节点错误", server_name + CODE.node_notfound.toString());
 				callback.add(Return.FAIL(CODE.node_notfound).toJson());
 				return callback;
 			}

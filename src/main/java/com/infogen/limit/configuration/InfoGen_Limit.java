@@ -19,6 +19,8 @@ import com.infogen.limit.configuration.handle.impl.Limit_Properties_Handle_Limit
 import com.infogen.limit.configuration.handle.impl.Limit_Properties_Handle_Main;
 
 /**
+ * 初始化并读取和解析ini配置文件
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年6月19日 上午11:49:48
  * @since 1.0
  * @version 1.0
@@ -53,11 +55,9 @@ public class InfoGen_Limit {
 		LOGGER.info("初始化权限配置");
 	}
 
-
-
 	private void load_configuration(String limit_path) throws IOException {
-		try (InputStream resourceAsStream = Files.newInputStream(NativePath.get(limit_path), StandardOpenOption.READ);//
-				InputStreamReader inputstreamreader = new InputStreamReader(resourceAsStream, charset);//
+		try (InputStream resourceAsStream = Files.newInputStream(NativePath.get(limit_path), StandardOpenOption.READ); //
+				InputStreamReader inputstreamreader = new InputStreamReader(resourceAsStream, charset); //
 				BufferedReader reader = new BufferedReader(inputstreamreader)) {
 			Authc_Properties_Handle properties_current = null;
 			String line;

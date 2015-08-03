@@ -9,6 +9,8 @@ import com.infogen.authc.exception.impl.Roles_Fail_Exception;
 import com.infogen.authc.exception.impl.Session_Expiration_Exception;
 
 /**
+ * 一个安全认证实例
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年5月13日 下午3:14:24
  * @since 1.0
  * @version 1.0

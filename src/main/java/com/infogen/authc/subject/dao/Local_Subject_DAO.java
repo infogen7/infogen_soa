@@ -4,12 +4,12 @@ import com.infogen.aop.util.map.LRULinkedHashMap;
 import com.infogen.authc.subject.Subject;
 
 /**
- * 
+ * 默认的基于本地内存的session管理器实现
  * @author larry/larrylv@outlook.com/创建时间 2015年5月13日 下午5:06:34
  * @since 1.0
  * @version 1.0
  */
-public class Default_Subject_DAO extends Subject_DAO {
+public class Local_Subject_DAO extends Subject_DAO {
 	private LRULinkedHashMap<String, Subject> map = new LRULinkedHashMap<>(500000);
 
 	/*

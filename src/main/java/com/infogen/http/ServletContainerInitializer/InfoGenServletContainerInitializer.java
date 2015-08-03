@@ -9,6 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.HandlesTypes;
 
 /**
+ * InfoGen的ServletContainerInitializer实现
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年4月30日 下午4:36:44
  * @since 1.0
  * @version 1.0

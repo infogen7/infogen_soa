@@ -9,11 +9,11 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 /**
- * 保存方法的属性描述
+ * 方法的描述
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年12月9日 下午3:18:27
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:21:40
+ * @since 1.0
+ * @version 1.0
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class Function {

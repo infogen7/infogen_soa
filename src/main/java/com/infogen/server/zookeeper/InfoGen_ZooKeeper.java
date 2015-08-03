@@ -28,9 +28,9 @@ import com.infogen.util.Scheduled;
 /**
  * zookeeper调用封装
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年10月24日 上午11:30:26
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:30:44
+ * @since 1.0
+ * @version 1.0
  */
 public class InfoGen_ZooKeeper {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_ZooKeeper.class.getName());

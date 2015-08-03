@@ -11,7 +11,7 @@ import redis.clients.jedis.JedisPool;
 import com.infogen.authc.subject.Subject;
 
 /**
- * 
+ * 基于redis的session管理器实现
  * @author larry/larrylv@outlook.com/创建时间 2015年5月13日 下午5:06:34
  * @since 1.0
  * @version 1.0

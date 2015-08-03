@@ -26,9 +26,9 @@ import com.squareup.okhttp.Response;
 /**
  * http调用的工具类
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年10月30日 下午1:05:24
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:08:13
+ * @since 1.0
+ * @version 1.0
  */
 public class InfoGen_HTTP {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP.class.getName());

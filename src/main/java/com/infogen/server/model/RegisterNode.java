@@ -4,12 +4,11 @@
 package com.infogen.server.model;
 
 /**
- * 为注册节点扩展的节点属性
+ * 写入注册中心的节点扩展属性
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年10月24日 下午4:27:17
- * @当前版本只支持 rest,rpc调用,只支持对等式
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:28:56
+ * @since 1.0
+ * @version 1.0
  */
 public class RegisterNode extends AbstractNode {
 

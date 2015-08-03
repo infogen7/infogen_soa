@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 限流规则
  * @author larry/larrylv@outlook.com/创建时间 2015年7月9日 下午4:04:30
  * @since 1.0
  * @version 1.0

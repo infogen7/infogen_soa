@@ -1,6 +1,8 @@
 package com.infogen.tracking.enum0;
 
 /**
+ * 用于调用链传递时的key
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年6月8日 下午2:34:47
  * @since 1.0
  * @version 1.0

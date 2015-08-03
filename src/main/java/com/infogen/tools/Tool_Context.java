@@ -10,11 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 /**
- * 基本工具方法
+ * HTTP上下文相关的基本工具方法
  * 
- * @author larry
- * @email larry.lv.word@gmail.com
- * @version 创建时间 2013-4-1 下午4:16:43
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:31:18
+ * @since 1.0
+ * @version 1.0
  */
 public class Tool_Context {
 	private static final Logger LOGGER = Logger.getLogger(Tool_Context.class.getName());

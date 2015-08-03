@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import com.infogen.aop.tools.Tool_Core;
 import com.infogen.logger.Logger_Once;
 
+@Deprecated
 public class NoNodeMail {
 	private static NoNodeMail instance;
 
@@ -58,12 +59,12 @@ public class NoNodeMail {
 	}
 
 	public static final Executor pool = Executors.newFixedThreadPool(10, new ThreadFactory() {// 使用守护进程创建进程池
-				public Thread newThread(Runnable r) {
-					Thread s = Executors.defaultThreadFactory().newThread(r);
-					s.setDaemon(true);
-					return s;
-				}
-			});
+		public Thread newThread(Runnable r) {
+			Thread s = Executors.defaultThreadFactory().newThread(r);
+			s.setDaemon(true);
+			return s;
+		}
+	});
 
 	/**
 	 * 设置邮件发送服务器

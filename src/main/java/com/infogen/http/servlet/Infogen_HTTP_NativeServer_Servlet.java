@@ -12,6 +12,8 @@ import com.infogen.aop.tools.Tool_Jackson;
 import com.infogen.server.cache.InfoGen_Cache_Server;
 
 /**
+ * 项目监控和管理接口-获取当前本地依赖服务的状态
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年7月1日 下午2:37:15
  * @since 1.0
  * @version 1.0
@@ -22,7 +24,7 @@ public class Infogen_HTTP_NativeServer_Servlet extends HttpServlet {
 
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().write(Tool_Jackson.toJson( InfoGen_Cache_Server.getInstance().depend_server));
+		response.getWriter().write(Tool_Jackson.toJson(InfoGen_Cache_Server.getInstance().depend_server));
 	}
 
 	@Override

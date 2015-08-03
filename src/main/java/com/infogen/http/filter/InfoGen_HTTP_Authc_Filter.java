@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.infogen.authc.InfoGen_HTTP_Authc_Handle;
 
 /**
+ * HTTP方式的安全验证框架的过滤器
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年3月27日 下午4:09:09
  * @since 1.0

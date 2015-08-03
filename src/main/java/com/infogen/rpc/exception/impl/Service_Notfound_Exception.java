@@ -4,6 +4,8 @@ import com.infogen.rpc.exception.InfoGen_RPC_Exception;
 import com.infogen.util.CODE;
 
 /**
+ * 依赖服务在注册中心/本地缓存没有找到的异常
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年6月18日 下午4:51:31
  * @since 1.0
  * @version 1.0

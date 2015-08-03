@@ -9,6 +9,8 @@ import com.infogen.aop.tools.Tool_Core;
 import com.infogen.authc.configuration.handle.Authc_Properties_Handle;
 
 /**
+ * 并发数限流的ini配置文件中[limit]部分的解析器
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年6月19日 下午12:48:48
  * @since 1.0
  * @version 1.0

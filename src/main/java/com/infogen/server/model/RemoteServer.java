@@ -17,9 +17,9 @@ import com.infogen.configuration.InfoGen_Configuration;
 /**
  * 为本地调用扩展的服务属性
  * 
- * @author larry
- * @email larrylv@outlook.com
- * @version 创建时间 2014年10月28日 上午10:03:46
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:30:02
+ * @since 1.0
+ * @version 1.0
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class RemoteServer extends AbstractServer {

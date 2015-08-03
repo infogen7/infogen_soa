@@ -1,11 +1,5 @@
 package com.infogen.http;
 
-/**
- * 启动jetty服务
- * @author larry
- * @email   larrylv@outlook.com
- * @version 创建时间 2014年10月22日 下午6:55:23
- */
 import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +23,13 @@ import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import com.infogen.aop.util.NativePath;
 import com.infogen.configuration.InfoGen_Configuration;
 
+/**
+ * 启动jetty服务
+ * 
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月3日 上午11:07:55
+ * @since 1.0
+ * @version 1.0
+ */
 public class InfoGen_Jetty {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_Jetty.class.getName());
 
@@ -84,8 +85,8 @@ public class InfoGen_Jetty {
 		// HTTP/1.1 support.
 		HttpConnectionFactory http1_1 = new HttpConnectionFactory(config);
 		// HTTP/2 cleartext support.
-		 HTTP2CServerConnectionFactory http2 = new HTTP2CServerConnectionFactory(config);
-		ServerConnector connector = new ServerConnector(server, http1_1,http2);
+		HTTP2CServerConnectionFactory http2 = new HTTP2CServerConnectionFactory(config);
+		ServerConnector connector = new ServerConnector(server, http1_1, http2);
 		connector.setPort(port);
 		// 解决Windows下重复启动Jetty居然不报告端口冲突的问题. 但是可能会造成linux上产生僵尸进程
 		// connector.setReuseAddress(false);

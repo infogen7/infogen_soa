@@ -9,10 +9,12 @@ import org.apache.log4j.Logger;
 import com.infogen.cluster_limit.InfoGen_HTTP_Cluster_Limit_Handle;
 import com.infogen.cluster_limit.Limit_Model;
 import com.infogen.cluster_limit.configuration_dao.Configuration_Sync_DAO;
-import com.infogen.cluster_limit.group_dao.Group_DAO;
+import com.infogen.cluster_limit.counter_dao.Counter_DAO;
 import com.infogen.util.Scheduled;
 
 /**
+ * 初始化窗口期限流,传入自定义的计数器实现和更新配置实现
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年7月13日 下午4:08:14
  * @since 1.0
  * @version 1.0
@@ -40,8 +42,8 @@ public class InfoGen_Cluster_Limit {
 	 * @param group_sync_dao
 	 * @throws IOException
 	 */
-	public void limit(Group_DAO group_dao, Configuration_Sync_DAO group_sync_dao) throws IOException {
-		InfoGen_HTTP_Cluster_Limit_Handle.group_dao = group_dao;
+	public void limit(Counter_DAO group_dao, Configuration_Sync_DAO group_sync_dao) throws IOException {
+		InfoGen_HTTP_Cluster_Limit_Handle.counter_dao = group_dao;
 
 		Runnable group_sync_dao_runable = new Runnable() {
 			@Override

@@ -3,6 +3,8 @@ package com.infogen.util;
 import java.io.Serializable;
 
 /**
+ * 自定义的string类型的KV键值对
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年6月10日 下午6:20:03
  * @since 1.0
  * @version 1.0

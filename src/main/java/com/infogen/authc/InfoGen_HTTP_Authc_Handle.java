@@ -13,13 +13,13 @@ import com.infogen.authc.configuration.handle.impl.Authc_Properties_Handle_Metho
 import com.infogen.authc.exception.InfoGen_Auth_Exception;
 import com.infogen.authc.exception.impl.Authentication_Fail_Exception;
 import com.infogen.authc.subject.Subject;
-import com.infogen.authc.subject.dao.Default_Subject_DAO;
+import com.infogen.authc.subject.dao.Local_Subject_DAO;
 import com.infogen.authc.subject.dao.Subject_DAO;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
 
 /**
- * API认证的过滤器
+ * HTTP接口的API认证的处理器,可以通过ini配置注入使用的session管理器
  * 
  * @author larry
  * @email larry.lv.word@gmail.com
@@ -27,7 +27,7 @@ import com.infogen.util.Return;
 public class InfoGen_HTTP_Authc_Handle {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP_Authc_Handle.class.getName());
 
-	public static Subject_DAO subject_dao = new Default_Subject_DAO();
+	public static Subject_DAO subject_dao = new Local_Subject_DAO();
 	public static final String TOKEN_NAME = "x-access-token";
 	// 初始化配置时赋值
 	public static final Map<String, String[]> urls_equal = Authc_Properties_Handle_Methods.urls_equal;
@@ -84,7 +84,7 @@ public class InfoGen_HTTP_Authc_Handle {
 			subject.checkExpiration();
 			subject.hasRole(roles);
 			// 缓存
-			ThreadLocal_Auth.setSubject(subject);
+			InfoGen_Auth.setSubject(subject);
 		} catch (InfoGen_Auth_Exception e) {
 			LOGGER.info("认证失败:", e);
 			response.getWriter().write(Return.FAIL(e.name(), e.note()).toJson());
