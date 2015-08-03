@@ -54,7 +54,6 @@ public class Redis_Counter_DAO extends Counter_DAO {
 			group_by = new StringBuilder(group_by).append("_").append(millis - (millis % timeslice)).toString();
 			incr = take.incr(group_by);
 			take.expire(group_by, expire);
-			System.out.println(group_by + "-----------------------");
 		} finally {
 			returnResource(take);
 		}
