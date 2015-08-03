@@ -5,7 +5,7 @@
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
 
-	<version>V1.1.04R150731</version>
+	<version>V1.1.05R150803</version>
 
 
 	<name>infogen_soa</name>
@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>com.infogen</groupId>
 			<artifactId>infogen_aop</artifactId>
-			<version>V1.1.04R150731</version>
+			<version>V1.1.05R150803</version>
 		</dependency>
 		<!-- core -->
 		<dependency>
