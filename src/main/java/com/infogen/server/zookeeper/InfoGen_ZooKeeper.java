@@ -18,6 +18,7 @@ import org.apache.zookeeper.KeeperException.Code;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.Watcher.Event.EventType;
+import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.ACL;
@@ -88,6 +89,19 @@ public class InfoGen_ZooKeeper {
 		}
 	}
 
+	/**
+	 * 只在重启zookeeper时调用
+	 * 
+	 * @throws InterruptedException
+	 */
+	public void stop_zookeeper() throws InterruptedException {
+		LOGGER.info("关闭zookeeper");
+		zookeeper.close();
+		zookeeper = null;
+		LOGGER.info("关闭zookeeper成功");
+	}
+
+	////////////////////////////////////////////////// 安全认证//////////////////////////////////
 	private Map<String, Set<String>> map_auth_info = new HashMap<>();
 
 	private void reload_auth_info() {
@@ -106,19 +120,7 @@ public class InfoGen_ZooKeeper {
 			zookeeper.addAuthInfo(scheme, auth.getBytes());
 		}
 	}
-
-	/**
-	 * 只在重启zookeeper时调用
-	 * 
-	 * @throws InterruptedException
-	 */
-	public void stop_zookeeper() throws InterruptedException {
-		LOGGER.info("关闭zookeeper");
-		zookeeper.close();
-		zookeeper = null;
-		LOGGER.info("关闭zookeeper成功");
-	}
-
+////////////////////////////////////////////////节点操作/////////////////////////////////////////////////
 	/**
 	 * 只在服务启动时调用,所以采用同步调用,发生异常则退出程序检查
 	 * 
@@ -137,12 +139,12 @@ public class InfoGen_ZooKeeper {
 		} catch (KeeperException e) {
 			switch (e.code()) {
 			case CONNECTIONLOSS:
+				LOGGER.warn("连接中断,正在重试创建节点...: " + path);
 				create(path, data, create_mode);
-				LOGGER.warn("连接中断,正在重试...: " + path);
 				break;
 			case NODEEXISTS:
-				_return = Code.NODEEXISTS.name();
 				LOGGER.warn("节点已经存在: " + path);
+				_return = Code.NODEEXISTS.name();
 				break;
 			default:
 				LOGGER.error("未知错误: ", KeeperException.create(e.code(), path));
@@ -270,18 +272,23 @@ public class InfoGen_ZooKeeper {
 			zookeeper.getChildren(path, (event) -> {
 				LOGGER.info("子节点事件  path:" + event.getPath() + "  state:" + event.getState().name() + "  type:" + event.getType().name());
 				if (event.getType() == EventType.NodeChildrenChanged) {
-					LOGGER.info("重新启动子节点监听:".concat(path));
+					LOGGER.info("子节点改变 重新启动子节点监听:".concat(path));
 					watcher_children(path);
 					LOGGER.info("重新加载服务信息:".concat(path));
 					InfoGen_Zookeeper_Handle_Watcher_Children watcher_children_handle = watcher_children_handle_map.get(path);
 					if (watcher_children_handle != null) {
 						watcher_children_handle.handle_event(path);
 					}
-				} else if (event.getType() != EventType.None) {
-					LOGGER.info("重新启动子节点监听:".concat(path));
+				} else if (event.getType() != EventType.None) {// NodeDeleted
+					LOGGER.info("节点删除 重新启动子节点监听:".concat(path));
 					watcher_children(path);
+				} else if (event.getState() == KeeperState.Expired) {
+					// 连接 session 超时
+					LOGGER.info("Session超时 重新启动子节点监听:".concat(path));
+					watcher_children(path);
+				} else {
+					// 连接状态改变
 				}
-				// EventType 为 None 的时候不需要重新监听
 			});
 			LOGGER.info("启动子节点监听成功:".concat(path));
 		} catch (Exception e) {
@@ -291,7 +298,6 @@ public class InfoGen_ZooKeeper {
 	}
 
 	// ///////////////////////////////////////连接 Watcher///////////////////////////////////////////////////
-
 	/**
 	 * 只对 Client 的连接状态变化做出反应
 	 */
@@ -310,10 +316,6 @@ public class InfoGen_ZooKeeper {
 						LOGGER.info("重启zookeeper");
 						stop_zookeeper();
 						start_zookeeper(host_port, expired_handle);
-						LOGGER.info("重置所有子节点监听");
-						rewatcher_children_paths.addAll(all_watcher_children_paths);
-						rewatcher_children_paths_schedule.cancel(true);
-						rewatcher_children_paths_schedule = Scheduled.executors_single.scheduleWithFixedDelay(rewatcher_children_paths_runable, 30, 30, TimeUnit.SECONDS);
 						LOGGER.info("其它定制处理");
 						if (expired_handle != null) {
 							expired_handle.handle_event();
@@ -357,6 +359,6 @@ public class InfoGen_ZooKeeper {
 		}
 	};
 	// 定时修正监听失败
-	private ScheduledFuture<?> rewatcher_children_paths_schedule = Scheduled.executors_single.scheduleWithFixedDelay(rewatcher_children_paths_runable, 30, 30, TimeUnit.SECONDS);
+	protected ScheduledFuture<?> rewatcher_children_paths_schedule = Scheduled.executors_single.scheduleWithFixedDelay(rewatcher_children_paths_runable, 10, 10, TimeUnit.SECONDS);
 
 }
