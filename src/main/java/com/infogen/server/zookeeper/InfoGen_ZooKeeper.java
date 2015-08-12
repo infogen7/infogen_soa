@@ -50,6 +50,7 @@ public class InfoGen_ZooKeeper {
 	private String host_port;
 	private ZooKeeper zookeeper;
 	private InfoGen_Zookeeper_Handle_Expired expired_handle;
+	private Map<String, Set<String>> map_auth_info = new HashMap<>();
 	public static final String CONTEXT = "/infogen/";
 	public static final String CONTEXT_CONFIGURATION = "/infogen_configuration/";
 
@@ -65,10 +66,6 @@ public class InfoGen_ZooKeeper {
 		return CONTEXT.concat(server_name).concat("/").concat(node_name);
 	}
 
-	public Boolean available() {
-		return (zookeeper != null);
-	}
-
 	/**
 	 * 在服务启动时调用
 	 * 
@@ -82,7 +79,12 @@ public class InfoGen_ZooKeeper {
 			this.host_port = host_port;
 			this.zookeeper = new ZooKeeper(host_port, 10000, connect_watcher);
 
-			reload_auth_info();
+			for (Entry<String, Set<String>> entry : map_auth_info.entrySet()) {
+				String scheme = entry.getKey();
+				for (String auth : entry.getValue()) {
+					zookeeper.addAuthInfo(scheme, auth.getBytes());
+				}
+			}
 			LOGGER.info("启动zookeeper成功:".concat(host_port));
 		} else {
 			LOGGER.info("已经存在一个运行的zookeeper实例");
@@ -101,18 +103,11 @@ public class InfoGen_ZooKeeper {
 		LOGGER.info("关闭zookeeper成功");
 	}
 
-	////////////////////////////////////////////////// 安全认证//////////////////////////////////
-	private Map<String, Set<String>> map_auth_info = new HashMap<>();
-
-	private void reload_auth_info() {
-		for (Entry<String, Set<String>> entry : map_auth_info.entrySet()) {
-			String scheme = entry.getKey();
-			for (String auth : entry.getValue()) {
-				zookeeper.addAuthInfo(scheme, auth.getBytes());
-			}
-		}
+	public Boolean available() {
+		return (zookeeper != null);
 	}
 
+	////////////////////////////////////////////////// 安全认证//////////////////////////////////
 	public void add_auth_info(String scheme, String auth) {
 		Set<String> set_auth = map_auth_info.getOrDefault(scheme, new HashSet<String>());
 		if (!set_auth.contains(auth)) {
@@ -120,7 +115,8 @@ public class InfoGen_ZooKeeper {
 			zookeeper.addAuthInfo(scheme, auth.getBytes());
 		}
 	}
-////////////////////////////////////////////////节点操作/////////////////////////////////////////////////
+
+	//////////////////////////////////////////////// 节点操作/////////////////////////////////////////////////
 	/**
 	 * 只在服务启动时调用,所以采用同步调用,发生异常则退出程序检查
 	 * 
@@ -283,11 +279,10 @@ public class InfoGen_ZooKeeper {
 					LOGGER.info("节点删除 重新启动子节点监听:".concat(path));
 					watcher_children(path);
 				} else if (event.getState() == KeeperState.Expired) {
-					// 连接 session 超时
-					LOGGER.info("Session超时 重新启动子节点监听:".concat(path));
-					watcher_children(path);
+					LOGGER.info("Session超时 子节点监听丢失 等待重启后重新监听:".concat(path));
 				} else {
 					// 连接状态改变
+					// event.getType() == EventType.None
 				}
 			});
 			LOGGER.info("启动子节点监听成功:".concat(path));
@@ -312,14 +307,19 @@ public class InfoGen_ZooKeeper {
 				case Expired:
 					try {
 						LOGGER.error("zookeeper 连接过期");
-
-						LOGGER.info("重启zookeeper");
+						rewatcher_children_paths_schedule.cancel(true);
 						stop_zookeeper();
 						start_zookeeper(host_port, expired_handle);
+
+						LOGGER.info(" 重新加载子节点监听事件");
+						rewatcher_children_paths.addAll(all_watcher_children_paths);
+						rewatcher_childrens();
+
 						LOGGER.info("其它定制处理");
 						if (expired_handle != null) {
 							expired_handle.handle_event();
 						}
+						rewatcher_children_paths_schedule = Scheduled.executors_single.scheduleWithFixedDelay(rewatcher_children_paths_runable, 10, 10, TimeUnit.SECONDS);
 					} catch (Exception e) {
 						LOGGER.error("zookeeper 重连错误", e);
 					}
@@ -343,9 +343,10 @@ public class InfoGen_ZooKeeper {
 	}
 
 	// ////////////////////////////////////////////Scheduled////////////////////////////////////////////////////////////////
-	private final Runnable rewatcher_children_paths_runable = new Runnable() {
-		@Override
-		public void run() {
+	private byte[] rewatcher_children_lock = new byte[0];
+
+	private void rewatcher_childrens() {
+		synchronized (rewatcher_children_lock) {
 			Set<String> paths = new HashSet<String>();
 			paths.addAll(rewatcher_children_paths);
 			for (String server_name : paths) {
@@ -356,6 +357,13 @@ public class InfoGen_ZooKeeper {
 					LOGGER.error("重新执行子节点监听", e);
 				}
 			}
+		}
+	}
+
+	private final Runnable rewatcher_children_paths_runable = new Runnable() {
+		@Override
+		public void run() {
+			rewatcher_childrens();
 		}
 	};
 	// 定时修正监听失败

@@ -24,6 +24,8 @@ import com.infogen.rpc.callback.RPC_Callback;
 import com.infogen.rpc.handler.Thrift_Async_Client_Handler;
 import com.infogen.rpc.handler.Thrift_Client_Handler;
 
+import net.jcip.annotations.ThreadSafe;
+
 /**
  * 为本地调用处理扩展的节点属性
  * 
@@ -31,17 +33,18 @@ import com.infogen.rpc.handler.Thrift_Client_Handler;
  * @since 1.0
  * @version 1.0
  */
+@ThreadSafe
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class RemoteNode extends AbstractNode {
 	@JsonIgnore
-	public Long disabled_time = Clock.system(InfoGen_Configuration.zoneid).millis();
+	public transient Long disabled_time = Clock.system(InfoGen_Configuration.zoneid).millis();
 
 	@JsonIgnore
-	private static final Integer connect_timeout = 3_000;// 连接超时时间
+	private final transient Integer connect_timeout = 3_000;// 连接超时时间
 	@JsonIgnore
-	private final String call_lock = "";
+	private final transient byte[] call_lock = new byte[0];
 	@JsonIgnore
-	private final String call_async_lock = "";
+	private final transient byte[] call_async_lock = new byte[0];
 
 	@JsonIgnore
 	private transient TTransport transport = null;

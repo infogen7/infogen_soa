@@ -20,10 +20,10 @@ import com.infogen.http.ServletContainerInitializer.WebApplicationInitializer;
  */
 public class InfoGen_Server_Initializer implements WebApplicationInitializer {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_Server_Initializer.class.getName());
-	public static ServletContext servletContext;
-	public static String config_path;
-	public static String mapping;
-	private static String lock = "";
+	private static ServletContext servletContext;
+	private static String config_path;
+	private static String mapping;
+	private final static byte[] lock = new byte[0];
 
 	public static void start_mvc(String config_path, String mapping) throws IOException {
 		InfoGen_Server_Initializer.config_path = config_path;

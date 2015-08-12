@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -14,6 +13,8 @@ import com.infogen.aop.tools.Tool_Jackson;
 import com.infogen.aop.util.map.consistent_hash.ConsistentHash;
 import com.infogen.configuration.InfoGen_Configuration;
 
+import net.jcip.annotations.ThreadSafe;
+
 /**
  * 为本地调用扩展的服务属性
  * 
@@ -21,6 +22,7 @@ import com.infogen.configuration.InfoGen_Configuration;
  * @since 1.0
  * @version 1.0
  */
+@ThreadSafe
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class RemoteServer extends AbstractServer {
 	private static final Logger LOGGER = Logger.getLogger(RemoteServer.class.getName());
@@ -32,15 +34,15 @@ public class RemoteServer extends AbstractServer {
 	}
 
 	@JsonIgnore
-	private transient ConsistentHash<RemoteNode> consistent_hash = new ConsistentHash<>();
+	private final transient ConsistentHash<RemoteNode> consistent_hash = new ConsistentHash<>();
 	@JsonIgnore
-	private transient String change_node_status_lock = "";
+	private final transient byte[] change_node_status_lock = new byte[0];
 	@JsonIgnore
-	private long last_success_invoke_millis = Clock.system(InfoGen_Configuration.zoneid).millis();// 最近一次调用成功的时间戳
+	private transient long last_success_invoke_millis = Clock.system(InfoGen_Configuration.zoneid).millis();// 最近一次调用成功的时间戳
 	@JsonIgnore
-	private int disabled_timeout = 16 * 1000;// 重置失效节点的时间间隔 - 超过zookeeper的session超时时间
+	private final transient int disabled_timeout = 16 * 1000;// 重置失效节点的时间间隔 - 超过zookeeper的session超时时间
 	@JsonIgnore
-	private int min_disabled_timeout = 3 * 1000;// 最小的节点恢复使用的间隔时间
+	private final transient int min_disabled_timeout = 3 * 1000;// 最小的节点恢复使用的间隔时间
 
 	// ////////////////////////////////////////// 定时修正不可用的节点/////////////////////////////////////////////////////
 	public Map<String, RemoteNode> get_all_nodes() {

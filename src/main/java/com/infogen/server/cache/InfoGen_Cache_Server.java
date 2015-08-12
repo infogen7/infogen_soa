@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,12 +16,20 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
+import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.KeeperException.Code;
+import org.apache.zookeeper.ZooDefs;
+import org.apache.zookeeper.data.ACL;
+import org.apache.zookeeper.data.Id;
+import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.infogen.aop.tools.Tool_Core;
 import com.infogen.aop.tools.Tool_Jackson;
 import com.infogen.aop.util.NativePath;
 import com.infogen.configuration.InfoGen_Configuration;
+import com.infogen.server.model.RegisterNode;
+import com.infogen.server.model.RegisterServer;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
 import com.infogen.server.zookeeper.InfoGen_ZooKeeper;
@@ -45,13 +55,22 @@ public class InfoGen_Cache_Server {
 	}
 
 	private InfoGen_Cache_Server() {
+		// Scheduled
 		// 定时重新加载失败的服务
-		Scheduled.executors_single.scheduleWithFixedDelay(reload_server_runnable, 30, 30, TimeUnit.SECONDS);
-		Scheduled.executors_single.scheduleWithFixedDelay(persistence_runnable, 30, 30, TimeUnit.SECONDS);
+		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
+			retry_cache_server();
+		} , 30, 30, TimeUnit.SECONDS);
+		// 定时检测并执行持久化服务
+		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
+			persistence_delay();
+		} , 30, 30, TimeUnit.SECONDS);
+		// 定时检测并执行重新加载所有依赖的服务
+		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
+			reload_all_server_delay();
+		} , 3, 3, TimeUnit.MINUTES);
 	}
 
 	private InfoGen_ZooKeeper ZK = com.infogen.server.zookeeper.InfoGen_ZooKeeper.getInstance();
-
 	// 依赖的服务
 	public final ConcurrentMap<String, RemoteServer> depend_server = new ConcurrentHashMap<>();
 	// 本地缓存的依赖服务
@@ -77,10 +96,78 @@ public class InfoGen_Cache_Server {
 		}
 	}
 
+	//////////////////////////////////////////////////////// create_update_server//////////////////////////////////////////////////////////////
+	/**
+	 * 写入或更新一个配置
+	 * 
+	 * @param configuration_name
+	 * @param configuration_value
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 */
+	public void upsert_configuration(String configuration_name, String configuration_value, String digest) throws NoSuchAlgorithmException {
+		List<ACL> acls = new ArrayList<ACL>();
+		// 采用用户名密码形式
+		acls.add(new ACL(ZooDefs.Perms.ALL, new Id("digest", DigestAuthenticationProvider.generateDigest(digest))));
+		// 所有用户可读权限
+		acls.add(new ACL(ZooDefs.Perms.READ, new Id("world", "anyone")));
+		// 创建或更新配置节点
+		String create_path = ZK.create(InfoGen_ZooKeeper.configuration_path(configuration_name), configuration_value.getBytes(), acls, CreateMode.PERSISTENT);
+		if (create_path == null) {
+			LOGGER.error("注册配置失败");
+		} else if (create_path.equals(Code.NODEEXISTS.name())) {
+			ZK.add_auth_info("digest", digest);
+			ZK.set_data(InfoGen_ZooKeeper.configuration_path(configuration_name), configuration_value.getBytes(), -1);
+		}
+	}
+
+	/**
+	 * 生成一个服务节点
+	 * 
+	 * @param register_server
+	 */
+	public void create_server(RegisterServer register_server) {
+		if (!ZK.available()) {
+			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
+			return;
+		}
+		String path = register_server.getPath();
+		// 创建或更新服务节点
+		byte[] bytes = Tool_Jackson.toJson(register_server).getBytes();
+		String create_path = ZK.create(path, bytes, CreateMode.PERSISTENT);
+		if (create_path == null) {
+			LOGGER.error("注册自身服务失败!");
+			return;
+		} else if (create_path.equals(Code.NODEEXISTS.name())) {
+			// 更新服务节点数据
+			ZK.set_data(path, bytes, -1);
+		}
+	}
+
+	/**
+	 * 生成一个服务实例节点
+	 * 
+	 * @param server_name
+	 * @param register_node
+	 */
+	public void create_node(RegisterNode register_node) {
+		if (!ZK.available()) {
+			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
+			return;
+		}
+		// 创建应用子节点及子节点数据
+		String path = register_node.getPath();
+		String create_path = ZK.create(path, Tool_Jackson.toJson(register_node).getBytes(), CreateMode.EPHEMERAL);
+		if (create_path == null) {
+			LOGGER.error("注册自身节点失败!");
+			return;
+		}
+	}
+
 	// ////////////////////////////////////////////cache_server////////////////////////////////////////////////////////////////
 	// 注册的cache完成事件处理器
 	private Map<String, InfoGen_Loaded_Handle_Server> server_loaded_handle_map = new HashMap<>();
-	private Set<String> reload_server_paths = new HashSet<>();
+	private Set<String> retry_cache_server_paths = new HashSet<>();
 
 	public RemoteServer cache_server_single(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
 		if (server_loaded_handle_map.get(server_name) != null) {
@@ -108,15 +195,6 @@ public class InfoGen_Cache_Server {
 		return cache_server;
 	}
 
-	/**
-	 * 重新加载所有服务
-	 */
-	public void reload_all_server() {
-		for (RemoteServer server : depend_server.values()) {
-			reload_server(server);
-		}
-	}
-
 	private RemoteServer cache_server(String server_name) {
 		if (!ZK.available()) {
 			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
@@ -126,14 +204,14 @@ public class InfoGen_Cache_Server {
 			String server_path = InfoGen_ZooKeeper.path(server_name);
 			String server_data = ZK.get_data(server_path);
 			if (server_data == null || server_data.trim().isEmpty()) {
-				reload_server_paths.add(server_name);
+				retry_cache_server_paths.add(server_name);
 				LOGGER.error("服务节点数据为空:".concat(server_name));
 				return null;
 			}
 
 			RemoteServer native_server = Tool_Jackson.toObject(server_data, RemoteServer.class);
 			if (!native_server.available()) {
-				reload_server_paths.add(server_name);
+				retry_cache_server_paths.add(server_name);
 
 				LOGGER.error("服务节点数据不可用:".concat(server_name));
 				return null;
@@ -141,7 +219,7 @@ public class InfoGen_Cache_Server {
 
 			List<String> get_server_state = ZK.get_childrens_data(server_path);
 			if (get_server_state.isEmpty()) {
-				reload_server_paths.add(server_name);
+				retry_cache_server_paths.add(server_name);
 				LOGGER.error("服务子节点为空:".concat(server_name));
 				return null;
 			}
@@ -173,7 +251,7 @@ public class InfoGen_Cache_Server {
 			persistence();
 			return native_server;
 		} catch (Exception e) {
-			reload_server_paths.add(server_name);
+			retry_cache_server_paths.add(server_name);
 			LOGGER.error("重新加载服务信息失败", e);
 		}
 		return null;
@@ -223,6 +301,40 @@ public class InfoGen_Cache_Server {
 		persistence();
 	}
 
+	/////////////////////////////////////////////////////// 重试加载服务////////////////////////////////////////////////////////////////////////////
+	private void retry_cache_server() {
+		Set<String> tmp_reload_server_paths = new HashSet<>();
+		tmp_reload_server_paths.addAll(retry_cache_server_paths);
+		for (String server_name : tmp_reload_server_paths) {
+			try {
+				cache_server(server_name);
+				retry_cache_server_paths.remove(server_name);
+			} catch (Exception e) {
+				LOGGER.error("重新加载服务失败:", e);
+			}
+		}
+	}
+
+	/////////////////////////////////////////////////////// 重新加载依赖的服务////////////////////////////////////////////////////////////////////
+	private Boolean reload_all_server_flag = false;
+
+	/**
+	 * 重新加载所有服务
+	 */
+	public void reload_all_server() {
+		reload_all_server_flag = true;
+	}
+
+	private void reload_all_server_delay() {
+		if (reload_all_server_flag) {
+			for (RemoteServer server : depend_server.values()) {
+				reload_server(server);
+			}
+			reload_all_server_flag = false;
+			LOGGER.info("重新加载所有服务成功");
+		}
+	}
+
 	// ////////////////////////////////////////////////////持久化依赖的服务///////////////////////////////////////////////////////////////////////
 	private Boolean persistence_flag = false;
 
@@ -245,27 +357,4 @@ public class InfoGen_Cache_Server {
 		}
 	}
 
-	// ////////////////////////////////////////////Scheduled////////////////////////////////////////////////////////////////
-	private final Runnable reload_server_runnable = new Runnable() {
-		@Override
-		public void run() {
-			Set<String> tmp_reload_server_paths = new HashSet<>();
-			tmp_reload_server_paths.addAll(reload_server_paths);
-			for (String server_name : tmp_reload_server_paths) {
-				try {
-					cache_server(server_name);
-					reload_server_paths.remove(server_name);
-				} catch (Exception e) {
-					LOGGER.error("重新执行上次加载失败的服务", e);
-				}
-			}
-		}
-	};
-
-	private final Runnable persistence_runnable = new Runnable() {
-		@Override
-		public void run() {
-			persistence_delay();
-		}
-	};
 }
