@@ -11,5 +11,5 @@ package com.infogen.server.zookeeper;
  * @version 1.0
  */
 public interface InfoGen_Zookeeper_Handle_Watcher_Children {
-	public abstract void handle_event(String name);
+	public abstract void handle_event(String path);
 }

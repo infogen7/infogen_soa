@@ -114,15 +114,15 @@ public class InfoGen {
 	 * @return
 	 */
 	private RemoteServer init_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
+		if (server_loaded_handle == null) {
+			server_loaded_handle = (native_server) -> {
+			};
+		}
 		RemoteServer server = CACHE_SERVER.cache_server_single(server_name, server_loaded_handle);
 		if (server != null) {
 			return server;
 		}
 		LOGGER.warn("没有找到可用服务:".concat(server_name));
-
-		if (server_loaded_handle != null) {
-			server_loaded_handle.handle_event(server);
-		}
 		return server;
 	}
 }

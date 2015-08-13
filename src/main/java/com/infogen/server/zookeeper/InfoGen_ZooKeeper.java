@@ -270,7 +270,7 @@ public class InfoGen_ZooKeeper {
 				if (event.getType() == EventType.NodeChildrenChanged) {
 					LOGGER.info("子节点改变 重新启动子节点监听:".concat(path));
 					watcher_children(path);
-					LOGGER.info("重新加载服务信息:".concat(path));
+					
 					InfoGen_Zookeeper_Handle_Watcher_Children watcher_children_handle = watcher_children_handle_map.get(path);
 					if (watcher_children_handle != null) {
 						watcher_children_handle.handle_event(path);

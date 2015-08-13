@@ -74,11 +74,15 @@ public class InfoGen_Cache_Server {
 	// 依赖的服务
 	public final ConcurrentMap<String, RemoteServer> depend_server = new ConcurrentHashMap<>();
 	// 本地缓存的依赖服务
-	private ConcurrentMap<String, RemoteServer> depend_server_cache = new ConcurrentHashMap<>();
-
-	// ///////////////////////////////////////////////////初始化///////////////////////////////////////////////
+	public final ConcurrentMap<String, RemoteServer> depend_server_cache = new ConcurrentHashMap<>();
 	private Path source_server_path = NativePath.get("infogen.cache.server.js");
 	private Path target_server_path = NativePath.get("infogen.cache.server.js.copy");
+	// 加载完成后触发的事件
+	private Map<String, InfoGen_Loaded_Handle_Server> server_loaded_handle_map = new HashMap<>();
+	// 需要重试加载的服务
+	private Set<String> retry_cache_server_paths = new HashSet<>();
+
+	// ///////////////////////////////////////////////////初始化///////////////////////////////////////////////
 
 	public void init(InfoGen_Configuration infogen_configuration, InfoGen_Zookeeper_Handle_Expired expired_handle) throws IOException, URISyntaxException {
 		// 初始化 zookeeper
@@ -92,7 +96,9 @@ public class InfoGen_Cache_Server {
 		if (!server_json.isEmpty()) {
 			ConcurrentHashMap<String, RemoteServer> fromJson = Tool_Jackson.toObject(server_json, new TypeReference<ConcurrentHashMap<String, RemoteServer>>() {
 			});
-			depend_server_cache = fromJson;
+			for (String key : fromJson.keySet()) {
+				depend_server_cache.put(key, fromJson.get(key));
+			}
 		}
 	}
 
@@ -106,6 +112,11 @@ public class InfoGen_Cache_Server {
 	 * @throws NoSuchAlgorithmException
 	 */
 	public void upsert_configuration(String configuration_name, String configuration_value, String digest) throws NoSuchAlgorithmException {
+		if (!ZK.available()) {
+			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
+			return;
+		}
+
 		List<ACL> acls = new ArrayList<ACL>();
 		// 采用用户名密码形式
 		acls.add(new ACL(ZooDefs.Perms.ALL, new Id("digest", DigestAuthenticationProvider.generateDigest(digest))));
@@ -131,6 +142,7 @@ public class InfoGen_Cache_Server {
 			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
 			return;
 		}
+
 		String path = register_server.getPath();
 		// 创建或更新服务节点
 		byte[] bytes = Tool_Jackson.toJson(register_server).getBytes();
@@ -155,6 +167,7 @@ public class InfoGen_Cache_Server {
 			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
 			return;
 		}
+
 		// 创建应用子节点及子节点数据
 		String path = register_node.getPath();
 		String create_path = ZK.create(path, Tool_Jackson.toJson(register_node).getBytes(), CreateMode.EPHEMERAL);
@@ -166,33 +179,34 @@ public class InfoGen_Cache_Server {
 
 	// ////////////////////////////////////////////cache_server////////////////////////////////////////////////////////////////
 	// 注册的cache完成事件处理器
-	private Map<String, InfoGen_Loaded_Handle_Server> server_loaded_handle_map = new HashMap<>();
-	private Set<String> retry_cache_server_paths = new HashSet<>();
-
 	public RemoteServer cache_server_single(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
 		if (server_loaded_handle_map.get(server_name) != null) {
-			LOGGER.warn("当前缓存过该服务:".concat(server_name));
+			LOGGER.warn("已经初始化过该服务:".concat(server_name));
 			return depend_server.get(server_name);
 		}
 
 		// 注册 server 加载完成的事件
-		if (server_loaded_handle == null) {
-			server_loaded_handle = (native_server) -> {
-			};
-		}
 		server_loaded_handle_map.put(server_name, server_loaded_handle);
 
 		RemoteServer cache_server = cache_server(server_name);
 		// 获取不到,到本地缓存里查找
 		if (cache_server == null) {
-			cache_server = depend_server_cache.get(server_name);
-			if (cache_server != null) {
-				depend_server.put(server_name, cache_server);
-				server_loaded_handle.handle_event(cache_server);
-				LOGGER.warn("使用本地缓存的服务:".concat(server_name));
-			}
+			cache_server_local(server_name);
 		}
+		// 缓存
 		return cache_server;
+	}
+
+	private RemoteServer cache_server_local(String server_name) {
+		LOGGER.warn("使用本地缓存的服务:".concat(server_name));
+		RemoteServer native_server = depend_server_cache.get(server_name);
+		if (native_server != null) {
+			// 缓存服务到内存
+			depend_server.put(server_name, native_server);
+			// 加载成功事件处理
+			server_loaded_handle_map.get(server_name).handle_event(native_server);
+		}
+		return native_server;
 	}
 
 	private RemoteServer cache_server(String server_name) {
@@ -212,7 +226,6 @@ public class InfoGen_Cache_Server {
 			RemoteServer native_server = Tool_Jackson.toObject(server_data, RemoteServer.class);
 			if (!native_server.available()) {
 				retry_cache_server_paths.add(server_name);
-
 				LOGGER.error("服务节点数据不可用:".concat(server_name));
 				return null;
 			}
@@ -233,19 +246,17 @@ public class InfoGen_Cache_Server {
 				}
 			}
 
+			// 缓存服务到内存
+			depend_server.put(server_name, native_server);
+
 			// 添加监听
-			ZK.watcher_children_single(InfoGen_ZooKeeper.path(server_name), (path) -> {
+			ZK.watcher_children_single(server_path, (path) -> {
+				LOGGER.info("重新加载服务:".concat(path));
 				reload_server(native_server);
 			});
 
-			// 缓存
-			depend_server.put(server_name, native_server);
-
 			// 加载成功事件处理
-			InfoGen_Loaded_Handle_Server server_loaded_handle = server_loaded_handle_map.get(server_name);
-			if (server_loaded_handle != null) {
-				server_loaded_handle.handle_event(native_server);
-			}
+			server_loaded_handle_map.get(server_name).handle_event(native_server);
 
 			// 持久化
 			persistence();
@@ -265,19 +276,22 @@ public class InfoGen_Cache_Server {
 
 		String server_name = native_server.getName();
 		String server_path = InfoGen_ZooKeeper.path(server_name);
-		List<String> get_childrens = ZK.get_childrens(server_path);
-		if (get_childrens.isEmpty()) {
+
+		List<String> remote_childrens = ZK.get_childrens(server_path);
+		if (remote_childrens.isEmpty()) {
+			LOGGER.error("服务子节点为空:".concat(server_name));
 			return;
 		}
-		Map<String, RemoteNode> tmp_all_nodes = native_server.get_all_nodes();
-		for (String node_path : get_childrens) {
-			RemoteNode node = tmp_all_nodes.get(node_path);
-			// 本地存在该节点 - 继续
+		Map<String, RemoteNode> tmp_native_nodes = native_server.get_all_nodes();
+
+		for (String node_path : remote_childrens) {
+			RemoteNode node = tmp_native_nodes.get(node_path);
+			// 本地和远端都存在该节点 - 从删除队列中去掉
 			if (node != null) {
-				tmp_all_nodes.remove(node_path);
+				tmp_native_nodes.remove(node_path);
 				continue;
 			}
-			// 本地不存在该节点 - 添加到本地
+			// 本地不存在远端存在该节点 - 加载到本地
 			String node_string = ZK.get_data(server_path.concat("/").concat(node_path));
 			try {
 				native_server.add(Tool_Jackson.toObject(node_string, RemoteNode.class));
@@ -285,20 +299,21 @@ public class InfoGen_Cache_Server {
 				LOGGER.error("节点数据错误:", e);
 			}
 		}
-		// 注册中心不存在的节点 - 删除
-		for (RemoteNode native_node : tmp_all_nodes.values()) {
+		// 本地存在远端不存在的节点 - 删除
+		for (RemoteNode native_node : tmp_native_nodes.values()) {
 			native_node.clean();
 			native_server.remove(native_node);
 		}
 
+		// 缓存服务到内存
+		depend_server.put(server_name, native_server);
+
 		// 加载成功事件处理
-		InfoGen_Loaded_Handle_Server server_loaded_handle = server_loaded_handle_map.get(server_name);
-		if (server_loaded_handle != null) {
-			server_loaded_handle.handle_event(native_server);
-		}
+		server_loaded_handle_map.get(server_name).handle_event(native_server);
 
 		// 持久化
 		persistence();
+
 	}
 
 	/////////////////////////////////////////////////////// 重试加载服务////////////////////////////////////////////////////////////////////////////
