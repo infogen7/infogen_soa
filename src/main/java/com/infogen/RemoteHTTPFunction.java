@@ -2,8 +2,10 @@ package com.infogen;
 
 import java.util.Map;
 
-import com.infogen.http.callback.Http_Callback;
+import com.infogen.exception.Node_Notfound_Exception;
+import com.infogen.exception.Service_Notfound_Exception;
 import com.infogen.util.Return;
+import com.squareup.okhttp.Callback;
 
 /**
  * http协议下远程方法的映射
@@ -57,13 +59,15 @@ public class RemoteHTTPFunction {
 	 * @param url
 	 * @param map
 	 * @return
+	 * @throws Node_Notfound_Exception
+	 * @throws Service_Notfound_Exception
 	 */
-	public Http_Callback get_async(Map<String, String> name_value_pair) {
-		return service.get_async(url, name_value_pair);
+	public void get_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Notfound_Exception {
+		service.get_async(url, name_value_pair, callback);
 	}
 
-	public Http_Callback get_async(Map<String, String> name_value_pair, String seed) {
-		return service.get_async(url, name_value_pair, seed);
+	public void get_async(Map<String, String> name_value_pair, Callback callback, String seed) throws Service_Notfound_Exception, Node_Notfound_Exception {
+		service.get_async(url, name_value_pair, callback, seed);
 	}
 
 	/**
@@ -72,13 +76,15 @@ public class RemoteHTTPFunction {
 	 * @param url
 	 * @param map
 	 * @return
+	 * @throws Node_Notfound_Exception
+	 * @throws Service_Notfound_Exception
 	 */
-	public Http_Callback post_async(Map<String, String> name_value_pair) {
-		return service.post_async(url, name_value_pair);
+	public void post_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Notfound_Exception {
+		service.post_async(url, name_value_pair, callback);
 	}
 
-	public Http_Callback post_async(String url, Map<String, String> name_value_pair, String seed) {
-		return service.post_async(url, name_value_pair, seed);
+	public void post_async(String url, Map<String, String> name_value_pair, Callback callback, String seed) throws Service_Notfound_Exception, Node_Notfound_Exception {
+		service.post_async(url, name_value_pair, callback, seed);
 	}
 
 }

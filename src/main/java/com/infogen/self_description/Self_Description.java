@@ -2,7 +2,10 @@ package com.infogen.self_description;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+
+import org.apache.log4j.Logger;
+
+import com.infogen.self_description.component.Function;
 
 import javassist.ClassClassPath;
 import javassist.ClassPool;
@@ -14,10 +17,6 @@ import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
 
-import org.apache.log4j.Logger;
-
-import com.infogen.self_description.component.Function;
-
 /**
  * 扫描本地方法自描述的接口
  * 
@@ -28,12 +27,12 @@ import com.infogen.self_description.component.Function;
 public abstract class Self_Description {
 	private static final Logger LOGGER = Logger.getLogger(Self_Description.class.getName());
 
-	public abstract Map<String, Function> self_description(Set<Class<?>> class_set);
+	public abstract Map<String, Function> self_description(Class<?> clazz);
 
 	// 使用javassist获取参数名
-	private ClassPool class_pool = ClassPool.getDefault();
+	private static final ClassPool class_pool = ClassPool.getDefault();
 
-	private Map<String, CtClass> ctclass_maps = new HashMap<>();
+	private static final Map<String, CtClass> ctclass_maps = new HashMap<>();
 
 	public CtClass get_ctclass(String name) throws NotFoundException {
 		CtClass ctClass = ctclass_maps.get(name);

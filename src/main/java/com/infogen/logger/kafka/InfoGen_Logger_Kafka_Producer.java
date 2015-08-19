@@ -5,15 +5,14 @@ package com.infogen.logger.kafka;
 
 import java.util.Properties;
 
-import kafka.javaapi.producer.Producer;
-import kafka.producer.KeyedMessage;
-import kafka.producer.ProducerConfig;
-
 import org.apache.log4j.Logger;
 
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.http.InfoGen_Jetty;
 import com.infogen.logger.Logger_Once;
+
+import kafka.javaapi.producer.Producer;
+import kafka.producer.KeyedMessage;
+import kafka.producer.ProducerConfig;
 
 /**
  * 启动kafka生产者
@@ -23,7 +22,7 @@ import com.infogen.logger.Logger_Once;
  * @version 1.0
  */
 public class InfoGen_Logger_Kafka_Producer {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen_Jetty.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_Logger_Kafka_Producer.class.getName());
 
 	private static class InnerInstance {
 		public static final InfoGen_Logger_Kafka_Producer instance = new InfoGen_Logger_Kafka_Producer();

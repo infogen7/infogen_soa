@@ -23,7 +23,7 @@ public class InfoGen_JettyTest {
 		infogen_properties.setProperty("infogen.server_room", "xuhui@youfu");
 		infogen_properties.setProperty("infogen.ratio", "10");
 		infogen_properties.setProperty("infogen.rpc.port", "10086");
-		InfoGen_Configuration config = new InfoGen_Configuration(infogen_properties);
+		InfoGen_Configuration config = InfoGen_Configuration.getInstance().initialization(infogen_properties);
 		InfoGen_Jetty.getInstance().start(config, "/", "src/main/webapp", "src/main/webapp/WEB-INF/web.xml");
 		// Thread.currentThread().join();
 	}

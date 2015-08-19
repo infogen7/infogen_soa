@@ -5,18 +5,18 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.aop.tools.Tool_Core;
 import com.infogen.authc.configuration.handle.Authc_Properties_Handle;
+import com.infogen.core.tools.Tool_Core;
 
 /**
- * 并发数限流的ini配置文件中[limit]部分的解析器
+ * 并发数限流的ini配置文件中[limit-rpc]部分的解析器
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年6月19日 下午12:48:48
  * @since 1.0
  * @version 1.0
  */
-public class Limit_Properties_Handle_Limit extends Authc_Properties_Handle {
-	private static final Logger LOGGER = Logger.getLogger(Limit_Properties_Handle_Limit.class.getName());
+public class Limit_Properties_Handle_RPC_Limit extends Authc_Properties_Handle {
+	private static final Logger LOGGER = Logger.getLogger(Limit_Properties_Handle_RPC_Limit.class.getName());
 	public static final Map<String, Integer> map = new HashMap<>();
 
 	/*

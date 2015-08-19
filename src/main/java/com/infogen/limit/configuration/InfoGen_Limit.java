@@ -12,11 +12,12 @@ import java.time.ZoneId;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.aop.tools.Tool_Core;
-import com.infogen.aop.util.NativePath;
 import com.infogen.authc.configuration.handle.Authc_Properties_Handle;
-import com.infogen.limit.configuration.handle.impl.Limit_Properties_Handle_Limit;
+import com.infogen.core.tools.Tool_Core;
+import com.infogen.core.util.NativePath;
+import com.infogen.limit.configuration.handle.impl.Limit_Properties_Handle_HTTP_Limit;
 import com.infogen.limit.configuration.handle.impl.Limit_Properties_Handle_Main;
+import com.infogen.limit.configuration.handle.impl.Limit_Properties_Handle_RPC_Limit;
 
 /**
  * 初始化并读取和解析ini配置文件
@@ -42,7 +43,8 @@ public class InfoGen_Limit {
 	}
 
 	private final Limit_Properties_Handle_Main properties_main = new Limit_Properties_Handle_Main();
-	private final Limit_Properties_Handle_Limit properties_limit = new Limit_Properties_Handle_Limit();
+	private final Limit_Properties_Handle_HTTP_Limit properties_http_limit = new Limit_Properties_Handle_HTTP_Limit();
+	private final Limit_Properties_Handle_RPC_Limit properties_rpc_limit = new Limit_Properties_Handle_RPC_Limit();
 
 	/**
 	 * 限制本地接口的调用并发数
@@ -67,8 +69,10 @@ public class InfoGen_Limit {
 					continue;
 				} else if (line.equals("[main]")) {
 					properties_current = properties_main;
-				} else if (line.equals("[limit]")) {
-					properties_current = properties_limit;
+				} else if (line.equals("[limit-http]")) {
+					properties_current = properties_http_limit;
+				} else if (line.equals("[limit-rpc]")) {
+					properties_current = properties_rpc_limit;
 				} else if (line != null && !line.isEmpty()) {
 					properties_current.handle(line);
 				} else {

@@ -10,13 +10,14 @@ import com.infogen.configuration.InfoGen_Configuration;
  * @version 1.0
  */
 public class CallChain {
+	private InfoGen_Configuration infogen_configuration = InfoGen_Configuration.getInstance();
 	// 初始化配置时赋值
 	// traceid,sequence,来源地址 ,来源ip,当前地址,当前ip,当前服务 ,当前类,当前方法,调用时间 ,调用时长,调用状态(成功/失败) ,返回数据大小,cookie等用户标识,sessionid(token),方法类型(mysql/redis/interface),当前并发数
 	// tr00000,0 ,home.html ,xx ,send ,xx ,中控 ,2015050X ,300ms ,ok/error/auth,1.3k ,t0000,测试/京东/聚信立, a00000...
 	private String trackid;
-	private String identify;// cookie等用户标识
+	private String identify = "";// cookie等用户标识
 	private String sessionid = "";// session id(token等会话标识)
-	private Integer sequence;
+	private Integer sequence = 0;
 	private String referer = "";
 
 	private String referer_ip;
@@ -26,9 +27,9 @@ public class CallChain {
 
 	public CallChain() {
 		// target ip
-		setTarget_ip(InfoGen_Configuration.register_node.getIp());
+		setTarget_ip(infogen_configuration.register_node.getIp());
 		// target server 当前服务
-		setTarget_server(InfoGen_Configuration.register_server.getName());
+		setTarget_server(infogen_configuration.register_server.getName());
 	}
 
 	public CallChain(String trackid, String identify, String sessionid, Integer sequence, String referer, String referer_ip, String target) {

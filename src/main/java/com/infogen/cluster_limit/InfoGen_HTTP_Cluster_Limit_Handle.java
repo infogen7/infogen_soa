@@ -41,6 +41,7 @@ public class InfoGen_HTTP_Cluster_Limit_Handle {
 
 		String group_by = request.getParameter(group);
 		Long limit = limit_Model.getLimits().getOrDefault(group_by, Long.MAX_VALUE);
+		// TODO 计数失败后是放行还是拒绝 需要配置
 		Long increment_and_get = counter_dao.increment_and_get(group_by, limit_Model.getTimeslice());
 		if (increment_and_get > limit) {
 			LOGGER.info("用户调用次数超过限制:".concat(requestURI).concat("-").concat(limit.toString()).concat("-").concat(increment_and_get.toString()));

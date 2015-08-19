@@ -9,9 +9,9 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.infogen.aop.tools.Tool_Jackson;
-import com.infogen.aop.util.map.consistent_hash.ConsistentHash;
 import com.infogen.configuration.InfoGen_Configuration;
+import com.infogen.core.tools.Tool_Jackson;
+import com.infogen.core.util.map.consistent_hash.ConsistentHash;
 
 import net.jcip.annotations.ThreadSafe;
 

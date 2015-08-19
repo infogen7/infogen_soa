@@ -7,8 +7,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.infogen.aop.tools.Tool_Core;
-import com.infogen.aop.tools.Tool_Jackson;
+import com.infogen.core.tools.Tool_Core;
+import com.infogen.core.tools.Tool_Jackson;
 
 /**
  * HTTP协议返回值封装

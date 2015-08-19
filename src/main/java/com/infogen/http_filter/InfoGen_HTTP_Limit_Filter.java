@@ -1,4 +1,4 @@
-package com.infogen.http.filter;
+package com.infogen.http_filter;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.limit.configuration.handle.impl.Limit_Properties_Handle_Limit;
+import com.infogen.limit.configuration.handle.impl.Limit_Properties_Handle_HTTP_Limit;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
 
@@ -33,7 +33,7 @@ public class InfoGen_HTTP_Limit_Filter implements Filter {
 	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP_Limit_Filter.class.getName());
 	private static final Map<String, AtomicInteger> map = new HashMap<>();
 	// 初始化配置时赋值
-	public static final Map<String, Integer> limits = Limit_Properties_Handle_Limit.map;
+	public static final Map<String, Integer> limits = Limit_Properties_Handle_HTTP_Limit.map;
 
 	public void doFilter(ServletRequest srequset, ServletResponse sresponse, FilterChain filterChain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) srequset;

@@ -8,15 +8,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.Logger;
-import org.apache.thrift.TException;
 
-import com.infogen.http.callback.Http_Callback;
+import com.infogen.exception.Node_Notfound_Exception;
+import com.infogen.exception.Service_Notfound_Exception;
 import com.infogen.http.exception.HTTP_Fail_Exception;
-import com.infogen.rpc.callback.RPC_Callback;
-import com.infogen.rpc.exception.impl.Node_Notfound_Exception;
-import com.infogen.rpc.exception.impl.Service_Notfound_Exception;
-import com.infogen.rpc.handler.Thrift_Async_Client_Handler;
-import com.infogen.rpc.handler.Thrift_Client_Handler;
 import com.infogen.server.cache.InfoGen_Cache_Server;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteNode.NetType;
@@ -25,6 +20,7 @@ import com.infogen.server.model.RemoteServer;
 import com.infogen.util.BasicNameValuePair;
 import com.infogen.util.CODE;
 import com.infogen.util.Return;
+import com.squareup.okhttp.Callback;
 
 /**
  * http协议下远程服务的映射,实现调度,错误重试,同步异步处理等
@@ -95,61 +91,6 @@ public class Service {
 		server.disabled(node);
 	}
 
-	// //////////////////////////////////////////////////RPC////////////////////////////////////////////////////////////////////////
-	public <T> T call(Thrift_Client_Handler<T> handle) throws Service_Notfound_Exception, Node_Notfound_Exception {
-		return call(handle, String.valueOf(Clock.systemDefaultZone().millis()));
-	}
-
-	public <T> T call(Thrift_Client_Handler<T> handle, String seed) throws Service_Notfound_Exception, Node_Notfound_Exception {
-		RemoteServer server = depend_server.get(server_name);
-		if (server == null) {
-			throw new Service_Notfound_Exception();
-		}
-		RemoteNode node = null;
-		// 调用出错重试3次
-		for (int i = 0; i < 3; i++) {
-			try {
-				node = server.random_node(seed);
-				if (node == null) {
-					throw new Node_Notfound_Exception();
-				}
-				return node.call(handle);
-			} catch (TException | IOException e) {
-				LOGGER.error("调用失败", e);
-				server.disabled(node);
-				continue;
-			}
-		}
-		return null;
-	}
-
-	public <T> RPC_Callback<T> call_async(Thrift_Async_Client_Handler<T> handle) throws Service_Notfound_Exception, Node_Notfound_Exception {
-		return call_async(handle, String.valueOf(Clock.systemDefaultZone().millis()));
-	}
-
-	public <T> RPC_Callback<T> call_async(Thrift_Async_Client_Handler<T> handle, String seed) throws Service_Notfound_Exception, Node_Notfound_Exception {
-		RemoteServer server = depend_server.get(server_name);
-		if (server == null) {
-			throw new Service_Notfound_Exception();
-		}
-		RemoteNode node = null;
-		// 调用出错重试3次
-		for (int i = 0; i < 3; i++) {
-			try {
-				node = server.random_node(seed);
-				if (node == null) {
-					throw new Node_Notfound_Exception();
-				}
-				return node.call_async(handle);
-			} catch (TException | IOException e) {
-				LOGGER.error("调用失败", e);
-				server.disabled(node);
-				continue;
-			}
-		}
-		return null;
-	}
-
 	// //////////////////////////////////////////////////HTTP///////////////////////////////////////////////////////////////////////
 	private Map<String, String> pair_to_map(List<BasicNameValuePair> name_value_pair) {
 		Map<String, String> map = new HashMap<>();
@@ -205,13 +146,15 @@ public class Service {
 	 * @param url
 	 * @param map
 	 * @return
+	 * @throws Node_Notfound_Exception
+	 * @throws Service_Notfound_Exception
 	 */
-	public Http_Callback get_async(String url, Map<String, String> name_value_pair) {
-		return http_async(url, name_value_pair, RequestType.GET, String.valueOf(Clock.systemDefaultZone().millis()));
+	public void get_async(String url, Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Notfound_Exception {
+		http_async(url, name_value_pair, RequestType.GET, callback, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
-	public Http_Callback get_async(String url, Map<String, String> name_value_pair, String seed) {
-		return http_async(url, name_value_pair, RequestType.GET, seed);
+	public void get_async(String url, Map<String, String> name_value_pair, Callback callback, String seed) throws Service_Notfound_Exception, Node_Notfound_Exception {
+		http_async(url, name_value_pair, RequestType.GET, callback, seed);
 	}
 
 	/**
@@ -220,13 +163,15 @@ public class Service {
 	 * @param url
 	 * @param map
 	 * @return
+	 * @throws Node_Notfound_Exception
+	 * @throws Service_Notfound_Exception
 	 */
-	public Http_Callback post_async(String url, Map<String, String> name_value_pair) {
-		return http_async(url, name_value_pair, RequestType.POST, String.valueOf(Clock.systemDefaultZone().millis()));
+	public void post_async(String url, Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Notfound_Exception {
+		http_async(url, name_value_pair, RequestType.POST, callback, String.valueOf(Clock.systemDefaultZone().millis()));
 	}
 
-	public Http_Callback post_async(String url, Map<String, String> name_value_pair, String seed) {
-		return http_async(url, name_value_pair, RequestType.POST, seed);
+	public void post_async(String url, Map<String, String> name_value_pair, Callback callback, String seed) throws Service_Notfound_Exception, Node_Notfound_Exception {
+		http_async(url, name_value_pair, RequestType.POST, callback, seed);
 	}
 
 	/**
@@ -284,15 +229,14 @@ public class Service {
 	 * @param request_type
 	 * @param net_type
 	 * @return
+	 * @throws Service_Notfound_Exception
+	 * @throws Node_Notfound_Exception
 	 */
-	private Http_Callback http_async(String method, Map<String, String> name_value_pair, RequestType request_type, String seed) {
-		Http_Callback callback = new Http_Callback();
-
+	private void http_async(String method, Map<String, String> name_value_pair, RequestType request_type, Callback callback, String seed) throws Service_Notfound_Exception, Node_Notfound_Exception {
 		RemoteServer server = depend_server.get(server_name);
 		if (server == null) {
 			LOGGER.error(CODE.service_notfound.note);
-			callback.add(Return.FAIL(CODE.service_notfound).toJson());
-			return callback;
+			throw new Service_Notfound_Exception();
 		}
 		if (method.startsWith("/")) {
 			method = method.substring(1);
@@ -303,19 +247,16 @@ public class Service {
 			node = server.random_node(seed);
 			if (node == null) {
 				LOGGER.error(CODE.node_notfound.note);
-				callback.add(Return.FAIL(CODE.node_notfound).toJson());
-				return callback;
+				throw new Node_Notfound_Exception();
 			}
 			try {
-				return node.http_async(method, name_value_pair, request_type, net_type);
+				node.http_async(method, name_value_pair, request_type, net_type, callback);
 			} catch (IOException e) {
 				LOGGER.error("调用失败", e);
 				server.disabled(node);
 				continue;
 			}
 		}
-		callback.add(Return.FAIL(CODE.error).toJson());
-		return callback;
 	}
 
 }

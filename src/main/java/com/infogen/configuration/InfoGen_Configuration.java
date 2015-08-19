@@ -18,10 +18,10 @@ import org.apache.log4j.Logger;
 
 import com.infogen.InfoGen;
 import com.infogen.aop.AOP;
-import com.infogen.aop.tools.Tool_Core;
-import com.infogen.aop.util.NativePath;
-import com.infogen.http.InfoGen_Server_Initializer;
-import com.infogen.self_description.InfoGen_HTTP_Self_Description;
+import com.infogen.core.tools.Tool_Core;
+import com.infogen.core.util.NativePath;
+import com.infogen.http.mvc_framework.InfoGen_Server_Initializer;
+import com.infogen.self_description.InfoGen_Self_Description;
 import com.infogen.self_description.component.Function;
 import com.infogen.self_description.component.OutParameter;
 import com.infogen.server.model.RegisterNode;
@@ -40,37 +40,46 @@ import com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution;
 
 public class InfoGen_Configuration {
 	private final static Logger LOGGER = Logger.getLogger(InfoGen_Configuration.class.getName());
+
+	private static class InnerInstance {
+		public static final InfoGen_Configuration instance = new InfoGen_Configuration();
+	}
+
+	public static InfoGen_Configuration getInstance() {
+		return InnerInstance.instance;
+	}
+
+	private InfoGen_Configuration() {
+	}
+
 	public final static ZoneId zoneid = ZoneId.of("GMT+08:00");
 	public final static Charset charset = StandardCharsets.UTF_8;
 
-	public static final RegisterNode register_node = new RegisterNode();
-	public static final RegisterServer register_server = new RegisterServer();
+	public final RegisterNode register_node = new RegisterNode();
+	public final RegisterServer register_server = new RegisterServer();
 	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
 
 	public String zookeeper;
 	public String kafka;
 
-	public InfoGen_Configuration(String infogen_path) throws IOException, URISyntaxException {
-		Properties infogen_properties = new Properties();
-		try (InputStream resourceAsStream = Files.newInputStream(NativePath.get(infogen_path), StandardOpenOption.READ);//
-				InputStreamReader inputstreamreader = new InputStreamReader(resourceAsStream, InfoGen_Configuration.charset);) {
-			infogen_properties.load(inputstreamreader);
-		}
-		initialization(infogen_properties);
-	}
-
-	public InfoGen_Configuration(Properties infogen_properties) throws IOException, URISyntaxException {
-		initialization(infogen_properties);
-	}
-
-	public void add_basic_outparameter(OutParameter basic_outparameter) {
+	public InfoGen_Configuration add_basic_outparameter(OutParameter basic_outparameter) {
 		for (Function function : register_server.getHttp_functions().values()) {
 			function.getOut_parameters().add(basic_outparameter);
 		}
+		return this;
 	}
 
-	// ///////////////////////////////////////////////////////////////////////////////
-	private void initialization(Properties infogen_properties) throws IOException, URISyntaxException {
+	// ///////////////////////////////////// initialization //////////////////////////////////////////
+	public InfoGen_Configuration initialization(String infogen_path) throws IOException, URISyntaxException {
+		Properties infogen_properties = new Properties();
+		try (InputStream resourceAsStream = Files.newInputStream(NativePath.get(infogen_path), StandardOpenOption.READ); //
+				InputStreamReader inputstreamreader = new InputStreamReader(resourceAsStream, InfoGen_Configuration.charset);) {
+			infogen_properties.load(inputstreamreader);
+		}
+		return initialization(infogen_properties);
+	}
+
+	public InfoGen_Configuration initialization(Properties infogen_properties) throws IOException, URISyntaxException {
 		zookeeper = infogen_properties.getProperty("infogen.zookeeper");
 		if (zookeeper == null || zookeeper.trim().isEmpty()) {
 			LOGGER.error("zookeeper配置不能为空:infogen.zookeeper");
@@ -78,8 +87,7 @@ public class InfoGen_Configuration {
 		}
 		kafka = infogen_properties.getProperty("infogen.kafka");
 		if (kafka == null || kafka.trim().isEmpty()) {
-			LOGGER.error("kafka配置不能为空:infogen.kafka");
-			System.exit(-1);
+			LOGGER.warn("kafka配置为空:infogen.kafka");
 		}
 		// server
 		register_server.setInfogen_version(InfoGen.VERSION);
@@ -91,16 +99,18 @@ public class InfoGen_Configuration {
 		register_server.setProtocol(infogen_properties.getProperty("infogen.protocol"));
 		register_server.setHttp_domain(infogen_properties.getProperty("infogen.http.domain"));
 		register_server.setHttp_proxy(infogen_properties.getProperty("infogen.http.proxy"));
-		register_server.setHttp_functions(InfoGen_HTTP_Self_Description.getInstance().self_description(AOP.getInstance().getClasses()));// 自描述
+		register_server.setHttp_functions(InfoGen_Self_Description.getInstance().self_description(AOP.getInstance().getClasses()));// 自描述
 		if (!register_server.available()) {
 			LOGGER.error("服务配置不能为空:infogen.name");
 			System.exit(-1);
 		}
+
 		// node
 		String localIP = infogen_properties.getProperty("infogen.ip");
 		if (localIP == null || localIP.trim().isEmpty() || !Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(localIP).find()) {
 			localIP = Tool_Core.getLocalIP();
 		}
+		register_node.setName(localIP.concat("-" + Clock.system(zoneid).millis()));
 		register_node.setIp(localIP);
 		String net_ip = infogen_properties.getProperty("infogen.net_ip");
 		if (net_ip != null && !net_ip.trim().isEmpty() && Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(net_ip).find()) {
@@ -111,12 +121,8 @@ public class InfoGen_Configuration {
 		String rpc_port = infogen_properties.getProperty("infogen.rpc.port");
 		register_node.setRpc_port((rpc_port == null) ? null : Integer.valueOf(rpc_port));
 		register_node.setHost(System.getProperty("user.name").concat("@").concat(Tool_Core.getHostName()));
-
-		String name = localIP.concat("-" + Clock.system(zoneid).millis());
-		register_node.setName(name);
 		String ratio = infogen_properties.getProperty("infogen.ratio");
 		register_node.setRatio((ratio == null) ? 10 : Math.max(0, Math.min(10, Integer.valueOf(ratio))));
-
 		register_node.setPath(InfoGen_ZooKeeper.path(register_server.getName()).concat("/".concat(register_node.getName())));
 		register_node.setHttp_protocol(infogen_properties.getProperty("infogen.http.protocol"));
 		register_node.setContext(infogen_properties.getProperty("infogen.http.context"));
@@ -134,7 +140,6 @@ public class InfoGen_Configuration {
 		AOP.getInstance().addClasses(com.infogen.Service.class);
 		// AOP
 		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
-		
 
 		// 延迟启动 mvc 框架
 		String spring_mvc_path = infogen_properties.getProperty("infogen.http.spring_mvc.path");
@@ -142,6 +147,6 @@ public class InfoGen_Configuration {
 		if (spring_mvc_path != null && !spring_mvc_path.trim().isEmpty()) {
 			InfoGen_Server_Initializer.start_mvc(spring_mvc_path, spring_mvc_mapping);
 		}
-
+		return this;
 	}
 }

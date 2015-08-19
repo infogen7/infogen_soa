@@ -1,7 +1,7 @@
 package com.infogen.authc.subject.dao;
 
-import com.infogen.aop.util.map.LRULinkedHashMap;
 import com.infogen.authc.subject.Subject;
+import com.infogen.core.util.map.LRULinkedHashMap;
 
 /**
  * 默认的基于本地内存的session管理器实现

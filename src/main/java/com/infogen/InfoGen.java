@@ -37,6 +37,7 @@ public class InfoGen {
 
 	public static final String VERSION = "V1.1.05R150803";
 	private InfoGen_Cache_Server CACHE_SERVER = InfoGen_Cache_Server.getInstance();
+	private InfoGen_Configuration infogen_configuration = null;
 
 	// //////////////////////////////////////////初始化/////////////////////////////////////////////////////
 	private Boolean start_and_watch = false;
@@ -48,6 +49,7 @@ public class InfoGen {
 		}
 		start_and_watch = true;
 
+		this.infogen_configuration = infogen_configuration;
 		LOGGER.info("InfoGen启动并开启监听服务");
 		// AOP
 		AOP.getInstance().advice();
@@ -70,8 +72,8 @@ public class InfoGen {
 	 */
 	public InfoGen register() {
 		LOGGER.info("注册当前服务");
-		CACHE_SERVER.create_server(InfoGen_Configuration.register_server);
-		CACHE_SERVER.create_node(InfoGen_Configuration.register_node);
+		CACHE_SERVER.create_server(infogen_configuration.register_server);
+		CACHE_SERVER.create_node(infogen_configuration.register_node);
 		return this;
 	}
 

@@ -15,18 +15,18 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.infogen.self_description.InfoGen_HTTP_Self_Description;
+import com.infogen.self_description.InfoGen_Self_Description;
 import com.infogen.self_description.component.Function;
 
 public class InfoGen_Self_DescribingTest {
-	private static InfoGen_HTTP_Self_Description instance = null;
+	private static InfoGen_Self_Description instance = null;
 	private static Method ref_get_in_parameter_names;
 	private static Constructor<?>[] ref_Construction_method;
 	private static Field ref_class_pool;
 
 	// @BeforeClass(groups = { "tools", "all" })
 	public void beforeClass() throws NoSuchMethodException, SecurityException, NoSuchFieldException {
-		instance = InfoGen_HTTP_Self_Description.getInstance();
+		instance = InfoGen_Self_Description.getInstance();
 		Class<?> refNewClass = instance.getClass();
 		ref_get_in_parameter_names = refNewClass.getDeclaredMethod("get_in_parameter_names", Class.class, String.class, java.lang.reflect.Parameter[].class);
 		ref_get_in_parameter_names.setAccessible(true);
@@ -42,7 +42,7 @@ public class InfoGen_Self_DescribingTest {
 	// @Test(groups = { "tools", "all" })
 	public void getInstance() {
 		Assert.assertNotNull(instance);
-		Assert.assertEquals(instance instanceof InfoGen_HTTP_Self_Description, true);
+		Assert.assertEquals(instance instanceof InfoGen_Self_Description, true);
 	}
 
 	// @Test(groups = { "tools", "all" })

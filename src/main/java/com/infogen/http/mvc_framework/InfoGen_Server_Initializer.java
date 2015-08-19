@@ -1,4 +1,4 @@
-package com.infogen.http;
+package com.infogen.http.mvc_framework;
 
 import java.io.IOException;
 

@@ -12,7 +12,7 @@ import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.infogen.aop.tools.Tool_Core;
+import com.infogen.core.tools.Tool_Core;
 
 public class Tool_CoreTest {
 

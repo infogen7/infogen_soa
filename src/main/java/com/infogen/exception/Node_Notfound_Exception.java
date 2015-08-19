@@ -1,17 +1,16 @@
-package com.infogen.rpc.exception.impl;
+package com.infogen.exception;
 
-import com.infogen.rpc.exception.InfoGen_RPC_Exception;
 import com.infogen.util.CODE;
 
 /**
- * 依赖服务在注册中心/本地缓存没有找到的异常
+ * 依赖服务没有找到任何可用节点的异常
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年6月18日 下午4:51:31
  * @since 1.0
  * @version 1.0
  */
-public class Service_Notfound_Exception extends InfoGen_RPC_Exception {
-	private static final long serialVersionUID = -8990952704800171175L;
+public class Node_Notfound_Exception extends InfoGen_Exception {
+	private static final long serialVersionUID = -7021908273339016544L;
 
 	/*
 	 * (non-Javadoc)
@@ -20,7 +19,7 @@ public class Service_Notfound_Exception extends InfoGen_RPC_Exception {
 	 */
 	@Override
 	public Integer code() {
-		return CODE.service_notfound.code;
+		return CODE.node_notfound.code;
 	}
 
 	/*
@@ -30,7 +29,7 @@ public class Service_Notfound_Exception extends InfoGen_RPC_Exception {
 	 */
 	@Override
 	public String name() {
-		return CODE.service_notfound.name();
+		return CODE.node_notfound.name();
 	}
 
 	/*
@@ -40,7 +39,7 @@ public class Service_Notfound_Exception extends InfoGen_RPC_Exception {
 	 */
 	@Override
 	public String note() {
-		return CODE.service_notfound.note;
+		return CODE.node_notfound.note;
 	}
 
 }

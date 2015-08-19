@@ -2,14 +2,18 @@ package com.infogen.util;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.infogen.aop.tools.Tool_Jackson;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.infogen.core.tools.Tool_Jackson;
 
 /**
  * HTTP协议调用端json处理类
+ * 
  * @author larry/larrylv@outlook.com/创建时间 2015年7月31日 上午9:44:55
  * @since 1.0
  * @version 1.0
@@ -18,6 +22,15 @@ public class JSONObject extends HashMap<String, Object> {
 	private static final long serialVersionUID = -3927973692243736378L;
 	private static final Logger LOGGER = Logger.getLogger(JSONObject.class.getName());
 
+	public static JSONObject create(String json) throws JsonParseException, JsonMappingException, IOException {
+		JSONObject jo = new JSONObject();
+		Map<String, Object> fromJson = Tool_Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
+		});
+		for (Entry<String, Object> entry : fromJson.entrySet()) {
+			jo.put(entry.getKey(), entry.getValue());
+		}
+		return jo;
+	}
 	///////////////////////////////////////////////////////////// json工具//////////////////////////////////////////
 
 	public String getAsString(String key, String _default) {

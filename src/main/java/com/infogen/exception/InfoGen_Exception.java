@@ -1,4 +1,4 @@
-package com.infogen.rpc.exception;
+package com.infogen.exception;
 
 /**
  * rpc调用中的异常接口
@@ -7,7 +7,7 @@ package com.infogen.rpc.exception;
  * @since 1.0
  * @version 1.0
  */
-public abstract class InfoGen_RPC_Exception extends Exception {
+public abstract class InfoGen_Exception extends Exception {
 	private static final long serialVersionUID = -6462362814822951685L;
 
 	public abstract Integer code();

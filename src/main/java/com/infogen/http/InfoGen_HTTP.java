@@ -7,14 +7,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.aop.tools.Tool_Jackson;
-import com.infogen.http.callback.Http_Callback;
+import com.infogen.core.tools.Tool_Jackson;
 import com.infogen.http.exception.HTTP_Fail_Exception;
 import com.infogen.tracking.CallChain;
 import com.infogen.tracking.ThreadLocal_Tracking;
 import com.infogen.tracking.enum0.Track_Header;
-import com.infogen.util.CODE;
-import com.infogen.util.Return;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -107,30 +104,29 @@ public class InfoGen_HTTP {
 		}
 	}
 
-	public static Http_Callback do_async_get(String url, Map<String, String> params) {
-		Http_Callback callback = new Http_Callback();
+	private static final Callback async_get_callback = new Callback() {
+		@Override
+		public void onFailure(Request request, IOException e) {
+			LOGGER.error("do_async_get 报错:".concat(request.urlString()), e);
+		}
 
+		@Override
+		public void onResponse(Response response) throws IOException {
+			if (response.isSuccessful()) {
+			} else {
+				LOGGER.error("do_async_get 错误-返回非2xx:".concat(response.request().urlString()));
+			}
+		}
+	};
+
+	public static void do_async_get(String url, Map<String, String> params, Callback callback) {
 		Builder builder = new Request.Builder().url(concat_url_params(url, params));
 		add_headers(builder);
 		Request request = builder.build();
-		client.newCall(request).enqueue(new Callback() {
-			@Override
-			public void onFailure(Request request, IOException e) {
-				LOGGER.error("do_async_get 报错:".concat(url), e);
-				callback.add(Return.FAIL(CODE.error, e).toJson());
-			}
-
-			@Override
-			public void onResponse(Response response) throws IOException {
-				if (response.isSuccessful()) {
-					callback.add(response.body().string());
-				} else {
-					LOGGER.error("do_async_get 错误-返回非2xx:".concat(url));
-					callback.add(Return.FAIL(CODE.error).toJson());
-				}
-			}
-		});
-		return callback;
+		if (callback == null) {
+			callback = async_get_callback;
+		}
+		client.newCall(request).enqueue(callback);
 	}
 
 	// ////////////////////////////////////////////////////////post///////////////////////////////////////////////////////////////////////////
@@ -177,36 +173,36 @@ public class InfoGen_HTTP {
 		}
 	}
 
-	public static Http_Callback do_async_post(String url, Map<String, String> params) throws IOException {
-		return do_async_post_bytype(url, MEDIA_TYPE_FORM, concat_params(params));
+	public static void do_async_post(String url, Map<String, String> params, Callback callback) throws IOException {
+		do_async_post_bytype(url, MEDIA_TYPE_FORM, concat_params(params), callback);
 	}
 
-	public static Http_Callback do_async_post_json(String url, Map<String, String> params) throws IOException {
-		return do_async_post_bytype(url, MEDIA_TYPE_JSON, Tool_Jackson.toJson(params));
+	public static void do_async_post_json(String url, Map<String, String> params, Callback callback) throws IOException {
+		do_async_post_bytype(url, MEDIA_TYPE_JSON, Tool_Jackson.toJson(params), callback);
 	}
 
-	private static Http_Callback do_async_post_bytype(String url, MediaType type, String params) throws IOException {
-		Http_Callback callback = new Http_Callback();
+	private static final Callback async_post_callback = new Callback() {
+		@Override
+		public void onFailure(Request request, IOException e) {
+			LOGGER.error("do_async_post_bytype 报错:".concat(request.urlString()), e);
+		}
+
+		@Override
+		public void onResponse(Response response) throws IOException {
+			if (response.isSuccessful()) {
+			} else {
+				LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().urlString()));
+			}
+		}
+	};
+
+	private static void do_async_post_bytype(String url, MediaType type, String params, Callback callback) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder);
 		Request request = builder.post(RequestBody.create(type, params)).build();
-		client.newCall(request).enqueue(new Callback() {
-			@Override
-			public void onFailure(Request request, IOException e) {
-				LOGGER.error("do_async_post_bytype 报错:".concat(url), e);
-				callback.add(Return.FAIL(CODE.error, e).toJson());
-			}
-
-			@Override
-			public void onResponse(Response response) throws IOException {
-				if (response.isSuccessful()) {
-					callback.add(response.body().string());
-				} else {
-					LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(url));
-					callback.add(Return.FAIL(CODE.error).toJson());
-				}
-			}
-		});
-		return callback;
+		if (callback == null) {
+			callback = async_post_callback;
+		}
+		client.newCall(request).enqueue(callback);
 	}
 }

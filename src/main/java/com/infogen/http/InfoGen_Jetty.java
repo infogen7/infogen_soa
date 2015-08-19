@@ -20,8 +20,8 @@ import org.eclipse.jetty.webapp.JettyWebXmlConfiguration;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
 
-import com.infogen.aop.util.NativePath;
 import com.infogen.configuration.InfoGen_Configuration;
+import com.infogen.core.util.NativePath;
 
 /**
  * 启动jetty服务
@@ -56,7 +56,7 @@ public class InfoGen_Jetty {
 	public InfoGen_Jetty start(InfoGen_Configuration infogen_configuration, String CONTEXT, String DEFAULT_WEBAPP_PATH, String DESCRIPTOR) {
 		Thread t = new Thread(() -> {
 			try {
-				final Server server = createServerInSource(InfoGen_Configuration.register_node.getHttp_port(), CONTEXT, NativePath.get(DEFAULT_WEBAPP_PATH).toString(), NativePath.get(DESCRIPTOR).toString());
+				final Server server = createServerInSource(infogen_configuration.register_node.getHttp_port(), CONTEXT, NativePath.get(DEFAULT_WEBAPP_PATH).toString(), NativePath.get(DESCRIPTOR).toString());
 				server.start();
 				server.join();
 			} catch (Exception e) {

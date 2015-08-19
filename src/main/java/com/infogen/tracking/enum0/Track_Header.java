@@ -12,7 +12,8 @@ public enum Track_Header {
 	x_session_id("x-session", "session id"), //
 	x_identify("x-iden", "identify"), //
 	x_sequence("x-seq", "sequence"), //
-	x_referer("x-ref", "referer");
+	x_referer("x-ref", "referer"), //
+	x_referer_ip("x-ref-ip", "referer_ip");
 	public String key;
 	public String note;
 

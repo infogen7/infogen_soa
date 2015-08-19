@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.infogen.aop.tools.Tool_Core;
 import com.infogen.authc.configuration.handle.Authc_Properties_Handle;
+import com.infogen.core.tools.Tool_Core;
 
 /**
  * 解析安全框架ini配置中[authc]方法权限配置的部分

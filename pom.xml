@@ -5,8 +5,7 @@
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
 
-	<version>V1.1.05R150803</version>
-
+	<version>V2.0.00R150901</version>
 
 	<name>infogen_soa</name>
 	<url>https://github.com/larrylgq/infogen_soa</url>
@@ -33,7 +32,7 @@
 		<project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
 
 		<sonar.exclusions>
-			/src/main/java/com/infogen/thrift/*
+			/src/main/java/com/infogen/thrift/*,/src/main/java/com/infogen/grpc/*
 		</sonar.exclusions>
 		<sonar.language>java</sonar.language>
 	</properties>
@@ -41,8 +40,8 @@
 		<!-- aop -->
 		<dependency>
 			<groupId>com.infogen</groupId>
-			<artifactId>infogen_aop</artifactId>
-			<version>V1.1.05R150803</version>
+			<artifactId>infogen_core</artifactId>
+			<version>V2.0.00R150901</version>
 		</dependency>
 		<!-- core -->
 		<dependency>
@@ -80,15 +79,11 @@
 			<version>0.8.2.1</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>com.sun.mail</groupId>
 			<artifactId>javax.mail</artifactId>
 			<version>1.5.4</version>
 		</dependency>
-
-
-
 
 		<!-- spring -->
 		<dependency>
@@ -106,38 +101,6 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>4.1.7.RELEASE</version>
 		</dependency>
-
-		<!-- thrift -->
-		<dependency>
-			<groupId>org.apache.thrift</groupId>
-			<artifactId>libthrift</artifactId>
-			<version>0.9.2</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.httpcomponents</groupId>
-					<artifactId>httpclient</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.httpcomponents</groupId>
-					<artifactId>httpcore</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<!-- <dependency> -->
-		<!-- <groupId>com.google.protobuf</groupId> -->
-		<!-- <artifactId>protobuf-java</artifactId> -->
-		<!-- <version>3.0.0-alpha-2</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>io.grpc</groupId> -->
-		<!-- <artifactId>grpc-all</artifactId> -->
-		<!-- <version>0.7.0</version> -->
-		<!-- </dependency> -->
 
 		<!-- Jetty Webapp -->
 		<dependency>
@@ -167,12 +130,7 @@
 			<artifactId>okhttp</artifactId>
 			<version>2.4.0</version>
 		</dependency>
-		<!-- redis -->
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-			<version>2.7.2</version>
-		</dependency>
+		
 		<!-- auth -->
 		<dependency>
 			<groupId>com.nimbusds</groupId>
