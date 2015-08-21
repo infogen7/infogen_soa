@@ -25,6 +25,7 @@ public abstract class AbstractServer {
 	protected Integer min_nodes = 1;
 
 	protected String infogen_version = "";
+	
 	// proxy
 	protected String http_domain;
 	protected String http_proxy;
@@ -59,7 +60,7 @@ public abstract class AbstractServer {
 	public String getDescribe() {
 		return describe;
 	}
-
+	
 	public String getPath() {
 		return path;
 	}

@@ -40,6 +40,7 @@ public class Service {
 	private static final InfoGen instance = InfoGen.getInstance();
 	private static ConcurrentMap<String, RemoteServer> depend_server = InfoGen_Cache_Server.getInstance().depend_server;
 	private String server_name;
+	private String node_version;
 	private NetType net_type = NetType.LOCAL;
 
 	public static Service create(String server_name) {
@@ -55,6 +56,15 @@ public class Service {
 		// 初始化
 		instance.get_server(server_name);
 	}
+	
+	
+	public Service(String server_name,String node_version) {
+		this.server_name = server_name;
+		this.node_version = node_version;
+		// 初始化
+		//instance.get_server(server_name);
+		instance.get_server(server_name,node_version);
+	}
 
 	/**
 	 * 指定网络类型是内网还是外网
@@ -67,6 +77,15 @@ public class Service {
 		this.server_name = server_name;
 		// 初始化
 		instance.get_server(server_name);
+	}
+	
+	public Service(String server_name,NetType net_type,String node_version) {
+		this.server_name = server_name;
+		this.net_type = net_type;
+		this.node_version = node_version;
+		// 初始化
+		//instance.get_server(server_name);
+		instance.get_server(server_name,node_version);
 	}
 
 	// /////////////////////////////////////////////////HTTPFunction/////////////////////////////////////////////
