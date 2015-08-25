@@ -92,25 +92,6 @@ public class InfoGen {
 		return init_server(server_name, (native_server) -> {
 		});
 	}
-	//获取指定了版本的服务
-	//TODO
-	public RemoteServer get_server(String server_name,String node_version) {
-		RemoteServer server = CACHE_SERVER.depend_server.get(server_name);
-		
-		if (server != null) {
-			return server;
-		}
-		RemoteServer remoteServer =  init_server(server_name, node_version,(native_server) -> {
-		});
-		//判断版本
-		remoteServer.get_all_nodes().forEach((name,node) -> {
-			if(!node.getNode_version().equals(node_version)){
-				remoteServer.remove(node);
-			}	
-		});
-
-		return remoteServer;
-	}
 
 	/**
 	 * 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
@@ -144,26 +125,6 @@ public class InfoGen {
 			return server;
 		}
 		LOGGER.warn("没有找到可用服务:".concat(server_name));
-		return server;
-	}
-	
-	/**
-	 * 初始化服务,每个服务只会拉取一次
-	 * 
-	 * @param server_name
-	 * @param server_loaded_handle
-	 * @return
-	 */
-	private RemoteServer init_server(String server_name, String node_version,InfoGen_Loaded_Handle_Server server_loaded_handle) {
-		RemoteServer server = CACHE_SERVER.cache_server_single(server_name, node_version,server_loaded_handle);
-		if (server != null) {
-			return server;
-		}
-		LOGGER.warn("没有找到可用服务:".concat(server_name));
-
-		if (server_loaded_handle != null) {
-			server_loaded_handle.handle_event(server);
-		}
 		return server;
 	}
 }

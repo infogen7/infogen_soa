@@ -29,8 +29,6 @@ public abstract class AbstractNode extends ShardInfo {
 	protected String http_protocol;
 	protected Integer http_port;
 	protected Integer rpc_port;
-	//版本
-	protected String node_version = "";
 
 	protected String context = "";// tomcat的context path,使用tomcat的应该配置，jetty如果有特殊的路径，也可以配置
 
@@ -78,14 +76,6 @@ public abstract class AbstractNode extends ShardInfo {
 
 	public void setIp(String ip) {
 		this.ip = ip;
-	}
-	
-	public String getNode_version() {
-		return node_version;
-	}
-
-	public void setNode_version(String node_version) {
-		this.node_version = node_version;
 	}
 
 	public String getHttp_protocol() {

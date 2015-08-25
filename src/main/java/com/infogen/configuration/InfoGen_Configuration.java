@@ -128,12 +128,6 @@ public class InfoGen_Configuration {
 		register_node.setContext(infogen_properties.getProperty("infogen.http.context"));
 		register_node.setServer_room(infogen_properties.getProperty("infogen.server_room"));
 		register_node.setTime(new Timestamp(Clock.system(InfoGen_Configuration.zoneid).millis()));
-		String node_version = infogen_properties.getProperty("infogen.node_version");
-		if(node_version!=null&&
-				!node_version.isEmpty()){
-			register_node.setNode_version(node_version);
-		}
-		
 
 		if (!register_node.available()) {
 			LOGGER.error("节点配置配置不能为空:infogen.name,infogen.ratio,infogen.ip,infogen.http.port或infogen.rpc.port");
