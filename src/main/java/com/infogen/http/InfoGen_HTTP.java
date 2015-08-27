@@ -1,20 +1,23 @@
 package com.infogen.http;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
 import com.infogen.core.tools.Tool_Jackson;
-import com.infogen.http.exception.HTTP_Fail_Exception;
+import com.infogen.exception.HTTP_Fail_Exception;
 import com.infogen.tracking.CallChain;
 import com.infogen.tracking.ThreadLocal_Tracking;
-import com.infogen.tracking.enum0.Track_Header;
+import com.infogen.util.InfoGen_Header;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Protocol;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Request.Builder;
 import com.squareup.okhttp.RequestBody;
@@ -35,6 +38,10 @@ public class InfoGen_HTTP {
 	private static final OkHttpClient client = new OkHttpClient();
 
 	static {
+		List<Protocol> list = new ArrayList<>();
+		list.add(Protocol.HTTP_2);
+		list.add(Protocol.HTTP_1_1);
+		client.setProtocols(list);
 		client.setConnectTimeout(connect_timeout, TimeUnit.MILLISECONDS);
 		client.setReadTimeout(socket_timeout, TimeUnit.MILLISECONDS);
 		client.setWriteTimeout(socket_timeout, TimeUnit.MILLISECONDS);
@@ -70,17 +77,17 @@ public class InfoGen_HTTP {
 			// 注意:builder.header 不能写入空值,会报异常
 			String sessionid = callChain.getSessionid();
 			if (sessionid != null) {
-				builder.header(Track_Header.x_session_id.key, sessionid);
+				builder.header(InfoGen_Header.x_session_id.key, sessionid);
 			}
 			String referer = callChain.getReferer();
 			if (referer != null) {
-				builder.header(Track_Header.x_referer.key, callChain.getTarget());//
+				builder.header(InfoGen_Header.x_referer.key, callChain.getTarget());//
 			}
 			String trackid = callChain.getTrackid();
 			if (trackid != null) {
-				builder.header(Track_Header.x_track_id.key, callChain.getTrackid())//
-						.header(Track_Header.x_identify.key, callChain.getIdentify())//
-						.header(Track_Header.x_sequence.key, callChain.getSequence().toString());
+				builder.header(InfoGen_Header.x_track_id.key, callChain.getTrackid())//
+						.header(InfoGen_Header.x_identify.key, callChain.getIdentify())//
+						.header(InfoGen_Header.x_sequence.key, callChain.getSequence().toString());
 			}
 		}
 	}
@@ -98,8 +105,12 @@ public class InfoGen_HTTP {
 		Request request = builder.build();
 		Response response = client.newCall(request).execute();
 		if (response.isSuccessful()) {
+			LOGGER.info("OkHttp-Selected-Protocol: " + response.header("OkHttp-Selected-Protocol"));
+			LOGGER.info("Response code is " + response.code());
 			return response.body().string();
 		} else {
+			LOGGER.info("OkHttp-Selected-Protocol: " + response.header("OkHttp-Selected-Protocol"));
+			LOGGER.info("Response code is " + response.code());
 			throw new HTTP_Fail_Exception(response.code(), response.message());
 		}
 	}
@@ -167,6 +178,8 @@ public class InfoGen_HTTP {
 		Request request = builder.post(RequestBody.create(type, params)).build();
 		Response response = client.newCall(request).execute();
 		if (response.isSuccessful()) {
+			LOGGER.info("OkHttp-Selected-Protocol: " + response.header("OkHttp-Selected-Protocol"));
+			LOGGER.info("Response code is " + response.code());
 			return response.body().string();
 		} else {
 			throw new HTTP_Fail_Exception(response.code(), response.message());
