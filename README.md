@@ -12,6 +12,10 @@ Y:添加默认的心跳接口
 5:ddos并发过滤
 6:http post 在body体内的数据(压缩)
 7:优化infogen rpc
+8:拆分infogen_hibernate
+9:拆分infogen_limit
+10:拆分infogen_authc
+11:拆分infogen_cluster_limit
 
 发布  日期：20150803
 发布版本号：V1.1.04R150803
