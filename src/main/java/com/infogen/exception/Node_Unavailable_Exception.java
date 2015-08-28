@@ -9,8 +9,8 @@ import com.infogen.core.util.CODE;
  * @since 1.0
  * @version 1.0
  */
-public class Node_Notfound_Exception extends InfoGen_Exception {
-	private static final long serialVersionUID = -7021908273339016544L;
+public class Node_Unavailable_Exception extends InfoGen_Exception {
+	private static final long serialVersionUID = 8132568491561381381L;
 
 	/*
 	 * (non-Javadoc)
@@ -19,7 +19,7 @@ public class Node_Notfound_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public Integer code() {
-		return CODE.node_notfound.code;
+		return CODE.node_unavailable.code;
 	}
 
 	/*
@@ -29,7 +29,7 @@ public class Node_Notfound_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public String name() {
-		return CODE.node_notfound.name();
+		return CODE.node_unavailable.name();
 	}
 
 	/*
@@ -39,7 +39,7 @@ public class Node_Notfound_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public String note() {
-		return CODE.node_notfound.note;
+		return CODE.node_unavailable.note;
 	}
 
 }

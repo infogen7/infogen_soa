@@ -301,7 +301,6 @@ public class InfoGen_Cache_Server {
 		}
 		// 本地存在远端不存在的节点 - 删除
 		for (RemoteNode native_node : tmp_native_nodes.values()) {
-			native_node.clean();
 			native_server.remove(native_node);
 		}
 

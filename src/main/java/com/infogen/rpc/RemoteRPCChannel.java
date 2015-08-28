@@ -1,0 +1,77 @@
+package com.infogen.rpc;
+
+import java.time.Clock;
+
+import org.apache.log4j.Logger;
+
+import com.google.protobuf.ServiceException;
+import com.infogen.Service;
+import com.infogen.core.util.CODE;
+import com.infogen.core.util.map.LRULinkedHashMap;
+import com.infogen.exception.Node_Unavailable_Exception;
+import com.infogen.exception.Service_Notfound_Exception;
+import com.infogen.rpc.client.InfoGen_Channel;
+import com.infogen.server.model.RemoteNode;
+import com.infogen.server.model.RemoteServer;
+
+import io.netty.channel.Channel;
+import io.netty.handler.codec.http.DefaultFullHttpRequest;
+
+/**
+ * 
+ * @author larry/larrylv@outlook.com/创建时间 2015年8月26日 下午4:36:20
+ * @since 1.0
+ * @version 1.0
+ */
+public class RemoteRPCChannel extends InfoGen_Channel {
+	private static final Logger LOGGER = Logger.getLogger(RemoteRPCChannel.class.getName());
+	private final LRULinkedHashMap<String, Channel> map = new LRULinkedHashMap<>(5000);
+	private Service service;
+
+	public RemoteRPCChannel(Service service) {
+		this.service = service;
+	}
+
+	public InfoGen_Channel connect() {
+		return this;
+	}
+
+	public Channel getChannel(RemoteNode node) throws InterruptedException {
+		Channel channel = map.get(node.getName());
+		if (channel == null) {
+			channel = connect(node.getIp(), node.getRpc_port());
+		} else if (!channel.isActive()) {// channel!=null && !channel.isActive()
+			channel.close();
+			channel = connect(node.getIp(), node.getRpc_port());
+		}
+		return channel;
+	}
+
+	public void writeAndFlush(DefaultFullHttpRequest httprequest) throws ServiceException {
+		RemoteServer server = service.get_server();
+		if (server == null) {
+			LOGGER.error(CODE.service_notfound.note);
+			throw new ServiceException(new Service_Notfound_Exception());
+		}
+		RemoteNode node = null;
+		String seed = String.valueOf(Clock.systemDefaultZone().millis());
+		// 调用出错重试3次
+		for (int i = 0; i < 3; i++) {
+			node = server.random_node(seed);
+			if (node == null) {
+				LOGGER.error(CODE.node_unavailable.note);
+				throw new ServiceException(new Node_Unavailable_Exception());
+			}
+			try {
+				getChannel(node).writeAndFlush(httprequest);
+				return;
+			} catch (InterruptedException e) {
+				LOGGER.error("发送消息失败", e);
+				server.disabled(node);
+				continue;
+			}
+		}
+		LOGGER.error(CODE.node_unavailable.note);
+		throw new ServiceException(new Node_Unavailable_Exception());
+	}
+}

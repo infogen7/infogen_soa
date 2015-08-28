@@ -17,7 +17,7 @@ import com.infogen.tools.Tool_Context;
  * @since 1.0
  * @version 1.0
  */
-public class InfoGen_HTTP_Tracking_Handle {
+public class InfoGen_RPC_Tracking_Handle {
 
 	public static String sessionid_name = "token";
 

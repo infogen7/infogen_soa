@@ -10,10 +10,10 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import com.infogen.core.tools.Tool_Jackson;
+import com.infogen.core.util.HTTP_Header;
 import com.infogen.exception.HTTP_Fail_Exception;
 import com.infogen.tracking.CallChain;
 import com.infogen.tracking.ThreadLocal_Tracking;
-import com.infogen.util.InfoGen_Header;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -77,17 +77,17 @@ public class InfoGen_HTTP {
 			// 注意:builder.header 不能写入空值,会报异常
 			String sessionid = callChain.getSessionid();
 			if (sessionid != null) {
-				builder.header(InfoGen_Header.x_session_id.key, sessionid);
+				builder.header(HTTP_Header.x_session_id.key, sessionid);
 			}
 			String referer = callChain.getReferer();
 			if (referer != null) {
-				builder.header(InfoGen_Header.x_referer.key, callChain.getTarget());//
+				builder.header(HTTP_Header.x_referer.key, callChain.getTarget());//
 			}
 			String trackid = callChain.getTrackid();
 			if (trackid != null) {
-				builder.header(InfoGen_Header.x_track_id.key, callChain.getTrackid())//
-						.header(InfoGen_Header.x_identify.key, callChain.getIdentify())//
-						.header(InfoGen_Header.x_sequence.key, callChain.getSequence().toString());
+				builder.header(HTTP_Header.x_track_id.key, callChain.getTrackid())//
+						.header(HTTP_Header.x_identify.key, callChain.getIdentify())//
+						.header(HTTP_Header.x_sequence.key, callChain.getSequence().toString());
 			}
 		}
 	}
@@ -99,7 +99,7 @@ public class InfoGen_HTTP {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String do_get(String url, Map<String, String> params) throws IOException {
+	public static String do_get(String url, Map<String, String> params) throws IOException  {
 		Builder builder = new Request.Builder().url(concat_url_params(url, params));
 		add_headers(builder);
 		Request request = builder.build();

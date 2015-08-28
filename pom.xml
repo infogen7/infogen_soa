@@ -37,23 +37,24 @@
 		<sonar.language>java</sonar.language>
 	</properties>
 	<dependencies>
-		<!-- aop -->
-		<dependency>
-			<groupId>com.infogen</groupId>
-			<artifactId>infogen_core</artifactId>
-			<version>V2.0.00R150901</version>
-		</dependency>
-		<!-- core -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
-		</dependency>
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>6.9.6</version>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- core -->
+		<dependency>
+			<groupId>com.infogen</groupId>
+			<artifactId>infogen_core</artifactId>
+			<version>V2.0.00R150901</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.infogen</groupId>
+			<artifactId>infogen_rpc</artifactId>
+			<version>V2.0.00R150901</version>
 		</dependency>
 
 		<!-- zookeeper -->
@@ -79,6 +80,7 @@
 			<version>0.8.2.1</version>
 		</dependency>
 
+		<!-- mail -->
 		<dependency>
 			<groupId>com.sun.mail</groupId>
 			<artifactId>javax.mail</artifactId>
@@ -136,7 +138,7 @@
 
 
 
-		<!-- httpclient -->
+		<!-- okhttp -->
 		<dependency>
 			<groupId>com.squareup.okhttp</groupId>
 			<artifactId>okhttp</artifactId>
@@ -148,18 +150,6 @@
 			<groupId>com.nimbusds</groupId>
 			<artifactId>nimbus-jose-jwt</artifactId>
 			<version>3.10</version>
-		</dependency>
-
-		<!-- rpc -->
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
-			<version>4.1.0.Beta5</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.protobuf</groupId>
-			<artifactId>protobuf-java</artifactId>
-			<version>3.0.0-alpha-3.1</version>
 		</dependency>
 
 	</dependencies>

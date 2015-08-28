@@ -25,6 +25,7 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class RemoteServer extends AbstractServer {
+	@JsonIgnore
 	private static final Logger LOGGER = Logger.getLogger(RemoteServer.class.getName());
 
 	private List<RemoteNode> available_nodes = new CopyOnWriteArrayList<>();
@@ -75,7 +76,6 @@ public class RemoteServer extends AbstractServer {
 			disabled_nodes.remove(node);
 			consistent_hash.remove(node);
 		}
-		node.clean();
 	}
 
 	public void enable(RemoteNode node) {
@@ -100,7 +100,6 @@ public class RemoteServer extends AbstractServer {
 	 * 
 	 * @return
 	 */
-
 	public RemoteNode random_node(String seed) {
 		long millis = Clock.system(InfoGen_Configuration.zoneid).millis();
 		// 没有可用节点或距离上一次成功调用超过指定时间
