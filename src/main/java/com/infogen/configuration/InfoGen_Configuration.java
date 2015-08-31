@@ -28,7 +28,7 @@ import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
 import com.infogen.server.zookeeper.InfoGen_ZooKeeper;
 import com.infogen.tracking.annotation.Execution;
-import com.infogen.tracking.annotation.InfoGen_AOP_Handle_Execution;
+import com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution;
 
 /**
  * infogen配置解析及其它全局配置
