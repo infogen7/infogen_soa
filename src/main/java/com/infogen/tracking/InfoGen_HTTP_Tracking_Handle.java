@@ -7,8 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.infogen.core.util.HTTP_Header;
-import com.infogen.tools.Tool_Context;
+import com.infogen.tools.HTTP_Header;
+import com.infogen.tools.Tool_HTTP;
 
 /**
  * HTTP协议下记录调用链的处理类
@@ -34,10 +34,10 @@ public class InfoGen_HTTP_Tracking_Handle {
 		if (traceid == null || traceid.isEmpty()) {
 			callchain.setTrackid(UUID.randomUUID().toString().replaceAll("-", ""));
 			// identify
-			String identify = Tool_Context.get_cookie(request, HTTP_Header.x_identify.key);
+			String identify = Tool_HTTP.get_cookie(request, HTTP_Header.x_identify.key);
 			if (identify == null) {
 				identify = UUID.randomUUID().toString().replaceAll("-", "");
-				Tool_Context.set_cookie(response, HTTP_Header.x_identify.key, identify);
+				Tool_HTTP.set_cookie(response, HTTP_Header.x_identify.key, identify);
 			}
 			callchain.setIdentify(identify);
 			// sequence
@@ -49,7 +49,7 @@ public class InfoGen_HTTP_Tracking_Handle {
 			// session id
 			String sessionid = request.getParameter(sessionid_name);
 			if (sessionid == null) {
-				sessionid = Tool_Context.get_cookie(request, sessionid_name);
+				sessionid = Tool_HTTP.get_cookie(request, sessionid_name);
 			}
 			callchain.setSessionid(sessionid);
 		} else {
@@ -68,7 +68,7 @@ public class InfoGen_HTTP_Tracking_Handle {
 		}
 
 		// referer ip
-		callchain.setReferer_ip(Tool_Context.get_ip(request));
+		callchain.setReferer_ip(Tool_HTTP.get_ip(request));
 		// target
 		String target = request.getRequestURI();
 		String contextPath = request.getContextPath();

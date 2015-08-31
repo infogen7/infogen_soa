@@ -50,7 +50,7 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		}
 		Function_Type type = ((Execution) annotation).type();
 		StringBuilder sbd = new StringBuilder();
-		sbd.append("com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution.insert_after_call_back(");
+		sbd.append("com.infogen.tracking.annotation.InfoGen_AOP_Handle_Execution.insert_after_call_back(");
 		sbd.append("\"").append(class_name).append("\"").append(",");
 		sbd.append("\"").append(method_name).append("\"").append(",");
 		sbd.append("\"").append(user_definition).append("\"").append(",");
@@ -60,7 +60,7 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		advice_method.setInsert_after(sbd.toString());
 
 		sbd.setLength(0);
-		sbd.append("com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution.add_catch_call_back(");
+		sbd.append("com.infogen.tracking.annotation.InfoGen_AOP_Handle_Execution.add_catch_call_back(");
 		sbd.append("\"").append(class_name).append("\"").append(",");
 		sbd.append("\"").append(method_name).append("\"").append(",");
 		sbd.append("\"").append(user_definition).append("\"").append(",");

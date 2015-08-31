@@ -10,8 +10,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import com.infogen.core.tools.Tool_Jackson;
-import com.infogen.core.util.HTTP_Header;
 import com.infogen.exception.HTTP_Fail_Exception;
+import com.infogen.tools.HTTP_Header;
 import com.infogen.tracking.CallChain;
 import com.infogen.tracking.ThreadLocal_Tracking;
 import com.squareup.okhttp.Callback;

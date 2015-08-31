@@ -1,6 +1,8 @@
 package com.infogen.rpc;
 
-import org.apache.log4j.Logger;
+import com.google.protobuf.BlockingService;
+import com.infogen.configuration.InfoGen_Configuration;
+import com.infogen.rpc_filter.InfoGen_Server_Filter;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年8月28日 下午7:33:48
@@ -8,7 +10,6 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public class InfoGen_RPC {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen_RPC.class.getName());
 
 	private static class InnerInstance {
 		public static final InfoGen_RPC instance = new InfoGen_RPC();
@@ -19,6 +20,26 @@ public class InfoGen_RPC {
 	}
 
 	private InfoGen_RPC() {
+	}
+
+	Server server;
+
+	public InfoGen_RPC start(InfoGen_Configuration infogen_configuration) throws InterruptedException {
+		server = new Server(infogen_configuration.register_node.getRpc_port());
+		InfoGen_Server_Filter filter = new InfoGen_Server_Filter();
+		server.add_filter(filter);
+		server.serve();
+		return this;
+	}
+
+	public InfoGen_RPC shutdown() throws InterruptedException {
+		server.shutdown();
+		return this;
+	}
+
+	public InfoGen_RPC registerService(final BlockingService service) {
+		server.registerService(service);
+		return this;
 	}
 
 }

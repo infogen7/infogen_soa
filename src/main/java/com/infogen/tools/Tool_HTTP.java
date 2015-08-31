@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
  * @since 1.0
  * @version 1.0
  */
-public class Tool_Context {
-	private static final Logger LOGGER = Logger.getLogger(Tool_Context.class.getName());
+public class Tool_HTTP {
+	private static final Logger LOGGER = Logger.getLogger(Tool_HTTP.class.getName());
 
 	public static String get_cookie(HttpServletRequest request, String key) {
 		Cookie[] cookies = request.getCookies();

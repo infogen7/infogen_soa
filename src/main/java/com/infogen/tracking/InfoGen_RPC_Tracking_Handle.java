@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import com.infogen.core.util.HTTP_Header;
-import com.infogen.tools.Tool_Context;
+import com.infogen.rpc.tools.Tool_RPC;
+import com.infogen.tools.HTTP_Header;
+
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaders;
 
 /**
  * HTTP协议下记录调用链的处理类
@@ -26,56 +29,51 @@ public class InfoGen_RPC_Tracking_Handle {
 	 * 
 	 * @see com.infogen.web.InfoGen_SOA_Filter_Handle#doFilter(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	public CallChain doFilter(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	public CallChain doFilter(ChannelHandlerContext ctx, FullHttpRequest request, FullHttpResponse response) throws IOException, ServletException {
 		CallChain callchain = new CallChain();
+		HttpHeaders headers = request.headers();
 
 		// traceid
-		String traceid = request.getParameter(HTTP_Header.x_track_id.key);
+		String traceid = headers.get(HTTP_Header.x_track_id.key);
 		if (traceid == null || traceid.isEmpty()) {
 			callchain.setTrackid(UUID.randomUUID().toString().replaceAll("-", ""));
 			// identify
-			String identify = Tool_Context.get_cookie(request, HTTP_Header.x_identify.key);
+			String identify = Tool_RPC.get_cookie(request, HTTP_Header.x_identify.key);
 			if (identify == null) {
 				identify = UUID.randomUUID().toString().replaceAll("-", "");
-				Tool_Context.set_cookie(response, HTTP_Header.x_identify.key, identify);
+				Tool_RPC.set_cookie(response, HTTP_Header.x_identify.key, identify);
 			}
 			callchain.setIdentify(identify);
 			// sequence
 			callchain.setSequence(0);
-
 			// 注意:可能为空
 			// Referer
-			callchain.setReferer(request.getHeader("Referer"));
+			callchain.setReferer(headers.get(HTTP_Header.Referer.key));
 			// session id
-			String sessionid = request.getParameter(sessionid_name);
-			if (sessionid == null) {
-				sessionid = Tool_Context.get_cookie(request, sessionid_name);
+			String session_id = Tool_RPC.get_cookie(request, sessionid_name);
+			if (session_id == null) {
+				session_id = headers.get(HTTP_Header.x_session_id.key);
 			}
-			callchain.setSessionid(sessionid);
+			callchain.setSessionid(session_id);
 		} else {
 			callchain.setTrackid(traceid);
 			// identify
-			callchain.setIdentify(request.getHeader(HTTP_Header.x_identify.key));
+			callchain.setIdentify(headers.get(HTTP_Header.x_identify.key));
 			// sequence
-			String x_sequence = request.getHeader(HTTP_Header.x_sequence.key);
+			String x_sequence = headers.get(HTTP_Header.x_sequence.key);
 			Integer sequence = x_sequence == null ? 0 : Integer.valueOf(x_sequence);
 			callchain.setSequence(sequence + 1);
 
 			// Referer
-			callchain.setReferer(request.getHeader(HTTP_Header.x_referer.key));
+			callchain.setReferer(headers.get(HTTP_Header.x_referer.key));
 			// session id
-			callchain.setSessionid(request.getHeader(HTTP_Header.x_session_id.key));
+			callchain.setSessionid(headers.get(HTTP_Header.x_session_id.key));
 		}
 
 		// referer ip
-		callchain.setReferer_ip(Tool_Context.get_ip(request));
+		callchain.setReferer_ip(Tool_RPC.get_ip(ctx, request));
 		// target
-		String target = request.getRequestURI();
-		String contextPath = request.getContextPath();
-		if (target.startsWith(contextPath)) {
-			target = target.substring(contextPath.length());
-		}
-		callchain.setTarget(target);
+		callchain.setTarget(request.uri());
 		//
 		ThreadLocal_Tracking.setCallchain(callchain);
 		return callchain;
