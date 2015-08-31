@@ -102,7 +102,12 @@ public class InfoGen_Jetty {
 		LOGGER.info("add jetty annotation config dir => " + Resource.newResource(get_infogen_class_path()));
 		Set<Resource> set = new HashSet<>();
 		set.add(Resource.newResource(NativePath.get_class_path()));
-		set.add(Resource.newResource(get_infogen_class_path()));
+		String get_infogen_class_path = get_infogen_class_path();
+		set.add(Resource.newResource(get_infogen_class_path));
+		// file:///home/juxinli/workspace/infogen_soa/target/classes/
+		set.add(Resource.newResource(get_infogen_class_path.replace("infogen_soa", "infogen_authc")));
+		set.add(Resource.newResource(get_infogen_class_path.replace("infogen_soa", "infogen_cluster_limit")));
+		set.add(Resource.newResource(get_infogen_class_path.replace("infogen_soa", "infogen_limit")));
 		for (Resource resource : set) {
 			webContext.getMetaData().addContainerResource(resource);
 		}
