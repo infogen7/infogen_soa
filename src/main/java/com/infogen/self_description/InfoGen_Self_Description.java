@@ -7,8 +7,10 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.infogen.self_description.annotation.RPCController;
 import com.infogen.self_description.component.Function;
 import com.infogen.self_description.parser.HTTP_Parser;
+import com.infogen.self_description.parser.RPC_Parser;
 
 /**
  * HTTP协议中启动时扫描自描述配置
@@ -32,6 +34,7 @@ public class InfoGen_Self_Description {
 	}
 
 	private HTTP_Parser http_parser = new HTTP_Parser();
+	private RPC_Parser rpc_parser = new RPC_Parser();
 
 	public Map<String, Function> self_description(Set<Class<?>> class_set) {
 		Map<String, Function> functions = new HashMap<>();
@@ -42,6 +45,10 @@ public class InfoGen_Self_Description {
 					http_parser.self_description(clazz);
 				}
 
+				RPCController rpc_controller = clazz.getAnnotation(RPCController.class);
+				if (rpc_controller != null) {
+					rpc_parser.self_description(clazz);
+				}
 			} catch (Exception e) {
 				LOGGER.error("解析class失败:", e);
 			}

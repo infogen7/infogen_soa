@@ -87,8 +87,9 @@ public class InfoGen_Configuration {
 		}
 		kafka = infogen_properties.getProperty("infogen.kafka");
 		if (kafka == null || kafka.trim().isEmpty()) {
-			LOGGER.warn("kafka配置为空:infogen.kafka");
+			LOGGER.warn("kafka配置为空:infogen.kafka 调用链/日志等功能将不可用");
 		}
+
 		// server
 		register_server.setInfogen_version(InfoGen.VERSION);
 		register_server.setName(infogen_properties.getProperty("infogen.name"));
@@ -99,7 +100,9 @@ public class InfoGen_Configuration {
 		register_server.setProtocol(infogen_properties.getProperty("infogen.protocol"));
 		register_server.setHttp_domain(infogen_properties.getProperty("infogen.http.domain"));
 		register_server.setHttp_proxy(infogen_properties.getProperty("infogen.http.proxy"));
-		register_server.setHttp_functions(InfoGen_Self_Description.getInstance().self_description(AOP.getInstance().getClasses()));// 自描述
+
+		// server - 自描述
+		register_server.setHttp_functions(InfoGen_Self_Description.getInstance().self_description(AOP.getInstance().getClasses()));
 		if (!register_server.available()) {
 			LOGGER.error("服务配置不能为空:infogen.name");
 			System.exit(-1);
@@ -110,12 +113,13 @@ public class InfoGen_Configuration {
 		if (localIP == null || localIP.trim().isEmpty() || !Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(localIP).find()) {
 			localIP = Tool_Core.getLocalIP();
 		}
-		register_node.setName(localIP.concat("-" + Clock.system(zoneid).millis()));
 		register_node.setIp(localIP);
 		String net_ip = infogen_properties.getProperty("infogen.net_ip");
 		if (net_ip != null && !net_ip.trim().isEmpty() && Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(net_ip).find()) {
 			register_node.setNet_ip(net_ip);
 		}
+
+		register_node.setName(localIP.concat("-" + Clock.system(zoneid).millis()));
 		String http_port = infogen_properties.getProperty("infogen.http.port");
 		register_node.setHttp_port((http_port == null) ? null : Integer.valueOf(http_port));
 		String rpc_port = infogen_properties.getProperty("infogen.rpc.port");
@@ -125,7 +129,7 @@ public class InfoGen_Configuration {
 		register_node.setRatio((ratio == null) ? 10 : Math.max(0, Math.min(10, Integer.valueOf(ratio))));
 		register_node.setPath(InfoGen_ZooKeeper.path(register_server.getName()).concat("/".concat(register_node.getName())));
 		register_node.setHttp_protocol(infogen_properties.getProperty("infogen.http.protocol"));
-		register_node.setContext(infogen_properties.getProperty("infogen.http.context"));
+		register_node.setHttp_context(infogen_properties.getProperty("infogen.http.context"));
 		register_node.setServer_room(infogen_properties.getProperty("infogen.server_room"));
 		register_node.setTime(new Timestamp(Clock.system(InfoGen_Configuration.zoneid).millis()));
 

@@ -30,7 +30,7 @@ public abstract class AbstractNode extends ShardInfo {
 	protected Integer http_port;
 	protected Integer rpc_port;
 
-	protected String context = "";// tomcat的context path,使用tomcat的应该配置，jetty如果有特殊的路径，也可以配置
+	protected String http_context = "";// tomcat的context path,使用tomcat的应该配置，jetty如果有特殊的路径，也可以配置
 
 	// 节点的元数据,支持的功能等个性化配置
 	protected Map<String, Object> metadata = new HashMap<>();
@@ -126,12 +126,12 @@ public abstract class AbstractNode extends ShardInfo {
 		this.metadata = metadata;
 	}
 
-	public String getContext() {
-		return context;
+	public String getHttp_context() {
+		return http_context;
 	}
 
-	public void setContext(String Context) {
-		this.context = Context;
+	public void setHttp_context(String http_context) {
+		this.http_context = http_context;
 	}
 
 }
