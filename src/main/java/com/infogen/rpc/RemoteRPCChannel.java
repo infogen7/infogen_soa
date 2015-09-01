@@ -13,6 +13,9 @@ import com.infogen.exception.Service_Notfound_Exception;
 import com.infogen.rpc.client.InfoGen_Channel;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
+import com.infogen.tools.HTTP_Header;
+import com.infogen.tracking.CallChain;
+import com.infogen.tracking.ThreadLocal_Tracking;
 
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
@@ -55,6 +58,16 @@ public class RemoteRPCChannel extends InfoGen_Channel {
 		}
 		RemoteNode node = null;
 		String seed = String.valueOf(Clock.systemDefaultZone().millis());
+
+		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
+		if (callChain != null) {
+			httprequest.headers().set(HTTP_Header.x_session_id.key, callChain.getSessionid());
+			httprequest.headers().set(HTTP_Header.x_referer.key, callChain.getReferer());
+			httprequest.headers().set(HTTP_Header.x_track_id.key, callChain.getTrackid());
+			httprequest.headers().set(HTTP_Header.x_identify.key, callChain.getIdentify());
+			httprequest.headers().set(HTTP_Header.x_sequence.key, callChain.getSequence());
+		}
+
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			node = server.random_node(seed);

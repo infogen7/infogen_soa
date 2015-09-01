@@ -1,9 +1,8 @@
 package com.infogen.http;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -17,7 +16,6 @@ import com.infogen.tracking.ThreadLocal_Tracking;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Protocol;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Request.Builder;
 import com.squareup.okhttp.RequestBody;
@@ -38,34 +36,25 @@ public class InfoGen_HTTP {
 	private static final OkHttpClient client = new OkHttpClient();
 
 	static {
-		List<Protocol> list = new ArrayList<>();
-		list.add(Protocol.HTTP_2);
-		list.add(Protocol.HTTP_1_1);
-		client.setProtocols(list);
 		client.setConnectTimeout(connect_timeout, TimeUnit.MILLISECONDS);
 		client.setReadTimeout(socket_timeout, TimeUnit.MILLISECONDS);
 		client.setWriteTimeout(socket_timeout, TimeUnit.MILLISECONDS);
 		LOGGER.info("初始化HTTP CLIENT");
 	}
 
-	// //////////////////////////////////////////////////////////////////////////////////////////////get/////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////get/////////////////////////////////////////////////////////////
 	private static String concat_url_params(String url, Map<String, String> params) {
-		if (params == null) {
-			params = new HashMap<>();
+		if (params == null || params.isEmpty()) {
+			return url;
 		}
+		Iterator<String> iterator = params.keySet().iterator();
 		StringBuilder do_get_sbf = new StringBuilder();
-		do_get_sbf.append(url);
-		String[] keys = new String[params.size()];
-		params.keySet().toArray(keys);
-		for (int j = 0; j < keys.length; j++) {
-			if (j == 0) {
-				do_get_sbf.append("?");
-			} else {
-				do_get_sbf.append("&");
-			}
-			String key = keys[j];
-			String value = params.get(key);
-			do_get_sbf.append(key).append("=").append(value);
+
+		String first_key = iterator.next();
+		do_get_sbf.append(url).append("?").append(first_key).append("=").append(params.get(first_key));
+		while (iterator.hasNext()) {
+			String key = iterator.next();
+			do_get_sbf.append("&").append(key).append("=").append(params.get(key));
 		}
 		url = do_get_sbf.toString();
 		return url;
@@ -99,18 +88,14 @@ public class InfoGen_HTTP {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String do_get(String url, Map<String, String> params) throws IOException  {
+	public static String do_get(String url, Map<String, String> params) throws IOException {
 		Builder builder = new Request.Builder().url(concat_url_params(url, params));
 		add_headers(builder);
 		Request request = builder.build();
 		Response response = client.newCall(request).execute();
 		if (response.isSuccessful()) {
-			LOGGER.info("OkHttp-Selected-Protocol: " + response.header("OkHttp-Selected-Protocol"));
-			LOGGER.info("Response code is " + response.code());
 			return response.body().string();
 		} else {
-			LOGGER.info("OkHttp-Selected-Protocol: " + response.header("OkHttp-Selected-Protocol"));
-			LOGGER.info("Response code is " + response.code());
 			throw new HTTP_Fail_Exception(response.code(), response.message());
 		}
 	}
@@ -130,7 +115,7 @@ public class InfoGen_HTTP {
 		}
 	};
 
-	public static void do_async_get(String url, Map<String, String> params, Callback callback) {
+	public static void do_get_async(String url, Map<String, String> params, Callback callback) {
 		Builder builder = new Request.Builder().url(concat_url_params(url, params));
 		add_headers(builder);
 		Request request = builder.build();
@@ -163,35 +148,50 @@ public class InfoGen_HTTP {
 	public static final MediaType MEDIA_TYPE_MARKDOWN = MediaType.parse("text/x-markdown; charset=utf-8");
 	public static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");//
 	public static final MediaType MEDIA_TYPE_FORM = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");//
+	public static final MediaType MEDIA_TYPE_TEXT = MediaType.parse("text/plan; charset=utf-8");//
 
 	public static String do_post(String url, Map<String, String> params) throws IOException {
-		return do_post_bytype(url, MEDIA_TYPE_FORM, concat_params(params));
-	}
-
-	public static String do_post_json(String url, Map<String, String> params) throws IOException {
-		return do_post_bytype(url, MEDIA_TYPE_JSON, Tool_Jackson.toJson(params));
-	}
-
-	private static String do_post_bytype(String url, MediaType type, String params) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder);
-		Request request = builder.post(RequestBody.create(type, params)).build();
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_FORM, concat_params(params))).build();
 		Response response = client.newCall(request).execute();
 		if (response.isSuccessful()) {
-			LOGGER.info("OkHttp-Selected-Protocol: " + response.header("OkHttp-Selected-Protocol"));
-			LOGGER.info("Response code is " + response.code());
 			return response.body().string();
 		} else {
 			throw new HTTP_Fail_Exception(response.code(), response.message());
 		}
 	}
 
-	public static void do_async_post(String url, Map<String, String> params, Callback callback) throws IOException {
-		do_async_post_bytype(url, MEDIA_TYPE_FORM, concat_params(params), callback);
+	public static String do_post_json(String url, Map<String, String> params) throws IOException {
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder);
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
+		Response response = client.newCall(request).execute();
+		if (response.isSuccessful()) {
+			return response.body().string();
+		} else {
+			throw new HTTP_Fail_Exception(response.code(), response.message());
+		}
 	}
 
-	public static void do_async_post_json(String url, Map<String, String> params, Callback callback) throws IOException {
-		do_async_post_bytype(url, MEDIA_TYPE_JSON, Tool_Jackson.toJson(params), callback);
+	public static void do_post_async(String url, Map<String, String> params, Callback callback) throws IOException {
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder);
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_FORM, concat_params(params))).build();
+		if (callback == null) {
+			callback = async_post_callback;
+		}
+		client.newCall(request).enqueue(callback);
+	}
+
+	public static void do_post_json_async(String url, Map<String, String> params, Callback callback) throws IOException {
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder);
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
+		if (callback == null) {
+			callback = async_post_callback;
+		}
+		client.newCall(request).enqueue(callback);
 	}
 
 	private static final Callback async_post_callback = new Callback() {
@@ -208,14 +208,4 @@ public class InfoGen_HTTP {
 			}
 		}
 	};
-
-	private static void do_async_post_bytype(String url, MediaType type, String params, Callback callback) throws IOException {
-		Builder builder = new Request.Builder().url(url);
-		add_headers(builder);
-		Request request = builder.post(RequestBody.create(type, params)).build();
-		if (callback == null) {
-			callback = async_post_callback;
-		}
-		client.newCall(request).enqueue(callback);
-	}
 }
