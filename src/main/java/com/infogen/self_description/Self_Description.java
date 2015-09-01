@@ -42,15 +42,23 @@ public abstract class Self_Description {
 	// 使用javassist获取参数名
 	private static final ClassPool class_pool = ClassPool.getDefault();
 
-	private static final Map<String, CtClass> ctclass_maps = new HashMap<>();
+	private static final Map<String, CtClass> jdk_ctclass_maps = new HashMap<>();
 
-	public CtClass get_ctclass(String name) throws NotFoundException {
-		CtClass ctClass = ctclass_maps.get(name);
+	public CtClass get_jdk_ctclass(String name) throws NotFoundException {
+		CtClass ctClass = jdk_ctclass_maps.get(name);
 		if (ctClass == null) {
 			ctClass = class_pool.get(name);
-			ctclass_maps.put(name, ctClass);
+			jdk_ctclass_maps.put(name, ctClass);
 		}
 		return ctClass;
+	}
+
+	public CtClass get_ctclass(Class<?> clazz) throws NotFoundException {
+		ClassPool class_pool = ClassPool.getDefault();
+		class_pool.insertClassPath(new ClassClassPath(clazz));// war包下使用必须
+		CtClass ct_class = class_pool.get(clazz.getName());
+		ct_class.defrost();
+		return ct_class;
 	}
 
 	public void getDescribe(Function function, Method method) {
@@ -129,14 +137,11 @@ public abstract class Self_Description {
 	}
 
 	public String[] get_in_parameter_names(Class<?> clazz, String method_name, java.lang.reflect.Parameter[] reflect_parameters) throws NotFoundException {
-		ClassPool class_pool = ClassPool.getDefault();
-		class_pool.insertClassPath(new ClassClassPath(clazz));// war包下使用必须
-		CtClass ct_class = class_pool.get(clazz.getName());
-		ct_class.defrost();
+		CtClass ct_class = get_ctclass(clazz);
 
 		CtClass[] types = new CtClass[reflect_parameters.length];
 		for (int i = 0; i < reflect_parameters.length; i++) {
-			types[i] = get_ctclass(reflect_parameters[i].getType().getName());
+			types[i] = get_jdk_ctclass(reflect_parameters[i].getType().getName());
 		}
 		CtMethod cm = ct_class.getDeclaredMethod(method_name, types);
 		if (cm == null) {

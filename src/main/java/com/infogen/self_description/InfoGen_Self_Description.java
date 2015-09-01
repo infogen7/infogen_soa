@@ -42,12 +42,12 @@ public class InfoGen_Self_Description {
 			try {
 				RestController rest_controller = clazz.getAnnotation(RestController.class);
 				if (rest_controller != null) {
-					http_parser.self_description(clazz);
+					functions.putAll(http_parser.self_description(clazz));
 				}
 
 				RPCController rpc_controller = clazz.getAnnotation(RPCController.class);
 				if (rpc_controller != null) {
-					rpc_parser.self_description(clazz);
+					functions.putAll(rpc_parser.self_description(clazz));
 				}
 			} catch (Exception e) {
 				LOGGER.error("解析class失败:", e);

@@ -1,6 +1,5 @@
 package com.infogen.self_description.parser;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,16 +28,33 @@ public class RPC_Parser extends Self_Description {
 			pre_url = class_url_annotation.value().trim();
 		}
 
-		for (Method method : clazz.getMethods()) {// 遍历clazz对应类里面的所有方法
-			Annotation[] annotations = method.getDeclaredAnnotations();
-			for (Annotation annotation : annotations) {
-				System.out.println(annotation.annotationType());
+		Class<?> super_class = null;
+		Class<?>[] interfaces = clazz.getInterfaces();
+		for (Class<?> _interface : interfaces) {
+			if (_interface.getName().endsWith("$BlockingInterface")) {
+				super_class = _interface;
 			}
+		}
+		if (super_class == null) {
+			return functions;
+		}
 
-			Override request_mapping_annotation = method.getAnnotation(Override.class);// 方法映射路径和调用方式
-			if (request_mapping_annotation == null) {
-				continue;
+		Map<String, Method> map = new HashMap<>();
+		for (Method method : clazz.getDeclaredMethods()) {
+			StringBuilder stringbuilder = new StringBuilder(method.getName());
+			for (Class<?> type_clazz : method.getParameterTypes()) {
+				stringbuilder.append(",").append(type_clazz.getName());
 			}
+			map.put(stringbuilder.toString(), method);
+		}
+
+		for (Method super_method : super_class.getDeclaredMethods()) {// 遍历clazz对应类里面的所有方法
+			StringBuilder stringbuilder = new StringBuilder(super_method.getName());
+			for (Class<?> type_clazz : super_method.getParameterTypes()) {
+				stringbuilder.append(",").append(type_clazz.getName());
+			}
+			Method method = map.get(stringbuilder.toString());
+			
 			// url 方法名会格式为: /get/message
 			String suf_url = method.getName();// URL a/b/c/ 转化为 /a/b/c 第一个/会被补齐,最后一个/会被过滤掉
 			String url = new StringBuilder("/").append(pre_url).append("/").append(suf_url).toString();
