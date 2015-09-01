@@ -18,21 +18,21 @@ import com.infogen.http.ServletContainerInitializer.WebApplicationInitializer;
  * @author larry
  * @email larry.lv.word@gmail.com
  */
-public class InfoGen_MVC implements WebApplicationInitializer {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen_MVC.class.getName());
+public class InfoGen_Spring implements WebApplicationInitializer {
+	private static final Logger LOGGER = Logger.getLogger(InfoGen_Spring.class.getName());
 	private static ServletContext servletContext;
 	private static String config_path;
 	private static String mapping;
 	private final static byte[] lock = new byte[0];
 
 	public static void start_mvc(String config_path, String mapping) throws IOException {
-		InfoGen_MVC.config_path = config_path;
-		InfoGen_MVC.mapping = mapping == null ? "/*" : mapping;
+		InfoGen_Spring.config_path = config_path;
+		InfoGen_Spring.mapping = mapping == null ? "/*" : mapping;
 		start_mvc(servletContext, config_path);
 	}
 
 	public static void start_mvc(ServletContext servletContext) throws IOException {
-		InfoGen_MVC.servletContext = servletContext;
+		InfoGen_Spring.servletContext = servletContext;
 		start_mvc(servletContext, config_path);
 	}
 
