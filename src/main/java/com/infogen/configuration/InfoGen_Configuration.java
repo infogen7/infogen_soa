@@ -140,8 +140,6 @@ public class InfoGen_Configuration {
 
 		// /////////////////////////////////////////////////////初始化启动配置/////////////////////////////////////////////////////////////////////
 
-		// 添加infogen自己的类到AOP的类集合
-		AOP.getInstance().addClasses(com.infogen.Service.class);
 		// AOP
 		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
 
