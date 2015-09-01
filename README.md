@@ -6,11 +6,12 @@
 发布  日期：20150901
 发布版本号：V2.0.00R150901
 更新  内容：
+1:基于Netty 实现 使用 HTTP 协议接口描述和序列化采用 Protobuf的自定义RPC实现
 2:rpc 自描述
 3:RPC协议的调用链
-Y:添加默认的心跳接口
+4:添加默认的心跳接口
 5:ddos并发过滤
-6:http post 在body体内的数据(压缩)
+6:http post 在body体内的数据
 7:优化infogen rpc
 8:拆分infogen_hibernate
 9:拆分infogen_limit
