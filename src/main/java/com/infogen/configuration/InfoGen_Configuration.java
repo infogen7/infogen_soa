@@ -20,7 +20,7 @@ import com.infogen.InfoGen;
 import com.infogen.aop.AOP;
 import com.infogen.core.tools.Tool_Core;
 import com.infogen.core.util.NativePath;
-import com.infogen.http.mvc_framework.InfoGen_Server_Initializer;
+import com.infogen.http.mvc_framework.InfoGen_MVC;
 import com.infogen.self_description.InfoGen_Self_Description;
 import com.infogen.self_description.component.Function;
 import com.infogen.self_description.component.OutParameter;
@@ -147,7 +147,7 @@ public class InfoGen_Configuration {
 		String spring_mvc_path = infogen_properties.getProperty("infogen.http.spring_mvc.path");
 		String spring_mvc_mapping = infogen_properties.getProperty("infogen.http.spring_mvc.mapping");
 		if (spring_mvc_path != null && !spring_mvc_path.trim().isEmpty()) {
-			InfoGen_Server_Initializer.start_mvc(spring_mvc_path, spring_mvc_mapping);
+			InfoGen_MVC.start_mvc(spring_mvc_path, spring_mvc_mapping);
 		}
 		return this;
 	}
