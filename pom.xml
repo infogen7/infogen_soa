@@ -91,49 +91,44 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>4.1.7.RELEASE</version>
+			<version>4.2.1.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>4.1.7.RELEASE</version>
+			<version>4.2.1.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>4.1.7.RELEASE</version>
+			<version>4.2.1.RELEASE</version>
 		</dependency>
 
 		<!-- Jetty Webapp -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.3.2.v20150730</version>
+			<version>9.3.4.RC0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.3.2.v20150730</version>
+			<version>9.3.4.RC0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.http2</groupId>
 			<artifactId>http2-server</artifactId>
-			<version>9.3.2.v20150730</version>
+			<version>9.3.4.RC0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.http2</groupId>
 			<artifactId>http2-common</artifactId>
-			<version>9.3.2.v20150730</version>
+			<version>9.3.4.RC0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.http2</groupId>
 			<artifactId>http2-hpack</artifactId>
-			<version>9.3.2.v20150730</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mortbay.jetty.alpn</groupId>
-			<artifactId>alpn-boot</artifactId>
-			<version>8.1.4.v20150727</version>
+			<version>9.3.4.RC0</version>
 		</dependency>
 
 
@@ -149,7 +144,7 @@
 		<dependency>
 			<groupId>com.nimbusds</groupId>
 			<artifactId>nimbus-jose-jwt</artifactId>
-			<version>3.10</version>
+			<version>4.0</version>
 		</dependency>
 
 	</dependencies>

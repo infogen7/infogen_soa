@@ -17,7 +17,6 @@ import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jose.crypto.RSAEncrypter;
 import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
 
 /**
  * RSA方式的加密和解密
@@ -47,7 +46,7 @@ public class JWT_RSA_Encryption {
 
 	}
 
-	public ReadOnlyJWTClaimsSet decrypt(byte[] privateKeyBytes, String token) throws NoSuchAlgorithmException, InvalidKeySpecException, ParseException, JOSEException {
+	public JWTClaimsSet decrypt(byte[] privateKeyBytes, String token) throws NoSuchAlgorithmException, InvalidKeySpecException, ParseException, JOSEException {
 		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		RSAPrivateKey privateKey = (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
