@@ -16,5 +16,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface RPCController {
 	// 对应 proto 文件中的 service 名称
-	String value() default "";
+	String value();
 }
