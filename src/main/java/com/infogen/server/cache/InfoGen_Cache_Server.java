@@ -104,14 +104,15 @@ public class InfoGen_Cache_Server {
 
 	//////////////////////////////////////////////////////// create_update_server//////////////////////////////////////////////////////////////
 	/**
-	 * 写入或更新一个配置
+	 * 写入或更新一个节点数据
 	 * 
-	 * @param configuration_name
-	 * @param configuration_value
+	 * @param name
+	 * @param value
 	 * @return
 	 * @throws NoSuchAlgorithmException
 	 */
-	public void upsert_configuration(String configuration_name, String configuration_value, String digest) throws NoSuchAlgorithmException {
+	@SuppressWarnings("unused")
+	private void upsert_data(String name, String value, String digest) throws NoSuchAlgorithmException {
 		if (!ZK.available()) {
 			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
 			return;
@@ -123,12 +124,12 @@ public class InfoGen_Cache_Server {
 		// 所有用户可读权限
 		acls.add(new ACL(ZooDefs.Perms.READ, new Id("world", "anyone")));
 		// 创建或更新配置节点
-		String create_path = ZK.create(InfoGen_ZooKeeper.configuration_path(configuration_name), configuration_value.getBytes(), acls, CreateMode.PERSISTENT);
+		String create_path = ZK.create(InfoGen_ZooKeeper.configuration_path(name), value.getBytes(), acls, CreateMode.PERSISTENT);
 		if (create_path == null) {
 			LOGGER.error("注册配置失败");
 		} else if (create_path.equals(Code.NODEEXISTS.name())) {
 			ZK.add_auth_info("digest", digest);
-			ZK.set_data(InfoGen_ZooKeeper.configuration_path(configuration_name), configuration_value.getBytes(), -1);
+			ZK.set_data(InfoGen_ZooKeeper.configuration_path(name), value.getBytes(), -1);
 		}
 	}
 
