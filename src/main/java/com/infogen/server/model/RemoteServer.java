@@ -5,13 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.infogen.configuration.InfoGen_Configuration;
+import com.infogen.core.structure.map.consistent_hash.ConsistentHash;
 import com.infogen.core.tools.Tool_Jackson;
-import com.infogen.core.util.map.consistent_hash.ConsistentHash;
 
 import net.jcip.annotations.ThreadSafe;
 

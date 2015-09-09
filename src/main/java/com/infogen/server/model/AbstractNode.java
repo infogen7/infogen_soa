@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.core.util.map.consistent_hash.ShardInfo;
+import com.infogen.core.structure.map.consistent_hash.ShardInfo;
 
 /**
  * 节点基本属性 继承了用于一致性hash算法的接口
