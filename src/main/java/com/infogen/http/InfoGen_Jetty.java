@@ -54,9 +54,13 @@ public class InfoGen_Jetty {
 	 * @return
 	 */
 	public InfoGen_Jetty start(InfoGen_Configuration infogen_configuration, String CONTEXT, String DEFAULT_WEBAPP_PATH, String DESCRIPTOR) {
+		return start(infogen_configuration.register_node.getHttp_port(), CONTEXT, DEFAULT_WEBAPP_PATH, DESCRIPTOR);
+	}
+
+	public InfoGen_Jetty start(Integer http_port, String CONTEXT, String DEFAULT_WEBAPP_PATH, String DESCRIPTOR) {
 		Thread t = new Thread(() -> {
 			try {
-				final Server server = createServerInSource(infogen_configuration.register_node.getHttp_port(), CONTEXT, NativePath.get(DEFAULT_WEBAPP_PATH).toString(), NativePath.get(DESCRIPTOR).toString());
+				final Server server = createServerInSource(http_port, CONTEXT, NativePath.get(DEFAULT_WEBAPP_PATH).toString(), NativePath.get(DESCRIPTOR).toString());
 				server.start();
 				server.join();
 			} catch (Exception e) {
