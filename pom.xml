@@ -37,13 +37,6 @@
 		<sonar.language>java</sonar.language>
 	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>6.9.6</version>
-			<scope>test</scope>
-		</dependency>
-
 		<!-- core -->
 		<dependency>
 			<groupId>com.infogen</groupId>
@@ -64,6 +57,10 @@
 			<version>3.4.6</version>
 			<exclusions>
 				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-api</artifactId>
 				</exclusion>
@@ -78,6 +75,20 @@
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka_2.11</artifactId>
 			<version>0.8.2.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- mail -->
@@ -146,7 +157,13 @@
 			<artifactId>nimbus-jose-jwt</artifactId>
 			<version>4.0</version>
 		</dependency>
-
+		<!-- test -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.9.6</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 

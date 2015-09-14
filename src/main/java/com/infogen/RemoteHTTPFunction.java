@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.time.Clock;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.core.json.Return;
@@ -25,7 +26,7 @@ import com.squareup.okhttp.Callback;
  * @version 1.0
  */
 public class RemoteHTTPFunction {
-	private static final Logger LOGGER = Logger.getLogger(Service.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(Service.class.getName());
 	private Service service;
 	private NetType net_type = NetType.LOCAL;
 	private String method;

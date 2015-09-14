@@ -4,7 +4,8 @@ import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.http2.server.HTTP2CServerConnectionFactory;
 import org.eclipse.jetty.server.Connector;
@@ -31,7 +32,7 @@ import com.infogen.core.util.NativePath;
  * @version 1.0
  */
 public class InfoGen_Jetty {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen_Jetty.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(InfoGen_Jetty.class.getName());
 
 	private static class InnerInstance {
 		public static final InfoGen_Jetty instance = new InfoGen_Jetty();

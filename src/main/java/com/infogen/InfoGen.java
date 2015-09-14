@@ -3,7 +3,8 @@ package com.infogen;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.infogen.aop.AOP;
 import com.infogen.configuration.InfoGen_Configuration;
@@ -22,7 +23,7 @@ import net.jcip.annotations.NotThreadSafe;
  */
 @NotThreadSafe
 public class InfoGen {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(InfoGen.class.getName());
 
 	private static class InnerInstance {
 		public static final InfoGen instance = new InfoGen();

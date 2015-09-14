@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infogen.self_description.annotation.RPCController;
@@ -20,7 +21,7 @@ import com.infogen.self_description.parser.RPC_Parser;
  * @version 1.0
  */
 public class InfoGen_Self_Description {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen_Self_Description.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(InfoGen_Self_Description.class.getName());
 
 	private static class InnerInstance {
 		public static final InfoGen_Self_Description instance = new InfoGen_Self_Description();

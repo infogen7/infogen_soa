@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,7 +28,7 @@ import net.jcip.annotations.ThreadSafe;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class RemoteServer extends AbstractServer {
 	@JsonIgnore
-	private static final Logger LOGGER = Logger.getLogger(RemoteServer.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(RemoteServer.class.getName());
 
 	private List<RemoteNode> available_nodes = new CopyOnWriteArrayList<>();
 	private List<RemoteNode> disabled_nodes = new CopyOnWriteArrayList<>();

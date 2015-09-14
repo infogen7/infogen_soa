@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ValueConstants;
 
@@ -35,7 +36,7 @@ import javassist.bytecode.MethodInfo;
  * @version 1.0
  */
 public abstract class Self_Description {
-	private static final Logger LOGGER = Logger.getLogger(Self_Description.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(Self_Description.class.getName());
 
 	public abstract Map<String, Function> self_description(Class<?> clazz);
 

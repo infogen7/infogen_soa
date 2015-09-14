@@ -6,7 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.infogen.core.tools.Tool_Jackson;
 import com.infogen.exception.HTTP_Fail_Exception;
@@ -29,7 +30,7 @@ import com.squareup.okhttp.Response;
  * @version 1.0
  */
 public class InfoGen_HTTP {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(InfoGen_HTTP.class.getName());
 	// 当使用长轮循时需要注意不能超过此时间
 	public static Integer socket_timeout = 30_000;// 数据传输时间
 	public static Integer connect_timeout = 3_000;// 连接时间

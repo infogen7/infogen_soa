@@ -5,7 +5,8 @@ package com.infogen.tracking.kafka;
 
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.logger.Logger_Once;
@@ -22,7 +23,7 @@ import kafka.producer.ProducerConfig;
  * @version 1.0
  */
 public class InfoGen_Logger_Kafka_Producer {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen_Logger_Kafka_Producer.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(InfoGen_Logger_Kafka_Producer.class.getName());
 
 	private static class InnerInstance {
 		public static final InfoGen_Logger_Kafka_Producer instance = new InfoGen_Logger_Kafka_Producer();

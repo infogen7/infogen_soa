@@ -11,7 +11,8 @@ import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.Code;
@@ -34,7 +35,7 @@ import com.infogen.tools.Scheduled;
  * @version 1.0
  */
 public class InfoGen_ZooKeeper {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen_ZooKeeper.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(InfoGen_ZooKeeper.class.getName());
 
 	private static class InnerInstance {
 		public static final InfoGen_ZooKeeper instance = new InfoGen_ZooKeeper();

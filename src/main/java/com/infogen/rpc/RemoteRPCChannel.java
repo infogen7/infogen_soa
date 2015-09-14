@@ -2,7 +2,8 @@ package com.infogen.rpc;
 
 import java.time.Clock;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.protobuf.ServiceException;
 import com.infogen.Service;
@@ -27,7 +28,7 @@ import io.netty.handler.codec.http.DefaultFullHttpRequest;
  * @version 1.0
  */
 public class RemoteRPCChannel extends InfoGen_Channel {
-	private static final Logger LOGGER = Logger.getLogger(RemoteRPCChannel.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(RemoteRPCChannel.class.getName());
 	private final LRULinkedHashMap<String, Channel> map = new LRULinkedHashMap<>(5000);
 	private Service service;
 

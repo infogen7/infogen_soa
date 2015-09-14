@@ -12,7 +12,8 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.infogen.tracking.InfoGen_HTTP_Tracking_Handle;
 
@@ -25,7 +26,7 @@ import com.infogen.tracking.InfoGen_HTTP_Tracking_Handle;
  */
 @WebFilter(filterName = "InfoGen_HTTP_Filter_0", urlPatterns = { "/*" }, asyncSupported = true)
 public class InfoGen_HTTP_Track_Filter implements Filter {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen_HTTP_Track_Filter.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(InfoGen_HTTP_Track_Filter.class.getName());
 	private InfoGen_HTTP_Tracking_Handle track = new InfoGen_HTTP_Tracking_Handle();
 
 	public void doFilter(ServletRequest srequset, ServletResponse sresponse, FilterChain filterChain) throws IOException, ServletException {

@@ -15,7 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException.Code;
 import org.apache.zookeeper.ZooDefs;
@@ -44,7 +45,7 @@ import com.infogen.tools.Scheduled;
  * @version 1.0
  */
 public class InfoGen_Cache_Server {
-	private static final Logger LOGGER = Logger.getLogger(InfoGen_Cache_Server.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(InfoGen_Cache_Server.class.getName());
 
 	private static class InnerInstance {
 		public static final InfoGen_Cache_Server instance = new InfoGen_Cache_Server();

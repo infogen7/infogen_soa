@@ -3,7 +3,8 @@ package com.infogen.http.callback;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * http异步调用的返回值
@@ -14,7 +15,7 @@ import org.apache.log4j.Logger;
  * @param <T>
  */
 public class HTTP_Callback<T> {
-	private static final Logger LOGGER = Logger.getLogger(HTTP_Callback.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(HTTP_Callback.class.getName());
 
 	private ArrayBlockingQueue<T> queue = new ArrayBlockingQueue<T>(1);
 

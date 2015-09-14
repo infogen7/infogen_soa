@@ -7,7 +7,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * HTTP上下文相关的基本工具方法
@@ -17,7 +18,7 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public class Tool_HTTP {
-	private static final Logger LOGGER = Logger.getLogger(Tool_HTTP.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(Tool_HTTP.class.getName());
 
 	public static String get_cookie(HttpServletRequest request, String key) {
 		Cookie[] cookies = request.getCookies();

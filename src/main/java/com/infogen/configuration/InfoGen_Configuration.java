@@ -14,7 +14,8 @@ import java.time.ZoneId;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.infogen.InfoGen;
 import com.infogen.aop.AOP;
@@ -39,7 +40,7 @@ import com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution;
  */
 
 public class InfoGen_Configuration {
-	private final static Logger LOGGER = Logger.getLogger(InfoGen_Configuration.class.getName());
+	private final static Logger LOGGER = LogManager.getLogger(InfoGen_Configuration.class.getName());
 
 	private static class InnerInstance {
 		public static final InfoGen_Configuration instance = new InfoGen_Configuration();
