@@ -323,7 +323,7 @@ public class InfoGen_ZooKeeper {
 						if (expired_handle != null) {
 							expired_handle.handle_event();
 						}
-						rewatcher_children_paths_schedule = Scheduled.executors_single.scheduleWithFixedDelay(rewatcher_children_paths_runable, 10, 10, TimeUnit.SECONDS);
+						rewatcher_children_paths_schedule = Scheduled.executors_single.scheduleWithFixedDelay(rewatcher_children_paths_runable, 16, 16, TimeUnit.SECONDS);
 					} catch (Exception e) {
 						LOGGER.error("zookeeper 重连错误", e);
 					}
@@ -371,6 +371,6 @@ public class InfoGen_ZooKeeper {
 		}
 	};
 	// 定时修正监听失败
-	protected ScheduledFuture<?> rewatcher_children_paths_schedule = Scheduled.executors_single.scheduleWithFixedDelay(rewatcher_children_paths_runable, 10, 10, TimeUnit.SECONDS);
+	protected ScheduledFuture<?> rewatcher_children_paths_schedule = Scheduled.executors_single.scheduleWithFixedDelay(rewatcher_children_paths_runable, 16, 16, TimeUnit.SECONDS);
 
 }
