@@ -6,7 +6,7 @@ import java.util.UUID;
 import javax.servlet.ServletException;
 
 import com.infogen.rpc.tools.Tool_RPC;
-import com.infogen.tools.HTTP_Header;
+import com.infogen.util.HTTP_Header;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;

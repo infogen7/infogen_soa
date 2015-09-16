@@ -11,9 +11,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.infogen.core.tools.Tool_Jackson;
 import com.infogen.exception.HTTP_Fail_Exception;
-import com.infogen.tools.HTTP_Header;
 import com.infogen.tracking.CallChain;
 import com.infogen.tracking.ThreadLocal_Tracking;
+import com.infogen.util.HTTP_Header;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;

@@ -104,6 +104,7 @@ public class InfoGen_Configuration {
 
 		// server - 自描述
 		register_server.setHttp_functions(InfoGen_Self_Description.getInstance().self_description(AOP.getInstance().getClasses()));
+		
 		if (!register_server.available()) {
 			LOGGER.error("服务配置不能为空:infogen.name");
 			System.exit(-1);
@@ -121,6 +122,7 @@ public class InfoGen_Configuration {
 		}
 
 		register_node.setName(localIP.concat("-" + Clock.system(zoneid).millis()));
+		register_node.setPath(InfoGen_ZooKeeper.path(register_server.getName()).concat("/".concat(register_node.getName())));
 		String http_port = infogen_properties.getProperty("infogen.http.port");
 		register_node.setHttp_port((http_port == null) ? null : Integer.valueOf(http_port));
 		String rpc_port = infogen_properties.getProperty("infogen.rpc.port");
@@ -128,7 +130,6 @@ public class InfoGen_Configuration {
 		register_node.setHost(System.getProperty("user.name").concat("@").concat(Tool_Core.getHostName()));
 		String ratio = infogen_properties.getProperty("infogen.ratio");
 		register_node.setRatio((ratio == null) ? 10 : Math.max(0, Math.min(10, Integer.valueOf(ratio))));
-		register_node.setPath(InfoGen_ZooKeeper.path(register_server.getName()).concat("/".concat(register_node.getName())));
 		register_node.setHttp_protocol(infogen_properties.getProperty("infogen.http.protocol"));
 		register_node.setHttp_context(infogen_properties.getProperty("infogen.http.context"));
 		register_node.setServer_room(infogen_properties.getProperty("infogen.server_room"));

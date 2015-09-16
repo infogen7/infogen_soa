@@ -18,8 +18,8 @@ import com.infogen.core.util.CODE;
  * @since 1.0
  * @version 1.0
  */
-@WebServlet(name = "Infogen_HTTP_Heartbeat_Servlet", urlPatterns = "/infogen/heartbeat")
-public class Infogen_HTTP_Heartbeat_Servlet extends HttpServlet {
+@WebServlet(name = "Infogen_HTTP_Ping_Servlet", urlPatterns = "/infogen/ping")
+public class Infogen_HTTP_Ping_Servlet extends HttpServlet {
 	private static final long serialVersionUID = 4421704113732067430L;
 
 	@Override

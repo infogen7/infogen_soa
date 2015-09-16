@@ -22,7 +22,7 @@ public class InfoGen_RPC {
 	private InfoGen_RPC() {
 	}
 
-	Server server;
+	private Server server;
 
 	public InfoGen_RPC start(InfoGen_Configuration infogen_configuration) throws InterruptedException {
 		server = new Server(infogen_configuration.register_node.getRpc_port());

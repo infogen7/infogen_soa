@@ -7,8 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.infogen.tools.HTTP_Header;
 import com.infogen.tools.Tool_HTTP;
+import com.infogen.util.HTTP_Header;
 
 /**
  * HTTP协议下记录调用链的处理类

@@ -137,7 +137,7 @@ public abstract class Self_Description {
 		return map;
 	}
 
-	public String[] get_in_parameter_names(Class<?> clazz, String method_name, java.lang.reflect.Parameter[] reflect_parameters) throws NotFoundException {
+	private String[] get_in_parameter_names(Class<?> clazz, String method_name, java.lang.reflect.Parameter[] reflect_parameters) throws NotFoundException {
 		CtClass ct_class = get_ctclass(clazz);
 
 		CtClass[] types = new CtClass[reflect_parameters.length];
