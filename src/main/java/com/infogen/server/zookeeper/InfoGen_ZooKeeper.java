@@ -271,19 +271,22 @@ public class InfoGen_ZooKeeper {
 				if (event.getType() == EventType.NodeChildrenChanged) {
 					LOGGER.info("子节点改变 重新启动子节点监听:".concat(path));
 					watcher_children(path);
-					
+
 					InfoGen_Zookeeper_Handle_Watcher_Children watcher_children_handle = watcher_children_handle_map.get(path);
 					if (watcher_children_handle != null) {
 						watcher_children_handle.handle_event(path);
 					}
-				} else if (event.getType() != EventType.None) {// NodeDeleted
-					LOGGER.info("节点删除 重新启动子节点监听:".concat(path));
-					watcher_children(path);
-				} else if (event.getState() == KeeperState.Expired) {
-					LOGGER.info("Session超时 子节点监听丢失 等待重启后重新监听:".concat(path));
-				} else {
+				} else if (event.getType() == EventType.None) {
 					// 连接状态改变
 					// event.getType() == EventType.None
+					if (event.getState() == KeeperState.Expired) {
+						LOGGER.info("Session超时 子节点监听丢失 等待重启后重新监听:".concat(path));
+					}
+				} else if (event.getType() == EventType.NodeDeleted) {
+					LOGGER.info("节点删除 重新启动子节点监听:".concat(path));
+					watcher_children(path);
+				} else {
+
 				}
 			});
 			LOGGER.info("启动子节点监听成功:".concat(path));
