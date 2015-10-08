@@ -113,7 +113,15 @@ public class InfoGen_Configuration {
 		// node
 		String localIP = infogen_properties.getProperty("infogen.ip");
 		if (localIP == null || localIP.trim().isEmpty() || !Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(localIP).find()) {
-			localIP = Tool_Core.getLocalIP();
+			if(infogen_properties.getProperty("infogen.ifcfgs")!=null 
+					&& !infogen_properties.getProperty("infogen.ifcfgs").startsWith("$")){
+				LOGGER.info("网卡配置为:"+infogen_properties.getProperty("infogen.ifcfgs"));
+				localIP=Tool_Core.getConfigIP(infogen_properties.getProperty("infogen.ifcfgs"));
+				LOGGER.info("取得的localIP为" + localIP);
+			}else{
+				//先eth后wlan
+				localIP = Tool_Core.getLocalIP();
+			}
 		}
 		register_node.setIp(localIP);
 		String net_ip = infogen_properties.getProperty("infogen.net_ip");

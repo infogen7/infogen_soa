@@ -19,9 +19,15 @@ public class HTTP_Callback<T> {
 
 	private ArrayBlockingQueue<T> queue = new ArrayBlockingQueue<T>(1);
 
-	public T get(Integer milliseconds) {
+	public Boolean add(T value) {
+		if (value == null) {
+			return false;
+		}
+		return queue.add(value);
+	}
+	public T get(Integer seconds) {
 		try {
-			return queue.poll(milliseconds, TimeUnit.MILLISECONDS);
+			return queue.poll(seconds, TimeUnit.SECONDS);
 		} catch (Exception e) {
 			LOGGER.error("获取异步返回值异常", e);
 		}

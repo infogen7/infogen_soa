@@ -9,8 +9,11 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.infogen.core.json.Return;
 import com.infogen.core.tools.Tool_Jackson;
+import com.infogen.core.util.CODE;
 import com.infogen.exception.HTTP_Fail_Exception;
+import com.infogen.http.callback.HTTP_Callback;
 import com.infogen.tracking.CallChain;
 import com.infogen.tracking.ThreadLocal_Tracking;
 import com.infogen.util.HTTP_Header;
@@ -115,7 +118,8 @@ public class InfoGen_HTTP {
 			}
 		}
 	};
-
+	
+	//不阻塞返回值
 	public static void do_get_async(String url, Map<String, String> params, Callback callback) {
 		Builder builder = new Request.Builder().url(concat_url_params(url, params));
 		add_headers(builder);
@@ -124,6 +128,34 @@ public class InfoGen_HTTP {
 			callback = async_get_callback;
 		}
 		client.newCall(request).enqueue(callback);
+	}
+	
+	//阻塞返回值
+	public static HTTP_Callback do_get_async(String url, Map<String, String> params) {
+		HTTP_Callback callback = new HTTP_Callback();
+
+		Builder builder = new Request.Builder().url(concat_url_params(url, params));
+		add_headers(builder);
+		Request request = builder.build();
+		client.newCall(request).enqueue(new Callback() {
+			@Override
+			public void onFailure(Request request, IOException e) {
+				LOGGER.error("do_async_get 报错:".concat(url), e);
+				callback.run(Return.FAIL(CODE.error, e));
+			}
+
+			@Override
+			public void onResponse(Response response) throws IOException {
+				if (response.isSuccessful()) {
+					callback.add(response.body());
+				} else {
+					LOGGER.error("do_async_get 错误-返回非2xx:".concat(url));
+					callback.run(Return.FAIL(CODE.error.toString(),response.message()) );
+					
+				}
+			}
+		});
+		return callback;
 	}
 
 	// ////////////////////////////////////////////////////////post///////////////////////////////////////////////////////////////////////////
@@ -174,7 +206,9 @@ public class InfoGen_HTTP {
 			throw new HTTP_Fail_Exception(response.code(), response.message());
 		}
 	}
-
+	
+	
+	//不阻塞返回值
 	public static void do_post_async(String url, Map<String, String> params, Callback callback) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder);
@@ -183,6 +217,35 @@ public class InfoGen_HTTP {
 			callback = async_post_callback;
 		}
 		client.newCall(request).enqueue(callback);
+	}
+	
+	//阻塞返回值
+	public static HTTP_Callback do_post_async(String url, Map<String, String> params) throws IOException {
+		
+		HTTP_Callback callback = new HTTP_Callback();
+		
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder);
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_FORM, concat_params(params))).build();
+		
+		client.newCall(request).enqueue(new Callback() {
+			@Override
+			public void onFailure(Request request, IOException e) {
+				LOGGER.error("do_post_async 报错:".concat(url), e);
+				callback.run(Return.FAIL(CODE.error, e));
+			}
+
+			@Override
+			public void onResponse(Response response) throws IOException {
+				if (response.isSuccessful()) {
+					callback.add(response.body());
+				} else {
+					LOGGER.error("do_post_async 错误-返回非2xx:".concat(url));
+					callback.run(Return.FAIL(CODE.error.toString(),response.message()));
+				}
+			}
+		});
+		return callback;
 	}
 
 	public static void do_post_json_async(String url, Map<String, String> params, Callback callback) throws IOException {
@@ -193,6 +256,33 @@ public class InfoGen_HTTP {
 			callback = async_post_callback;
 		}
 		client.newCall(request).enqueue(callback);
+	}
+	
+	public static HTTP_Callback do_post_json_async(String url, Map<String, String> params) throws IOException {
+		HTTP_Callback callback = new HTTP_Callback();
+		
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder);
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
+		
+		client.newCall(request).enqueue(new Callback() {
+			@Override
+			public void onFailure(Request request, IOException e) {
+				LOGGER.error("do_post_json_async 报错:".concat(url), e);
+				callback.run(Return.FAIL(CODE.error, e));
+			}
+
+			@Override
+			public void onResponse(Response response) throws IOException {
+				if (response.isSuccessful()) {
+					callback.add(response.body());
+				} else {
+					LOGGER.error("do_post_json_async 错误-返回非2xx:".concat(url));
+					callback.run(Return.FAIL(CODE.error.toString(),response.message()));
+				}
+			}
+		});
+		return callback;
 	}
 
 	private static final Callback async_post_callback = new Callback() {
