@@ -1,0 +1,13 @@
+2015-10-09 12:33:38.694 INFO [main][AOP.java:59] - java.home  => /usr/lib/jvm/java-8-sun/jre
+2015-10-09 12:33:38.696 INFO [main][AOP.java:69] - jdk home dir => /usr/lib/jvm/java-8-sun/lib/tools.jar
+2015-10-09 12:33:39.000 INFO [Thread-2][NativePath.java:46] - final path ---> :/home/juxinli/workspace/infogen_soa/target/classes/src/main/webapp
+2015-10-09 12:33:39.001 INFO [Thread-2][NativePath.java:46] - final path ---> :/home/juxinli/workspace/infogen_soa/target/classes/src/main/webapp/WEB-INF/web.xml
+2015-10-09 12:33:39.096 INFO [Thread-2][Log.java:186] - Logging initialized @2338ms
+2015-10-09 12:33:39.361 INFO [Thread-2][InfoGen_Jetty.java:106] - add jetty annotation config dir => file:///home/juxinli/workspace/infogen_soa/target/classes/
+2015-10-09 12:33:39.362 INFO [Thread-2][InfoGen_Jetty.java:107] - add jetty annotation config dir => file:///home/juxinli/workspace/infogen_soa/target/classes/
+2015-10-09 12:33:39.413 INFO [Thread-2][Server.java:345] - jetty-9.3.4.RC1
+2015-10-09 12:33:39.880 INFO [Thread-2][StandardDescriptorProcessor.java:279] - NO JSP Support for /, did not find org.eclipse.jetty.jsp.JettyJspServlet
+2015-10-09 12:33:39.919 INFO [Thread-2][ContextHandler.java:2140] - No Spring WebApplicationInitializer types detected on classpath
+2015-10-09 12:33:39.997 INFO [Thread-2][ContextHandler.java:775] - Started o.e.j.w.WebAppContext@36dce9c4{/,file:///home/juxinli/workspace/infogen_soa/target/classes/src/main/webapp,AVAILABLE}
+2015-10-09 12:33:40.053 INFO [Thread-2][AbstractConnector.java:270] - Started ServerConnector@645d5d0f{HTTP/1.1,[http/1.1, h2c, h2c-17, h2c-16, h2c-15, h2c-14]}{0.0.0.0:9098}
+2015-10-09 12:33:40.053 INFO [Thread-2][Server.java:397] - Started @3299ms
