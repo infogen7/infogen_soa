@@ -104,7 +104,7 @@ public class InfoGen_Configuration {
 
 		// server - 自描述
 		register_server.setHttp_functions(InfoGen_Self_Description.getInstance().self_description(AOP.getInstance().getClasses()));
-		
+
 		if (!register_server.available()) {
 			LOGGER.error("服务配置不能为空:infogen.name");
 			System.exit(-1);
@@ -113,7 +113,13 @@ public class InfoGen_Configuration {
 		// node
 		String localIP = infogen_properties.getProperty("infogen.ip");
 		if (localIP == null || localIP.trim().isEmpty() || !Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(localIP).find()) {
-			localIP = Tool_Core.getLocalIP();
+			String ifcfgs = infogen_properties.getProperty("infogen.ifcfgs");
+			if (ifcfgs == null || ifcfgs.trim().isEmpty()) {
+				localIP = Tool_Core.getLocalIP(new String[] { "eth", "wlan" });
+			} else {
+				LOGGER.info("网卡配置为:" + infogen_properties.getProperty("infogen.ifcfgs"));
+				localIP = Tool_Core.getLocalIP(Tool_Core.trim(ifcfgs).split(","));
+			}
 		}
 		register_node.setIp(localIP);
 		String net_ip = infogen_properties.getProperty("infogen.net_ip");

@@ -232,6 +232,7 @@ public class RemoteHTTPFunction {
 		}
 	}
 
+	// 通过异步callback取得返回值,不阻塞返回值
 	public void http_async(RemoteNode node, Map<String, String> name_value_pair, RequestType request_type, Callback callback) throws IOException {
 		String url;
 		if (net_type == NetType.LOCAL) {
@@ -250,4 +251,5 @@ public class RemoteHTTPFunction {
 			InfoGen_HTTP.do_post_json_async(url, name_value_pair, callback);
 		}
 	}
+
 }

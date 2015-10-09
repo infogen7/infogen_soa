@@ -1,8 +1,11 @@
 package com.infogen;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
+import com.infogen.core.json.Return;
+import com.infogen.http.callback.HTTP_Callback;
 import com.infogen.rpc.RemoteRPCChannel;
 import com.infogen.server.cache.InfoGen_Cache_Server;
 import com.infogen.server.model.RemoteNode;
@@ -23,7 +26,8 @@ public abstract class Service {
 	private String server_name;
 
 	public static Service create(String server_name) {
-		return new Service(server_name){};
+		return new Service(server_name) {
+		};
 	}
 
 	private Service(String server_name) {
@@ -66,8 +70,30 @@ public abstract class Service {
 		return new RemoteHTTPFunction(this, method, net_type);
 	}
 
+	public Return get(String function, Map<String, String> name_value_pair) {
+		return new RemoteHTTPFunction(this, function).get(name_value_pair);
+	}
+
+	public HTTP_Callback<Return> get_async(String function, Map<String, String> name_value_pair) {
+		return new RemoteHTTPFunction(this, function).get_async(name_value_pair);
+	}
+
+	public Return post(String function, Map<String, String> name_value_pair) {
+		return new RemoteHTTPFunction(this, function).post(name_value_pair);
+
+	}
+
+	public HTTP_Callback<Return> post_async(String function, Map<String, String> name_value_pair) {
+		return new RemoteHTTPFunction(this, function).post_async(name_value_pair);
+	}
+
+	public Return post_json(String function, Map<String, String> name_value_pair) {
+		return new RemoteHTTPFunction(this, function).post_json(name_value_pair);
+	}
+
 	////////////////////////////////////////////////// RPC///////////////////////////////////////////////////////////
 	public RemoteRPCChannel get_rpc_channel() {
 		return new RemoteRPCChannel(this);
 	}
+
 }
