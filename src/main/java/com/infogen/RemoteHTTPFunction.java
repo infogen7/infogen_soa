@@ -14,9 +14,12 @@ import com.infogen.exception.HTTP_Fail_Exception;
 import com.infogen.exception.Node_Unavailable_Exception;
 import com.infogen.exception.Service_Notfound_Exception;
 import com.infogen.http.InfoGen_HTTP;
+import com.infogen.http.callback.HTTP_Callback;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
 import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 /**
  * http协议下远程服务的映射,实现调度,错误重试,同步异步处理等
@@ -56,29 +59,61 @@ public class RemoteHTTPFunction {
 		this.seed = seed;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////// GET/////////////////////////////////////////
 	public Return get(Map<String, String> name_value_pair) {
 		return http_blocking(name_value_pair, RequestType.GET, seed);
 	}
 
-	public void get_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
-		http_async(name_value_pair, RequestType.GET, callback, seed);
+	public HTTP_Callback<Return> get_async(Map<String, String> name_value_pair) {
+		return http_async_callback(name_value_pair, RequestType.GET);
 	}
 
+	//////////////////////////////////////////// POST/////////////////////////////////////////
 	public Return post(Map<String, String> name_value_pair) {
 		return http_blocking(name_value_pair, RequestType.POST, seed);
 	}
 
-	public void post_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
-		http_async(name_value_pair, RequestType.POST, callback, seed);
+	public HTTP_Callback<Return> post_async(Map<String, String> name_value_pair) {
+		return http_async_callback(name_value_pair, RequestType.POST);
 	}
 
+	//////////////////////////////////////////// POST JSON/////////////////////////////////////////
 	public Return post_json(Map<String, String> name_value_pair) {
 		return http_blocking(name_value_pair, RequestType.POST_JSON, seed);
 	}
 
-	public void post_json_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
-		http_async(name_value_pair, RequestType.POST_JSON, callback, seed);
+	public HTTP_Callback<Return> post_json_async(Map<String, String> name_value_pair, Callback callback) {
+		return http_async_callback(name_value_pair, RequestType.POST_JSON);
+	}
+
+	////////////////////////////////////////////////// HTTP//////////////////////////
+
+	private HTTP_Callback<Return> http_async_callback(Map<String, String> name_value_pair, RequestType request_type) {
+		HTTP_Callback<Return> callback = new HTTP_Callback<>();
+		try {
+			http_async(name_value_pair, request_type, new Callback() {
+				@Override
+				public void onFailure(Request request, IOException e) {
+					callback.run(Return.FAIL(CODE.error));
+					LOGGER.error("do_async_post_bytype 报错:".concat(request.urlString()), e);
+				}
+
+				@Override
+				public void onResponse(Response response) throws IOException {
+					if (response.isSuccessful()) {
+						callback.run(Return.create(response.body().string()));
+					} else {
+						callback.run(Return.FAIL(response.code(), response.message()));
+						LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().urlString()));
+					}
+				}
+			}, seed);
+		} catch (Service_Notfound_Exception e) {
+			callback.run(Return.FAIL(e.code(), e.note()));
+		} catch (Node_Unavailable_Exception e) {
+			callback.run(Return.FAIL(e.code(), e.note()));
+		}
+		return callback;
 	}
 
 	/**
@@ -90,7 +125,7 @@ public class RemoteHTTPFunction {
 	 * @param net_type
 	 * @return
 	 */
-	private Return http_blocking(Map<String, String> name_value_pair, RequestType request_type, String seed) {
+	public Return http_blocking(Map<String, String> name_value_pair, RequestType request_type, String seed) {
 		RemoteServer server = service.get_server();
 		if (server == null) {
 			LOGGER.error(CODE.service_notfound.note);
@@ -139,7 +174,7 @@ public class RemoteHTTPFunction {
 	 * @throws Service_Notfound_Exception
 	 * @throws Node_Notfound_Exception
 	 */
-	private void http_async(Map<String, String> name_value_pair, RequestType request_type, Callback callback, String seed) throws Service_Notfound_Exception, Node_Unavailable_Exception {
+	public void http_async(Map<String, String> name_value_pair, RequestType request_type, Callback callback, String seed) throws Service_Notfound_Exception, Node_Unavailable_Exception {
 		RemoteServer server = service.get_server();
 		if (server == null) {
 			LOGGER.error(CODE.service_notfound.note);

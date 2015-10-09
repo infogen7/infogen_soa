@@ -2,6 +2,7 @@ package com.infogen.rpc;
 
 import com.google.protobuf.BlockingService;
 import com.infogen.configuration.InfoGen_Configuration;
+import com.infogen.rpc.server.Server;
 import com.infogen.rpc_filter.InfoGen_Server_Filter;
 
 /**

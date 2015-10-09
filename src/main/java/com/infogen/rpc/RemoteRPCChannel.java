@@ -20,6 +20,7 @@ import com.infogen.util.HTTP_Header;
 
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
+import io.netty.util.AsciiString;
 
 /**
  * 
@@ -62,11 +63,11 @@ public class RemoteRPCChannel extends InfoGen_Channel {
 
 		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
 		if (callChain != null) {
-			httprequest.headers().set(HTTP_Header.x_session_id.key, callChain.getSessionid());
-			httprequest.headers().set(HTTP_Header.x_referer.key, callChain.getReferer());
-			httprequest.headers().set(HTTP_Header.x_track_id.key, callChain.getTrackid());
-			httprequest.headers().set(HTTP_Header.x_identify.key, callChain.getIdentify());
-			httprequest.headers().set(HTTP_Header.x_sequence.key, callChain.getSequence());
+			httprequest.headers().set(new AsciiString(HTTP_Header.x_session_id.key), callChain.getSessionid());
+			httprequest.headers().set(new AsciiString(HTTP_Header.x_referer.key), callChain.getReferer());
+			httprequest.headers().set(new AsciiString(HTTP_Header.x_track_id.key), callChain.getTrackid());
+			httprequest.headers().set(new AsciiString(HTTP_Header.x_identify.key), callChain.getIdentify());
+			httprequest.headers().set(new AsciiString(HTTP_Header.x_sequence.key), callChain.getSequence());
 		}
 
 		// 调用出错重试3次
