@@ -71,7 +71,7 @@ public class Tool_CoreTest {
 
 	@Test(groups = { "tools", "all" })
 	public void getLocalIP() {
-		String localIP = Tool_Core.getLocalIP("eth,wan");
+		String localIP = Tool_Core.getLocalIP(new String[] { "eth", "wlan" });
 		Assert.assertNotNull(localIP);
 	}
 
