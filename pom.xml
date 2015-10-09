@@ -41,7 +41,7 @@
 		<dependency>
 			<groupId>com.infogen</groupId>
 			<artifactId>infogen_core</artifactId>
-			<version>V2.0.01R150929</version>
+			<version>V2.0.01R151009</version>
 		</dependency>
 
 		<dependency>

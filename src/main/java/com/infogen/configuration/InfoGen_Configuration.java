@@ -116,11 +116,11 @@ public class InfoGen_Configuration {
 			if(infogen_properties.getProperty("infogen.ifcfgs")!=null 
 					&& !infogen_properties.getProperty("infogen.ifcfgs").startsWith("$")){
 				LOGGER.info("网卡配置为:"+infogen_properties.getProperty("infogen.ifcfgs"));
-				localIP=Tool_Core.getConfigIP(infogen_properties.getProperty("infogen.ifcfgs"));
+				localIP=Tool_Core.getLocalIP(infogen_properties.getProperty("infogen.ifcfgs"));
 				LOGGER.info("取得的localIP为" + localIP);
 			}else{
 				//先eth后wlan
-				localIP = Tool_Core.getLocalIP();
+				localIP = Tool_Core.getLocalIP(null);
 			}
 		}
 		register_node.setIp(localIP);
