@@ -5,7 +5,7 @@
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
 
-	<version>V2.0.00R150901</version>
+	<version>V2.0.01R151009</version>
 
 	<name>infogen_soa</name>
 	<url>https://github.com/larrylgq/infogen_soa</url>
@@ -41,13 +41,13 @@
 		<dependency>
 			<groupId>com.infogen</groupId>
 			<artifactId>infogen_core</artifactId>
-			<version>V2.0.00R150901</version>
+			<version>V2.0.01R151009</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.infogen</groupId>
 			<artifactId>infogen_rpc</artifactId>
-			<version>V2.0.00R150901</version>
+			<version>V2.0.01R151009</version>
 		</dependency>
 
 		<!-- zookeeper -->
@@ -74,7 +74,7 @@
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka_2.11</artifactId>
-			<version>0.8.2.1</version>
+			<version>0.8.2.2</version>
 			<exclusions>
 				<exclusion>
 					<groupId>log4j</groupId>
@@ -119,27 +119,27 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.3.4.RC0</version>
+			<version>9.3.4.RC1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.3.4.RC0</version>
+			<version>9.3.4.RC1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.http2</groupId>
 			<artifactId>http2-server</artifactId>
-			<version>9.3.4.RC0</version>
+			<version>9.3.4.RC1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.http2</groupId>
 			<artifactId>http2-common</artifactId>
-			<version>9.3.4.RC0</version>
+			<version>9.3.4.RC1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.http2</groupId>
 			<artifactId>http2-hpack</artifactId>
-			<version>9.3.4.RC0</version>
+			<version>9.3.4.RC1</version>
 		</dependency>
 
 
@@ -155,7 +155,7 @@
 		<dependency>
 			<groupId>com.nimbusds</groupId>
 			<artifactId>nimbus-jose-jwt</artifactId>
-			<version>4.0</version>
+			<version>4.2</version>
 		</dependency>
 		<!-- test -->
 		<dependency>
