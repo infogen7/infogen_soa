@@ -68,6 +68,10 @@ public class RemoteHTTPFunction {
 		return http_async_callback(name_value_pair, RequestType.GET);
 	}
 
+	public void get_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
+		http_async(name_value_pair, RequestType.GET, callback, seed);
+	}
+
 	//////////////////////////////////////////// POST/////////////////////////////////////////
 	public Return post(Map<String, String> name_value_pair) {
 		return http_blocking(name_value_pair, RequestType.POST, seed);
@@ -77,15 +81,22 @@ public class RemoteHTTPFunction {
 		return http_async_callback(name_value_pair, RequestType.POST);
 	}
 
+	public void post_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
+		http_async(name_value_pair, RequestType.POST, callback, seed);
+	}
+
 	//////////////////////////////////////////// POST JSON/////////////////////////////////////////
 	public Return post_json(Map<String, String> name_value_pair) {
 		return http_blocking(name_value_pair, RequestType.POST_JSON, seed);
 	}
 
-	public HTTP_Callback<Return> post_json_async(Map<String, String> name_value_pair, Callback callback) {
+	public HTTP_Callback<Return> post_json_async(Map<String, String> name_value_pair) {
 		return http_async_callback(name_value_pair, RequestType.POST_JSON);
 	}
 
+	public void post_json_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
+		http_async(name_value_pair, RequestType.POST_JSON, callback, seed);
+	}
 	////////////////////////////////////////////////// HTTP//////////////////////////
 
 	private HTTP_Callback<Return> http_async_callback(Map<String, String> name_value_pair, RequestType request_type) {

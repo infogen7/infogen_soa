@@ -5,11 +5,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import com.infogen.core.json.Return;
+import com.infogen.exception.Node_Unavailable_Exception;
+import com.infogen.exception.Service_Notfound_Exception;
 import com.infogen.http.callback.HTTP_Callback;
 import com.infogen.rpc.RemoteRPCChannel;
 import com.infogen.server.cache.InfoGen_Cache_Server;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
+import com.squareup.okhttp.Callback;
 
 /**
  * 
@@ -18,7 +21,7 @@ import com.infogen.server.model.RemoteServer;
  * @since 1.0
  * @version 1.0
  */
-public abstract class Service {
+public class Service {
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static final InfoGen instance = InfoGen.getInstance();
@@ -70,6 +73,7 @@ public abstract class Service {
 		return new RemoteHTTPFunction(this, method, net_type);
 	}
 
+	////////////////////////////////////////// GET
 	public Return get(String function, Map<String, String> name_value_pair) {
 		return new RemoteHTTPFunction(this, function).get(name_value_pair);
 	}
@@ -78,6 +82,11 @@ public abstract class Service {
 		return new RemoteHTTPFunction(this, function).get_async(name_value_pair);
 	}
 
+	public void get_async(String function, Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
+		new RemoteHTTPFunction(this, function).get_async(name_value_pair, callback);
+	}
+
+	//////////////////////////////////////////// POST
 	public Return post(String function, Map<String, String> name_value_pair) {
 		return new RemoteHTTPFunction(this, function).post(name_value_pair);
 
@@ -87,8 +96,21 @@ public abstract class Service {
 		return new RemoteHTTPFunction(this, function).post_async(name_value_pair);
 	}
 
+	public void post_async(String function, Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
+		new RemoteHTTPFunction(this, function).post_async(name_value_pair, callback);
+	}
+
+	//////////////////////////////////////////// POST JSON
 	public Return post_json(String function, Map<String, String> name_value_pair) {
 		return new RemoteHTTPFunction(this, function).post_json(name_value_pair);
+	}
+
+	public HTTP_Callback<Return> post_json_async(String function, Map<String, String> name_value_pair) {
+		return new RemoteHTTPFunction(this, function).post_json_async(name_value_pair);
+	}
+
+	public void post_json_async(String function, Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
+		new RemoteHTTPFunction(this, function).post_json_async(name_value_pair, callback);
 	}
 
 	////////////////////////////////////////////////// RPC///////////////////////////////////////////////////////////
