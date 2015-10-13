@@ -107,7 +107,7 @@ public class RemoteHTTPFunction {
 			http_async(name_value_pair, request_type, new Callback() {
 				@Override
 				public void onFailure(Request request, IOException e) {
-					callback.run(Return.FAIL(CODE.error));
+					callback.run(Return.FAIL(CODE.error).add(RETURN_KEY_SERVICE, service.get_server()));
 					LOGGER.error("do_async_post_bytype 报错:".concat(request.urlString()), e);
 				}
 
@@ -116,7 +116,7 @@ public class RemoteHTTPFunction {
 					if (response.isSuccessful()) {
 						callback.run(Return.create(response.body().string()));
 					} else {
-						callback.run(Return.FAIL(response.code(), response.message()));
+						callback.run(Return.FAIL(response.code(), response.message()).add(RETURN_KEY_SERVICE, service.get_server()));
 						LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().urlString()));
 					}
 				}
@@ -166,14 +166,14 @@ public class RemoteHTTPFunction {
 				return create;
 			} catch (HTTP_Fail_Exception e) {
 				LOGGER.warn("调用失败", e);
-				return Return.FAIL(e.getCode(), e.getMessage());
+				return Return.FAIL(e.getCode(), e.getMessage()).add(RETURN_KEY_SERVICE, service.get_server());
 			} catch (IOException e) {
 				LOGGER.error("调用失败", e);
 				server.disabled(node);
 				continue;
 			}
 		}
-		return Return.FAIL(CODE.error);
+		return Return.FAIL(CODE.error).add(RETURN_KEY_SERVICE, service.get_server());
 	}
 
 	/**
