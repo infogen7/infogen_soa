@@ -101,34 +101,6 @@ public class RemoteHTTPFunction {
 	////////////////////////////////////////////////// HTTP//////////////////////////
 	private static String RETURN_KEY_SERVICE = "service";
 
-	private HTTP_Callback<Return> http_async_callback(Map<String, String> name_value_pair, RequestType request_type) {
-		HTTP_Callback<Return> callback = new HTTP_Callback<>();
-		try {
-			http_async(name_value_pair, request_type, new Callback() {
-				@Override
-				public void onFailure(Request request, IOException e) {
-					callback.run(Return.FAIL(CODE.error).add(RETURN_KEY_SERVICE, service.get_server()));
-					LOGGER.error("do_async_post_bytype 报错:".concat(request.urlString()), e);
-				}
-
-				@Override
-				public void onResponse(Response response) throws IOException {
-					if (response.isSuccessful()) {
-						callback.run(Return.create(response.body().string()));
-					} else {
-						callback.run(Return.FAIL(response.code(), response.message()).add(RETURN_KEY_SERVICE, service.get_server()));
-						LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().urlString()));
-					}
-				}
-			}, seed);
-		} catch (Service_Notfound_Exception e) {
-			callback.run(Return.FAIL(e.code(), e.note()).add(RETURN_KEY_SERVICE, service.get_server()));
-		} catch (Node_Unavailable_Exception e) {
-			callback.run(Return.FAIL(e.code(), e.note()).add(RETURN_KEY_SERVICE, service.get_server()));
-		}
-		return callback;
-	}
-
 	/**
 	 * 同步http调用
 	 * 
@@ -174,6 +146,34 @@ public class RemoteHTTPFunction {
 			}
 		}
 		return Return.FAIL(CODE.error).add(RETURN_KEY_SERVICE, service.get_server());
+	}
+
+	public HTTP_Callback<Return> http_async_callback(Map<String, String> name_value_pair, RequestType request_type) {
+		HTTP_Callback<Return> callback = new HTTP_Callback<>();
+		try {
+			http_async(name_value_pair, request_type, new Callback() {
+				@Override
+				public void onFailure(Request request, IOException e) {
+					callback.run(Return.FAIL(CODE.error).add(RETURN_KEY_SERVICE, service.get_server()));
+					LOGGER.error("do_async_post_bytype 报错:".concat(request.urlString()), e);
+				}
+
+				@Override
+				public void onResponse(Response response) throws IOException {
+					if (response.isSuccessful()) {
+						callback.run(Return.create(response.body().string()));
+					} else {
+						callback.run(Return.FAIL(response.code(), response.message()).add(RETURN_KEY_SERVICE, service.get_server()));
+						LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().urlString()));
+					}
+				}
+			}, seed);
+		} catch (Service_Notfound_Exception e) {
+			callback.run(Return.FAIL(e.code(), e.note()).add(RETURN_KEY_SERVICE, service.get_server()));
+		} catch (Node_Unavailable_Exception e) {
+			callback.run(Return.FAIL(e.code(), e.note()).add(RETURN_KEY_SERVICE, service.get_server()));
+		}
+		return callback;
 	}
 
 	/**
