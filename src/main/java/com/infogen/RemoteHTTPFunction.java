@@ -99,7 +99,7 @@ public class RemoteHTTPFunction {
 	}
 
 	////////////////////////////////////////////////// HTTP//////////////////////////
-	private static String SERVICE = "service";
+	private static String RETURN_KEY_SERVICE = "service";
 
 	private HTTP_Callback<Return> http_async_callback(Map<String, String> name_value_pair, RequestType request_type) {
 		HTTP_Callback<Return> callback = new HTTP_Callback<>();
@@ -122,9 +122,9 @@ public class RemoteHTTPFunction {
 				}
 			}, seed);
 		} catch (Service_Notfound_Exception e) {
-			callback.run(Return.FAIL(e.code(), e.note()).add(SERVICE, service.get_server()));
+			callback.run(Return.FAIL(e.code(), e.note()).add(RETURN_KEY_SERVICE, service.get_server()));
 		} catch (Node_Unavailable_Exception e) {
-			callback.run(Return.FAIL(e.code(), e.note()).add(SERVICE, service.get_server()));
+			callback.run(Return.FAIL(e.code(), e.note()).add(RETURN_KEY_SERVICE, service.get_server()));
 		}
 		return callback;
 	}
@@ -142,7 +142,7 @@ public class RemoteHTTPFunction {
 		RemoteServer server = service.get_server();
 		if (server == null) {
 			LOGGER.error(CODE.service_notfound.note);
-			return Return.FAIL(CODE.service_notfound).add(SERVICE, service.get_server());
+			return Return.FAIL(CODE.service_notfound).add(RETURN_KEY_SERVICE, service.get_server());
 		}
 
 		RemoteNode node = null;
@@ -155,7 +155,7 @@ public class RemoteHTTPFunction {
 				node = server.random_node(seed);
 				if (node == null) {
 					LOGGER.error(CODE.node_unavailable.note);
-					return Return.FAIL(CODE.node_unavailable).add(SERVICE, service.get_server());
+					return Return.FAIL(CODE.node_unavailable).add(RETURN_KEY_SERVICE, service.get_server());
 				}
 				String http = http(node, name_value_pair, request_type);
 				Return create = Return.create(http);
