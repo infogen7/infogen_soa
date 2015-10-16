@@ -19,9 +19,9 @@ public class Logger_Once {
 	private static Boolean has(String message) {
 		if (map.get(message) == null) {
 			map.put(message, true);
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public static void debug(String message) {

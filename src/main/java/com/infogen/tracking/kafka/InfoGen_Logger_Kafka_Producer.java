@@ -45,7 +45,7 @@ public class InfoGen_Logger_Kafka_Producer {
 	 * @return
 	 */
 	public InfoGen_Logger_Kafka_Producer start(InfoGen_Configuration infogen_configuration) {
-		if (infogen_configuration.kafka != null && !infogen_configuration.kafka.trim().isEmpty()) {
+		if (infogen_configuration.kafka == null || infogen_configuration.kafka.trim().isEmpty()) {
 			LOGGER.error("没有配置 kafka");
 			return this;
 		}

@@ -12,6 +12,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.util.AsciiString;
 
 /**
  * HTTP协议下记录调用链的处理类
@@ -34,7 +35,7 @@ public class InfoGen_RPC_Tracking_Handle {
 		HttpHeaders headers = request.headers();
 
 		// traceid
-		String traceid = headers.get(HTTP_Header.x_track_id.key);
+		String traceid = headers.get(new AsciiString(HTTP_Header.x_track_id.key));
 		if (traceid == null || traceid.isEmpty()) {
 			callchain.setTrackid(UUID.randomUUID().toString().replaceAll("-", ""));
 			// identify
@@ -48,26 +49,26 @@ public class InfoGen_RPC_Tracking_Handle {
 			callchain.setSequence(0);
 			// 注意:可能为空
 			// Referer
-			callchain.setReferer(headers.get(HTTP_Header.Referer.key));
+			callchain.setReferer(headers.get(new AsciiString(HTTP_Header.Referer.key)));
 			// session id
 			String session_id = Tool_RPC.get_cookie(request, sessionid_name);
 			if (session_id == null) {
-				session_id = headers.get(HTTP_Header.x_session_id.key);
+				session_id = headers.get(new AsciiString(HTTP_Header.x_session_id.key));
 			}
 			callchain.setSessionid(session_id);
 		} else {
 			callchain.setTrackid(traceid);
 			// identify
-			callchain.setIdentify(headers.get(HTTP_Header.x_identify.key));
+			callchain.setIdentify(headers.get(new AsciiString(HTTP_Header.x_identify.key)));
 			// sequence
-			String x_sequence = headers.get(HTTP_Header.x_sequence.key);
+			String x_sequence = headers.get(new AsciiString(HTTP_Header.x_sequence.key));
 			Integer sequence = x_sequence == null ? 0 : Integer.valueOf(x_sequence);
 			callchain.setSequence(sequence + 1);
 
 			// Referer
-			callchain.setReferer(headers.get(HTTP_Header.x_referer.key));
+			callchain.setReferer(headers.get(new AsciiString(HTTP_Header.x_referer.key)));
 			// session id
-			callchain.setSessionid(headers.get(HTTP_Header.x_session_id.key));
+			callchain.setSessionid(headers.get(new AsciiString(HTTP_Header.x_session_id.key)));
 		}
 
 		// referer ip
