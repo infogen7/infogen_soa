@@ -110,7 +110,7 @@ public class InfoGen_Jetty {
 		String get_infogen_class_path = get_infogen_class_path();
 		set.add(Resource.newResource(get_infogen_class_path));
 		// file:///home/juxinli/workspace/infogen_soa/target/classes/
-		set.add(Resource.newResource(get_infogen_class_path.replace("infogen_soa", "infogen_authc")));
+//		set.add(Resource.newResource(get_infogen_class_path.replace("infogen_soa", "infogen_authc")));
 		for (Resource resource : set) {
 			webContext.getMetaData().addContainerResource(resource);
 		}
