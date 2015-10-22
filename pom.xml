@@ -5,7 +5,7 @@
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
 
-	<version>V2.0.01R151009</version>
+	<version>V2.0.01R151022</version>
 
 	<name>infogen_soa</name>
 	<url>https://github.com/larrylgq/infogen_soa</url>
@@ -41,13 +41,13 @@
 		<dependency>
 			<groupId>com.infogen</groupId>
 			<artifactId>infogen_core</artifactId>
-			<version>V2.0.01R151009</version>
+			<version>V2.0.01R151022</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.infogen</groupId>
 			<artifactId>infogen_rpc</artifactId>
-			<version>V2.0.01R151009</version>
+			<version>V2.0.01R151022</version>
 		</dependency>
 
 		<!-- zookeeper -->
@@ -102,66 +102,67 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>4.2.1.RELEASE</version>
+			<version>4.2.2.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>4.2.1.RELEASE</version>
+			<version>4.2.2.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>4.2.1.RELEASE</version>
+			<version>4.2.2.RELEASE</version>
 		</dependency>
 
 		<!-- Jetty Webapp -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.3.4.RC1</version>
+			<version>9.3.5.v20151012</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.3.4.RC1</version>
+			<version>9.3.5.v20151012</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>9.3.5.v20151012</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.http2</groupId>
 			<artifactId>http2-server</artifactId>
-			<version>9.3.4.RC1</version>
+			<version>9.3.5.v20151012</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.http2</groupId>
 			<artifactId>http2-common</artifactId>
-			<version>9.3.4.RC1</version>
+			<version>9.3.5.v20151012</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.http2</groupId>
 			<artifactId>http2-hpack</artifactId>
-			<version>9.3.4.RC1</version>
+			<version>9.3.5.v20151012</version>
 		</dependency>
-
-
-
 		<!-- okhttp -->
 		<dependency>
 			<groupId>com.squareup.okhttp</groupId>
 			<artifactId>okhttp</artifactId>
 			<version>2.5.0</version>
 		</dependency>
-
 		<!-- auth -->
 		<dependency>
 			<groupId>com.nimbusds</groupId>
 			<artifactId>nimbus-jose-jwt</artifactId>
-			<version>4.2</version>
+			<version>4.3.1</version>
 		</dependency>
 		<!-- test -->
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>6.9.6</version>
+			<version>6.9.8</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -172,7 +173,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.2</version>
+				<version>3.3</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -185,7 +186,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.13</version>
+				<version>2.19</version>
 				<configuration>
 					<useFile>false</useFile>
 					<disableXmlReport>true</disableXmlReport>
