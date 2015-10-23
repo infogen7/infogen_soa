@@ -2,6 +2,7 @@ package com.infogen;
 
 import java.io.IOException;
 import java.time.Clock;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -80,6 +81,10 @@ public class RemoteHTTPFunction {
 	public HTTP_Callback<Return> post_async(Map<String, String> name_value_pair) {
 		return http_async_callback(name_value_pair, RequestType.POST);
 	}
+	
+	public void post_async_form_data(List<Map<String, String>> name_value_pair,Callback callback) throws Exception{
+		http_async_callback_form_data(name_value_pair, callback,RequestType.POST);
+	}
 
 	public void post_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
 		http_async(name_value_pair, RequestType.POST, callback, seed);
@@ -148,6 +153,36 @@ public class RemoteHTTPFunction {
 		return Return.FAIL(CODE.error).add(RETURN_KEY_SERVICE, service.get_server());
 	}
 
+	public void http_async_callback_form_data(List<Map<String, String>> name_value_pair,Callback callback, RequestType request_type) throws Exception  {
+		RemoteServer server = service.get_server();
+		if (server == null) {
+			LOGGER.error(CODE.service_notfound.note);
+			throw new Service_Notfound_Exception();
+		}
+		RemoteNode node = null;
+		if (seed == null) {
+			seed = String.valueOf(Clock.system(InfoGen_Configuration.zoneid).millis());
+		}
+		// 调用出错重试3次
+		for (int i = 0; i < 3; i++) {
+			node = server.random_node(seed);
+			if (node == null) {
+				LOGGER.error(CODE.node_unavailable.note);
+				throw new Node_Unavailable_Exception();
+			}
+			try {
+				http_async_form_data(node, name_value_pair, request_type, callback);
+				return;
+			} catch (IOException e) {
+				LOGGER.error("调用失败", e);
+				server.disabled(node);
+				continue;
+			}
+		}
+		LOGGER.error(CODE.node_unavailable.note);
+		throw new Node_Unavailable_Exception();
+	}
+	
 	public HTTP_Callback<Return> http_async_callback(Map<String, String> name_value_pair, RequestType request_type) {
 		HTTP_Callback<Return> callback = new HTTP_Callback<>();
 		try {
@@ -264,5 +299,19 @@ public class RemoteHTTPFunction {
 			InfoGen_HTTP.do_post_json_async(url, name_value_pair, callback);
 		}
 	}
+	
+	// 通过异步callback取得返回值,不阻塞返回值
+		public void http_async_form_data(RemoteNode node, List<Map<String, String>> name_value_pair, RequestType request_type, Callback callback) throws IOException {
+			String url;
+			if (net_type == NetType.LOCAL) {
+				url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
+			} else {
+				url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
+			}
+
+				LOGGER.debug(new StringBuilder("post async -> ").append(url).toString());
+				InfoGen_HTTP.do_post_async_form_data(url, name_value_pair, callback);
+			
+		}
 
 }

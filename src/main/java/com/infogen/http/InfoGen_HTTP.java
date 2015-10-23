@@ -3,6 +3,7 @@ package com.infogen.http;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -15,7 +16,9 @@ import com.infogen.tracking.CallChain;
 import com.infogen.tracking.ThreadLocal_Tracking;
 import com.infogen.util.HTTP_Header;
 import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Request.Builder;
@@ -149,6 +152,7 @@ public class InfoGen_HTTP {
 	public static final MediaType MEDIA_TYPE_MARKDOWN = MediaType.parse("text/x-markdown; charset=utf-8");
 	public static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");//
 	public static final MediaType MEDIA_TYPE_FORM = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");//
+	public static final MediaType MEDIA_TYPE_FORM_DATA = MediaType.parse("multipart/form-data; charset=utf-8");//
 	public static final MediaType MEDIA_TYPE_TEXT = MediaType.parse("text/plan; charset=utf-8");//
 
 	public static String do_post(String url, Map<String, String> params) throws IOException {
@@ -179,6 +183,37 @@ public class InfoGen_HTTP {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder);
 		Request request = builder.post(RequestBody.create(MEDIA_TYPE_FORM, concat_params(params))).build();
+		if (callback == null) {
+			callback = async_post_callback;
+		}
+		client.newCall(request).enqueue(callback);
+	}
+	
+//	public static void do_post_async_form_data(String url, Map<String, String> params, Callback callback) throws IOException {
+	public static void do_post_async_form_data(String url, List<Map<String,String>> params, Callback callback) throws IOException {
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder);
+		
+		MultipartBuilder multipartBuilder = new MultipartBuilder()
+        .type(MultipartBuilder.FORM);
+
+		for(Map<String,String> param: params){
+			for(String key : param.keySet()){
+				multipartBuilder.addPart(
+	            Headers.of("Content-Disposition", "form-data; name=\""+key+"\""),
+	            com.squareup.okhttp.RequestBody.create(null, param.get(key)));
+			}
+		}
+
+//		for(String key : params.keySet()){
+//			multipartBuilder.addPart(
+//            Headers.of("Content-Disposition", "form-data; name=\""+key+"\""),
+//            com.squareup.okhttp.RequestBody.create(null, params.get(key)));
+//		}
+		
+		RequestBody requestBody = multipartBuilder.build();
+		
+		Request request = builder.post(requestBody).build();
 		if (callback == null) {
 			callback = async_post_callback;
 		}

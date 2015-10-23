@@ -100,6 +100,11 @@ public class Service {
 		new RemoteHTTPFunction(this, function).post_async(name_value_pair, callback);
 	}
 
+	public void post_async_form_data(String function, List<Map<String, String>> name_value_pair, Callback callback) throws Exception {
+		new RemoteHTTPFunction(this, function).post_async_form_data(name_value_pair, callback);
+	}
+	
+	
 	//////////////////////////////////////////// POST JSON
 	public Return post_json(String function, Map<String, String> name_value_pair) {
 		return new RemoteHTTPFunction(this, function).post_json(name_value_pair);
