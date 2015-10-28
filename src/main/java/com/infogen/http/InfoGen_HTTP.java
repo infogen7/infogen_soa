@@ -38,6 +38,7 @@ public class InfoGen_HTTP {
 	private static final OkHttpClient client = new OkHttpClient();
 
 	static {
+		client.interceptors().add(new GzipRequestInterceptor());
 		client.setConnectTimeout(connect_timeout, TimeUnit.MILLISECONDS);
 		client.setReadTimeout(socket_timeout, TimeUnit.MILLISECONDS);
 		client.setWriteTimeout(socket_timeout, TimeUnit.MILLISECONDS);
@@ -187,8 +188,7 @@ public class InfoGen_HTTP {
 		}
 	}
 
-	public static void do_post_json_async(String url, Map<String, String> params, Callback callback)
-			throws IOException {
+	public static void do_post_json_async(String url, Map<String, String> params, Callback callback) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder);
 		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
@@ -220,8 +220,7 @@ public class InfoGen_HTTP {
 		}
 	}
 
-	public static void do_post_form_data_async(String url, Map<String, String> params, Callback callback)
-			throws IOException {
+	public static void do_post_form_data_async(String url, Map<String, String> params, Callback callback) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder);
 
