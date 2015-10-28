@@ -1,5 +1,6 @@
 package com.infogen;
 
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
@@ -100,11 +101,6 @@ public class Service {
 		new RemoteHTTPFunction(this, function).post_async(name_value_pair, callback);
 	}
 
-	public void post_async_form_data(String function, List<Map<String, String>> name_value_pair, Callback callback) throws Exception {
-		new RemoteHTTPFunction(this, function).post_async_form_data(name_value_pair, callback);
-	}
-	
-	
 	//////////////////////////////////////////// POST JSON
 	public Return post_json(String function, Map<String, String> name_value_pair) {
 		return new RemoteHTTPFunction(this, function).post_json(name_value_pair);
@@ -116,6 +112,19 @@ public class Service {
 
 	public void post_json_async(String function, Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
 		new RemoteHTTPFunction(this, function).post_json_async(name_value_pair, callback);
+	}
+
+	//////////////////////////////////////////// POST FORM DATA
+	public Return post_form_data(String function, Map<String, String> name_value_pair) {
+		return new RemoteHTTPFunction(this, function).post_form_data(name_value_pair);
+	}
+
+	public HTTP_Callback<Return> post_form_data_async(String function, Map<String, String> name_value_pair) {
+		return new RemoteHTTPFunction(this, function).post_form_data_async(name_value_pair);
+	}
+
+	public void post_form_data_async(String function, IdentityHashMap<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
+		new RemoteHTTPFunction(this, function).post_form_data_async(name_value_pair, callback);
 	}
 
 	////////////////////////////////////////////////// RPC///////////////////////////////////////////////////////////

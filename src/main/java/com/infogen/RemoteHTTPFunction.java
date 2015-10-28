@@ -2,7 +2,7 @@ package com.infogen;
 
 import java.io.IOException;
 import java.time.Clock;
-import java.util.List;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -66,7 +66,7 @@ public class RemoteHTTPFunction {
 	}
 
 	public HTTP_Callback<Return> get_async(Map<String, String> name_value_pair) {
-		return http_async_callback(name_value_pair, RequestType.GET);
+		return http_async_callback(name_value_pair, RequestType.GET, seed);
 	}
 
 	public void get_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
@@ -79,11 +79,7 @@ public class RemoteHTTPFunction {
 	}
 
 	public HTTP_Callback<Return> post_async(Map<String, String> name_value_pair) {
-		return http_async_callback(name_value_pair, RequestType.POST);
-	}
-	
-	public void post_async_form_data(List<Map<String, String>> name_value_pair,Callback callback) throws Exception{
-		http_async_callback_form_data(name_value_pair, callback,RequestType.POST);
+		return http_async_callback(name_value_pair, RequestType.POST, seed);
 	}
 
 	public void post_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
@@ -96,14 +92,27 @@ public class RemoteHTTPFunction {
 	}
 
 	public HTTP_Callback<Return> post_json_async(Map<String, String> name_value_pair) {
-		return http_async_callback(name_value_pair, RequestType.POST_JSON);
+		return http_async_callback(name_value_pair, RequestType.POST_JSON, seed);
 	}
 
 	public void post_json_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
 		http_async(name_value_pair, RequestType.POST_JSON, callback, seed);
 	}
 
-	////////////////////////////////////////////////// HTTP//////////////////////////
+	//////////////////////////////////////////// POST FORM DATA///////////////////////////////////////////
+	public Return post_form_data(Map<String, String> name_value_pair) {
+		return http_blocking(name_value_pair, RequestType.POST_FORM_DATA, seed);
+	}
+
+	public HTTP_Callback<Return> post_form_data_async(Map<String, String> name_value_pair) {
+		return http_async_callback(name_value_pair, RequestType.POST_FORM_DATA, seed);
+	}
+
+	public void post_form_data_async(IdentityHashMap<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
+		http_async(name_value_pair, RequestType.POST_FORM_DATA, callback, seed);
+	}
+
+	////////////////////////////////////////////////// HTTP LOAD BALANCING//////////////////////////
 	private static String RETURN_KEY_SERVICE = "service";
 
 	/**
@@ -153,37 +162,7 @@ public class RemoteHTTPFunction {
 		return Return.FAIL(CODE.error).add(RETURN_KEY_SERVICE, service.get_server());
 	}
 
-	public void http_async_callback_form_data(List<Map<String, String>> name_value_pair,Callback callback, RequestType request_type) throws Exception  {
-		RemoteServer server = service.get_server();
-		if (server == null) {
-			LOGGER.error(CODE.service_notfound.note);
-			throw new Service_Notfound_Exception();
-		}
-		RemoteNode node = null;
-		if (seed == null) {
-			seed = String.valueOf(Clock.system(InfoGen_Configuration.zoneid).millis());
-		}
-		// 调用出错重试3次
-		for (int i = 0; i < 3; i++) {
-			node = server.random_node(seed);
-			if (node == null) {
-				LOGGER.error(CODE.node_unavailable.note);
-				throw new Node_Unavailable_Exception();
-			}
-			try {
-				http_async_form_data(node, name_value_pair, request_type, callback);
-				return;
-			} catch (IOException e) {
-				LOGGER.error("调用失败", e);
-				server.disabled(node);
-				continue;
-			}
-		}
-		LOGGER.error(CODE.node_unavailable.note);
-		throw new Node_Unavailable_Exception();
-	}
-	
-	public HTTP_Callback<Return> http_async_callback(Map<String, String> name_value_pair, RequestType request_type) {
+	public HTTP_Callback<Return> http_async_callback(Map<String, String> name_value_pair, RequestType request_type, String seed) {
 		HTTP_Callback<Return> callback = new HTTP_Callback<>();
 		try {
 			http_async(name_value_pair, request_type, new Callback() {
@@ -254,7 +233,7 @@ public class RemoteHTTPFunction {
 
 	// ///////////////////////////////////////////http////////////////////////////////////////////////
 	public enum RequestType {
-		POST, GET, POST_JSON
+		POST, GET, POST_JSON, POST_FORM_DATA
 	}
 
 	public enum NetType {
@@ -268,15 +247,18 @@ public class RemoteHTTPFunction {
 		} else {
 			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
 		}
-		if (request_type == RequestType.GET) {
-			LOGGER.debug(new StringBuilder("get -> ").append(url).toString());
-			return InfoGen_HTTP.do_get(url, name_value_pair);
-		} else if (request_type == RequestType.POST) {
+		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post -> ").append(url).toString());
 			return InfoGen_HTTP.do_post(url, name_value_pair);
-		} else {
+		} else if (request_type == RequestType.POST_JSON) {
 			LOGGER.debug(new StringBuilder("post json -> ").append(url).toString());
 			return InfoGen_HTTP.do_post_json(url, name_value_pair);
+		} else if (request_type == RequestType.POST_FORM_DATA) {
+			LOGGER.debug(new StringBuilder("post form data-> ").append(url).toString());
+			return InfoGen_HTTP.do_post_form_data(url, name_value_pair);
+		} else {
+			LOGGER.debug(new StringBuilder("get -> ").append(url).toString());
+			return InfoGen_HTTP.do_get(url, name_value_pair);
 		}
 	}
 
@@ -288,30 +270,19 @@ public class RemoteHTTPFunction {
 		} else {
 			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
 		}
-		if (request_type == RequestType.GET) {
-			LOGGER.debug(new StringBuilder("get async -> ").append(url).toString());
-			InfoGen_HTTP.do_get_async(url, name_value_pair, callback);
-		} else if (request_type == RequestType.POST) {
+		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post async -> ").append(url).toString());
 			InfoGen_HTTP.do_post_async(url, name_value_pair, callback);
-		} else {
+		} else if (request_type == RequestType.POST_JSON) {
 			LOGGER.debug(new StringBuilder("post json async -> ").append(url).toString());
 			InfoGen_HTTP.do_post_json_async(url, name_value_pair, callback);
+		} else if (request_type == RequestType.POST_FORM_DATA) {
+			LOGGER.debug(new StringBuilder("post form data async -> ").append(url).toString());
+			InfoGen_HTTP.do_post_form_data_async(url, name_value_pair, callback);
+		} else {
+			LOGGER.debug(new StringBuilder("get async -> ").append(url).toString());
+			InfoGen_HTTP.do_get_async(url, name_value_pair, callback);
 		}
 	}
-	
-	// 通过异步callback取得返回值,不阻塞返回值
-		public void http_async_form_data(RemoteNode node, List<Map<String, String>> name_value_pair, RequestType request_type, Callback callback) throws IOException {
-			String url;
-			if (net_type == NetType.LOCAL) {
-				url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
-			} else {
-				url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
-			}
-
-				LOGGER.debug(new StringBuilder("post async -> ").append(url).toString());
-				InfoGen_HTTP.do_post_async_form_data(url, name_value_pair, callback);
-			
-		}
 
 }
