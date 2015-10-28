@@ -5,7 +5,7 @@
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
 
-	<version>V2.0.02R151022</version>
+	<version>V2.0.01R151022</version>
 
 	<name>infogen_soa</name>
 	<url>https://github.com/larrylgq/infogen_soa</url>
@@ -38,12 +38,6 @@
 	</properties>
 	<dependencies>
 		<!-- core -->
-		<dependency>
-			<groupId>com.infogen</groupId>
-			<artifactId>infogen_core</artifactId>
-			<version>V2.0.01R151022</version>
-		</dependency>
-
 		<dependency>
 			<groupId>com.infogen</groupId>
 			<artifactId>infogen_rpc</artifactId>
