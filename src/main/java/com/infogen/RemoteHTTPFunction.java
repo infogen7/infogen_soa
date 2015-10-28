@@ -3,7 +3,6 @@ package com.infogen;
 import java.io.IOException;
 import java.time.Clock;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -101,14 +100,12 @@ public class RemoteHTTPFunction {
 	}
 
 	//////////////////////////////////////////// POST FORM DATA///////////////////////////////////////////
-	public void post_form_data_async(Map<String, List<String>> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
-		IdentityHashMap<String, String> identityhashmap = new IdentityHashMap<>();
-		name_value_pair.forEach((key, values) -> {
-			values.forEach(value -> {
-				identityhashmap.put(new String(key), value);
-			});
-		});
-		http_async(identityhashmap, RequestType.POST_FORM_DATA, callback, seed);
+	public Return post_form_data(Map<String, String> name_value_pair) {
+		return http_blocking(name_value_pair, RequestType.POST_FORM_DATA, seed);
+	}
+
+	public HTTP_Callback<Return> post_form_data_async(Map<String, String> name_value_pair) {
+		return http_async_callback(name_value_pair, RequestType.POST_FORM_DATA, seed);
 	}
 
 	public void post_form_data_async(IdentityHashMap<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
@@ -250,15 +247,18 @@ public class RemoteHTTPFunction {
 		} else {
 			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
 		}
-		if (request_type == RequestType.GET) {
-			LOGGER.debug(new StringBuilder("get -> ").append(url).toString());
-			return InfoGen_HTTP.do_get(url, name_value_pair);
-		} else if (request_type == RequestType.POST) {
+		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post -> ").append(url).toString());
 			return InfoGen_HTTP.do_post(url, name_value_pair);
-		} else {
+		} else if (request_type == RequestType.POST_JSON) {
 			LOGGER.debug(new StringBuilder("post json -> ").append(url).toString());
 			return InfoGen_HTTP.do_post_json(url, name_value_pair);
+		} else if (request_type == RequestType.POST_FORM_DATA) {
+			LOGGER.debug(new StringBuilder("post form data-> ").append(url).toString());
+			return InfoGen_HTTP.do_post_form_data(url, name_value_pair);
+		} else {
+			LOGGER.debug(new StringBuilder("get -> ").append(url).toString());
+			return InfoGen_HTTP.do_get(url, name_value_pair);
 		}
 	}
 

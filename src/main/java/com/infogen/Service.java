@@ -115,11 +115,15 @@ public class Service {
 	}
 
 	//////////////////////////////////////////// POST FORM DATA
-	public void post_form_data_async(String function, IdentityHashMap<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
-		new RemoteHTTPFunction(this, function).post_form_data_async(name_value_pair, callback);
+	public Return post_form_data(String function, Map<String, String> name_value_pair) {
+		return new RemoteHTTPFunction(this, function).post_form_data(name_value_pair);
 	}
 
-	public void post_form_data_async(String function, Map<String, List<String>> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
+	public HTTP_Callback<Return> post_form_data_async(String function, Map<String, String> name_value_pair) {
+		return new RemoteHTTPFunction(this, function).post_form_data_async(name_value_pair);
+	}
+
+	public void post_form_data_async(String function, IdentityHashMap<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
 		new RemoteHTTPFunction(this, function).post_form_data_async(name_value_pair, callback);
 	}
 

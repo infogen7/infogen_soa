@@ -177,10 +177,39 @@ public class InfoGen_HTTP {
 		}
 	}
 
+	public static String do_post_form_data(String url, Map<String, String> params) throws IOException {
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder);
+
+		MultipartBuilder multipartBuilder = new MultipartBuilder().type(MultipartBuilder.FORM);
+		for (String key : params.keySet()) {
+			multipartBuilder.addFormDataPart(key, params.get(key));
+		}
+		RequestBody requestBody = multipartBuilder.build();
+
+		Request request = builder.post(requestBody).build();
+		Response response = client.newCall(request).execute();
+		if (response.isSuccessful()) {
+			return response.body().string();
+		} else {
+			throw new HTTP_Fail_Exception(response.code(), response.message());
+		}
+	}
+
 	public static void do_post_async(String url, Map<String, String> params, Callback callback) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder);
 		Request request = builder.post(RequestBody.create(MEDIA_TYPE_FORM, concat_params(params))).build();
+		if (callback == null) {
+			callback = async_post_callback;
+		}
+		client.newCall(request).enqueue(callback);
+	}
+
+	public static void do_post_json_async(String url, Map<String, String> params, Callback callback) throws IOException {
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder);
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
 		if (callback == null) {
 			callback = async_post_callback;
 		}
@@ -198,16 +227,6 @@ public class InfoGen_HTTP {
 		RequestBody requestBody = multipartBuilder.build();
 
 		Request request = builder.post(requestBody).build();
-		if (callback == null) {
-			callback = async_post_callback;
-		}
-		client.newCall(request).enqueue(callback);
-	}
-
-	public static void do_post_json_async(String url, Map<String, String> params, Callback callback) throws IOException {
-		Builder builder = new Request.Builder().url(url);
-		add_headers(builder);
-		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
 		if (callback == null) {
 			callback = async_post_callback;
 		}
