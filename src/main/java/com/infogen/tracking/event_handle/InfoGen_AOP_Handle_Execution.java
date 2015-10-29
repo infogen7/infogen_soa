@@ -83,17 +83,19 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 	public static final InfoGen_Logger_Kafka_Producer producer = InfoGen_Logger_Kafka_Producer.getInstance();
 	public static final String infogen_topic_tracking = "infogen_topic_tracking";
 	public static Boolean open_return_size = false;
+	public static final String csv_separator = ",";
+	public static final String csv_separator_encode = "&sbquo;";
 
 	private static StringBuilder get_callchain(CallChain callChain) {
 		StringBuilder sbd = new StringBuilder();
-		sbd.append(callChain.getTrackid()).append(",");
-		sbd.append(callChain.getSequence()).append(",");
+		sbd.append(callChain.getTrackid()).append(csv_separator);
+		sbd.append(callChain.getSequence()).append(csv_separator);
 		String referer = callChain.getReferer();
-		sbd.append(referer == null ? "" : referer).append(",");
-		sbd.append(callChain.getReferer_ip()).append(",");
-		sbd.append(callChain.getTarget()).append(",");
-		sbd.append(callChain.getTarget_ip()).append(",");
-		sbd.append(callChain.getTarget_server()).append(",");
+		sbd.append(referer == null ? "" : referer.replaceAll(csv_separator, csv_separator_encode)).append(csv_separator);
+		sbd.append(callChain.getReferer_ip()).append(csv_separator);
+		sbd.append(callChain.getTarget().replaceAll(csv_separator, csv_separator_encode)).append(csv_separator);
+		sbd.append(callChain.getTarget_ip()).append(csv_separator);
+		sbd.append(callChain.getTarget_server()).append(csv_separator);
 		return sbd;
 	}
 
@@ -106,11 +108,11 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		}
 
 		StringBuilder sbd = get_callchain(callChain);
-		sbd.append(class_name).append(",");
-		sbd.append(method_name).append(",");
-		sbd.append(start_millis).append(",");
-		sbd.append(end_millis - start_millis).append(",");
-		sbd.append(1).append(",");
+		sbd.append(class_name).append(csv_separator);
+		sbd.append(method_name).append(csv_separator);
+		sbd.append(start_millis).append(csv_separator);
+		sbd.append(end_millis - start_millis).append(csv_separator);
+		sbd.append(1).append(csv_separator);
 		if (return0 instanceof String) {
 			sbd.append(return0.toString().length());
 		} else if (open_return_size && return0 instanceof Return) {
@@ -118,14 +120,14 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		} else {
 			sbd.append(-1);
 		}
-		sbd.append(",");
+		sbd.append(csv_separator);
 		// 用户标识
-		sbd.append(callChain.getIdentify()).append(",");
+		sbd.append(callChain.getIdentify()).append(csv_separator);
 		// 会话ID
 		String sessionid = callChain.getSessionid();
-		sbd.append(sessionid == null ? "" : sessionid).append(",");
+		sbd.append(sessionid == null ? "" : sessionid).append(csv_separator);
 		// 客户端类型
-		sbd.append(type).append(",");
+		sbd.append(type).append(csv_separator);
 		// 当前并发数
 		sbd.append(map.get(full_method_name).decrementAndGet());
 		producer.send(infogen_topic_tracking, callChain.getTrackid(), sbd.toString());
@@ -135,19 +137,19 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
 
 		StringBuilder sbd = get_callchain(callChain);
-		sbd.append(class_name).append(",");
-		sbd.append(method_name).append(",");
-		sbd.append(System.currentTimeMillis()).append(",");
-		sbd.append(0).append(",");
-		sbd.append(0).append(",");
-		sbd.append(0).append(",");
+		sbd.append(class_name).append(csv_separator);
+		sbd.append(method_name).append(csv_separator);
+		sbd.append(System.currentTimeMillis()).append(csv_separator);
+		sbd.append(0).append(csv_separator);
+		sbd.append(0).append(csv_separator);
+		sbd.append(0).append(csv_separator);
 		// 用户标识
-		sbd.append(callChain.getIdentify()).append(",");
+		sbd.append(callChain.getIdentify()).append(csv_separator);
 		// 会话ID
 		String sessionid = callChain.getSessionid();
-		sbd.append(sessionid == null ? "" : sessionid).append(",");
+		sbd.append(sessionid == null ? "" : sessionid).append(csv_separator);
 		// 客户端类型
-		sbd.append(type).append(",");
+		sbd.append(type).append(csv_separator);
 		// 当前并发数
 		sbd.append(map.get(full_method_name).decrementAndGet());
 		producer.send(infogen_topic_tracking, callChain.getTrackid(), sbd.toString());

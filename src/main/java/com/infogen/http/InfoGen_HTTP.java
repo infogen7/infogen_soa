@@ -38,6 +38,7 @@ public class InfoGen_HTTP {
 	private static final OkHttpClient client = new OkHttpClient();
 
 	static {
+		client.interceptors().add(new GzipRequestInterceptor());
 		client.setConnectTimeout(connect_timeout, TimeUnit.MILLISECONDS);
 		client.setReadTimeout(socket_timeout, TimeUnit.MILLISECONDS);
 		client.setWriteTimeout(socket_timeout, TimeUnit.MILLISECONDS);
@@ -165,6 +166,16 @@ public class InfoGen_HTTP {
 		}
 	}
 
+	public static void do_post_async(String url, Map<String, String> params, Callback callback) throws IOException {
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder);
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_FORM, concat_params(params))).build();
+		if (callback == null) {
+			callback = async_post_callback;
+		}
+		client.newCall(request).enqueue(callback);
+	}
+
 	public static String do_post_json(String url, Map<String, String> params) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder);
@@ -177,11 +188,24 @@ public class InfoGen_HTTP {
 		}
 	}
 
+	public static void do_post_json_async(String url, Map<String, String> params, Callback callback) throws IOException {
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder);
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
+		if (callback == null) {
+			callback = async_post_callback;
+		}
+		client.newCall(request).enqueue(callback);
+	}
+
 	public static String do_post_form_data(String url, Map<String, String> params) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder);
 
 		MultipartBuilder multipartBuilder = new MultipartBuilder().type(MultipartBuilder.FORM);
+		if (params.isEmpty()) {
+			multipartBuilder.addFormDataPart("", "");
+		}
 		for (String key : params.keySet()) {
 			multipartBuilder.addFormDataPart(key, params.get(key));
 		}
@@ -196,31 +220,14 @@ public class InfoGen_HTTP {
 		}
 	}
 
-	public static void do_post_async(String url, Map<String, String> params, Callback callback) throws IOException {
-		Builder builder = new Request.Builder().url(url);
-		add_headers(builder);
-		Request request = builder.post(RequestBody.create(MEDIA_TYPE_FORM, concat_params(params))).build();
-		if (callback == null) {
-			callback = async_post_callback;
-		}
-		client.newCall(request).enqueue(callback);
-	}
-
-	public static void do_post_json_async(String url, Map<String, String> params, Callback callback) throws IOException {
-		Builder builder = new Request.Builder().url(url);
-		add_headers(builder);
-		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
-		if (callback == null) {
-			callback = async_post_callback;
-		}
-		client.newCall(request).enqueue(callback);
-	}
-
 	public static void do_post_form_data_async(String url, Map<String, String> params, Callback callback) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder);
 
 		MultipartBuilder multipartBuilder = new MultipartBuilder().type(MultipartBuilder.FORM);
+		if (params.isEmpty()) {
+			multipartBuilder.addFormDataPart("", "");
+		}
 		for (String key : params.keySet()) {
 			multipartBuilder.addFormDataPart(key, params.get(key));
 		}
