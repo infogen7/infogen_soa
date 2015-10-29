@@ -33,7 +33,7 @@ public class RemoteHTTPFunction {
 	private static final Logger LOGGER = LogManager.getLogger(Service.class.getName());
 	private Service service;
 	private NetType net_type = NetType.LOCAL;
-	private String method;
+	private String function;
 	private String seed;
 
 	public RemoteHTTPFunction(Service service, String method) {
@@ -41,7 +41,7 @@ public class RemoteHTTPFunction {
 		if (method.startsWith("/")) {
 			method = method.substring(1);
 		}
-		this.method = method;
+		this.function = method;
 	}
 
 	public RemoteHTTPFunction(Service service, String method, String seed) {
@@ -146,7 +146,7 @@ public class RemoteHTTPFunction {
 				String http = http(node, name_value_pair, request_type);
 				Return create = Return.create(http);
 				if (create.get_code() == CODE.limit.code) {
-					LOGGER.info(new StringBuilder("接口调用超过限制:").append(method).toString());
+					LOGGER.info(new StringBuilder("接口调用超过限制:").append(function).toString());
 					continue;
 				}
 				return create;
@@ -239,13 +239,12 @@ public class RemoteHTTPFunction {
 	public enum NetType {
 		NET, LOCAL
 	}
-
 	public String http(RemoteNode node, Map<String, String> name_value_pair, RequestType request_type) throws IOException {
 		String url;
 		if (net_type == NetType.LOCAL) {
-			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
+			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
 		} else {
-			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
+			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
 		}
 		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post -> ").append(url).toString());
@@ -266,9 +265,9 @@ public class RemoteHTTPFunction {
 	public void http_async(RemoteNode node, Map<String, String> name_value_pair, RequestType request_type, Callback callback) throws IOException {
 		String url;
 		if (net_type == NetType.LOCAL) {
-			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
+			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
 		} else {
-			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
+			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
 		}
 		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post async -> ").append(url).toString());

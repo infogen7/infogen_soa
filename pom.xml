@@ -120,26 +120,26 @@
 			<artifactId>jetty-webapp</artifactId>
 			<version>9.3.5.v20151012</version>
 		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>9.3.5.v20151012</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty.http2</groupId>
-			<artifactId>http2-server</artifactId>
-			<version>9.3.5.v20151012</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty.http2</groupId>
-			<artifactId>http2-common</artifactId>
-			<version>9.3.5.v20151012</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty.http2</groupId>
-			<artifactId>http2-hpack</artifactId>
-			<version>9.3.5.v20151012</version>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.eclipse.jetty</groupId> -->
+		<!-- <artifactId>jetty-server</artifactId> -->
+		<!-- <version>9.3.5.v20151012</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.eclipse.jetty.http2</groupId> -->
+		<!-- <artifactId>http2-server</artifactId> -->
+		<!-- <version>9.3.5.v20151012</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.eclipse.jetty.http2</groupId> -->
+		<!-- <artifactId>http2-common</artifactId> -->
+		<!-- <version>9.3.5.v20151012</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.eclipse.jetty.http2</groupId> -->
+		<!-- <artifactId>http2-hpack</artifactId> -->
+		<!-- <version>9.3.5.v20151012</version> -->
+		<!-- </dependency> -->
 		<!-- okhttp -->
 		<dependency>
 			<groupId>com.squareup.okhttp</groupId>
