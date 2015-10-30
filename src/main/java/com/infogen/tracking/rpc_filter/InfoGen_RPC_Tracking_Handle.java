@@ -35,7 +35,6 @@ public class InfoGen_RPC_Tracking_Handle {
 	public CallChain doFilter(ChannelHandlerContext ctx, FullHttpRequest request, FullHttpResponse response) throws IOException, ServletException {
 		CallChain callchain = new CallChain();
 		HttpHeaders headers = request.headers();
-
 		// traceid
 		String traceid = headers.get(new AsciiString(HTTP_Header.x_track_id.key));
 		if (traceid == null || traceid.isEmpty()) {

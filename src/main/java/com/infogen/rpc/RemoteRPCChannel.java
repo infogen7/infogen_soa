@@ -60,7 +60,6 @@ public class RemoteRPCChannel extends InfoGen_Channel {
 		}
 		RemoteNode node = null;
 		String seed = String.valueOf(Clock.systemDefaultZone().millis());
-
 		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
 		if (callChain != null) {
 			httprequest.headers().set(new AsciiString(HTTP_Header.x_session_id.key), callChain.getSessionid());

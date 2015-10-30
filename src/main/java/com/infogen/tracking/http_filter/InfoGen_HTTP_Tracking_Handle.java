@@ -30,7 +30,6 @@ public class InfoGen_HTTP_Tracking_Handle {
 	 */
 	public CallChain doFilter(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		CallChain callchain = new CallChain();
-
 		// traceid
 		String traceid = request.getParameter(HTTP_Header.x_track_id.key);
 		if (traceid == null || traceid.isEmpty()) {

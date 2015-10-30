@@ -106,7 +106,6 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		if (callChain == null) {
 			return;
 		}
-
 		StringBuilder sbd = get_callchain(callChain);
 		sbd.append(class_name).append(csv_separator);
 		sbd.append(method_name).append(csv_separator);
