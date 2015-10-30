@@ -1,11 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.infogen</groupId>
+	<parent>
+		<groupId>com.infogen</groupId>
+		<artifactId>infogen_aggregator</artifactId>
+		<version>V2.1.00R151029</version>
+		<relativePath>../infogen_aggregator</relativePath>
+	</parent>
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
-
-	<version>V2.1.00R151028</version>
 
 	<name>infogen_soa</name>
 	<url>https://github.com/larrylgq/infogen_soa</url>
