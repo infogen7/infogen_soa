@@ -1,4 +1,4 @@
-package com.infogen.http_filter;
+package com.infogen.tracking.http_filter;
 
 import java.io.IOException;
 
@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.infogen.tracking.InfoGen_HTTP_Tracking_Handle;
 
 /**
  * HTTP方式的调用链日志框架的过滤器

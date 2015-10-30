@@ -2,6 +2,7 @@ package com.infogen;
 
 import java.io.IOException;
 import java.time.Clock;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -11,13 +12,16 @@ import org.apache.logging.log4j.Logger;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.core.json.Return;
 import com.infogen.core.util.CODE;
-import com.infogen.exception.HTTP_Fail_Exception;
 import com.infogen.exception.Node_Unavailable_Exception;
 import com.infogen.exception.Service_Notfound_Exception;
 import com.infogen.http.InfoGen_HTTP;
 import com.infogen.http.callback.HTTP_Callback;
+import com.infogen.http.exception.HTTP_Fail_Exception;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
+import com.infogen.tracking.CallChain;
+import com.infogen.tracking.ThreadLocal_Tracking;
+import com.infogen.util.HTTP_Header;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -232,6 +236,21 @@ public class RemoteHTTPFunction {
 	}
 
 	// ///////////////////////////////////////////http////////////////////////////////////////////////
+
+	private Map<String, String> concat_headers() {
+		Map<String, String> map = new HashMap<>();
+		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
+		if (callChain != null) {
+			// 注意:builder.header 不能写入空值,会报异常
+			map.put(HTTP_Header.x_session_id.key, callChain.getSessionid());
+			map.put(HTTP_Header.x_referer.key, callChain.getTarget());
+			map.put(HTTP_Header.x_track_id.key, callChain.getTrackid());
+			map.put(HTTP_Header.x_identify.key, callChain.getIdentify());
+			map.put(HTTP_Header.x_sequence.key, callChain.getSequence().toString());
+		}
+		return map;
+	}
+
 	public enum RequestType {
 		POST, GET, POST_JSON, POST_FORM_DATA
 	}
@@ -239,6 +258,7 @@ public class RemoteHTTPFunction {
 	public enum NetType {
 		NET, LOCAL
 	}
+
 	public String http(RemoteNode node, Map<String, String> name_value_pair, RequestType request_type) throws IOException {
 		String url;
 		if (net_type == NetType.LOCAL) {
@@ -248,16 +268,16 @@ public class RemoteHTTPFunction {
 		}
 		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post -> ").append(url).toString());
-			return InfoGen_HTTP.do_post(url, name_value_pair);
+			return InfoGen_HTTP.do_post(url, name_value_pair, concat_headers());
 		} else if (request_type == RequestType.POST_JSON) {
 			LOGGER.debug(new StringBuilder("post json -> ").append(url).toString());
-			return InfoGen_HTTP.do_post_json(url, name_value_pair);
+			return InfoGen_HTTP.do_post_json(url, name_value_pair, concat_headers());
 		} else if (request_type == RequestType.POST_FORM_DATA) {
 			LOGGER.debug(new StringBuilder("post form data-> ").append(url).toString());
-			return InfoGen_HTTP.do_post_form_data(url, name_value_pair);
+			return InfoGen_HTTP.do_post_form_data(url, name_value_pair, concat_headers());
 		} else {
 			LOGGER.debug(new StringBuilder("get -> ").append(url).toString());
-			return InfoGen_HTTP.do_get(url, name_value_pair);
+			return InfoGen_HTTP.do_get(url, name_value_pair, concat_headers());
 		}
 	}
 
@@ -271,16 +291,16 @@ public class RemoteHTTPFunction {
 		}
 		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post async -> ").append(url).toString());
-			InfoGen_HTTP.do_post_async(url, name_value_pair, callback);
+			InfoGen_HTTP.do_post_async(url, name_value_pair, callback, concat_headers());
 		} else if (request_type == RequestType.POST_JSON) {
 			LOGGER.debug(new StringBuilder("post json async -> ").append(url).toString());
-			InfoGen_HTTP.do_post_json_async(url, name_value_pair, callback);
+			InfoGen_HTTP.do_post_json_async(url, name_value_pair, callback, concat_headers());
 		} else if (request_type == RequestType.POST_FORM_DATA) {
 			LOGGER.debug(new StringBuilder("post form data async -> ").append(url).toString());
-			InfoGen_HTTP.do_post_form_data_async(url, name_value_pair, callback);
+			InfoGen_HTTP.do_post_form_data_async(url, name_value_pair, callback, concat_headers());
 		} else {
 			LOGGER.debug(new StringBuilder("get async -> ").append(url).toString());
-			InfoGen_HTTP.do_get_async(url, name_value_pair, callback);
+			InfoGen_HTTP.do_get_async(url, name_value_pair, callback, concat_headers());
 		}
 	}
 

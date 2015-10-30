@@ -12,8 +12,6 @@ import com.infogen.server.cache.InfoGen_Cache_Server;
 import com.infogen.server.cache.InfoGen_Loaded_Handle_Server;
 import com.infogen.server.model.RemoteServer;
 
-import net.jcip.annotations.NotThreadSafe;
-
 /**
  * 启动infogen服务
  * 
@@ -21,7 +19,6 @@ import net.jcip.annotations.NotThreadSafe;
  * @since 1.0
  * @version 1.0
  */
-@NotThreadSafe
 public class InfoGen {
 	private static final Logger LOGGER = LogManager.getLogger(InfoGen.class.getName());
 

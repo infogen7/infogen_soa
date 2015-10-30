@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.infogen.configuration.InfoGen_Configuration;
 
-import net.jcip.annotations.ThreadSafe;
-
 /**
  * 为本地调用处理扩展的节点属性
  * 
@@ -15,7 +13,6 @@ import net.jcip.annotations.ThreadSafe;
  * @since 1.0
  * @version 1.0
  */
-@ThreadSafe
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class RemoteNode extends AbstractNode {
 	@JsonIgnore
