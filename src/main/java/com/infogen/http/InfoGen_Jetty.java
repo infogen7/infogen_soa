@@ -3,6 +3,7 @@ package com.infogen.http;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.core.util.NativePath;
 
 /**
@@ -38,9 +39,9 @@ public class InfoGen_Jetty extends InfoGen_Server {
 	 * @return
 	 */
 
-	public InfoGen_Jetty start(Integer http_port, String CONTEXT, String DEFAULT_WEBAPP_PATH, String DESCRIPTOR) {
+	public InfoGen_Jetty start(InfoGen_Configuration infogen_configuration, String CONTEXT, String DEFAULT_WEBAPP_PATH, String DESCRIPTOR) {
 		classpaths.add(NativePath.get_class_path(InfoGen_Jetty.class));
-		start(http_port, CONTEXT, DEFAULT_WEBAPP_PATH, DEFAULT_WEBAPP_PATH, classpaths.toArray(new String[] {}));
+		start(infogen_configuration.register_node.getHttp_port(), CONTEXT, DEFAULT_WEBAPP_PATH, DEFAULT_WEBAPP_PATH, classpaths.toArray(new String[] {}));
 		return this;
 	}
 

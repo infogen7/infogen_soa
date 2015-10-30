@@ -24,7 +24,7 @@ public class InfoGen_JettyTest {
 		infogen_properties.setProperty("infogen.ratio", "10");
 		infogen_properties.setProperty("infogen.rpc.port", "10086");
 		InfoGen_Configuration config = InfoGen_Configuration.getInstance().initialization(infogen_properties);
-		InfoGen_Jetty.getInstance().start(config.register_node.getHttp_port(), "/", "src/main/webapp", "src/main/webapp/WEB-INF/web.xml");
+		InfoGen_Jetty.getInstance().start(config, "/", "src/main/webapp", "src/main/webapp/WEB-INF/web.xml");
 		// Thread.currentThread().join();
 	}
 }
