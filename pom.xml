@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.infogen</groupId>
 		<artifactId>infogen_aggregator</artifactId>
-		<version>V2.1.00R151029</version>
+		<version>${project.version}</version>
 		<relativePath>../infogen_aggregator</relativePath>
 	</parent>
 	<artifactId>infogen_soa</artifactId>
@@ -44,12 +44,12 @@
 		<dependency>
 			<groupId>com.infogen</groupId>
 			<artifactId>infogen_rpc</artifactId>
-			<version>V2.1.00R151028</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.infogen</groupId>
 			<artifactId>infogen_http</artifactId>
-			<version>V2.1.00R151028</version>
+			<version>${project.version}</version>
 		</dependency>
 		<!-- zookeeper -->
 		<dependency>
