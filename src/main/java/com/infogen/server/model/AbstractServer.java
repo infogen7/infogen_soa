@@ -24,7 +24,6 @@ public abstract class AbstractServer {
 	protected String describe = "";
 	protected Integer min_nodes = 1;
 
-	protected String infogen_version = "";
 	// proxy
 	protected String http_domain;
 	protected String http_proxy;
@@ -110,14 +109,6 @@ public abstract class AbstractServer {
 
 	public void setMin_nodes(Integer min_nodes) {
 		this.min_nodes = min_nodes;
-	}
-
-	public String getInfogen_version() {
-		return infogen_version;
-	}
-
-	public void setInfogen_version(String infogen_version) {
-		this.infogen_version = infogen_version;
 	}
 
 }

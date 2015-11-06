@@ -92,7 +92,6 @@ public class InfoGen_Configuration {
 		}
 
 		// server
-		register_server.setInfogen_version(InfoGen.VERSION);
 		register_server.setName(infogen_properties.getProperty("infogen.name"));
 		register_server.setPath(InfoGen_ZooKeeper.path(register_server.getName()));
 		register_server.setDescribe(infogen_properties.getProperty("infogen.describe"));
@@ -126,7 +125,8 @@ public class InfoGen_Configuration {
 		if (net_ip != null && !net_ip.trim().isEmpty() && Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(net_ip).find()) {
 			register_node.setNet_ip(net_ip);
 		}
-
+		
+		register_node.setInfogen_version(InfoGen.VERSION);
 		register_node.setName(localIP.concat("-" + Clock.system(zoneid).millis()));
 		register_node.setPath(InfoGen_ZooKeeper.path(register_server.getName()).concat("/".concat(register_node.getName())));
 		String http_port = infogen_properties.getProperty("infogen.http.port");
