@@ -15,8 +15,6 @@ import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.core.structure.map.consistent_hash.ConsistentHash;
 import com.infogen.core.tools.Tool_Jackson;
 
-import net.jcip.annotations.ThreadSafe;
-
 /**
  * 为本地调用扩展的服务属性
  * 
@@ -24,7 +22,6 @@ import net.jcip.annotations.ThreadSafe;
  * @since 1.0
  * @version 1.0
  */
-@ThreadSafe
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class RemoteServer extends AbstractServer {
 	@JsonIgnore

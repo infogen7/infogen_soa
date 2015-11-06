@@ -1,4 +1,4 @@
-package com.infogen.tracking;
+package com.infogen.tracking.rpc_filter;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -6,6 +6,8 @@ import java.util.UUID;
 import javax.servlet.ServletException;
 
 import com.infogen.rpc.tools.Tool_RPC;
+import com.infogen.tracking.CallChain;
+import com.infogen.tracking.ThreadLocal_Tracking;
 import com.infogen.util.HTTP_Header;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -33,7 +35,6 @@ public class InfoGen_RPC_Tracking_Handle {
 	public CallChain doFilter(ChannelHandlerContext ctx, FullHttpRequest request, FullHttpResponse response) throws IOException, ServletException {
 		CallChain callchain = new CallChain();
 		HttpHeaders headers = request.headers();
-
 		// traceid
 		String traceid = headers.get(new AsciiString(HTTP_Header.x_track_id.key));
 		if (traceid == null || traceid.isEmpty()) {

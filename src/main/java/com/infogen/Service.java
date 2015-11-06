@@ -66,12 +66,12 @@ public class Service {
 	}
 
 	// /////////////////////////////////////////////////HTTPFunction/////////////////////////////////////////////
-	public RemoteHTTPFunction get_http_function(String method) {
-		return new RemoteHTTPFunction(this, method);
+	public RemoteHTTPFunction get_http_function(String function) {
+		return new RemoteHTTPFunction(this, function);
 	}
 
-	public RemoteHTTPFunction get_http_function(String method, RemoteHTTPFunction.NetType net_type) {
-		return new RemoteHTTPFunction(this, method, net_type);
+	public RemoteHTTPFunction get_http_function(String function, RemoteHTTPFunction.NetType net_type) {
+		return new RemoteHTTPFunction(this, function, net_type);
 	}
 
 	////////////////////////////////////////// GET

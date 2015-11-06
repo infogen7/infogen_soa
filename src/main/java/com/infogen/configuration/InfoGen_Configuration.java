@@ -152,11 +152,7 @@ public class InfoGen_Configuration {
 		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
 
 		// 延迟启动 mvc 框架
-		String spring_mvc_path = infogen_properties.getProperty("infogen.http.spring_mvc.path");
-		String spring_mvc_mapping = infogen_properties.getProperty("infogen.http.spring_mvc.mapping");
-		if (spring_mvc_path != null && !spring_mvc_path.trim().isEmpty()) {
-			InfoGen_Spring.start_mvc(spring_mvc_path, spring_mvc_mapping);
-		}
+		InfoGen_Spring.config_mvc(infogen_properties.getProperty("infogen.http.spring_mvc.path"), infogen_properties.getProperty("infogen.http.spring_mvc.mapping"));
 		return this;
 	}
 }

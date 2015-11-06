@@ -2,6 +2,7 @@ package com.infogen;
 
 import java.io.IOException;
 import java.time.Clock;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -11,13 +12,16 @@ import org.apache.logging.log4j.Logger;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.core.json.Return;
 import com.infogen.core.util.CODE;
-import com.infogen.exception.HTTP_Fail_Exception;
 import com.infogen.exception.Node_Unavailable_Exception;
 import com.infogen.exception.Service_Notfound_Exception;
 import com.infogen.http.InfoGen_HTTP;
 import com.infogen.http.callback.HTTP_Callback;
+import com.infogen.http.exception.HTTP_Fail_Exception;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
+import com.infogen.tracking.CallChain;
+import com.infogen.tracking.ThreadLocal_Tracking;
+import com.infogen.util.HTTP_Header;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -33,7 +37,7 @@ public class RemoteHTTPFunction {
 	private static final Logger LOGGER = LogManager.getLogger(Service.class.getName());
 	private Service service;
 	private NetType net_type = NetType.LOCAL;
-	private String method;
+	private String function;
 	private String seed;
 
 	public RemoteHTTPFunction(Service service, String method) {
@@ -41,7 +45,7 @@ public class RemoteHTTPFunction {
 		if (method.startsWith("/")) {
 			method = method.substring(1);
 		}
-		this.method = method;
+		this.function = method;
 	}
 
 	public RemoteHTTPFunction(Service service, String method, String seed) {
@@ -146,7 +150,7 @@ public class RemoteHTTPFunction {
 				String http = http(node, name_value_pair, request_type);
 				Return create = Return.create(http);
 				if (create.get_code() == CODE.limit.code) {
-					LOGGER.info(new StringBuilder("接口调用超过限制:").append(method).toString());
+					LOGGER.info(new StringBuilder("接口调用超过限制:").append(function).toString());
 					continue;
 				}
 				return create;
@@ -232,6 +236,21 @@ public class RemoteHTTPFunction {
 	}
 
 	// ///////////////////////////////////////////http////////////////////////////////////////////////
+
+	private Map<String, String> concat_headers() {
+		Map<String, String> map = new HashMap<>();
+		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
+		if (callChain != null) {
+			// 注意:builder.header 不能写入空值,会报异常
+			map.put(HTTP_Header.x_session_id.key, callChain.getSessionid());
+			map.put(HTTP_Header.x_referer.key, callChain.getTarget());
+			map.put(HTTP_Header.x_track_id.key, callChain.getTrackid());
+			map.put(HTTP_Header.x_identify.key, callChain.getIdentify());
+			map.put(HTTP_Header.x_sequence.key, callChain.getSequence().toString());
+		}
+		return map;
+	}
+
 	public enum RequestType {
 		POST, GET, POST_JSON, POST_FORM_DATA
 	}
@@ -243,22 +262,22 @@ public class RemoteHTTPFunction {
 	public String http(RemoteNode node, Map<String, String> name_value_pair, RequestType request_type) throws IOException {
 		String url;
 		if (net_type == NetType.LOCAL) {
-			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
+			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
 		} else {
-			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
+			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
 		}
 		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post -> ").append(url).toString());
-			return InfoGen_HTTP.do_post(url, name_value_pair);
+			return InfoGen_HTTP.do_post(url, name_value_pair, concat_headers());
 		} else if (request_type == RequestType.POST_JSON) {
 			LOGGER.debug(new StringBuilder("post json -> ").append(url).toString());
-			return InfoGen_HTTP.do_post_json(url, name_value_pair);
+			return InfoGen_HTTP.do_post_json(url, name_value_pair, concat_headers());
 		} else if (request_type == RequestType.POST_FORM_DATA) {
 			LOGGER.debug(new StringBuilder("post form data-> ").append(url).toString());
-			return InfoGen_HTTP.do_post_form_data(url, name_value_pair);
+			return InfoGen_HTTP.do_post_form_data(url, name_value_pair, concat_headers());
 		} else {
 			LOGGER.debug(new StringBuilder("get -> ").append(url).toString());
-			return InfoGen_HTTP.do_get(url, name_value_pair);
+			return InfoGen_HTTP.do_get(url, name_value_pair, concat_headers());
 		}
 	}
 
@@ -266,22 +285,22 @@ public class RemoteHTTPFunction {
 	public void http_async(RemoteNode node, Map<String, String> name_value_pair, RequestType request_type, Callback callback) throws IOException {
 		String url;
 		if (net_type == NetType.LOCAL) {
-			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
+			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
 		} else {
-			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(method).toString();
+			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
 		}
 		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post async -> ").append(url).toString());
-			InfoGen_HTTP.do_post_async(url, name_value_pair, callback);
+			InfoGen_HTTP.do_post_async(url, name_value_pair, callback, concat_headers());
 		} else if (request_type == RequestType.POST_JSON) {
 			LOGGER.debug(new StringBuilder("post json async -> ").append(url).toString());
-			InfoGen_HTTP.do_post_json_async(url, name_value_pair, callback);
+			InfoGen_HTTP.do_post_json_async(url, name_value_pair, callback, concat_headers());
 		} else if (request_type == RequestType.POST_FORM_DATA) {
 			LOGGER.debug(new StringBuilder("post form data async -> ").append(url).toString());
-			InfoGen_HTTP.do_post_form_data_async(url, name_value_pair, callback);
+			InfoGen_HTTP.do_post_form_data_async(url, name_value_pair, callback, concat_headers());
 		} else {
 			LOGGER.debug(new StringBuilder("get async -> ").append(url).toString());
-			InfoGen_HTTP.do_get_async(url, name_value_pair, callback);
+			InfoGen_HTTP.do_get_async(url, name_value_pair, callback, concat_headers());
 		}
 	}
 

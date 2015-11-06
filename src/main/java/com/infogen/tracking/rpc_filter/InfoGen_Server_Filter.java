@@ -1,10 +1,9 @@
-package com.infogen.rpc_filter;
+package com.infogen.tracking.rpc_filter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.infogen.rpc.filter.InfoGen_Filter;
-import com.infogen.tracking.InfoGen_RPC_Tracking_Handle;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;

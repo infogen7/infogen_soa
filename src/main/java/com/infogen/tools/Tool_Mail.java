@@ -25,11 +25,9 @@ import javax.mail.internet.MimeMultipart;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.infogen.http.InfoGen_HTTP;
-
 public class Tool_Mail {
 
-	private static final Logger LOGGER = LogManager.getLogger(InfoGen_HTTP.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(Tool_Mail.class.getName());
 
 	private String smtp_host;
 	private String smtp_port;

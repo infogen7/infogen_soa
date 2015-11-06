@@ -1,4 +1,4 @@
-package com.infogen.tracking;
+package com.infogen.tracking.http_filter;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.infogen.tools.Tool_HTTP;
+import com.infogen.tracking.CallChain;
+import com.infogen.tracking.ThreadLocal_Tracking;
 import com.infogen.util.HTTP_Header;
 
 /**
@@ -28,7 +30,6 @@ public class InfoGen_HTTP_Tracking_Handle {
 	 */
 	public CallChain doFilter(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		CallChain callchain = new CallChain();
-
 		// traceid
 		String traceid = request.getParameter(HTTP_Header.x_track_id.key);
 		if (traceid == null || traceid.isEmpty()) {
