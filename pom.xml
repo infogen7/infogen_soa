@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>com.infogen</groupId>
 		<artifactId>infogen_aggregator</artifactId>
-		<version>${project.version}</version>
+		<version>V1.0</version>
 		<relativePath>../infogen_aggregator</relativePath>
 	</parent>
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
-
+	<version>${global.version}</version>
 	<name>infogen_soa</name>
 	<url>https://github.com/larrylgq/infogen_soa</url>
 	<description>分布式服务框架</description>
