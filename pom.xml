@@ -40,7 +40,12 @@
 		<sonar.language>java</sonar.language>
 	</properties>
 	<dependencies>
-		<!-- core -->
+		<!-- core 在soa中指定,且放在第一位,确保maven依赖jar包的优先级 -->
+		<dependency>
+			<groupId>com.infogen</groupId>
+			<artifactId>infogen_core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.infogen</groupId>
 			<artifactId>infogen_rpc</artifactId>

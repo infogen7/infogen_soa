@@ -44,6 +44,9 @@ public class InfoGen_Jetty extends InfoGen_Server {
 	 * @param DESCRIPTOR
 	 * @return
 	 */
+	public InfoGen_Jetty start(InfoGen_Configuration infogen_configuration, String CONTEXT) {
+		return start(infogen_configuration, CONTEXT, NativePath.get("webapp").toString(), NativePath.get("webapp/WEB-INF/web.xml").toString());
+	}
 
 	public InfoGen_Jetty start(InfoGen_Configuration infogen_configuration, String CONTEXT, String DEFAULT_WEBAPP_PATH, String DESCRIPTOR) {
 		classpaths.add(NativePath.get_class_path(InfoGen_Jetty.class));
