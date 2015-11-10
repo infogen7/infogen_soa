@@ -3,6 +3,10 @@ package com.infogen.http;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.server.Server;
+
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.core.util.NativePath;
 
@@ -14,6 +18,8 @@ import com.infogen.core.util.NativePath;
  * @version 1.0
  */
 public class InfoGen_Jetty extends InfoGen_Server {
+	private static final Logger LOGGER = LogManager.getLogger(InfoGen_Jetty.class.getName());
+
 	private static class InnerInstance {
 		public static final InfoGen_Jetty instance = new InfoGen_Jetty();
 	}
@@ -41,7 +47,18 @@ public class InfoGen_Jetty extends InfoGen_Server {
 
 	public InfoGen_Jetty start(InfoGen_Configuration infogen_configuration, String CONTEXT, String DEFAULT_WEBAPP_PATH, String DESCRIPTOR) {
 		classpaths.add(NativePath.get_class_path(InfoGen_Jetty.class));
-		start(infogen_configuration.register_node.getHttp_port(), CONTEXT, DEFAULT_WEBAPP_PATH, DEFAULT_WEBAPP_PATH, classpaths.toArray(new String[] {}));
+		Thread t = new Thread(() -> {
+			try {
+				final Server server = createServerInSource(infogen_configuration.register_node.getHttp_port(), CONTEXT, DEFAULT_WEBAPP_PATH, DESCRIPTOR, classpaths.toArray(new String[] {}));
+				server.start();
+				server.join();
+			} catch (Exception e) {
+				LOGGER.error("启动jetty失败", e);
+				System.exit(-1);
+			}
+		});
+		t.setDaemon(true);
+		t.start();
 		return this;
 	}
 
