@@ -40,7 +40,6 @@
 		<sonar.language>java</sonar.language>
 	</properties>
 	<dependencies>
-		<!-- core -->
 		<dependency>
 			<groupId>com.infogen</groupId>
 			<artifactId>infogen_rpc</artifactId>
