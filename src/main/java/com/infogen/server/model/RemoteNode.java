@@ -13,8 +13,9 @@ import com.infogen.configuration.InfoGen_Configuration;
  * @since 1.0
  * @version 1.0
  */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class RemoteNode extends AbstractNode {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, setterVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
+public class RemoteNode extends RegisterNode {
+	private static final long serialVersionUID = 6574571562904280439L;
 	@JsonIgnore
 	public transient Long disabled_time = Clock.system(InfoGen_Configuration.zoneid).millis();
 }

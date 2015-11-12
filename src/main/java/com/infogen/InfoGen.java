@@ -33,7 +33,7 @@ public class InfoGen {
 	private InfoGen() {
 	}
 
-	public static final String VERSION = "V2.0.00R150901";
+	public static final String VERSION = "V2.1.00R151029";
 	private InfoGen_Cache_Server CACHE_SERVER = InfoGen_Cache_Server.getInstance();
 	private InfoGen_Configuration infogen_configuration = null;
 
@@ -72,6 +72,7 @@ public class InfoGen {
 		LOGGER.info("注册当前服务");
 		CACHE_SERVER.create_server(infogen_configuration.register_server);
 		CACHE_SERVER.create_node(infogen_configuration.register_node);
+		CACHE_SERVER.create_service_functions(infogen_configuration.service_functions);
 		return this;
 	}
 

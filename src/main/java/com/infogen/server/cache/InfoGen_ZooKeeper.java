@@ -1,4 +1,4 @@
-package com.infogen.server.zookeeper;
+package com.infogen.server.cache;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +25,8 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 
+import com.infogen.server.cache.zookeeper.InfoGen_Zookeeper_Handle_Expired;
+import com.infogen.server.cache.zookeeper.InfoGen_Zookeeper_Handle_Watcher_Children;
 import com.infogen.tools.Scheduled;
 
 /**
@@ -52,19 +54,23 @@ public class InfoGen_ZooKeeper {
 	private ZooKeeper zookeeper;
 	private InfoGen_Zookeeper_Handle_Expired expired_handle;
 	private Map<String, Set<String>> map_auth_info = new HashMap<>();
-	public static final String CONTEXT = "/infogen/";
-	public static final String CONTEXT_CONFIGURATION = "/infogen_configuration/";
+	private static final String CONTEXT = "/infogen";
+	private static final String CONTEXT_FUNCTIONS = "/infogen_functions";
 
-	public static String path(String server_name) {
-		return CONTEXT.concat(server_name);
+	protected static String functions_path(String server_name) {
+		return CONTEXT_FUNCTIONS.concat("/").concat(server_name);
 	}
 
-	public static String configuration_path(String configuration_name) {
-		return CONTEXT_CONFIGURATION.concat(configuration_name);
+	protected static String path() {
+		return CONTEXT;
 	}
 
-	public static String path(String server_name, String node_name) {
-		return CONTEXT.concat(server_name).concat("/").concat(node_name);
+	protected static String path(String server_name) {
+		return CONTEXT.concat("/").concat(server_name);
+	}
+
+	protected static String path(String server_name, String node_name) {
+		return CONTEXT.concat("/").concat(server_name).concat("/").concat(node_name);
 	}
 
 	/**

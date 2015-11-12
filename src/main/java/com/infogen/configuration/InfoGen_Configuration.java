@@ -27,7 +27,7 @@ import com.infogen.self_description.component.Function;
 import com.infogen.self_description.component.OutParameter;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
-import com.infogen.server.zookeeper.InfoGen_ZooKeeper;
+import com.infogen.server.model.ServiceFunctions;
 import com.infogen.tracking.annotation.Execution;
 import com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution;
 
@@ -58,13 +58,14 @@ public class InfoGen_Configuration {
 
 	public final RegisterNode register_node = new RegisterNode();
 	public final RegisterServer register_server = new RegisterServer();
+	public final ServiceFunctions service_functions = new ServiceFunctions();
 	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
 
 	public String zookeeper;
 	public String kafka;
 
 	public InfoGen_Configuration add_basic_outparameter(OutParameter basic_outparameter) {
-		for (Function function : register_server.getHttp_functions().values()) {
+		for (Function function : service_functions.getHttp_functions().values()) {
 			function.getOut_parameters().add(basic_outparameter);
 		}
 		return this;
@@ -94,17 +95,13 @@ public class InfoGen_Configuration {
 		// server
 		register_server.setInfogen_version(InfoGen.VERSION);
 		register_server.setName(infogen_properties.getProperty("infogen.name"));
-		register_server.setPath(InfoGen_ZooKeeper.path(register_server.getName()));
 		register_server.setDescribe(infogen_properties.getProperty("infogen.describe"));
 		String min_nodes = infogen_properties.getProperty("infogen.min_nodes");
 		register_server.setMin_nodes((min_nodes == null) ? 1 : Integer.valueOf(min_nodes));
 		register_server.setProtocol(infogen_properties.getProperty("infogen.protocol"));
-		register_server.setHttp_domain(infogen_properties.getProperty("infogen.http.domain"));
 		register_server.setHttp_proxy(infogen_properties.getProperty("infogen.http.proxy"));
 
 		// server - 自描述
-		register_server.setHttp_functions(InfoGen_Self_Description.getInstance().self_description(AOP.getInstance().getClasses()));
-
 		if (!register_server.available()) {
 			LOGGER.error("服务配置不能为空:infogen.name");
 			System.exit(-1);
@@ -114,12 +111,7 @@ public class InfoGen_Configuration {
 		String localIP = infogen_properties.getProperty("infogen.ip");
 		if (localIP == null || localIP.trim().isEmpty() || !Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(localIP).find()) {
 			String ifcfgs = infogen_properties.getProperty("infogen.ifcfgs");
-			if (ifcfgs == null || ifcfgs.trim().isEmpty()) {
-				localIP = Tool_Core.getLocalIP(new String[] { "eth", "wlan" });
-			} else {
-				LOGGER.info("网卡配置为:" + infogen_properties.getProperty("infogen.ifcfgs"));
-				localIP = Tool_Core.getLocalIP(Tool_Core.trim(ifcfgs).split(","));
-			}
+			localIP = Tool_Core.getLocalIP(Tool_Core.trim((ifcfgs == null || ifcfgs.trim().isEmpty()) ? "eth,wlan" : ifcfgs).split(","));
 		}
 		register_node.setIp(localIP);
 		String net_ip = infogen_properties.getProperty("infogen.net_ip");
@@ -128,7 +120,7 @@ public class InfoGen_Configuration {
 		}
 
 		register_node.setName(localIP.concat("-" + Clock.system(zoneid).millis()));
-		register_node.setPath(InfoGen_ZooKeeper.path(register_server.getName()).concat("/".concat(register_node.getName())));
+		register_node.setServer_name(register_server.getName());
 		String http_port = infogen_properties.getProperty("infogen.http.port");
 		register_node.setHttp_port((http_port == null) ? null : Integer.valueOf(http_port));
 		String rpc_port = infogen_properties.getProperty("infogen.rpc.port");
@@ -147,6 +139,8 @@ public class InfoGen_Configuration {
 		}
 
 		// /////////////////////////////////////////////////////初始化启动配置/////////////////////////////////////////////////////////////////////
+		service_functions.getHttp_functions().putAll(InfoGen_Self_Description.getInstance().self_description(AOP.getInstance().getClasses()));
+		service_functions.setServer(register_server);
 
 		// AOP
 		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());

@@ -29,12 +29,12 @@ import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.core.tools.Tool_Core;
 import com.infogen.core.tools.Tool_Jackson;
 import com.infogen.core.util.NativePath;
+import com.infogen.server.cache.zookeeper.InfoGen_Zookeeper_Handle_Expired;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
-import com.infogen.server.zookeeper.InfoGen_ZooKeeper;
-import com.infogen.server.zookeeper.InfoGen_Zookeeper_Handle_Expired;
+import com.infogen.server.model.ServiceFunctions;
 import com.infogen.tools.Scheduled;
 
 /**
@@ -71,7 +71,7 @@ public class InfoGen_Cache_Server {
 		} , 3, 3, TimeUnit.MINUTES);
 	}
 
-	private InfoGen_ZooKeeper ZK = com.infogen.server.zookeeper.InfoGen_ZooKeeper.getInstance();
+	private InfoGen_ZooKeeper ZK = com.infogen.server.cache.InfoGen_ZooKeeper.getInstance();
 	// 依赖的服务
 	public final ConcurrentMap<String, RemoteServer> depend_server = new ConcurrentHashMap<>();
 	// 本地缓存的依赖服务
@@ -125,12 +125,31 @@ public class InfoGen_Cache_Server {
 		// 所有用户可读权限
 		acls.add(new ACL(ZooDefs.Perms.READ, new Id("world", "anyone")));
 		// 创建或更新配置节点
-		String create_path = ZK.create(InfoGen_ZooKeeper.configuration_path(name), value.getBytes(), acls, CreateMode.PERSISTENT);
+		String create_path = ZK.create(InfoGen_ZooKeeper.path(name), value.getBytes(), acls, CreateMode.PERSISTENT);
 		if (create_path == null) {
 			LOGGER.error("注册配置失败");
 		} else if (create_path.equals(Code.NODEEXISTS.name())) {
 			ZK.add_auth_info("digest", digest);
-			ZK.set_data(InfoGen_ZooKeeper.configuration_path(name), value.getBytes(), -1);
+			ZK.set_data(InfoGen_ZooKeeper.path(name), value.getBytes(), -1);
+		}
+	}
+
+	public void create_service_functions(ServiceFunctions service_functions) {
+		if (!ZK.available()) {
+			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
+			return;
+		}
+
+		String path = InfoGen_ZooKeeper.functions_path(service_functions.getServer().getName());
+		// 创建或更新服务节点
+		byte[] bytes = Tool_Jackson.toJson(service_functions).getBytes();
+		String create_path = ZK.create(path, bytes, CreateMode.PERSISTENT);
+		if (create_path == null) {
+			LOGGER.error("注册自身服务方法列表失败!");
+			return;
+		} else if (create_path.equals(Code.NODEEXISTS.name())) {
+			// 更新服务节点数据
+			ZK.set_data(path, bytes, -1);
 		}
 	}
 
@@ -145,7 +164,7 @@ public class InfoGen_Cache_Server {
 			return;
 		}
 
-		String path = register_server.getPath();
+		String path = InfoGen_ZooKeeper.path(register_server.getName());
 		// 创建或更新服务节点
 		byte[] bytes = Tool_Jackson.toJson(register_server).getBytes();
 		String create_path = ZK.create(path, bytes, CreateMode.PERSISTENT);
@@ -171,7 +190,7 @@ public class InfoGen_Cache_Server {
 		}
 
 		// 创建应用子节点及子节点数据
-		String path = register_node.getPath();
+		String path = InfoGen_ZooKeeper.path(register_node.getServer_name(), register_node.getName());
 		String create_path = ZK.create(path, Tool_Jackson.toJson(register_node).getBytes(), CreateMode.EPHEMERAL);
 		if (create_path == null) {
 			LOGGER.error("注册自身节点失败!");

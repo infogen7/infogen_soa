@@ -22,8 +22,10 @@ import com.infogen.core.tools.Tool_Jackson;
  * @since 1.0
  * @version 1.0
  */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class RemoteServer extends AbstractServer {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, setterVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
+public class RemoteServer extends RegisterServer {
+	private static final long serialVersionUID = 1343826022706203233L;
+
 	@JsonIgnore
 	private static final Logger LOGGER = LogManager.getLogger(RemoteServer.class.getName());
 
