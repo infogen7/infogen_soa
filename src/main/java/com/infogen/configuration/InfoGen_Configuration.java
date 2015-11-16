@@ -65,7 +65,7 @@ public class InfoGen_Configuration {
 	public String kafka;
 
 	public InfoGen_Configuration add_basic_outparameter(OutParameter basic_outparameter) {
-		for (Function function : service_functions.getHttp_functions().values()) {
+		for (Function function : service_functions.getHttp_functions()) {
 			function.getOut_parameters().add(basic_outparameter);
 		}
 		return this;
@@ -139,7 +139,7 @@ public class InfoGen_Configuration {
 		}
 
 		// /////////////////////////////////////////////////////初始化启动配置/////////////////////////////////////////////////////////////////////
-		service_functions.getHttp_functions().putAll(InfoGen_Self_Description.getInstance().self_description(AOP.getInstance().getClasses()));
+		service_functions.getHttp_functions().addAll(InfoGen_Self_Description.getInstance().self_description(AOP.getInstance().getClasses()));
 		service_functions.setServer(register_server);
 
 		// AOP

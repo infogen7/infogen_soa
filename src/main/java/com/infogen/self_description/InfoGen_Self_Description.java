@@ -1,7 +1,7 @@
 package com.infogen.self_description;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,18 +37,18 @@ public class InfoGen_Self_Description {
 	private HTTP_Parser http_parser = new HTTP_Parser();
 	private RPC_Parser rpc_parser = new RPC_Parser();
 
-	public Map<String, Function> self_description(Set<Class<?>> class_set) {
-		Map<String, Function> functions = new HashMap<>();
+	public List<Function> self_description(Set<Class<?>> class_set) {
+		List<Function> functions = new ArrayList<>();
 		class_set.forEach((clazz) -> {
 			try {
 				RestController rest_controller = clazz.getAnnotation(RestController.class);
 				if (rest_controller != null) {
-					functions.putAll(http_parser.self_description(clazz));
+					functions.addAll(http_parser.self_description(clazz));
 				}
 
 				RPCController rpc_controller = clazz.getAnnotation(RPCController.class);
 				if (rpc_controller != null) {
-					functions.putAll(rpc_parser.self_description(clazz));
+					functions.addAll(rpc_parser.self_description(clazz));
 				}
 			} catch (Exception e) {
 				LOGGER.error("解析class失败:", e);

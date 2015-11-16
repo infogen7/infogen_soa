@@ -1,8 +1,8 @@
 package com.infogen.self_description.parser;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,8 +27,8 @@ public class HTTP_Parser extends Self_Description {
 	 * @see com.infogen.self_description.Self_Description#self_description(java.util.Set)
 	 */
 	@Override
-	public Map<String, Function> self_description(Class<?> clazz) {
-		Map<String, Function> functions = new HashMap<>();
+	public List<Function>  self_description(Class<?> clazz) {
+		List<Function> functions = new ArrayList<>();
 
 		// url 前缀
 		String pre_url = "";
@@ -77,7 +77,7 @@ public class HTTP_Parser extends Self_Description {
 			getOutParam(function, method);
 
 			//
-			functions.put(function.getRequest_method(), function);
+			functions.add(function);
 		}
 		return functions;
 	}

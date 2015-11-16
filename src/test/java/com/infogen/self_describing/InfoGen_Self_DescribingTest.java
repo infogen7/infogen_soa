@@ -5,15 +5,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 import com.infogen.self_description.InfoGen_Self_Description;
 import com.infogen.self_description.component.Function;
@@ -50,7 +45,7 @@ public class InfoGen_Self_DescribingTest {
 		Set<Class<?>> class_set = new HashSet<Class<?>>();
 		class_set.add(InfoGen_Self_DescribingTest.class);
 		class_set.add(com.infogen.tools.Tool_JacksonTest.class);
-		Map<String, Function> map = instance.self_description(class_set);
+		List<Function> map = instance.self_description(class_set);
 		Assert.assertEquals(map.size(), 1);
 	}
 }

@@ -1,7 +1,9 @@
 package com.infogen.self_description.parser;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -18,8 +20,8 @@ import com.infogen.self_description.component.Function;
 public class RPC_Parser extends Self_Description {
 
 	@Override
-	public Map<String, Function> self_description(Class<?> clazz) {
-		Map<String, Function> functions = new HashMap<>();
+	public List<Function> self_description(Class<?> clazz) {
+		List<Function> functions = new ArrayList<>();
 
 		// url 前缀
 		String pre_url = "";
@@ -54,7 +56,7 @@ public class RPC_Parser extends Self_Description {
 				stringbuilder.append(",").append(type_clazz.getName());
 			}
 			Method method = map.get(stringbuilder.toString());
-			
+
 			// url 方法名会格式为: /get/message
 			String suf_url = method.getName();// URL a/b/c/ 转化为 /a/b/c 第一个/会被补齐,最后一个/会被过滤掉
 			String url = new StringBuilder("/").append(pre_url).append("/").append(suf_url).toString();
@@ -78,7 +80,7 @@ public class RPC_Parser extends Self_Description {
 			getOutParam(function, method);
 
 			//
-			functions.put(function.getRequest_method(), function);
+			functions.add(function);
 		}
 		return functions;
 	}

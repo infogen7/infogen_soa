@@ -3,6 +3,7 @@ package com.infogen.self_description;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -38,7 +39,7 @@ import javassist.bytecode.MethodInfo;
 public abstract class Self_Description {
 	private static final Logger LOGGER = LogManager.getLogger(Self_Description.class.getName());
 
-	public abstract Map<String, Function> self_description(Class<?> clazz);
+	public abstract List<Function> self_description(Class<?> clazz);
 
 	// 使用javassist获取参数名
 	private static final ClassPool class_pool = ClassPool.getDefault();

@@ -1,8 +1,8 @@
 package com.infogen.server.model;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.infogen.self_description.component.Function;
@@ -18,13 +18,13 @@ import com.infogen.self_description.component.Function;
 public class ServiceFunctions implements Serializable {
 	private static final long serialVersionUID = 597069376404016921L;
 	private RegisterServer server = new RegisterServer();
-	private Map<String, Function> http_functions = new HashMap<>();
+	private List<Function> http_functions = new ArrayList<>();
 
-	public Map<String, Function> getHttp_functions() {
+	public List<Function> getHttp_functions() {
 		return http_functions;
 	}
 
-	public void setHttp_functions(Map<String, Function> http_functions) {
+	public void setHttp_functions(List<Function> http_functions) {
 		this.http_functions = http_functions;
 	}
 
