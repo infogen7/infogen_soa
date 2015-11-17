@@ -24,7 +24,7 @@ public class Infogen_HTTP_NativeServer_Servlet extends HttpServlet {
 
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().write(Tool_Jackson.toJson(InfoGen_Cache_Server.getInstance().depend_server));
+		response.getWriter().write(Tool_Jackson.toJson(InfoGen_Cache_Server.getInstance().depend_server.values()));
 	}
 
 	@Override
