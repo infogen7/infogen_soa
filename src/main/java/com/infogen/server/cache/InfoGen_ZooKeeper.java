@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
@@ -48,6 +47,8 @@ public class InfoGen_ZooKeeper {
 	}
 
 	private InfoGen_ZooKeeper() {
+		// 定时修正监听失败
+		Scheduled.executors_single.scheduleWithFixedDelay(rewatcher_children_paths_runable, 16, 16, TimeUnit.SECONDS);
 	}
 
 	private String host_port;
@@ -256,7 +257,7 @@ public class InfoGen_ZooKeeper {
 	// 子节点改变触发事件处理
 	private Map<String, InfoGen_Zookeeper_Handle_Watcher_Children> watcher_children_handle_map = new HashMap<>();
 
-	// 创建子节点监听,如果已存在该字节点的监听直接返回
+	// 创建子节点监听,如果已存在该子节点的监听直接返回
 	public void watcher_children_single(String path, InfoGen_Zookeeper_Handle_Watcher_Children watcher_children_handle) {
 		if (watcher_children_handle_map.get(path) != null) {
 			LOGGER.info("当前监听已经注册过:".concat(path));
@@ -275,7 +276,7 @@ public class InfoGen_ZooKeeper {
 			zookeeper.getChildren(path, (event) -> {
 				LOGGER.info("子节点事件  path:" + event.getPath() + "  state:" + event.getState().name() + "  type:" + event.getType().name());
 				if (event.getType() == EventType.NodeChildrenChanged) {
-					LOGGER.info("子节点改变 重新启动子节点监听:".concat(path));
+					LOGGER.info("子节点改变 执行自定义事件并重新启动子节点监听:".concat(path));
 					watcher_children(path);
 
 					InfoGen_Zookeeper_Handle_Watcher_Children watcher_children_handle = watcher_children_handle_map.get(path);
@@ -292,7 +293,7 @@ public class InfoGen_ZooKeeper {
 					LOGGER.info("节点删除 重新启动子节点监听:".concat(path));
 					watcher_children(path);
 				} else {
-
+					LOGGER.error("未知事件类型".concat(event.getType().toString()));
 				}
 			});
 			LOGGER.info("启动子节点监听成功:".concat(path));
@@ -313,30 +314,33 @@ public class InfoGen_ZooKeeper {
 			if (event.getType() == Watcher.Event.EventType.None) {
 				switch (event.getState()) {
 				case SyncConnected:
+					LOGGER.info("connect_watcher  SyncConnected");
 					break;
 				case Expired:
 					try {
 						LOGGER.error("zookeeper 连接过期");
-						rewatcher_children_paths_schedule.cancel(true);
-						stop_zookeeper();
-						start_zookeeper(host_port, expired_handle);
-
-						LOGGER.info(" 重新加载子节点监听事件");
-						rewatcher_children_paths.addAll(all_watcher_children_paths);
+						LOGGER.info(" 重启zookeeper并重新加载所有子节点监听");
+						/** 加锁为了防止正在执行重试监听的时候执行rewatcher_children_paths.addAll(all_watcher_children_paths); 可能会导致重复监听 **/
+						synchronized (rewatcher_children_lock) {
+							stop_zookeeper();
+							start_zookeeper(host_port, expired_handle);
+							rewatcher_children_paths.addAll(all_watcher_children_paths);
+						}
 						rewatcher_childrens();
 
 						LOGGER.info("其它定制处理");
 						if (expired_handle != null) {
 							expired_handle.handle_event();
 						}
-						rewatcher_children_paths_schedule = Scheduled.executors_single.scheduleWithFixedDelay(rewatcher_children_paths_runable, 16, 16, TimeUnit.SECONDS);
 					} catch (Exception e) {
 						LOGGER.error("zookeeper 重连错误", e);
 					}
 					break;
 				case Disconnected:
+					LOGGER.info("connect_watcher  Disconnected");
 					break;
 				default:
+					LOGGER.info("connect_watcher  default");
 					break;
 				}
 			}
@@ -360,12 +364,10 @@ public class InfoGen_ZooKeeper {
 			Set<String> paths = new HashSet<String>();
 			paths.addAll(rewatcher_children_paths);
 			for (String server_name : paths) {
-				try {
-					watcher_children(server_name);
-					rewatcher_children_paths.remove(server_name);
-				} catch (Exception e) {
-					LOGGER.error("重新执行子节点监听", e);
-				}
+				LOGGER.info("重新加载子节点监听:".concat(server_name));
+				/** 一定要先remove再watcher 因为watcher失败会将server_name添加到队列 **/
+				rewatcher_children_paths.remove(server_name);
+				watcher_children(server_name);
 			}
 		}
 	}
@@ -376,7 +378,4 @@ public class InfoGen_ZooKeeper {
 			rewatcher_childrens();
 		}
 	};
-	// 定时修正监听失败
-	protected ScheduledFuture<?> rewatcher_children_paths_schedule = Scheduled.executors_single.scheduleWithFixedDelay(rewatcher_children_paths_runable, 16, 16, TimeUnit.SECONDS);
-
 }
