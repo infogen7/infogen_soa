@@ -213,9 +213,10 @@ public class InfoGen_Cache_Server {
 			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
 			return null;
 		}
+		String server_path = InfoGen_ZooKeeper.path(server_name);
 		try {
-			String server_path = InfoGen_ZooKeeper.path(server_name);
 			String server_data = ZK.get_data(server_path);
+
 			if (server_data == null || server_data.trim().isEmpty()) {
 				retry_cache_server_paths.add(server_name);
 				LOGGER.error("服务节点数据为空:".concat(server_name));
@@ -229,14 +230,8 @@ public class InfoGen_Cache_Server {
 				return null;
 			}
 
-			List<String> get_server_state = ZK.get_childrens_data(server_path);
-			if (get_server_state.isEmpty()) {
-				retry_cache_server_paths.add(server_name);
-				LOGGER.error("服务子节点为空:".concat(server_name));
-				return null;
-			}
-
-			for (String node_string : get_server_state) {
+			for (String node_name : ZK.get_childrens(server_path)) {
+				String node_string = ZK.get_data(InfoGen_ZooKeeper.path(server_name, node_name));
 				try {
 					RemoteNode node = Tool_Jackson.toObject(node_string, RemoteNode.class);
 					native_server.add(node);
@@ -245,19 +240,17 @@ public class InfoGen_Cache_Server {
 				}
 			}
 
-			// 缓存服务到内存
-			depend_server.put(server_name, native_server);
-
 			// 添加监听
 			ZK.watcher_children_single(server_path, (path) -> {
 				LOGGER.info("重新加载服务:".concat(path));
 				reload_server(native_server);
 			});
 
+			// 缓存服务到内存
 			// 加载成功事件处理
-			server_loaded_handle_map.get(server_name).handle_event(native_server);
-
 			// 持久化
+			depend_server.put(server_name, native_server);
+			server_loaded_handle_map.get(server_name).handle_event(native_server);
 			persistence_flag = true;
 			return native_server;
 		} catch (Exception e) {
@@ -276,42 +269,34 @@ public class InfoGen_Cache_Server {
 		String server_name = native_server.getName();
 		String server_path = InfoGen_ZooKeeper.path(server_name);
 
-		List<String> remote_childrens = ZK.get_childrens(server_path);
-		if (remote_childrens.isEmpty()) {
-			LOGGER.error("服务子节点为空:".concat(server_name));
-			return;
-		}
-		Map<String, RemoteNode> tmp_native_nodes = native_server.get_all_nodes();
+		Map<String, RemoteNode> delete_native_nodes = native_server.get_all_nodes();
 
-		for (String node_path : remote_childrens) {
-			RemoteNode node = tmp_native_nodes.get(node_path);
+		for (String node_name : ZK.get_childrens(server_path)) {
+			RemoteNode node = delete_native_nodes.get(node_name);
 			// 本地和远端都存在该节点 - 从删除队列中去掉
 			if (node != null) {
-				tmp_native_nodes.remove(node_path);
+				delete_native_nodes.remove(node_name);
 				continue;
 			}
 			// 本地不存在远端存在该节点 - 加载到本地
-			String node_string = ZK.get_data(server_path.concat("/").concat(node_path));
+			String node_string = ZK.get_data(InfoGen_ZooKeeper.path(server_name, node_name));
 			try {
 				native_server.add(Tool_Jackson.toObject(node_string, RemoteNode.class));
 			} catch (Exception e) {
-				LOGGER.error("节点数据错误:", e);
+				LOGGER.error("转换节点数据错误:", e);
 			}
 		}
 		// 本地存在远端不存在的节点 - 删除
-		for (RemoteNode native_node : tmp_native_nodes.values()) {
+		for (RemoteNode native_node : delete_native_nodes.values()) {
 			native_server.remove(native_node);
 		}
 
 		// 缓存服务到内存
-		depend_server.put(server_name, native_server);
-
 		// 加载成功事件处理
-		server_loaded_handle_map.get(server_name).handle_event(native_server);
-
 		// 持久化
+		depend_server.put(server_name, native_server);
+		server_loaded_handle_map.get(server_name).handle_event(native_server);
 		persistence_flag = true;
-
 	}
 
 	/////////////////////////////////////////////////////// 重试加载服务////////////////////////////////////////////////////////////////////////////

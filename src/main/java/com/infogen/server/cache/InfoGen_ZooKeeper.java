@@ -225,32 +225,32 @@ public class InfoGen_ZooKeeper {
 		return list;
 	}
 
-	public List<String> get_childrens_data(String path) {
-		List<String> list = new ArrayList<String>();
-		try {
-			LOGGER.info("获取子节点数据:".concat(path));
-			List<String> childrens = zookeeper.getChildren(path, false);
-			for (String service_path : childrens) {
-				try {
-					StringBuilder service_path_sbf = new StringBuilder(path);
-					if (!path.equals("/")) {
-						service_path_sbf.append("/");
-					}
-					service_path_sbf.append(service_path);
-					byte[] data = zookeeper.getData(service_path_sbf.toString(), false, null);
-					if (data != null) {
-						list.add(new String(data));
-					}
-				} catch (Exception e) {
-					LOGGER.error("获取字节点数据错误:", e);
-				}
-			}
-			LOGGER.info("获取子节点数据成功:".concat(path));
-		} catch (Exception e) {
-			LOGGER.error("获取子节点数据错误: ", e);
-		}
-		return list;
-	}
+	// public List<String> get_childrens_data(String path) {
+	// List<String> list = new ArrayList<String>();
+	// try {
+	// LOGGER.info("获取子节点数据:".concat(path));
+	// List<String> childrens = zookeeper.getChildren(path, false);
+	// for (String service_path : childrens) {
+	// try {
+	// StringBuilder service_path_sbf = new StringBuilder(path);
+	// if (!path.equals("/")) {
+	// service_path_sbf.append("/");
+	// }
+	// service_path_sbf.append(service_path);
+	// byte[] data = zookeeper.getData(service_path_sbf.toString(), false, null);
+	// if (data != null) {
+	// list.add(new String(data));
+	// }
+	// } catch (Exception e) {
+	// LOGGER.error("获取字节点数据错误:", e);
+	// }
+	// }
+	// LOGGER.info("获取子节点数据成功:".concat(path));
+	// } catch (Exception e) {
+	// LOGGER.error("获取子节点数据错误: ", e);
+	// }
+	// return list;
+	// }
 
 	// //////////////////////////////////////////////子节点 Watcher////////////////////////////////////////////////////////////////
 	private Set<String> all_watcher_children_paths = new HashSet<String>();
