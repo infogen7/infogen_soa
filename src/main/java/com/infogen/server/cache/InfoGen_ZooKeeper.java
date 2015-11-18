@@ -260,7 +260,7 @@ public class InfoGen_ZooKeeper {
 	// 创建子节点监听,如果已存在该子节点的监听直接返回
 	public void watcher_children_single(String path, InfoGen_Zookeeper_Handle_Watcher_Children watcher_children_handle) {
 		if (watcher_children_handle_map.get(path) != null) {
-			LOGGER.info("当前监听已经注册过:".concat(path));
+			LOGGER.info("当前子节点监听已经注册过:".concat(path));
 			return;
 		}
 		if (watcher_children_handle != null) {
@@ -293,7 +293,7 @@ public class InfoGen_ZooKeeper {
 					LOGGER.info("节点删除 重新启动子节点监听:".concat(path));
 					watcher_children(path);
 				} else {
-					LOGGER.error("未知事件类型".concat(event.getType().toString()));
+					LOGGER.error("未知子节点事件类型".concat(event.getType().toString()));
 				}
 			});
 			LOGGER.info("启动子节点监听成功:".concat(path));
@@ -314,7 +314,6 @@ public class InfoGen_ZooKeeper {
 			if (event.getType() == Watcher.Event.EventType.None) {
 				switch (event.getState()) {
 				case SyncConnected:
-					LOGGER.info("connect_watcher  SyncConnected");
 					break;
 				case Expired:
 					try {
@@ -337,10 +336,8 @@ public class InfoGen_ZooKeeper {
 					}
 					break;
 				case Disconnected:
-					LOGGER.info("connect_watcher  Disconnected");
 					break;
 				default:
-					LOGGER.info("connect_watcher  default");
 					break;
 				}
 			}
