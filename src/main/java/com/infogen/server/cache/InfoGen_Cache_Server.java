@@ -260,7 +260,7 @@ public class InfoGen_Cache_Server {
 			return native_server;
 		} catch (Exception e) {
 			retry_cache_server_paths.add(server_name);
-			LOGGER.error("重新加载服务信息失败", e);
+			LOGGER.error("加载服务信息失败", e);
 		}
 		return null;
 	}
