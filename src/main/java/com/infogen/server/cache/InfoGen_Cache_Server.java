@@ -57,15 +57,15 @@ public class InfoGen_Cache_Server {
 
 	private InfoGen_Cache_Server() {
 		// Scheduled
-		// 定时重新加载失败的服务
+		// 定时重新加载获取失败的服务
 		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
 			retry_cache_server();
 		} , 30, 30, TimeUnit.SECONDS);
-		// 定时检测并执行持久化服务
+		// 定时检测并持久化服务到本地
 		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
 			persistence_delay();
 		} , 30, 30, TimeUnit.SECONDS);
-		// 定时检测是否需要重新加载所有依赖的服务
+		// 定时检测并重新加载所有依赖的服务
 		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
 			reload_all_server_delay();
 		} , 3, 3, TimeUnit.MINUTES);

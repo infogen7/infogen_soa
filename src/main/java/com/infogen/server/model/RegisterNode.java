@@ -42,7 +42,7 @@ public class RegisterNode extends ShardInfo {
 	protected Timestamp time = new Timestamp(Clock.system(InfoGen_Configuration.zoneid).millis());
 
 	public Boolean available() {
-		if (ratio == null || name == null || name.isEmpty() || ip == null || ip.isEmpty() || server_name == null || server_name.isEmpty()) {
+		if (ratio == null || name == null || name.isEmpty() || ip == null || ip.isEmpty()) {
 			return false;
 		} else if (http_port == null && rpc_port == null) {
 			return false;
