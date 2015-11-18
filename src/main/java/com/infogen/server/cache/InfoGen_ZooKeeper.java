@@ -48,7 +48,9 @@ public class InfoGen_ZooKeeper {
 
 	private InfoGen_ZooKeeper() {
 		// 定时修正监听失败
-		Scheduled.executors_single.scheduleWithFixedDelay(rewatcher_children_paths_runable, 16, 16, TimeUnit.SECONDS);
+		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
+			rewatcher_childrens();
+		} , 16, 16, TimeUnit.SECONDS);
 	}
 
 	private String host_port;
@@ -287,7 +289,7 @@ public class InfoGen_ZooKeeper {
 					// 连接状态改变
 					// event.getType() == EventType.None
 					if (event.getState() == KeeperState.Expired) {
-						LOGGER.info("Session超时 子节点监听丢失 等待重启后重新监听:".concat(path));
+						// Session超时 子节点监听丢失 等待重启后重新监听
 					}
 				} else if (event.getType() == EventType.NodeDeleted) {
 					LOGGER.info("节点删除 重新启动子节点监听:".concat(path));
@@ -368,11 +370,4 @@ public class InfoGen_ZooKeeper {
 			}
 		}
 	}
-
-	private final Runnable rewatcher_children_paths_runable = new Runnable() {
-		@Override
-		public void run() {
-			rewatcher_childrens();
-		}
-	};
 }

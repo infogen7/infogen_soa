@@ -65,23 +65,24 @@ public class InfoGen_Cache_Server {
 		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
 			persistence_delay();
 		} , 30, 30, TimeUnit.SECONDS);
-		// 定时检测并执行重新加载所有依赖的服务
+		// 定时检测是否需要重新加载所有依赖的服务
 		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
 			reload_all_server_delay();
 		} , 3, 3, TimeUnit.MINUTES);
 	}
 
 	private InfoGen_ZooKeeper ZK = com.infogen.server.cache.InfoGen_ZooKeeper.getInstance();
+	private Path source_server_path = NativePath.get("infogen.cache.server.js");
+	private Path target_server_path = NativePath.get("infogen.cache.server.js.copy");
+
 	// 依赖的服务
 	public final ConcurrentMap<String, RemoteServer> depend_server = new ConcurrentHashMap<>();
 	// 本地缓存的依赖服务
 	public final ConcurrentMap<String, RemoteServer> depend_server_cache = new ConcurrentHashMap<>();
-	private Path source_server_path = NativePath.get("infogen.cache.server.js");
-	private Path target_server_path = NativePath.get("infogen.cache.server.js.copy");
-	// 加载完成后触发的事件
-	private Map<String, InfoGen_Loaded_Handle_Server> server_loaded_handle_map = new HashMap<>();
 	// 需要重试加载的服务
 	private Set<String> retry_cache_server_paths = new HashSet<>();
+	// 加载完成后触发的事件
+	private Map<String, InfoGen_Loaded_Handle_Server> server_loaded_handle_map = new HashMap<>();
 
 	// ///////////////////////////////////////////////////初始化///////////////////////////////////////////////
 
@@ -103,37 +104,7 @@ public class InfoGen_Cache_Server {
 		}
 	}
 
-	//////////////////////////////////////////////////////// create_update_server//////////////////////////////////////////////////////////////
-	/**
-	 * 写入或更新一个节点数据
-	 * 
-	 * @param name
-	 * @param value
-	 * @return
-	 * @throws NoSuchAlgorithmException
-	 */
-	@SuppressWarnings("unused")
-	private void upsert_data(String name, String value, String digest) throws NoSuchAlgorithmException {
-		if (!ZK.available()) {
-			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
-			return;
-		}
-
-		List<ACL> acls = new ArrayList<ACL>();
-		// 采用用户名密码形式
-		acls.add(new ACL(ZooDefs.Perms.ALL, new Id("digest", DigestAuthenticationProvider.generateDigest(digest))));
-		// 所有用户可读权限
-		acls.add(new ACL(ZooDefs.Perms.READ, new Id("world", "anyone")));
-		// 创建或更新配置节点
-		String create_path = ZK.create(InfoGen_ZooKeeper.path(name), value.getBytes(), acls, CreateMode.PERSISTENT);
-		if (create_path == null) {
-			LOGGER.error("注册配置失败");
-		} else if (create_path.equals(Code.NODEEXISTS.name())) {
-			ZK.add_auth_info("digest", digest);
-			ZK.set_data(InfoGen_ZooKeeper.path(name), value.getBytes(), -1);
-		}
-	}
-
+	//////////////////////////////////////////////////////// create_server/////////////////////////////////////////////////////////
 	public void create_service_functions(ServiceFunctions service_functions) {
 		if (!ZK.available()) {
 			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
@@ -204,6 +175,11 @@ public class InfoGen_Cache_Server {
 		if (server_loaded_handle_map.get(server_name) != null) {
 			LOGGER.warn("已经初始化过该服务:".concat(server_name));
 			return depend_server.get(server_name);
+		}
+
+		if (server_loaded_handle == null) {
+			server_loaded_handle = (native_server) -> {
+			};
 		}
 
 		// 注册 server 加载完成的事件
@@ -280,7 +256,7 @@ public class InfoGen_Cache_Server {
 			server_loaded_handle_map.get(server_name).handle_event(native_server);
 
 			// 持久化
-			persistence();
+			persistence_flag = true;
 			return native_server;
 		} catch (Exception e) {
 			retry_cache_server_paths.add(server_name);
@@ -332,7 +308,7 @@ public class InfoGen_Cache_Server {
 		server_loaded_handle_map.get(server_name).handle_event(native_server);
 
 		// 持久化
-		persistence();
+		persistence_flag = true;
 
 	}
 
@@ -342,8 +318,9 @@ public class InfoGen_Cache_Server {
 		tmp_reload_server_paths.addAll(retry_cache_server_paths);
 		for (String server_name : tmp_reload_server_paths) {
 			try {
-				cache_server(server_name);
+				/** 一定要先remove再cache 因为cache失败会将server_name添加到队列 **/
 				retry_cache_server_paths.remove(server_name);
+				cache_server(server_name);
 			} catch (Exception e) {
 				LOGGER.error("重新加载服务失败:", e);
 			}
@@ -351,14 +328,7 @@ public class InfoGen_Cache_Server {
 	}
 
 	/////////////////////////////////////////////////////// 重新加载依赖的服务////////////////////////////////////////////////////////////////////
-	private Boolean reload_all_server_flag = false;
-
-	/**
-	 * 重新加载所有服务
-	 */
-	public void reload_all_server() {
-		reload_all_server_flag = true;
-	}
+	public Boolean reload_all_server_flag = false;
 
 	private void reload_all_server_delay() {
 		if (reload_all_server_flag) {
@@ -371,11 +341,7 @@ public class InfoGen_Cache_Server {
 	}
 
 	// ////////////////////////////////////////////////////持久化依赖的服务///////////////////////////////////////////////////////////////////////
-	private Boolean persistence_flag = false;
-
-	public void persistence() {
-		persistence_flag = true;
-	}
+	public Boolean persistence_flag = false;
 
 	private void persistence_delay() {
 		try {
@@ -389,6 +355,37 @@ public class InfoGen_Cache_Server {
 			}
 		} catch (IOException e) {
 			LOGGER.error("持久化服务失败", e);
+		}
+	}
+
+	///////////////////////////////////////////////////////////// 备份////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * 写入或更新一个节点数据
+	 * 
+	 * @param name
+	 * @param value
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 */
+	@SuppressWarnings("unused")
+	private void upsert_data(String name, String value, String digest) throws NoSuchAlgorithmException {
+		if (!ZK.available()) {
+			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
+			return;
+		}
+
+		List<ACL> acls = new ArrayList<ACL>();
+		// 采用用户名密码形式
+		acls.add(new ACL(ZooDefs.Perms.ALL, new Id("digest", DigestAuthenticationProvider.generateDigest(digest))));
+		// 所有用户可读权限
+		acls.add(new ACL(ZooDefs.Perms.READ, new Id("world", "anyone")));
+		// 创建或更新配置节点
+		String create_path = ZK.create(InfoGen_ZooKeeper.path(name), value.getBytes(), acls, CreateMode.PERSISTENT);
+		if (create_path == null) {
+			LOGGER.error("注册配置失败");
+		} else if (create_path.equals(Code.NODEEXISTS.name())) {
+			ZK.add_auth_info("digest", digest);
+			ZK.set_data(InfoGen_ZooKeeper.path(name), value.getBytes(), -1);
 		}
 	}
 }

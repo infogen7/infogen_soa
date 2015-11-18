@@ -55,7 +55,7 @@ public class InfoGen {
 		CACHE_SERVER.init(infogen_configuration, () -> {// zookeeper 因连接session过期重启后定制处理
 			register();
 			// 这期间漏掉的Watch消息回调无法恢复 重新加载所有的服务和配置
-			CACHE_SERVER.reload_all_server();
+			CACHE_SERVER.reload_all_server_flag = true;
 		});
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			LOGGER.info("InfoGen关闭并关闭监听服务");
@@ -115,10 +115,6 @@ public class InfoGen {
 	 * @return
 	 */
 	private RemoteServer init_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
-		if (server_loaded_handle == null) {
-			server_loaded_handle = (native_server) -> {
-			};
-		}
 		RemoteServer server = CACHE_SERVER.cache_server_single(server_name, server_loaded_handle);
 		if (server != null) {
 			return server;
