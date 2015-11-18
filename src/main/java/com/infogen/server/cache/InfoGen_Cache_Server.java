@@ -2,6 +2,8 @@ package com.infogen.server.cache;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
@@ -341,15 +343,17 @@ public class InfoGen_Cache_Server {
 	}
 
 	// ////////////////////////////////////////////////////持久化依赖的服务///////////////////////////////////////////////////////////////////////
+	private final static Charset charset = StandardCharsets.UTF_8;
 	public Boolean persistence_flag = false;
 
 	private void persistence_delay() {
 		try {
 			if (persistence_flag) {
+				/** 防止正在持久化的时候服务挂掉导致的持久化数据丢失 **/
 				Files.deleteIfExists(target_server_path);
 				Files.move(source_server_path, target_server_path);
 				Files.deleteIfExists(source_server_path);
-				Files.write(source_server_path, Tool_Jackson.toJson(depend_server).getBytes(InfoGen_Configuration.charset));
+				Files.write(source_server_path, Tool_Jackson.toJson(depend_server).getBytes(charset));
 				persistence_flag = false;
 				LOGGER.info("持久化服务成功");
 			}
