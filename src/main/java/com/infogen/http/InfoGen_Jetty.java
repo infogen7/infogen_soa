@@ -35,15 +35,7 @@ public class InfoGen_Jetty extends InfoGen_Server {
 		return this;
 	}
 
-	/**
-	 * 启动jetty服务
-	 * 
-	 * @param infogen_configuration
-	 * @param CONTEXT
-	 * @param DEFAULT_WEBAPP_PATH
-	 * @param DESCRIPTOR
-	 * @return
-	 */
+	// 启动jetty服务
 	public InfoGen_Jetty start(InfoGen_Configuration infogen_configuration, String CONTEXT) {
 		return start(infogen_configuration, CONTEXT, NativePath.get("webapp").toString(), NativePath.get("webapp/WEB-INF/web.xml").toString());
 	}

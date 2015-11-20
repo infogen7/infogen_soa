@@ -96,11 +96,7 @@ public class RemoteServer extends RegisterServer {
 		}
 	}
 
-	/**
-	 * 获取随机节点实现负载均衡
-	 * 
-	 * @return
-	 */
+	// 获取随机节点实现负载均衡
 	public RemoteNode random_node(String seed) {
 		long millis = Clock.system(InfoGen_Configuration.zoneid).millis();
 		// 没有可用节点或距离上一次成功调用超过指定时间

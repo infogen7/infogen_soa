@@ -41,12 +41,7 @@ public class Tool_HTTP {
 		response.addCookie(cookie);
 	}
 
-	/**
-	 * 获取 web 客户端IP
-	 * 
-	 * @param request
-	 * @return
-	 */
+	// 获取 web 客户端IP
 	public static String get_ip(HttpServletRequest request) {
 		String ipAddress = request.getHeader("x-forwarded-for");
 		if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {

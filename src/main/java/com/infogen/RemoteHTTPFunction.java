@@ -119,15 +119,7 @@ public class RemoteHTTPFunction {
 	////////////////////////////////////////////////// HTTP LOAD BALANCING//////////////////////////
 	private static String RETURN_KEY_SERVICE = "service";
 
-	/**
-	 * 同步http调用
-	 * 
-	 * @param method
-	 * @param name_value_pair
-	 * @param request_type
-	 * @param net_type
-	 * @return
-	 */
+	// 同步http调用
 	public Return http_blocking(Map<String, String> name_value_pair, RequestType request_type, String seed) {
 		RemoteServer server = service.get_server();
 		if (server == null) {
@@ -194,17 +186,7 @@ public class RemoteHTTPFunction {
 		return callback;
 	}
 
-	/**
-	 * 异步http调用
-	 * 
-	 * @param method
-	 * @param name_value_pair
-	 * @param request_type
-	 * @param net_type
-	 * @return
-	 * @throws Service_Notfound_Exception
-	 * @throws Node_Notfound_Exception
-	 */
+	// 异步http调用
 	public void http_async(Map<String, String> name_value_pair, RequestType request_type, Callback callback, String seed) throws Service_Notfound_Exception, Node_Unavailable_Exception {
 		RemoteServer server = service.get_server();
 		if (server == null) {

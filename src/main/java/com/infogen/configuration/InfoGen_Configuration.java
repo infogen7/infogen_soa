@@ -34,9 +34,9 @@ import com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution;
 /**
  * infogen配置解析及其它全局配置
  * 
- * @author larry
- * @email larry.lv.word@gmail.com
- * @version 创建时间 2013-9-30 下午1:57:58
+ * @author larry/larrylv@outlook.com/创建时间 2015年11月20日 下午6:54:26
+ * @since 1.0
+ * @version 1.0
  */
 
 public class InfoGen_Configuration {

@@ -63,11 +63,7 @@ public class InfoGen {
 		return this;
 	}
 
-	/**
-	 * 注册当前服务
-	 * 
-	 * @return
-	 */
+	// 注册当前服务
 	public InfoGen register() {
 		LOGGER.info("注册当前服务");
 		CACHE_SERVER.create_server(infogen_configuration.register_server);
@@ -77,12 +73,7 @@ public class InfoGen {
 	}
 
 	// ////////////////////////////////////////// 获取服务/////////////////////////////////////////////////////
-	/**
-	 * 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
-	 * 
-	 * @param server_name
-	 * @return
-	 */
+	// 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
 	public RemoteServer get_server(String server_name) {
 		RemoteServer server = CACHE_SERVER.depend_server.get(server_name);
 		if (server != null) {
@@ -92,13 +83,7 @@ public class InfoGen {
 		});
 	}
 
-	/**
-	 * 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
-	 * 
-	 * @param server_name
-	 * @param server_loaded_handle
-	 * @return
-	 */
+	// 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
 	public RemoteServer get_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
 		RemoteServer server = CACHE_SERVER.depend_server.get(server_name);
 		if (server != null) {
@@ -107,13 +92,7 @@ public class InfoGen {
 		return init_server(server_name, server_loaded_handle);
 	}
 
-	/**
-	 * 初始化服务,每个服务只会拉取一次
-	 * 
-	 * @param server_name
-	 * @param server_loaded_handle
-	 * @return
-	 */
+	// 初始化服务,每个服务只会拉取一次
 	private RemoteServer init_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
 		RemoteServer server = CACHE_SERVER.cache_server_single(server_name, server_loaded_handle);
 		if (server != null) {
