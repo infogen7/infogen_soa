@@ -126,11 +126,7 @@ public class InfoGen_Cache_Server {
 		}
 	}
 
-	/**
-	 * 生成一个服务节点
-	 * 
-	 * @param register_server
-	 */
+	// 生成一个服务节点
 	public void create_server(RegisterServer register_server) {
 		if (!ZK.available()) {
 			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
@@ -150,12 +146,7 @@ public class InfoGen_Cache_Server {
 		}
 	}
 
-	/**
-	 * 生成一个服务实例节点
-	 * 
-	 * @param server_name
-	 * @param register_node
-	 */
+	// 生成一个服务实例节点
 	public void create_node(RegisterNode register_node) {
 		if (!ZK.available()) {
 			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
@@ -348,14 +339,7 @@ public class InfoGen_Cache_Server {
 	}
 
 	///////////////////////////////////////////////////////////// 备份////////////////////////////////////////////////////////////////////////////////////
-	/**
-	 * 写入或更新一个节点数据
-	 * 
-	 * @param name
-	 * @param value
-	 * @return
-	 * @throws NoSuchAlgorithmException
-	 */
+	// 写入或更新一个节点数据
 	@SuppressWarnings("unused")
 	private void upsert_data(String name, String value, String digest) throws NoSuchAlgorithmException {
 		if (!ZK.available()) {

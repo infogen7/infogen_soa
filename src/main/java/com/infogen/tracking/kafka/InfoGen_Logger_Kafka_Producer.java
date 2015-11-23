@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.infogen.tracking.kafka;
 
 import java.util.Properties;
@@ -38,12 +35,7 @@ public class InfoGen_Logger_Kafka_Producer {
 
 	private Producer<String, String> producer;
 
-	/**
-	 * 启动kafka生产者
-	 * 
-	 * @param infogen_configuration
-	 * @return
-	 */
+	// 启动kafka生产者
 	public InfoGen_Logger_Kafka_Producer start(InfoGen_Configuration infogen_configuration) {
 		if (infogen_configuration.kafka == null || infogen_configuration.kafka.trim().isEmpty()) {
 			LOGGER.error("没有配置 kafka");
@@ -67,20 +59,14 @@ public class InfoGen_Logger_Kafka_Producer {
 		return this;
 	}
 
-	/**
-	 * 关闭一个kafka生产者
-	 */
+	// 关闭一个kafka生产者
 	public void close() {
 		if (producer != null) {
 			producer.close();
 		}
 	}
 
-	/**
-	 * 发送消息 如果生产者没有初始化只写一次日志
-	 * 
-	 * @param message
-	 */
+	// 发送消息 如果生产者没有初始化只写一次日志
 	public void send(String topic, String key, String message) {
 		if (producer != null) {
 			try {
