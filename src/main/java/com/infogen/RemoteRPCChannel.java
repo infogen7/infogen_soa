@@ -1,4 +1,4 @@
-package com.infogen.rpc;
+package com.infogen;
 
 import java.time.Clock;
 
@@ -6,7 +6,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.protobuf.ServiceException;
-import com.infogen.Service;
 import com.infogen.core.structure.map.LRULinkedHashMap;
 import com.infogen.core.util.CODE;
 import com.infogen.exception.Node_Unavailable_Exception;
