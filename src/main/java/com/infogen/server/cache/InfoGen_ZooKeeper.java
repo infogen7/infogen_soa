@@ -57,8 +57,8 @@ public class InfoGen_ZooKeeper {
 	private ZooKeeper zookeeper;
 	private InfoGen_Zookeeper_Handle_Expired expired_handle;
 	private Map<String, Set<String>> map_auth_info = new HashMap<>();
-	private static final String CONTEXT = "/infogen";
-	private static final String CONTEXT_FUNCTIONS = "/infogen_functions";
+	public static final String CONTEXT = "/infogen";
+	public static final String CONTEXT_FUNCTIONS = "/infogen_functions";
 
 	protected static String functions_path(String server_name) {
 		return CONTEXT_FUNCTIONS.concat("/").concat(server_name);
