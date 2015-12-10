@@ -1,5 +1,7 @@
 package com.infogen.tracking.kafka;
 
+import kafka.consumer.ConsumerIterator;
+
 /**
  * 用于自定义日志消息处理的接口
  * 
@@ -7,6 +9,6 @@ package com.infogen.tracking.kafka;
  * @since 1.0
  * @version 1.0
  */
-public interface InfoGen_Logger_Handle_Consume {
-	public abstract void handle_event(String message);
+public interface InfoGen_Consume_Handle {
+	public abstract void handle_event(ConsumerIterator<String, String> it);
 }

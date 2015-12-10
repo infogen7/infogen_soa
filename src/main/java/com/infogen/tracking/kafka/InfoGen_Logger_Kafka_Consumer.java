@@ -1,21 +1,22 @@
-/**
- * 
- */
 package com.infogen.tracking.kafka;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.infogen.configuration.InfoGen_Configuration;
 
 import kafka.consumer.ConsumerConfig;
-import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
 import kafka.serializer.StringDecoder;
 import kafka.utils.VerifiableProperties;
-
-import com.infogen.configuration.InfoGen_Configuration;
 
 /**
  * 基于kafka的日志消息接收处理器
@@ -25,8 +26,28 @@ import com.infogen.configuration.InfoGen_Configuration;
  * @version 1.0
  */
 public class InfoGen_Logger_Kafka_Consumer {
+	private static final Logger LOGGER = LogManager.getLogger(InfoGen_Logger_Kafka_Consumer.class.getName());
+	public static ExecutorService executors = Executors.newCachedThreadPool((r) -> {
+		Thread thread = Executors.defaultThreadFactory().newThread(r);
+		thread.setDaemon(true);
+		return thread;
+	});
 
-	public static void consume(InfoGen_Configuration infogen_configuration, String group, String topic, InfoGen_Logger_Handle_Consume handle) {
+	/**
+	 * 创建kafka消费者线程
+	 * 
+	 * @param infogen_configuration
+	 *            zookeeper配置
+	 * @param group
+	 *            group
+	 * @param topic
+	 *            topic
+	 * @param concurrent
+	 *            并发数
+	 * @param handle
+	 *            处理逻辑
+	 */
+	public static void consume(InfoGen_Configuration infogen_configuration, String group, String topic, Integer concurrent, Class<? extends InfoGen_Consume_Handle> clazz) {
 		Thread thread = new Thread(() -> {
 			Properties props = new Properties();
 			// zookeeper 配置
@@ -44,16 +65,22 @@ public class InfoGen_Logger_Kafka_Consumer {
 			ConsumerConnector consumer = kafka.consumer.Consumer.createJavaConsumerConnector(config);
 
 			Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
-			topicCountMap.put(topic, new Integer(1));
+			topicCountMap.put(topic, new Integer(concurrent));
 
 			StringDecoder keyDecoder = new StringDecoder(new VerifiableProperties());
 			StringDecoder valueDecoder = new StringDecoder(new VerifiableProperties());
 
 			Map<String, List<KafkaStream<String, String>>> consumerMap = consumer.createMessageStreams(topicCountMap, keyDecoder, valueDecoder);
-			KafkaStream<String, String> stream = consumerMap.get(topic).get(0);
-			ConsumerIterator<String, String> it = stream.iterator();
-			while (it.hasNext()) {
-				handle.handle_event(it.next().message());
+			for (KafkaStream<String, String> kafkaStream : consumerMap.get(topic)) {
+				executors.submit(() -> {
+					InfoGen_Consume_Handle newInstance = null;
+					try {
+						newInstance = clazz.newInstance();
+					} catch (InstantiationException | IllegalAccessException e) {
+						LOGGER.error("#实例化InfoGen_Consume_Handle失败:", e);
+					}
+					newInstance.handle_event(kafkaStream.iterator());
+				});
 			}
 		});
 		thread.setDaemon(true);
