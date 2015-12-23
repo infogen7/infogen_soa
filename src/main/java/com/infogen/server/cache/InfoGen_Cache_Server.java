@@ -157,7 +157,7 @@ public class InfoGen_Cache_Server {
 		String path = InfoGen_ZooKeeper.path(register_node.getServer_name(), register_node.getName());
 		String create_path = ZK.create(path, Tool_Jackson.toJson(register_node).getBytes(), CreateMode.EPHEMERAL);
 		if (create_path == null) {
-			LOGGER.error("注册自身节点失败!");
+			LOGGER.error("#注册自身节点失败!");
 			return;
 		}
 	}
@@ -166,7 +166,7 @@ public class InfoGen_Cache_Server {
 	// 注册的cache完成事件处理器
 	public RemoteServer cache_server_single(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
 		if (server_loaded_handle_map.get(server_name) != null) {
-			LOGGER.warn("已经初始化过该服务:".concat(server_name));
+			LOGGER.warn("#已经初始化过该服务:".concat(server_name));
 			return depend_server.get(server_name);
 		}
 

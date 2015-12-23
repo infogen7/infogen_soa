@@ -44,7 +44,7 @@ public class InfoGen_Logger_Kafka_Consumer {
 	 *            topic
 	 * @param concurrent
 	 *            并发数
-	 * @param handle
+	 * @param clazz
 	 *            处理逻辑
 	 */
 	public static void consume(InfoGen_Configuration infogen_configuration, String group, String topic, Integer concurrent, Class<? extends InfoGen_Consume_Handle> clazz) {

@@ -35,11 +35,15 @@
 		<project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
 
 		<sonar.exclusions>
-			/src/main/java/com/infogen/thrift/*,/src/main/java/com/infogen/grpc/*
 		</sonar.exclusions>
 		<sonar.language>java</sonar.language>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>com.infogen</groupId>
+			<artifactId>infogen_core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.infogen</groupId>
 			<artifactId>infogen_rpc</artifactId>
