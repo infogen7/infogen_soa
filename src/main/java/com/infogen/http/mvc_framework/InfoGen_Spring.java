@@ -23,34 +23,32 @@ import com.infogen.http.ServletContainerInitializer.WebApplicationInitializer;
 public class InfoGen_Spring implements WebApplicationInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(InfoGen_Spring.class.getName());
 	private static ServletContext servletContext;
-	private static String config_path;
-	private static String mapping;
+	private static String mapping_path;
+	private static String mapping_pattern;
 	private final static byte[] lock = new byte[0];
 
-	public static void config_mvc(String config_path, String mapping) throws IOException {
-		if (config_path != null && !mapping.trim().isEmpty()) {
-			InfoGen_Spring.config_path = config_path;
-			InfoGen_Spring.mapping = mapping == null ? "/*" : mapping;
-			start_mvc(servletContext, config_path);
-		}
+	public static void config_mvc(String mapping_path, String mapping_pattern) throws IOException {
+		InfoGen_Spring.mapping_path = mapping_path;
+		InfoGen_Spring.mapping_pattern = mapping_pattern == null ? "/*" : mapping_pattern;
+		run(servletContext);
 	}
 
 	public static void start_mvc(ServletContext servletContext) throws IOException {
 		InfoGen_Spring.servletContext = servletContext;
-		start_mvc(servletContext, config_path);
+		run(servletContext);
 	}
 
-	private static void start_mvc(ServletContext servletContext, String config_path) throws IOException {
+	private static void run(ServletContext servletContext) throws IOException {
 		synchronized (lock) {
-			if (servletContext != null && config_path != null && !config_path.trim().isEmpty()) {
+			if (servletContext != null && mapping_path != null && !mapping_path.trim().isEmpty()) {
 				XmlWebApplicationContext mvcContext = new XmlWebApplicationContext();
-				mvcContext.setConfigLocation(config_path);
+				mvcContext.setConfigLocation(mapping_path);
 
 				DispatcherServlet dispatcherServlet = new DispatcherServlet(mvcContext);
 				ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher", dispatcherServlet);
 				dispatcher.setAsyncSupported(true);// 支持异步servlet
 				dispatcher.setLoadOnStartup(1);// 确保在default servlet加载完成之后再加载
-				dispatcher.addMapping(mapping);
+				dispatcher.addMapping(mapping_pattern);
 			}
 		}
 	}
