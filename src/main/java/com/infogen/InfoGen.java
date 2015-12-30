@@ -54,8 +54,6 @@ public class InfoGen {
 		// AOP
 		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
 		AOP.getInstance().advice();
-		// 延迟启动 http mvc 框架
-		InfoGen_Spring.config_mvc(infogen_configuration.mapping_path, infogen_configuration.mapping_pattern);
 
 		LOGGER.info("InfoGen启动并开启监听服务");
 		// 初始化缓存的服务

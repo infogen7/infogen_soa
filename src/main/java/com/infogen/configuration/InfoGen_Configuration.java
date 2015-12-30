@@ -26,6 +26,7 @@ import com.infogen.aop.AOP;
 import com.infogen.core.structure.DefaultEntry;
 import com.infogen.core.tools.Tool_Core;
 import com.infogen.core.util.NativePath;
+import com.infogen.http.mvc_framework.InfoGen_Spring;
 import com.infogen.http.self_description.HTTP_Parser;
 import com.infogen.rpc.annotation.RPCController;
 import com.infogen.rpc.self_description.RPC_Parser;
@@ -64,8 +65,6 @@ public class InfoGen_Configuration {
 
 	public String zookeeper;
 	public String kafka;
-	public String mapping_path;
-	public String mapping_pattern;
 	public final RegisterNode register_node = new RegisterNode();
 	public final RegisterServer register_server = new RegisterServer();
 	public final ServiceFunctions service_functions = new ServiceFunctions();
@@ -98,8 +97,11 @@ public class InfoGen_Configuration {
 		if (kafka == null || kafka.trim().isEmpty()) {
 			LOGGER.warn("kafka配置为空:infogen.kafka 调用链/日志等功能将不可用");
 		}
-		mapping_path = infogen_properties.getProperty("infogen.http.spring_mvc.path");
-		mapping_pattern = infogen_properties.getProperty("infogen.http.spring_mvc.mapping");
+
+		// 延迟启动 http mvc 框架
+		String mapping_path = infogen_properties.getProperty("infogen.http.spring_mvc.path");
+		String mapping_pattern = infogen_properties.getProperty("infogen.http.spring_mvc.mapping");
+		InfoGen_Spring.config_mvc(mapping_path, mapping_pattern);
 
 		// server
 		register_server.setInfogen_version(InfoGen.VERSION);
@@ -155,6 +157,7 @@ public class InfoGen_Configuration {
 		defaultentrys.add(new DefaultEntry<Class<? extends Annotation>, Self_Description>(RPCController.class, new RPC_Parser()));
 		service_functions.getHttp_functions().addAll(infogen_self_description.self_description(AOP.getInstance().getClasses(), defaultentrys));
 		service_functions.setServer(register_server);
+
 		return this;
 	}
 }
