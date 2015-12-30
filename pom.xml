@@ -49,12 +49,13 @@
 			<artifactId>infogen_rpc</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.0-b01</version>
+			<groupId>com.infogen</groupId>
+			<artifactId>infogen_http</artifactId>
+			<version>${project.version}</version>
 		</dependency>
+
+	
 		<!-- spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -72,37 +73,6 @@
 			<version>4.2.4.RELEASE</version>
 		</dependency>
 
-		<!-- Jetty Webapp -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-annotations</artifactId>
-			<version>9.3.6.v20151106</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-webapp</artifactId>
-			<version>9.3.6.v20151106</version>
-		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty</groupId> -->
-		<!-- <artifactId>jetty-server</artifactId> -->
-		<!-- <version>9.3.6.v20151106</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty.http2</groupId> -->
-		<!-- <artifactId>http2-server</artifactId> -->
-		<!-- <version>9.3.6.v20151106</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty.http2</groupId> -->
-		<!-- <artifactId>http2-common</artifactId> -->
-		<!-- <version>9.3.6.v20151106</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty.http2</groupId> -->
-		<!-- <artifactId>http2-hpack</artifactId> -->
-		<!-- <version>9.3.6.v20151106</version> -->
-		<!-- </dependency> -->
 		<!-- okhttp -->
 		<dependency>
 			<groupId>com.squareup.okhttp</groupId>
@@ -137,7 +107,7 @@
 				</exclusion>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>  
+					<artifactId>slf4j-log4j12</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

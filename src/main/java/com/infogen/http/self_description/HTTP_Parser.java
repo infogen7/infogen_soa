@@ -1,4 +1,4 @@
-package com.infogen.self_description.parser;
+package com.infogen.http.self_description;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

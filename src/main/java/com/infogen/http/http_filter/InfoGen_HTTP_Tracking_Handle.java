@@ -1,4 +1,4 @@
-package com.infogen.tracking.http_filter;
+package com.infogen.http.http_filter;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.infogen.tools.Tool_HTTP;
 import com.infogen.tracking.CallChain;
+import com.infogen.tracking.HTTP_Header;
 import com.infogen.tracking.ThreadLocal_Tracking;
-import com.infogen.util.HTTP_Header;
 
 /**
  * HTTP协议下记录调用链的处理类

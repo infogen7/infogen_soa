@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.infogen.server.cache.zookeeper;
+package com.infogen.server.management.zookeeper;
 
 /**
  * 子节点改变事件处理器

@@ -1,4 +1,4 @@
-package com.infogen.server.cache;
+package com.infogen.server.management;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,8 +24,8 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 
-import com.infogen.server.cache.zookeeper.InfoGen_Zookeeper_Handle_Expired;
-import com.infogen.server.cache.zookeeper.InfoGen_Zookeeper_Handle_Watcher_Children;
+import com.infogen.server.management.zookeeper.InfoGen_Zookeeper_Handle_Expired;
+import com.infogen.server.management.zookeeper.InfoGen_Zookeeper_Handle_Watcher_Children;
 import com.infogen.tools.Scheduled;
 
 /**
@@ -158,6 +158,13 @@ public class InfoGen_ZooKeeper {
 			LOGGER.error("判断节点是否存在错误: ", e);
 		}
 		return exists;
+	}
+
+	public String create_notexists(String path, CreateMode create_mode) {
+		if (exists(path) == null) {
+			return create(path, null, create_mode);
+		}
+		return null;
 	}
 
 	public void delete(String path) {

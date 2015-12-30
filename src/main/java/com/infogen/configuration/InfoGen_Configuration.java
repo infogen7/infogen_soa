@@ -3,6 +3,7 @@ package com.infogen.configuration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -11,25 +12,30 @@ import java.nio.file.StandardOpenOption;
 import java.sql.Timestamp;
 import java.time.Clock;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.infogen.InfoGen;
 import com.infogen.aop.AOP;
+import com.infogen.core.structure.DefaultEntry;
 import com.infogen.core.tools.Tool_Core;
 import com.infogen.core.util.NativePath;
-import com.infogen.http.mvc_framework.InfoGen_Spring;
+import com.infogen.http.self_description.HTTP_Parser;
+import com.infogen.rpc.self_description.RPC_Parser;
 import com.infogen.self_description.InfoGen_Self_Description;
+import com.infogen.self_description.Self_Description;
+import com.infogen.self_description.annotation.RPCController;
 import com.infogen.self_description.component.Function;
 import com.infogen.self_description.component.OutParameter;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
 import com.infogen.server.model.ServiceFunctions;
-import com.infogen.tracking.annotation.Execution;
-import com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution;
 
 /**
  * infogen配置解析及其它全局配置
@@ -63,6 +69,8 @@ public class InfoGen_Configuration {
 
 	public String zookeeper;
 	public String kafka;
+	public String mapping_path;
+	public String mapping_pattern;
 
 	public InfoGen_Configuration add_basic_outparameter(OutParameter basic_outparameter) {
 		for (Function function : service_functions.getHttp_functions()) {
@@ -91,6 +99,8 @@ public class InfoGen_Configuration {
 		if (kafka == null || kafka.trim().isEmpty()) {
 			LOGGER.warn("kafka配置为空:infogen.kafka 调用链/日志等功能将不可用");
 		}
+		mapping_path = infogen_properties.getProperty("infogen.http.spring_mvc.path");
+		mapping_pattern = infogen_properties.getProperty("infogen.http.spring_mvc.mapping");
 
 		// server
 		register_server.setInfogen_version(InfoGen.VERSION);
@@ -139,14 +149,12 @@ public class InfoGen_Configuration {
 		}
 
 		// /////////////////////////////////////////////////////初始化启动配置/////////////////////////////////////////////////////////////////////
-		service_functions.getHttp_functions().addAll(InfoGen_Self_Description.getInstance().self_description(AOP.getInstance().getClasses()));
+		InfoGen_Self_Description infogen_self_description = InfoGen_Self_Description.getInstance();
+		List<DefaultEntry<Class<? extends Annotation>, Self_Description>> defaultentrys = new ArrayList<>();
+		defaultentrys.add(new DefaultEntry<Class<? extends Annotation>, Self_Description>(RestController.class, new HTTP_Parser()));
+		defaultentrys.add(new DefaultEntry<Class<? extends Annotation>, Self_Description>(RPCController.class, new RPC_Parser()));
+		service_functions.getHttp_functions().addAll(infogen_self_description.self_description(AOP.getInstance().getClasses(), defaultentrys));
 		service_functions.setServer(register_server);
-
-		// AOP
-		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
-
-		// 延迟启动 mvc 框架
-		InfoGen_Spring.config_mvc(infogen_properties.getProperty("infogen.http.spring_mvc.path"), infogen_properties.getProperty("infogen.http.spring_mvc.mapping"));
 		return this;
 	}
 }

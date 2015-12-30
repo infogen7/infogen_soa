@@ -8,9 +8,12 @@ import org.apache.logging.log4j.Logger;
 
 import com.infogen.aop.AOP;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.server.cache.InfoGen_Cache_Server;
-import com.infogen.server.cache.InfoGen_Loaded_Handle_Server;
+import com.infogen.http.mvc_framework.InfoGen_Spring;
+import com.infogen.server.management.InfoGen_Loaded_Handle_Server;
+import com.infogen.server.management.InfoGen_Server_Management;
 import com.infogen.server.model.RemoteServer;
+import com.infogen.tracking.annotation.Execution;
+import com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution;
 
 /**
  * 启动infogen服务
@@ -34,7 +37,7 @@ public class InfoGen {
 	}
 
 	public static final String VERSION = "V2.1.00R151029";
-	private InfoGen_Cache_Server CACHE_SERVER = InfoGen_Cache_Server.getInstance();
+	private InfoGen_Server_Management CACHE_SERVER = InfoGen_Server_Management.getInstance();
 	private InfoGen_Configuration infogen_configuration = null;
 
 	// //////////////////////////////////////////初始化/////////////////////////////////////////////////////
@@ -48,9 +51,13 @@ public class InfoGen {
 		start_and_watch = true;
 
 		this.infogen_configuration = infogen_configuration;
-		LOGGER.info("InfoGen启动并开启监听服务");
 		// AOP
+		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
 		AOP.getInstance().advice();
+		// 延迟启动 http mvc 框架
+		InfoGen_Spring.config_mvc(infogen_configuration.mapping_path, infogen_configuration.mapping_pattern);
+
+		LOGGER.info("InfoGen启动并开启监听服务");
 		// 初始化缓存的服务
 		CACHE_SERVER.init(infogen_configuration, () -> {// zookeeper 因连接session过期重启后定制处理
 			register();

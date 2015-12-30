@@ -3,7 +3,7 @@ package com.infogen.rpc;
 import com.google.protobuf.BlockingService;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.rpc.server.Server;
-import com.infogen.tracking.rpc_filter.InfoGen_Server_Filter;
+import com.infogen.rpc.tracking.InfoGen_Server_Filter;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年8月28日 下午7:33:48

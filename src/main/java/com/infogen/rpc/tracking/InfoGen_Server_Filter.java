@@ -1,4 +1,4 @@
-package com.infogen.tracking.rpc_filter;
+package com.infogen.rpc.tracking;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

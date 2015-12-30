@@ -1,4 +1,4 @@
-package com.infogen.server.cache;
+package com.infogen.server.management;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -31,7 +31,7 @@ import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.core.tools.Tool_Core;
 import com.infogen.core.tools.Tool_Jackson;
 import com.infogen.core.util.NativePath;
-import com.infogen.server.cache.zookeeper.InfoGen_Zookeeper_Handle_Expired;
+import com.infogen.server.management.zookeeper.InfoGen_Zookeeper_Handle_Expired;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
 import com.infogen.server.model.RemoteNode;
@@ -46,18 +46,18 @@ import com.infogen.tools.Scheduled;
  * @since 1.0
  * @version 1.0
  */
-public class InfoGen_Cache_Server {
-	private static final Logger LOGGER = LogManager.getLogger(InfoGen_Cache_Server.class.getName());
+public class InfoGen_Server_Management {
+	private static final Logger LOGGER = LogManager.getLogger(InfoGen_Server_Management.class.getName());
 
 	private static class InnerInstance {
-		public static final InfoGen_Cache_Server instance = new InfoGen_Cache_Server();
+		public static final InfoGen_Server_Management instance = new InfoGen_Server_Management();
 	}
 
-	public static InfoGen_Cache_Server getInstance() {
+	public static InfoGen_Server_Management getInstance() {
 		return InnerInstance.instance;
 	}
 
-	private InfoGen_Cache_Server() {
+	private InfoGen_Server_Management() {
 		// Scheduled
 		// 定时重新加载获取失败的服务
 		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
@@ -73,7 +73,7 @@ public class InfoGen_Cache_Server {
 		} , 3, 3, TimeUnit.MINUTES);
 	}
 
-	private InfoGen_ZooKeeper ZK = com.infogen.server.cache.InfoGen_ZooKeeper.getInstance();
+	private InfoGen_ZooKeeper ZK = com.infogen.server.management.InfoGen_ZooKeeper.getInstance();
 	private Path source_server_path = NativePath.get("infogen.cache.server.js");
 	private Path target_server_path = NativePath.get("infogen.cache.server.js.copy");
 
@@ -91,6 +91,8 @@ public class InfoGen_Cache_Server {
 	public void init(InfoGen_Configuration infogen_configuration, InfoGen_Zookeeper_Handle_Expired expired_handle) throws IOException, URISyntaxException {
 		// 初始化 zookeeper
 		ZK.start_zookeeper(infogen_configuration.zookeeper, expired_handle);
+		ZK.create_notexists(InfoGen_ZooKeeper.CONTEXT, CreateMode.PERSISTENT);
+		ZK.create_notexists(InfoGen_ZooKeeper.CONTEXT_FUNCTIONS, CreateMode.PERSISTENT);
 
 		// 初始化所有需要的配置文件 如果不存在则创建
 		Tool_Core.prepare_files(source_server_path, target_server_path);

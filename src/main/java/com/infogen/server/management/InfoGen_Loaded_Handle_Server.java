@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.infogen.server.cache;
+package com.infogen.server.management;
 
 import com.infogen.server.model.RemoteServer;
 

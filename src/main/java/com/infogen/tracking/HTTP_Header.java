@@ -1,4 +1,4 @@
-package com.infogen.util;
+package com.infogen.tracking;
 
 /**
  * 用于调用链传递时的key

@@ -1,4 +1,4 @@
-package com.infogen.tracking.http_filter;
+package com.infogen.http.http_filter;
 
 import java.io.IOException;
 

@@ -1,17 +1,15 @@
 package com.infogen.self_description;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.infogen.self_description.annotation.RPCController;
+import com.infogen.core.structure.DefaultEntry;
 import com.infogen.self_description.component.Function;
-import com.infogen.self_description.parser.HTTP_Parser;
-import com.infogen.self_description.parser.RPC_Parser;
 
 /**
  * HTTP协议中启动时扫描自描述配置
@@ -34,21 +32,15 @@ public class InfoGen_Self_Description {
 	private InfoGen_Self_Description() {
 	}
 
-	private HTTP_Parser http_parser = new HTTP_Parser();
-	private RPC_Parser rpc_parser = new RPC_Parser();
-
-	public List<Function> self_description(Set<Class<?>> class_set) {
+	public List<Function> self_description(Set<Class<?>> class_set, List<DefaultEntry<Class<? extends Annotation>, Self_Description>> list) {
 		List<Function> functions = new ArrayList<>();
 		class_set.forEach((clazz) -> {
 			try {
-				RestController rest_controller = clazz.getAnnotation(RestController.class);
-				if (rest_controller != null) {
-					functions.addAll(http_parser.self_description(clazz));
-				}
-
-				RPCController rpc_controller = clazz.getAnnotation(RPCController.class);
-				if (rpc_controller != null) {
-					functions.addAll(rpc_parser.self_description(clazz));
+				for (DefaultEntry<Class<? extends Annotation>, Self_Description> entry : list) {
+					Annotation annotation = clazz.getAnnotation(entry.getKey());
+					if (annotation != null) {
+						functions.addAll(entry.getValue().self_description(clazz));
+					}
 				}
 			} catch (Exception e) {
 				LOGGER.error("解析class失败:", e);
