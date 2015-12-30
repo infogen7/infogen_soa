@@ -1,4 +1,4 @@
-package com.infogen.http;
+package com.infogen.http_client;
 
 import java.io.IOException;
 import java.time.Clock;
@@ -16,8 +16,8 @@ import com.infogen.core.json.Return;
 import com.infogen.core.util.CODE;
 import com.infogen.exception.Node_Unavailable_Exception;
 import com.infogen.exception.Service_Notfound_Exception;
-import com.infogen.http.callback.HTTP_Callback;
-import com.infogen.http.exception.HTTP_Fail_Exception;
+import com.infogen.http_client.callback.HTTP_Callback;
+import com.infogen.http_client.exception.HTTP_Fail_Exception;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
 import com.infogen.tracking.CallChain;

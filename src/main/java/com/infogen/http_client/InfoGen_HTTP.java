@@ -1,4 +1,4 @@
-package com.infogen.http;
+package com.infogen.http_client;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.infogen.core.tools.Tool_Jackson;
-import com.infogen.http.exception.HTTP_Fail_Exception;
+import com.infogen.http_client.exception.HTTP_Fail_Exception;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;

@@ -1,4 +1,4 @@
-package com.infogen.http;
+package com.infogen.http_client;
 
 import java.io.IOException;
 import java.util.zip.GZIPOutputStream;

@@ -1,4 +1,4 @@
-package com.infogen.rpc;
+package com.infogen.rpc_client;
 
 import java.time.Clock;
 

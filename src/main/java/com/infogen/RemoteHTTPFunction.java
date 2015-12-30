@@ -6,8 +6,8 @@ import java.util.Map;
 import com.infogen.core.json.Return;
 import com.infogen.exception.Node_Unavailable_Exception;
 import com.infogen.exception.Service_Notfound_Exception;
-import com.infogen.http.HTTP_LoadBalancing;
-import com.infogen.http.callback.HTTP_Callback;
+import com.infogen.http_client.HTTP_LoadBalancing;
+import com.infogen.http_client.callback.HTTP_Callback;
 import com.squareup.okhttp.Callback;
 
 /**

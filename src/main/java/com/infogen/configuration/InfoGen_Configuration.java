@@ -62,15 +62,14 @@ public class InfoGen_Configuration {
 	public final static ZoneId zoneid = ZoneId.of("GMT+08:00");
 	public final static Charset charset = StandardCharsets.UTF_8;
 
-	public final RegisterNode register_node = new RegisterNode();
-	public final RegisterServer register_server = new RegisterServer();
-	public final ServiceFunctions service_functions = new ServiceFunctions();
-	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
-
 	public String zookeeper;
 	public String kafka;
 	public String mapping_path;
 	public String mapping_pattern;
+	public final RegisterNode register_node = new RegisterNode();
+	public final RegisterServer register_server = new RegisterServer();
+	public final ServiceFunctions service_functions = new ServiceFunctions();
+	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
 
 	public InfoGen_Configuration add_basic_outparameter(OutParameter basic_outparameter) {
 		for (Function function : service_functions.getHttp_functions()) {
@@ -149,6 +148,7 @@ public class InfoGen_Configuration {
 		}
 
 		// /////////////////////////////////////////////////////初始化启动配置/////////////////////////////////////////////////////////////////////
+
 		InfoGen_Self_Description infogen_self_description = InfoGen_Self_Description.getInstance();
 		List<DefaultEntry<Class<? extends Annotation>, Self_Description>> defaultentrys = new ArrayList<>();
 		defaultentrys.add(new DefaultEntry<Class<? extends Annotation>, Self_Description>(RestController.class, new HTTP_Parser()));
