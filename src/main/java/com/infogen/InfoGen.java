@@ -36,7 +36,7 @@ public class InfoGen {
 	private InfoGen() {
 	}
 
-	public static final String VERSION = "V2.1.00R151029";
+	public static final String VERSION = "V2.5.00R151230";
 	private InfoGen_Server_Management CACHE_SERVER = InfoGen_Server_Management.getInstance();
 	private InfoGen_Configuration infogen_configuration = null;
 
