@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.google.protobuf.RpcController;
+import com.infogen.rpc.annotation.RPCController;
 import com.infogen.self_description.Self_Description;
-import com.infogen.self_description.annotation.RPCController;
 import com.infogen.self_description.component.Function;
 
 /**
@@ -69,6 +69,7 @@ public class RPC_Parser extends Self_Description {
 			Function function = new Function();
 
 			function.setRequest_method(url);
+			function.setSubmit_mode("POST");
 
 			// 方法描述注释
 			getDescribe(function, method);

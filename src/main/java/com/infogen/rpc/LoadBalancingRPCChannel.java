@@ -1,4 +1,4 @@
-package com.infogen;
+package com.infogen.rpc;
 
 import java.time.Clock;
 
@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.protobuf.ServiceException;
+import com.infogen.Service;
 import com.infogen.core.structure.map.LRULinkedHashMap;
 import com.infogen.core.util.CODE;
 import com.infogen.exception.Node_Unavailable_Exception;
@@ -27,12 +28,12 @@ import io.netty.util.AsciiString;
  * @since 1.0
  * @version 1.0
  */
-public class RemoteRPCChannel extends InfoGen_Channel {
-	private static final Logger LOGGER = LogManager.getLogger(RemoteRPCChannel.class.getName());
+public class LoadBalancingRPCChannel extends InfoGen_Channel {
+	private static final Logger LOGGER = LogManager.getLogger(LoadBalancingRPCChannel.class.getName());
 	private final LRULinkedHashMap<String, Channel> map = new LRULinkedHashMap<>(5000);
 	private Service service;
 
-	public RemoteRPCChannel(Service service) {
+	public LoadBalancingRPCChannel(Service service) {
 		this.service = service;
 	}
 

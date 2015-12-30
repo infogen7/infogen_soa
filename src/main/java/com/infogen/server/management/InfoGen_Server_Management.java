@@ -31,12 +31,13 @@ import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.core.tools.Tool_Core;
 import com.infogen.core.tools.Tool_Jackson;
 import com.infogen.core.util.NativePath;
-import com.infogen.server.management.zookeeper.InfoGen_Zookeeper_Handle_Expired;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
 import com.infogen.server.model.ServiceFunctions;
+import com.infogen.server.zookeeper.InfoGen_ZooKeeper;
+import com.infogen.server.zookeeper.InfoGen_Zookeeper_Handle_Expired;
 import com.infogen.tools.Scheduled;
 
 /**
@@ -73,7 +74,7 @@ public class InfoGen_Server_Management {
 		} , 3, 3, TimeUnit.MINUTES);
 	}
 
-	private InfoGen_ZooKeeper ZK = com.infogen.server.management.InfoGen_ZooKeeper.getInstance();
+	private InfoGen_ZooKeeper ZK = com.infogen.server.zookeeper.InfoGen_ZooKeeper.getInstance();
 	private Path source_server_path = NativePath.get("infogen.cache.server.js");
 	private Path target_server_path = NativePath.get("infogen.cache.server.js.copy");
 

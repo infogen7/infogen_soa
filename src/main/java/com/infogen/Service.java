@@ -9,13 +9,14 @@ import com.infogen.core.json.Return;
 import com.infogen.exception.Node_Unavailable_Exception;
 import com.infogen.exception.Service_Notfound_Exception;
 import com.infogen.http.callback.HTTP_Callback;
+import com.infogen.rpc.LoadBalancingRPCChannel;
 import com.infogen.server.management.InfoGen_Server_Management;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
 import com.squareup.okhttp.Callback;
 
 /**
- * 
+ * 对远端服务的抽象，有对节点和远端方法的操作
  * 
  * @author larry/larrylv@outlook.com/创建时间 2015年7月29日 下午5:34:17
  * @since 1.0
@@ -73,62 +74,77 @@ public class Service {
 		return new RemoteHTTPFunction(this, function, net_type);
 	}
 
+	////////////////////////////////////////////////// RPC///////////////////////////////////////////////////////////
+	public LoadBalancingRPCChannel get_loadbalancing_rpc_channel() {
+		return new LoadBalancingRPCChannel(this);
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////// 兼容之前版本，不赞成使用//////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////// GET
+	@Deprecated
 	public Return get(String function, Map<String, String> name_value_pair) {
 		return new RemoteHTTPFunction(this, function).get(name_value_pair);
 	}
 
+	@Deprecated
 	public HTTP_Callback<Return> get_async(String function, Map<String, String> name_value_pair) {
 		return new RemoteHTTPFunction(this, function).get_async(name_value_pair);
 	}
 
+	@Deprecated
 	public void get_async(String function, Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
 		new RemoteHTTPFunction(this, function).get_async(name_value_pair, callback);
 	}
 
 	//////////////////////////////////////////// POST
+	@Deprecated
 	public Return post(String function, Map<String, String> name_value_pair) {
 		return new RemoteHTTPFunction(this, function).post(name_value_pair);
 
 	}
 
+	@Deprecated
 	public HTTP_Callback<Return> post_async(String function, Map<String, String> name_value_pair) {
 		return new RemoteHTTPFunction(this, function).post_async(name_value_pair);
 	}
 
+	@Deprecated
 	public void post_async(String function, Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
 		new RemoteHTTPFunction(this, function).post_async(name_value_pair, callback);
 	}
 
 	//////////////////////////////////////////// POST JSON
+	@Deprecated
 	public Return post_json(String function, Map<String, String> name_value_pair) {
 		return new RemoteHTTPFunction(this, function).post_json(name_value_pair);
 	}
 
+	@Deprecated
 	public HTTP_Callback<Return> post_json_async(String function, Map<String, String> name_value_pair) {
 		return new RemoteHTTPFunction(this, function).post_json_async(name_value_pair);
 	}
 
+	@Deprecated
 	public void post_json_async(String function, Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
 		new RemoteHTTPFunction(this, function).post_json_async(name_value_pair, callback);
 	}
 
 	//////////////////////////////////////////// POST FORM DATA
+	@Deprecated
 	public Return post_form_data(String function, Map<String, String> name_value_pair) {
 		return new RemoteHTTPFunction(this, function).post_form_data(name_value_pair);
 	}
 
+	@Deprecated
 	public HTTP_Callback<Return> post_form_data_async(String function, Map<String, String> name_value_pair) {
 		return new RemoteHTTPFunction(this, function).post_form_data_async(name_value_pair);
 	}
 
+	@Deprecated
 	public void post_form_data_async(String function, IdentityHashMap<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
 		new RemoteHTTPFunction(this, function).post_form_data_async(name_value_pair, callback);
-	}
-
-	////////////////////////////////////////////////// RPC///////////////////////////////////////////////////////////
-	public RemoteRPCChannel get_rpc_channel() {
-		return new RemoteRPCChannel(this);
 	}
 
 }

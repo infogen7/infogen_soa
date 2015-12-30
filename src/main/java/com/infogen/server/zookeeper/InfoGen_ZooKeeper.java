@@ -1,4 +1,4 @@
-package com.infogen.server.management;
+package com.infogen.server.zookeeper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,8 +24,6 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 
-import com.infogen.server.management.zookeeper.InfoGen_Zookeeper_Handle_Expired;
-import com.infogen.server.management.zookeeper.InfoGen_Zookeeper_Handle_Watcher_Children;
 import com.infogen.tools.Scheduled;
 
 /**
@@ -60,19 +58,19 @@ public class InfoGen_ZooKeeper {
 	public static final String CONTEXT = "/infogen";
 	public static final String CONTEXT_FUNCTIONS = "/infogen_functions";
 
-	protected static String functions_path(String server_name) {
+	public static String functions_path(String server_name) {
 		return CONTEXT_FUNCTIONS.concat("/").concat(server_name);
 	}
 
-	protected static String path() {
+	public static String path() {
 		return CONTEXT;
 	}
 
-	protected static String path(String server_name) {
+	public static String path(String server_name) {
 		return CONTEXT.concat("/").concat(server_name);
 	}
 
-	protected static String path(String server_name, String node_name) {
+	public static String path(String server_name, String node_name) {
 		return CONTEXT.concat("/").concat(server_name).concat("/").concat(node_name);
 	}
 

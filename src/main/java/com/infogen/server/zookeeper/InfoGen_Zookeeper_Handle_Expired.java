@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.infogen.server.management.zookeeper;
+package com.infogen.server.zookeeper;
 
 /**
  * zookeeper session 失效处理器
