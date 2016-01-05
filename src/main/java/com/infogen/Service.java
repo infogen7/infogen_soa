@@ -34,7 +34,7 @@ public class Service {
 		};
 	}
 
-	private Service(String server_name) {
+	public Service(String server_name) {
 		this.server_name = server_name;
 		// 初始化
 		instance.get_server(server_name);

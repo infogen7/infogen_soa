@@ -71,7 +71,7 @@ public class InfoGen_Configuration {
 	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
 
 	public InfoGen_Configuration add_basic_outparameter(OutParameter basic_outparameter) {
-		for (Function function : service_functions.getHttp_functions()) {
+		for (Function function : service_functions.getFunctions()) {
 			function.getOut_parameters().add(basic_outparameter);
 		}
 		return this;
@@ -155,7 +155,7 @@ public class InfoGen_Configuration {
 		List<DefaultEntry<Class<? extends Annotation>, Self_Description>> defaultentrys = new ArrayList<>();
 		defaultentrys.add(new DefaultEntry<Class<? extends Annotation>, Self_Description>(RestController.class, new HTTP_Parser()));
 		defaultentrys.add(new DefaultEntry<Class<? extends Annotation>, Self_Description>(RPCController.class, new RPC_Parser()));
-		service_functions.getHttp_functions().addAll(infogen_self_description.self_description(AOP.getInstance().getClasses(), defaultentrys));
+		service_functions.getFunctions().addAll(infogen_self_description.self_description(AOP.getInstance().getClasses(), defaultentrys));
 		service_functions.setServer(register_server);
 
 		return this;

@@ -1,5 +1,6 @@
 # 项目版本信息
 项目名称：infogen_soa
+提供了Rest+Json和RPC+Protobuf的服务发布
 提供了服务注册
 服务客户端软负载调用(Http/RPC)
 服务治理
@@ -11,6 +12,10 @@ infogen_core:项目基础包
 包含一系列用于AOP的框架和组件
 包含基础工具类:一致性hash,LRU map,通用exception,jackson工具类,NativePath(获取当前web或jar环境的根目录),jsonobject等
  包含infogen框架的返回值错误码
+
+infogen_management:项目治理，基于angular2.X实现
+
+infogen_streaming:实现yarn模型并可独立模式启动的kafka ETL 到HDFS的工具可以直接使用，也可以继承mapper自定义实现ETL逻辑
 
  infogen_rpc:基于Netty实现HTTP通讯协议,并使用protobuf提供接口自动生成和序列化的RPC协议
  提供java server
@@ -38,10 +43,10 @@ infogen_demo:infogen项目示例程序
 
 中间倒序增加
 --------------------------------------------------------
-发布  日期：20151022
-发布版本号：V2.0.00R151022
+发布  日期：20160105
+发布版本号：V2.6.00R160105
 更新  内容：
-更新依赖包
+支持zookeeper和mysql两种注册中心
 
 
 发布  日期：20150901

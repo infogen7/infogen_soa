@@ -18,14 +18,14 @@ import com.infogen.self_description.component.Function;
 public class ServiceFunctions implements Serializable {
 	private static final long serialVersionUID = 597069376404016921L;
 	private RegisterServer server = new RegisterServer();
-	private List<Function> http_functions = new ArrayList<>();
+	private List<Function> functions = new ArrayList<>();
 
-	public List<Function> getHttp_functions() {
-		return http_functions;
+	public List<Function> getFunctions() {
+		return functions;
 	}
 
-	public void setHttp_functions(List<Function> http_functions) {
-		this.http_functions = http_functions;
+	public void setFunctions(List<Function> functions) {
+		this.functions = functions;
 	}
 
 	public RegisterServer getServer() {

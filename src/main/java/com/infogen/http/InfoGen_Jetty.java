@@ -50,6 +50,9 @@ public class InfoGen_Jetty {
 	}
 
 	// 启动jetty服务
+	public InfoGen_Jetty start(Integer http_port) {
+		return start(http_port, "/", NativePath.get("webapp").toString(), NativePath.get("webapp/WEB-INF/web.xml").toString());
+	}
 	public InfoGen_Jetty start(Integer http_port, String CONTEXT) {
 		return start(http_port, CONTEXT, NativePath.get("webapp").toString(), NativePath.get("webapp/WEB-INF/web.xml").toString());
 	}
