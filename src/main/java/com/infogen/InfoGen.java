@@ -71,8 +71,8 @@ public class InfoGen {
 	public InfoGen register() {
 		LOGGER.info("注册当前服务");
 		CACHE_SERVER.create_server(infogen_configuration.register_server);
-		CACHE_SERVER.create_node(infogen_configuration.register_node);
 		CACHE_SERVER.create_service_functions(infogen_configuration.service_functions);
+		CACHE_SERVER.create_node(infogen_configuration.register_node);
 		return this;
 	}
 
