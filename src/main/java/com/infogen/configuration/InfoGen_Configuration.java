@@ -88,6 +88,11 @@ public class InfoGen_Configuration {
 	}
 
 	public InfoGen_Configuration initialization(Properties infogen_properties) throws IOException, URISyntaxException {
+		LOGGER.info("#读取InfoGen 配置:");
+		infogen_properties.forEach((k, v) -> {
+			LOGGER.info(k + "=" + v);
+		});
+
 		zookeeper = infogen_properties.getProperty("infogen.zookeeper");
 		if (zookeeper == null || zookeeper.trim().isEmpty()) {
 			LOGGER.error("zookeeper配置不能为空:infogen.zookeeper");

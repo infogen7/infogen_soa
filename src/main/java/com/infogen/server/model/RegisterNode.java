@@ -22,23 +22,22 @@ import com.infogen.core.structure.map.consistent_hash.ShardInfo;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, setterVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class RegisterNode extends ShardInfo {
 	private static final long serialVersionUID = -5382412471335577005L;
-
-	protected String server_name;
-
 	protected String server_room = "";// sh@youfu
-	protected String host;// 机器名
-
 	protected String ip;
 	protected String net_ip;
 	protected String http_protocol;
 	protected Integer http_port;
 	protected Integer rpc_port;
-
 	protected String http_context = "";// tomcat的context path,使用tomcat的应该配置，jetty如果有特殊的路径，也可以配置
 
+	// 不需要配置
+	protected String server_name;
+	// 不需要配置
+	protected String host;// 机器名
+	// 不需要配置
 	// 节点的元数据,支持的功能等个性化配置
 	protected Map<String, Object> metadata = new HashMap<>();
-
+	// 不需要配置
 	protected Timestamp time = new Timestamp(Clock.system(InfoGen_Configuration.zoneid).millis());
 
 	public Boolean available() {

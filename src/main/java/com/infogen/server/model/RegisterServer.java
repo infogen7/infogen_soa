@@ -26,13 +26,14 @@ public class RegisterServer implements Serializable {
 	protected String protocol = "";
 	protected String describe = "";
 	protected Integer min_nodes = 1;
-
+	protected String http_proxy;// proxy domain
+	
+	// 不需要配置
 	protected String infogen_version = "";
-	// proxy domain
-	protected String http_proxy;
+	// 不需要配置
 	// 服务的元数据,支持的功能等个性化配置
 	protected Map<String, Object> metadata = new HashMap<>();
-
+	// 不需要配置
 	protected Timestamp time = new Timestamp(Clock.system(InfoGen_Configuration.zoneid).millis());
 
 	public Boolean available() {
