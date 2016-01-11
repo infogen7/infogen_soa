@@ -22,10 +22,11 @@ import com.infogen.http.ServletContainerInitializer.WebApplicationInitializer;
  */
 public class InfoGen_Spring implements WebApplicationInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(InfoGen_Spring.class.getName());
+
 	private static ServletContext servletContext;
 	private static String mapping_path;
 	private static String mapping_pattern;
-	private final static byte[] lock = new byte[0];
+	private static final byte[] lock = new byte[0];
 
 	public static void config_mvc(String mapping_path, String mapping_pattern) throws IOException {
 		InfoGen_Spring.mapping_path = mapping_path;
@@ -38,9 +39,11 @@ public class InfoGen_Spring implements WebApplicationInitializer {
 		run(servletContext);
 	}
 
+	private static Boolean created = false;
+
 	private static void run(ServletContext servletContext) throws IOException {
 		synchronized (lock) {
-			if (servletContext != null && mapping_path != null && !mapping_path.trim().isEmpty()) {
+			if (!created && servletContext != null && mapping_path != null && !mapping_path.trim().isEmpty()) {
 				XmlWebApplicationContext mvcContext = new XmlWebApplicationContext();
 				mvcContext.setConfigLocation(mapping_path);
 
@@ -49,6 +52,7 @@ public class InfoGen_Spring implements WebApplicationInitializer {
 				dispatcher.setAsyncSupported(true);// 支持异步servlet
 				dispatcher.setLoadOnStartup(1);// 确保在default servlet加载完成之后再加载
 				dispatcher.addMapping(mapping_pattern);
+				created = true;
 			}
 		}
 	}

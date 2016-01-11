@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infogen.InfoGen;
@@ -106,7 +106,7 @@ public class InfoGen_Configuration {
 		// 延迟启动 http mvc 框架
 		String mapping_path = infogen_properties.getProperty("infogen.http.spring_mvc.path");
 		String mapping_pattern = infogen_properties.getProperty("infogen.http.spring_mvc.mapping");
-		InfoGen_Spring.config_mvc(mapping_path, mapping_pattern);
+		 InfoGen_Spring.config_mvc(mapping_path, mapping_pattern);
 
 		// server
 		register_server.setInfogen_version(InfoGen.VERSION);

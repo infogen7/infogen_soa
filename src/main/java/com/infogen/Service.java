@@ -13,7 +13,8 @@ import com.infogen.rpc_client.LoadBalancingRPCChannel;
 import com.infogen.server.management.InfoGen_Server_Management;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
-import com.squareup.okhttp.Callback;
+
+import okhttp3.Callback;
 
 /**
  * 对远端服务的抽象，有对节点和远端方法的操作

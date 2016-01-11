@@ -38,6 +38,20 @@
 		</sonar.exclusions>
 		<sonar.language>java</sonar.language>
 	</properties>
+	<exclusions>
+		<exclusion>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</exclusion>
+		<exclusion>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</exclusion>
+		<exclusion>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</exclusion>
+	</exclusions>
 	<dependencies>
 		<dependency>
 			<groupId>com.infogen</groupId>
@@ -89,6 +103,11 @@
 		<!-- webmvc -->
 		<dependency>
 			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>4.2.4.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>4.2.4.RELEASE</version>
 		</dependency>
@@ -105,26 +124,16 @@
 
 		<!-- okhttp -->
 		<dependency>
-			<groupId>com.squareup.okhttp</groupId>
+			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
-			<version>2.7.0</version>
+			<version>3.0.0-RC1</version>
 		</dependency>
 
 		<!-- zookeeper -->
 		<dependency>
 			<groupId>org.apache.zookeeper</groupId>
 			<artifactId>zookeeper</artifactId>
-			<version>3.4.7</version> 
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
+			<version>3.4.7</version>
 		</dependency>
 
 		<!-- kafka -->
@@ -132,16 +141,6 @@
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka_2.11</artifactId>
 			<version>0.8.2.2</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 

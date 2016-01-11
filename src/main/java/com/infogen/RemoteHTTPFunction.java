@@ -8,7 +8,8 @@ import com.infogen.exception.Node_Unavailable_Exception;
 import com.infogen.exception.Service_Notfound_Exception;
 import com.infogen.http_client.HTTP_LoadBalancing;
 import com.infogen.http_client.callback.HTTP_Callback;
-import com.squareup.okhttp.Callback;
+
+import okhttp3.Callback;
 
 /**
  * http协议下远程服务的映射,实现调度,错误重试,同步异步处理等

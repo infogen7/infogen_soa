@@ -23,9 +23,10 @@ import com.infogen.server.model.RemoteServer;
 import com.infogen.tracking.CallChain;
 import com.infogen.tracking.HTTP_Header;
 import com.infogen.tracking.ThreadLocal_Tracking;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年12月30日 下午3:21:38
@@ -117,7 +118,7 @@ public class HTTP_LoadBalancing {
 				@Override
 				public void onFailure(Request request, IOException e) {
 					callback.run(Return.FAIL(CODE.error).add(RETURN_KEY_SERVICE, service.get_server()));
-					LOGGER.error("do_async_post_bytype 报错:".concat(request.urlString()), e);
+					LOGGER.error("do_async_post_bytype 报错:".concat(request.url().toString()), e);
 				}
 
 				@Override
@@ -126,7 +127,7 @@ public class HTTP_LoadBalancing {
 						callback.run(Return.create(response.body().string()));
 					} else {
 						callback.run(Return.FAIL(response.code(), response.message()).add(RETURN_KEY_SERVICE, service.get_server()));
-						LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().urlString()));
+						LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().url().toString()));
 					}
 				}
 			}, seed);
