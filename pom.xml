@@ -38,20 +38,6 @@
 		</sonar.exclusions>
 		<sonar.language>java</sonar.language>
 	</properties>
-	<exclusions>
-		<exclusion>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</exclusion>
-		<exclusion>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-		</exclusion>
-		<exclusion>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</exclusion>
-	</exclusions>
 	<dependencies>
 		<dependency>
 			<groupId>com.infogen</groupId>
