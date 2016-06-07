@@ -1,4 +1,4 @@
-package com.infogen.tools;
+package com.infogen.http;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

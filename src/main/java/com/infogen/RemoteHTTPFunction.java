@@ -108,5 +108,4 @@ public class RemoteHTTPFunction {
 	public void post_form_data_async(IdentityHashMap<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
 		http_loadbalancing.http_async(service, function, name_value_pair, net_type, RequestType.POST_FORM_DATA, callback, seed);
 	}
-
 }

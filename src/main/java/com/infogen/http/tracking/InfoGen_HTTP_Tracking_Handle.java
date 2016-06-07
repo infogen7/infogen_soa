@@ -7,7 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.infogen.tools.Tool_HTTP;
+import com.infogen.http.Tool_HTTP;
 import com.infogen.tracking.CallChain;
 import com.infogen.tracking.HTTP_Header;
 import com.infogen.tracking.ThreadLocal_Tracking;

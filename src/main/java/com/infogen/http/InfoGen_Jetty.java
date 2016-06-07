@@ -9,17 +9,24 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
+import org.eclipse.jetty.plus.webapp.EnvConfiguration;
+import org.eclipse.jetty.plus.webapp.PlusConfiguration;
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.ForwardedRequestCustomizer;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConfiguration.Customizer;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.Configuration;
+import org.eclipse.jetty.webapp.FragmentConfiguration;
 import org.eclipse.jetty.webapp.JettyWebXmlConfiguration;
+import org.eclipse.jetty.webapp.MetaInfConfiguration;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.webapp.WebInfConfiguration;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
 
 import com.infogen.core.util.NativePath;
@@ -51,18 +58,25 @@ public class InfoGen_Jetty {
 
 	// 启动jetty服务
 	public InfoGen_Jetty start(Integer http_port) {
-		return start(http_port, "/", NativePath.get("webapp").toString(), NativePath.get("webapp/WEB-INF/web.xml").toString());
+		return start(http_port, "/", NativePath.get("webapp").toString(),
+				NativePath.get("webapp/WEB-INF/web.xml").toString());
 	}
 
-	public InfoGen_Jetty start(Integer http_port, String CONTEXT) {
-		return start(http_port, CONTEXT, NativePath.get("webapp").toString(), NativePath.get("webapp/WEB-INF/web.xml").toString());
+	public InfoGen_Jetty start(Integer http_port, String context) {
+		return start(http_port, context, NativePath.get("webapp").toString(),
+				NativePath.get("webapp/WEB-INF/web.xml").toString());
 	}
 
-	public InfoGen_Jetty start(Integer http_port, String CONTEXT, String DEFAULT_WEBAPP_PATH, String DESCRIPTOR) {
+	public InfoGen_Jetty start(Integer http_port, String context, String webapp_path) {
+		return start(http_port, context, webapp_path, NativePath.get("webapp/WEB-INF/web.xml").toString());
+	}
+
+	public InfoGen_Jetty start(Integer http_port, String context, String webapp_path, String descriptor) {
 		classpaths.add(NativePath.get_class_path(InfoGen_Jetty.class));
 		Thread t = new Thread(() -> {
 			try {
-				final Server server = createServerInSource(http_port, CONTEXT, DEFAULT_WEBAPP_PATH, DESCRIPTOR, classpaths.toArray(new String[] {}));
+				final Server server = createServerInSource(http_port, context, webapp_path, descriptor,
+						classpaths.toArray(new String[] {}));
 				server.start();
 				server.join();
 			} catch (Exception e) {
@@ -75,31 +89,34 @@ public class InfoGen_Jetty {
 		return this;
 	}
 
+	private ServerConnector getHttpConnector(Server server, int port) {
+		HttpConfiguration config = new HttpConfiguration();
+		config.setSecureScheme("https");
+		config.setSecurePort(443);
+		config.setRequestHeaderSize(52428800);
+		List<Customizer> customizers = new ArrayList<>();
+		customizers.add(new ForwardedRequestCustomizer());
+		config.setCustomizers(customizers);
+		ServerConnector connector = new ServerConnector(server, new HttpConnectionFactory(config));
+		connector.setPort(port);
+		return connector;
+	}
+
 	// 创建用于开发运行调试的Jetty Server, 以src/main/webapp为Web应用目录.
-	public Server createServerInSource(int port, String context, String default_webapp_path, String descriptor, String[] classpaths) throws MalformedURLException {
+	public Server createServerInSource(int port, String context, String default_webapp_path, String descriptor,
+			String[] classpaths) throws MalformedURLException {
 		Server server = new Server();
 		// 设置在JVM退出时关闭Jetty的钩子。
 		server.setStopAtShutdown(true);
 
-		// 这是http的连接器
-		// Common HTTP configuration.
-		HttpConfiguration config = new HttpConfiguration();
-		// HTTP/1.1 support.
-		HttpConnectionFactory http1_1 = new HttpConnectionFactory(config);
-		// HTTP/2 cleartext support.
-		// HTTP2CServerConnectionFactory http2 = new
-		// HTTP2CServerConnectionFactory(config);
-		ServerConnector connector = new ServerConnector(server, http1_1);
-		connector.setPort(port);
-		// 解决Windows下重复启动Jetty居然不报告端口冲突的问题. 但是可能会造成linux上产生僵尸进程
-		// connector.setReuseAddress(false);
-		server.setConnectors(new Connector[] { connector });
-
+		ServerConnector httpConnector = getHttpConnector(server, port);
+		server.setConnectors(new Connector[] { httpConnector });
+		
 		WebAppContext webContext = new WebAppContext();
-		webContext.setClassLoader(Thread.currentThread().getContextClassLoader());
 		webContext.setContextPath(context);
 		webContext.setResourceBase(default_webapp_path);
 		webContext.setDescriptor(descriptor);
+		webContext.setMaxFormContentSize(52428800);
 		// 配置jetty扫描注解的目录 并去重
 		Set<Resource> set = new HashSet<>();
 		set.add(Resource.newResource(NativePath.get_class_path()));
@@ -120,17 +137,14 @@ public class InfoGen_Jetty {
 		// WebXmlConfiguration Configure by parsing default web.xml and web.xml
 		// AnnotationConfiguration eg:@WebFilter
 		// 配置jetty支持xml和注解配置
-		webContext.setConfigurations(new Configuration[] { new JettyWebXmlConfiguration(), new WebXmlConfiguration(), new AnnotationConfiguration() });
-		// webContext.setConfigurations(new Configuration[] { new
-		// WebXmlConfiguration() });
-		// ClassList cl = Configuration.ClassList.setServerDefault(server);
-		// cl.addBefore("org.eclipse.jetty.webapp.JettyWebXmlConfiguration",
-		// "org.eclipse.jetty.annotations.AnnotationConfiguration");
+		webContext.setConfigurations(new Configuration[] { new AnnotationConfiguration(),new WebInfConfiguration(), new MetaInfConfiguration(),
+				new FragmentConfiguration(), new EnvConfiguration(), new PlusConfiguration(),
+				new JettyWebXmlConfiguration(), new WebXmlConfiguration() });
 
-		HandlerCollection handlerCollection = new HandlerCollection();
-		handlerCollection.setHandlers(new Handler[] { webContext });
+		//
+		 HandlerCollection handlerCollection = new HandlerCollection();
+		 handlerCollection.setHandlers(new Handler[] { webContext });
 		server.setHandler(handlerCollection);
-
 		return server;
 	}
 

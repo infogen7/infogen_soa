@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import com.infogen.core.tools.Tool_Jackson;
 import com.infogen.http_client.exception.HTTP_Fail_Exception;
 
+import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MultipartBody;
@@ -86,12 +87,13 @@ public class InfoGen_HTTP {
 
 	private static final Callback async_get_callback = new Callback() {
 		@Override
-		public void onFailure(Request request, IOException e) {
+		public void onFailure(Call call, IOException e) {
+			Request request = call.request();
 			LOGGER.error("do_async_get 报错:".concat(request.url().toString()), e);
 		}
 
 		@Override
-		public void onResponse(Response response) throws IOException {
+		public void onResponse(Call call, Response response) throws IOException {
 			if (response.isSuccessful()) {
 			} else {
 				LOGGER.error("do_async_get 错误-返回非2xx:".concat(response.request().url().toString()));
@@ -110,13 +112,6 @@ public class InfoGen_HTTP {
 	}
 
 	// ////////////////////////////////////////////////////////post///////////////////////////////////////////////////////////////////////////
-
-	public static final okhttp3.MediaType MEDIA_TYPE_JSON = okhttp3.MediaType.parse("application/json; charset=utf-8");//
-	public static final okhttp3.MediaType MEDIA_TYPE_MARKDOWN = okhttp3.MediaType.parse("text/x-markdown; charset=utf-8");
-	public static final okhttp3.MediaType MEDIA_TYPE_PNG = okhttp3.MediaType.parse("image/png");//
-	public static final okhttp3.MediaType MEDIA_TYPE_FORM = okhttp3.MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");//
-	public static final okhttp3.MediaType MEDIA_TYPE_FORM_DATA = okhttp3.MediaType.parse("multipart/form-data; charset=utf-8");//
-	public static final okhttp3.MediaType MEDIA_TYPE_TEXT = okhttp3.MediaType.parse("text/plan; charset=utf-8");//
 
 	public static String do_post(String url, Map<String, String> params, Map<String, String> headers) throws IOException {
 		okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url);
@@ -147,7 +142,8 @@ public class InfoGen_HTTP {
 		}
 		client.newCall(request).enqueue(callback);
 	}
-
+	
+	public static final okhttp3.MediaType MEDIA_TYPE_JSON = okhttp3.MediaType.parse("application/json; charset=utf-8");//
 	public static String do_post_json(String url, Map<String, String> params, Map<String, String> headers) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
@@ -169,7 +165,7 @@ public class InfoGen_HTTP {
 		}
 		client.newCall(request).enqueue(callback);
 	}
-
+	
 	public static String do_post_form_data(String url, Map<String, String> params, Map<String, String> headers) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
@@ -192,6 +188,7 @@ public class InfoGen_HTTP {
 		}
 	}
 
+	//大文件上传
 	public static void do_post_form_data_async(String url, Map<String, String> params, Callback callback, Map<String, String> headers) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
@@ -215,12 +212,13 @@ public class InfoGen_HTTP {
 
 	private static final Callback async_post_callback = new Callback() {
 		@Override
-		public void onFailure(Request request, IOException e) {
+		public void onFailure(Call call, IOException e) {
+			Request request = call.request();
 			LOGGER.error("do_async_post_bytype 报错:".concat(request.url().toString()), e);
 		}
 
 		@Override
-		public void onResponse(Response response) throws IOException {
+		public void onResponse(Call call, Response response) throws IOException {
 			if (response.isSuccessful()) {
 			} else {
 				LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().url().toString()));

@@ -6,8 +6,11 @@ import java.net.URISyntaxException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.protobuf.BlockingService;
 import com.infogen.aop.AOP;
 import com.infogen.configuration.InfoGen_Configuration;
+import com.infogen.http.InfoGen_Jetty;
+import com.infogen.rpc.InfoGen_RPC;
 import com.infogen.server.management.InfoGen_Loaded_Handle_Server;
 import com.infogen.server.management.InfoGen_Server_Management;
 import com.infogen.server.model.RemoteServer;
@@ -37,26 +40,41 @@ public class InfoGen {
 
 	public static final String VERSION = "V2.5.00R151230";
 	private InfoGen_Server_Management CACHE_SERVER = InfoGen_Server_Management.getInstance();
+	
 	private InfoGen_Configuration infogen_configuration = null;
+	public InfoGen_Configuration getInfogen_configuration() {
+		return infogen_configuration;
+	}
+	private InfoGen_Jetty infogen_http;
+	public InfoGen_Jetty getInfogen_http() {
+		return infogen_http;
+	}
+	private InfoGen_RPC infogen_rpc;
+	public InfoGen_RPC getInfogen_rpc() {
+		return infogen_rpc;
+	}
 
 	// //////////////////////////////////////////初始化/////////////////////////////////////////////////////
-	private Boolean start_and_watch = false;
-
-	public InfoGen start_and_watch(InfoGen_Configuration infogen_configuration) throws IOException, URISyntaxException {
-		if (start_and_watch) {
+	private Boolean start = false;
+	public InfoGen start(InfoGen_Configuration infogen_configuration){
+		if (start) {
 			LOGGER.warn("InfoGen 已经启动并开启监听服务");
 			return this;
 		}
-		start_and_watch = true;
+		start = true;
 
 		this.infogen_configuration = infogen_configuration;
 		// AOP
 		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
 		AOP.getInstance().advice();
+		return this;
+	}
 
+	public InfoGen watch() throws IOException, URISyntaxException {
 		LOGGER.info("InfoGen启动并开启监听服务");
 		// 初始化缓存的服务
-		CACHE_SERVER.init(infogen_configuration, () -> {// zookeeper 因连接session过期重启后定制处理
+		CACHE_SERVER.init(infogen_configuration, () -> {// zookeeper
+														// 因连接session过期重启后定制处理
 			register();
 			// 这期间漏掉的Watch消息回调无法恢复 重新加载所有的服务和配置
 			CACHE_SERVER.reload_all_server_flag = true;
@@ -64,6 +82,28 @@ public class InfoGen {
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			LOGGER.info("InfoGen关闭并关闭监听服务");
 		}));
+		return this;
+	}
+
+	public InfoGen http() {
+		infogen_http = InfoGen_Jetty.getInstance().start(infogen_configuration.register_node.getHttp_port());
+		return this;
+	}
+
+	public InfoGen rpc() {
+		try {
+			infogen_rpc = InfoGen_RPC.getInstance().start(infogen_configuration.register_node.getRpc_port());
+		} catch (InterruptedException e) {
+			LOGGER.error(e.getMessage(), e);
+			System.exit(1);
+		}
+		return this;
+	}
+
+	public InfoGen registerService(final BlockingService service) {
+		if (infogen_rpc != null) {
+			infogen_rpc.registerService(service);
+		}
 		return this;
 	}
 
@@ -76,7 +116,8 @@ public class InfoGen {
 		return this;
 	}
 
-	// ////////////////////////////////////////// 获取服务/////////////////////////////////////////////////////
+	// //////////////////////////////////////////
+	// 获取服务/////////////////////////////////////////////////////
 	// 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
 	public RemoteServer get_server(String server_name) {
 		RemoteServer server = CACHE_SERVER.depend_server.get(server_name);

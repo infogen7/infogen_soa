@@ -1,20 +1,12 @@
 package com.infogen;
 
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import com.infogen.core.json.Return;
-import com.infogen.exception.Node_Unavailable_Exception;
-import com.infogen.exception.Service_Notfound_Exception;
-import com.infogen.http_client.callback.HTTP_Callback;
 import com.infogen.rpc_client.LoadBalancingRPCChannel;
 import com.infogen.server.management.InfoGen_Server_Management;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
-
-import okhttp3.Callback;
 
 /**
  * 对远端服务的抽象，有对节点和远端方法的操作
@@ -78,74 +70,6 @@ public class Service {
 	////////////////////////////////////////////////// RPC///////////////////////////////////////////////////////////
 	public LoadBalancingRPCChannel get_loadbalancing_rpc_channel() {
 		return new LoadBalancingRPCChannel(this);
-	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////// 兼容之前版本，不赞成使用//////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////// GET
-	@Deprecated
-	public Return get(String function, Map<String, String> name_value_pair) {
-		return new RemoteHTTPFunction(this, function).get(name_value_pair);
-	}
-
-	@Deprecated
-	public HTTP_Callback<Return> get_async(String function, Map<String, String> name_value_pair) {
-		return new RemoteHTTPFunction(this, function).get_async(name_value_pair);
-	}
-
-	@Deprecated
-	public void get_async(String function, Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
-		new RemoteHTTPFunction(this, function).get_async(name_value_pair, callback);
-	}
-
-	//////////////////////////////////////////// POST
-	@Deprecated
-	public Return post(String function, Map<String, String> name_value_pair) {
-		return new RemoteHTTPFunction(this, function).post(name_value_pair);
-
-	}
-
-	@Deprecated
-	public HTTP_Callback<Return> post_async(String function, Map<String, String> name_value_pair) {
-		return new RemoteHTTPFunction(this, function).post_async(name_value_pair);
-	}
-
-	@Deprecated
-	public void post_async(String function, Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
-		new RemoteHTTPFunction(this, function).post_async(name_value_pair, callback);
-	}
-
-	//////////////////////////////////////////// POST JSON
-	@Deprecated
-	public Return post_json(String function, Map<String, String> name_value_pair) {
-		return new RemoteHTTPFunction(this, function).post_json(name_value_pair);
-	}
-
-	@Deprecated
-	public HTTP_Callback<Return> post_json_async(String function, Map<String, String> name_value_pair) {
-		return new RemoteHTTPFunction(this, function).post_json_async(name_value_pair);
-	}
-
-	@Deprecated
-	public void post_json_async(String function, Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
-		new RemoteHTTPFunction(this, function).post_json_async(name_value_pair, callback);
-	}
-
-	//////////////////////////////////////////// POST FORM DATA
-	@Deprecated
-	public Return post_form_data(String function, Map<String, String> name_value_pair) {
-		return new RemoteHTTPFunction(this, function).post_form_data(name_value_pair);
-	}
-
-	@Deprecated
-	public HTTP_Callback<Return> post_form_data_async(String function, Map<String, String> name_value_pair) {
-		return new RemoteHTTPFunction(this, function).post_form_data_async(name_value_pair);
-	}
-
-	@Deprecated
-	public void post_form_data_async(String function, IdentityHashMap<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
-		new RemoteHTTPFunction(this, function).post_form_data_async(name_value_pair, callback);
 	}
 
 }

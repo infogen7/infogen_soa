@@ -26,7 +26,6 @@ import com.infogen.aop.AOP;
 import com.infogen.core.structure.DefaultEntry;
 import com.infogen.core.tools.Tool_Core;
 import com.infogen.core.util.NativePath;
-import com.infogen.http.mvc_framework.InfoGen_Spring;
 import com.infogen.http.self_description.HTTP_Parser;
 import com.infogen.rpc.annotation.RPCController;
 import com.infogen.rpc.self_description.RPC_Parser;
@@ -48,17 +47,6 @@ import com.infogen.server.model.ServiceFunctions;
 
 public class InfoGen_Configuration {
 	private final static Logger LOGGER = LogManager.getLogger(InfoGen_Configuration.class.getName());
-
-	private static class InnerInstance {
-		public static final InfoGen_Configuration instance = new InfoGen_Configuration();
-	}
-
-	public static InfoGen_Configuration getInstance() {
-		return InnerInstance.instance;
-	}
-
-	private InfoGen_Configuration() {
-	}
 
 	public final static ZoneId zoneid = ZoneId.of("GMT+08:00");
 	public final static Charset charset = StandardCharsets.UTF_8;
@@ -103,11 +91,6 @@ public class InfoGen_Configuration {
 			LOGGER.warn("kafka配置为空:infogen.kafka 调用链/日志等功能将不可用");
 		}
 
-		// 延迟启动 http mvc 框架
-		String mapping_path = infogen_properties.getProperty("infogen.http.spring_mvc.path");
-		String mapping_pattern = infogen_properties.getProperty("infogen.http.spring_mvc.mapping");
-		 InfoGen_Spring.config_mvc(mapping_path, mapping_pattern);
-
 		// server
 		register_server.setInfogen_version(InfoGen.VERSION);
 		register_server.setName(infogen_properties.getProperty("infogen.name"));
@@ -130,6 +113,7 @@ public class InfoGen_Configuration {
 			localIP = Tool_Core.getLocalIP(Tool_Core.trim((ifcfgs == null || ifcfgs.trim().isEmpty()) ? "eth,wlan" : ifcfgs).split(","));
 		}
 		register_node.setIp(localIP);
+		LOGGER.info("localIP :" + localIP);
 		String net_ip = infogen_properties.getProperty("infogen.net_ip");
 		if (net_ip != null && !net_ip.trim().isEmpty() && Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(net_ip).find()) {
 			register_node.setNet_ip(net_ip);

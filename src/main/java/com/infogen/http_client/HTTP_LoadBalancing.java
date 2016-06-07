@@ -24,6 +24,7 @@ import com.infogen.tracking.CallChain;
 import com.infogen.tracking.HTTP_Header;
 import com.infogen.tracking.ThreadLocal_Tracking;
 
+import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -116,13 +117,14 @@ public class HTTP_LoadBalancing {
 		try {
 			http_async(service, function, name_value_pair, net_type, request_type, new Callback() {
 				@Override
-				public void onFailure(Request request, IOException e) {
+				public void onFailure(Call call, IOException e) {
+					Request request = call.request();
 					callback.run(Return.FAIL(CODE.error).add(RETURN_KEY_SERVICE, service.get_server()));
 					LOGGER.error("do_async_post_bytype 报错:".concat(request.url().toString()), e);
 				}
 
 				@Override
-				public void onResponse(Response response) throws IOException {
+				public void onResponse(Call call, Response response) throws IOException {
 					if (response.isSuccessful()) {
 						callback.run(Return.create(response.body().string()));
 					} else {
