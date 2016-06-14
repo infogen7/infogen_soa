@@ -1,4 +1,4 @@
-package com.infogen.rpc.self_description;
+package com.infogen.self_description;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import com.google.protobuf.RpcController;
 import com.infogen.rpc.annotation.RPCController;
-import com.infogen.self_description.Self_Description;
 import com.infogen.self_description.component.Function;
 
 /**
@@ -17,7 +16,7 @@ import com.infogen.self_description.component.Function;
  * @since 1.0
  * @version 1.0
  */
-public class RPC_Parser extends Self_Description {
+public class RPC_Parser extends Self_Description_Parser {
 
 	@Override
 	public List<Function> self_description(Class<?> clazz) {

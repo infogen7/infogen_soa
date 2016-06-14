@@ -15,3 +15,7 @@ hs_err_pid*
 *.log.*
 /bin/
 /log
+.externalToolBuilders
+node_modules
+.DS_Store
+*.DS_Store

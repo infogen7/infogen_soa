@@ -14,6 +14,7 @@ import com.infogen.rpc.InfoGen_RPC;
 import com.infogen.server.management.InfoGen_Loaded_Handle_Server;
 import com.infogen.server.management.InfoGen_Server_Management;
 import com.infogen.server.model.RemoteServer;
+import com.infogen.tracking.Execution_Handle;
 import com.infogen.tracking.annotation.Execution;
 import com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution;
 
@@ -67,6 +68,11 @@ public class InfoGen {
 		// AOP
 		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
 		AOP.getInstance().advice();
+		return this;
+	}
+	
+	public InfoGen setExecution_handle(Execution_Handle execution_handle) {
+		InfoGen_AOP_Handle_Execution.execution_handle = execution_handle;
 		return this;
 	}
 

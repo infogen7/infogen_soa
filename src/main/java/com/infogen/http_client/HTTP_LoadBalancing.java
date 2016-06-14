@@ -156,7 +156,7 @@ public class HTTP_LoadBalancing {
 		return map;
 	}
 
-	private String do_http(RemoteNode node, String function, Map<String, String> name_value_pair, NetType net_type, RequestType request_type) throws IOException {
+	private String do_http(RemoteNode node, String function, Map<String, String> name_value_pair, NetType net_type, RequestType request_type) throws IOException, HTTP_Fail_Exception {
 		String url;
 		if (net_type == NetType.LOCAL) {
 			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(function).toString();

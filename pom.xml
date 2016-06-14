@@ -129,20 +129,6 @@
 			<artifactId>zookeeper</artifactId>
 			<version>3.4.8</version>
 		</dependency>
-
-		<!-- kafka -->
-		<dependency>
-			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_2.11</artifactId>
-			<version>0.10.0.0</version>
-		</dependency>
-
-		<!-- mail -->
-		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>javax.mail-api</artifactId>
-			<version>1.5.5</version>
-		</dependency>
 	</dependencies>
 
 	<build>

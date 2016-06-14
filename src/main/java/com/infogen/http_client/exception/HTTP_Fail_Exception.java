@@ -1,7 +1,5 @@
 package com.infogen.http_client.exception;
 
-import java.io.IOException;
-
 /**
  * response.isSuccessful()为false的错误
  * 
@@ -9,7 +7,7 @@ import java.io.IOException;
  * @since 1.0
  * @version 1.0
  */
-public class HTTP_Fail_Exception extends IOException {
+public class HTTP_Fail_Exception extends Exception {
 	private static final long serialVersionUID = 153970941852883330L;
 	private Integer code;
 	private String message;

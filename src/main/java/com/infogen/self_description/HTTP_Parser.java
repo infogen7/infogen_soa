@@ -1,4 +1,4 @@
-package com.infogen.http.self_description;
+package com.infogen.self_description;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.infogen.self_description.Self_Description;
 import com.infogen.self_description.component.Function;
 
 /**
@@ -19,7 +18,7 @@ import com.infogen.self_description.component.Function;
  * @since 1.0
  * @version 1.0
  */
-public class HTTP_Parser extends Self_Description {
+public class HTTP_Parser extends Self_Description_Parser {
 
 	/*
 	 * (non-Javadoc)

@@ -36,8 +36,8 @@ import javassist.bytecode.MethodInfo;
  * @since 1.0
  * @version 1.0
  */
-public abstract class Self_Description {
-	private static final Logger LOGGER = LogManager.getLogger(Self_Description.class.getName());
+public abstract class Self_Description_Parser {
+	private static final Logger LOGGER = LogManager.getLogger(Self_Description_Parser.class.getName());
 
 	public abstract List<Function> self_description(Class<?> clazz);
 

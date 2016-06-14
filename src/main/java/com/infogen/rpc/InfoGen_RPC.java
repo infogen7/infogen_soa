@@ -2,7 +2,7 @@ package com.infogen.rpc;
 
 import com.google.protobuf.BlockingService;
 import com.infogen.rpc.server.Server;
-import com.infogen.rpc.tracking.InfoGen_Server_Filter;
+import com.infogen.tracking.InfoGen_RPC_Track_Filter;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年8月28日 下午7:33:48
@@ -26,7 +26,7 @@ public class InfoGen_RPC {
 
 	public InfoGen_RPC start(Integer rpc_port) throws InterruptedException {
 		server = new Server(rpc_port);
-		InfoGen_Server_Filter filter = new InfoGen_Server_Filter();
+		InfoGen_RPC_Track_Filter filter = new InfoGen_RPC_Track_Filter();
 		server.add_filter(filter);
 		server.serve();
 		return this;

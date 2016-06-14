@@ -73,7 +73,7 @@ public class InfoGen_HTTP {
 	}
 
 	// get 获取 rest 资源
-	public static String do_get(String url, Map<String, String> params, Map<String, String> headers) throws IOException {
+	public static String do_get(String url, Map<String, String> params, Map<String, String> headers) throws IOException,HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(concat_url_params(url, params));
 		add_headers(builder, headers);
 		Request request = builder.build();
@@ -113,7 +113,7 @@ public class InfoGen_HTTP {
 
 	// ////////////////////////////////////////////////////////post///////////////////////////////////////////////////////////////////////////
 
-	public static String do_post(String url, Map<String, String> params, Map<String, String> headers) throws IOException {
+	public static String do_post(String url, Map<String, String> params, Map<String, String> headers) throws IOException,HTTP_Fail_Exception {
 		okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url);
 		add_headers(builder, headers);
 		okhttp3.FormBody.Builder form_builder = new FormBody.Builder();
@@ -144,7 +144,7 @@ public class InfoGen_HTTP {
 	}
 	
 	public static final okhttp3.MediaType MEDIA_TYPE_JSON = okhttp3.MediaType.parse("application/json; charset=utf-8");//
-	public static String do_post_json(String url, Map<String, String> params, Map<String, String> headers) throws IOException {
+	public static String do_post_json(String url, Map<String, String> params, Map<String, String> headers) throws IOException,HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
 		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
@@ -166,7 +166,7 @@ public class InfoGen_HTTP {
 		client.newCall(request).enqueue(callback);
 	}
 	
-	public static String do_post_form_data(String url, Map<String, String> params, Map<String, String> headers) throws IOException {
+	public static String do_post_form_data(String url, Map<String, String> params, Map<String, String> headers) throws IOException,HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
 		okhttp3.MultipartBody.Builder multipartBuilder = new MultipartBody.Builder();

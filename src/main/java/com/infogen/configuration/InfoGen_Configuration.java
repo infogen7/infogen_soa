@@ -26,11 +26,10 @@ import com.infogen.aop.AOP;
 import com.infogen.core.structure.DefaultEntry;
 import com.infogen.core.tools.Tool_Core;
 import com.infogen.core.util.NativePath;
-import com.infogen.http.self_description.HTTP_Parser;
 import com.infogen.rpc.annotation.RPCController;
-import com.infogen.rpc.self_description.RPC_Parser;
-import com.infogen.self_description.InfoGen_Self_Description;
-import com.infogen.self_description.Self_Description;
+import com.infogen.self_description.HTTP_Parser;
+import com.infogen.self_description.RPC_Parser;
+import com.infogen.self_description.Self_Description_Parser;
 import com.infogen.self_description.component.Function;
 import com.infogen.self_description.component.OutParameter;
 import com.infogen.server.model.RegisterNode;
@@ -140,11 +139,23 @@ public class InfoGen_Configuration {
 
 		// /////////////////////////////////////////////////////初始化启动配置/////////////////////////////////////////////////////////////////////
 
-		InfoGen_Self_Description infogen_self_description = InfoGen_Self_Description.getInstance();
-		List<DefaultEntry<Class<? extends Annotation>, Self_Description>> defaultentrys = new ArrayList<>();
-		defaultentrys.add(new DefaultEntry<Class<? extends Annotation>, Self_Description>(RestController.class, new HTTP_Parser()));
-		defaultentrys.add(new DefaultEntry<Class<? extends Annotation>, Self_Description>(RPCController.class, new RPC_Parser()));
-		service_functions.getFunctions().addAll(infogen_self_description.self_description(AOP.getInstance().getClasses(), defaultentrys));
+		List<Function> functions = new ArrayList<>();
+		List<DefaultEntry<Class<? extends Annotation>, Self_Description_Parser>> defaultentrys = new ArrayList<>();
+		defaultentrys.add(new DefaultEntry<Class<? extends Annotation>, Self_Description_Parser>(RestController.class, new HTTP_Parser()));
+		defaultentrys.add(new DefaultEntry<Class<? extends Annotation>, Self_Description_Parser>(RPCController.class, new RPC_Parser()));
+		AOP.getInstance().getClasses().forEach((clazz) -> {
+			try {
+				for (DefaultEntry<Class<? extends Annotation>, Self_Description_Parser> entry : defaultentrys) {
+					Annotation annotation = clazz.getAnnotation(entry.getKey());
+					if (annotation != null) {
+						functions.addAll(entry.getValue().self_description(clazz));
+					}
+				}
+			} catch (Exception e) {
+				LOGGER.error("解析class失败:", e);
+			}
+		});
+		service_functions.getFunctions().addAll(functions);
 		service_functions.setServer(register_server);
 
 		return this;
