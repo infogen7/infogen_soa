@@ -1,5 +1,6 @@
 package com.infogen.http;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -119,12 +120,16 @@ public class InfoGen_Jetty {
 		webContext.setMaxFormContentSize(52428800);
 		// 配置jetty扫描注解的目录 并去重
 		Set<Resource> set = new HashSet<>();
-		set.add(Resource.newResource(NativePath.get_class_path()));
-		set.add(Resource.newResource(NativePath.get_class_path(InfoGen_Jetty.class)));
-		if (classpaths != null) {
-			for (String classpath : classpaths) {
-				set.add(Resource.newResource(classpath));
+		try {
+			set.add(Resource.newResource(NativePath.get_class_path()));
+			set.add(Resource.newResource(NativePath.get_class_path(InfoGen_Jetty.class)));
+			if (classpaths != null) {
+				for (String classpath : classpaths) {
+					set.add(Resource.newResource(classpath));
+				}
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		// file:///home/juxinli/workspace/infogen_soa/target/classes/
 		for (Resource resource : set) {

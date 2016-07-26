@@ -3,9 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.infogen</groupId>
-		<artifactId>infogen_aggregator</artifactId>
+		<artifactId>infogen_combine</artifactId>
 		<version>V1.0</version>
-		<relativePath>../infogen_aggregator</relativePath>
+		<relativePath>../infogen_combine</relativePath>
 	</parent>
 	<artifactId>infogen_soa</artifactId>
 	<packaging>jar</packaging>
@@ -53,23 +53,23 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.3.9.v20160517</version>
+			<version>9.4.0.M0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.3.9.v20160517</version>
+			<version>9.4.0.M0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-plus</artifactId>
-			<version>9.3.9.v20160517</version>
+			<version>9.4.0.M0</version>
 		</dependency>
 		<!-- http://mvnrepository.com/artifact/org.eclipse.jetty/apache-jsp -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>apache-jsp</artifactId>
-			<version>9.3.9.v20160517</version>
+			<version>9.4.0.M0</version>
 		</dependency>
 
 
@@ -98,29 +98,29 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>4.2.6.RELEASE</version>
+			<version>4.3.1.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>4.2.6.RELEASE</version>
+			<version>4.3.1.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>4.2.6.RELEASE</version>
+			<version>4.3.1.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>4.2.6.RELEASE</version>
+			<version>4.3.1.RELEASE</version>
 		</dependency>
 
 		<!-- okhttp -->
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
-			<version>3.2.0</version>
+			<version>3.4.1</version>
 		</dependency>
 
 		<!-- zookeeper -->
