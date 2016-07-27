@@ -4,10 +4,11 @@
 	<parent>
 		<groupId>com.github.infogen7</groupId>
 		<artifactId>infogen_combine</artifactId>
-		<version>${global.version}</version>
+		<version>1.0</version>
 		<relativePath>../infogen_combine</relativePath>
 	</parent>
 	<artifactId>infogen_soa</artifactId>
+	<version>${global.version}</version>
 	<packaging>jar</packaging>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<url>https://github.com/infogen7/infogen_soa</url>
