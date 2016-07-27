@@ -90,6 +90,10 @@ public class InfoGen_Server_Management {
 	// ///////////////////////////////////////////////////初始化///////////////////////////////////////////////
 
 	public void init(InfoGen_Configuration infogen_configuration, InfoGen_Zookeeper_Handle_Expired expired_handle) throws IOException, URISyntaxException {
+		if(infogen_configuration.zookeeper==null||infogen_configuration.zookeeper.trim().isEmpty()){
+			LOGGER.warn("InfoGen服务治理开启失败-infogen_configuration.zookeeper 为空");
+			return;
+		}
 		// 初始化 zookeeper
 		ZK.start_zookeeper(infogen_configuration.zookeeper, expired_handle);
 		ZK.create_notexists(InfoGen_ZooKeeper.CONTEXT, CreateMode.PERSISTENT);
