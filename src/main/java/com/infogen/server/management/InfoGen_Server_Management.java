@@ -63,15 +63,15 @@ public class InfoGen_Server_Management {
 		// 定时重新加载获取失败的服务
 		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
 			retry_cache_server();
-		} , 30, 30, TimeUnit.SECONDS);
+		}, 30, 30, TimeUnit.SECONDS);
 		// 定时检测并持久化服务到本地
 		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
 			persistence_delay();
-		} , 30, 30, TimeUnit.SECONDS);
+		}, 30, 30, TimeUnit.SECONDS);
 		// 定时检测并重新加载所有依赖的服务
 		Scheduled.executors_single.scheduleWithFixedDelay(() -> {
 			reload_all_server_delay();
-		} , 3, 3, TimeUnit.MINUTES);
+		}, 3, 3, TimeUnit.MINUTES);
 	}
 
 	private InfoGen_ZooKeeper ZK = com.infogen.server.zookeeper.InfoGen_ZooKeeper.getInstance();
@@ -89,8 +89,9 @@ public class InfoGen_Server_Management {
 
 	// ///////////////////////////////////////////////////初始化///////////////////////////////////////////////
 
-	public void init(InfoGen_Configuration infogen_configuration, InfoGen_Zookeeper_Handle_Expired expired_handle) throws IOException, URISyntaxException {
-		if(infogen_configuration.zookeeper==null||infogen_configuration.zookeeper.trim().isEmpty()){
+	public void init(InfoGen_Configuration infogen_configuration, InfoGen_Zookeeper_Handle_Expired expired_handle)
+			throws IOException, URISyntaxException {
+		if (infogen_configuration.zookeeper == null || infogen_configuration.zookeeper.trim().isEmpty()) {
 			LOGGER.warn("InfoGen服务治理开启失败-infogen_configuration.zookeeper 为空");
 			return;
 		}
@@ -105,8 +106,9 @@ public class InfoGen_Server_Management {
 		// 获取缓存的服务
 		String server_json = Tool_Core.load_file(source_server_path);
 		if (!server_json.isEmpty()) {
-			ConcurrentHashMap<String, RemoteServer> fromJson = Tool_Jackson.toObject(server_json, new TypeReference<ConcurrentHashMap<String, RemoteServer>>() {
-			});
+			ConcurrentHashMap<String, RemoteServer> fromJson = Tool_Jackson.toObject(server_json,
+					new TypeReference<ConcurrentHashMap<String, RemoteServer>>() {
+					});
 			for (String key : fromJson.keySet()) {
 				depend_server_cache.put(key, fromJson.get(key));
 			}
@@ -134,7 +136,7 @@ public class InfoGen_Server_Management {
 	}
 
 	// 生成一个服务节点
-	public void create_server(RegisterServer register_server) {
+	public void create_server(RegisterServer register_server, Boolean update) {
 		if (!ZK.available()) {
 			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
 			return;
@@ -149,7 +151,9 @@ public class InfoGen_Server_Management {
 			return;
 		} else if (create_path.equals(Code.NODEEXISTS.name())) {
 			// 更新服务节点数据
-			ZK.set_data(path, bytes, -1);
+			if (update) {
+				ZK.set_data(path, bytes, -1);
+			}
 		}
 	}
 

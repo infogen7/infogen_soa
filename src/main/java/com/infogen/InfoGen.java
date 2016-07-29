@@ -14,7 +14,6 @@ import com.infogen.rpc.InfoGen_RPC;
 import com.infogen.server.management.InfoGen_Loaded_Handle_Server;
 import com.infogen.server.management.InfoGen_Server_Management;
 import com.infogen.server.model.RemoteServer;
-import com.infogen.tracking.Execution_Handle;
 import com.infogen.tracking.annotation.Execution;
 import com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution;
 
@@ -39,7 +38,7 @@ public class InfoGen {
 	private InfoGen() {
 	}
 
-	public static final String VERSION = "V2.5.00R160727";
+	public static final String VERSION = "V2.5.01R160727";
 	private InfoGen_Server_Management CACHE_SERVER = InfoGen_Server_Management.getInstance();
 
 	private InfoGen_Configuration infogen_configuration = null;
@@ -61,68 +60,99 @@ public class InfoGen {
 	}
 
 	// //////////////////////////////////////////初始化/////////////////////////////////////////////////////
-	private Boolean start = false;
-
 	/**
 	 * 启动 InfoGen 的 AOP 和 服务治理
-	 * @param infogen_configuration InfoGen_Configuration
-	 * @return  InfoGen 对象
-	 * @throws IOException 网络异常
-	 * @throws URISyntaxException 路径异常
+	 * 
+	 * @param infogen_configuration
+	 *            InfoGen_Configuration
+	 * @return InfoGen 对象
+	 * @throws IOException
+	 *             网络异常
+	 * @throws URISyntaxException
+	 *             路径异常
 	 */
 	public InfoGen start(InfoGen_Configuration infogen_configuration) throws IOException, URISyntaxException {
-		if (start) {
-			LOGGER.warn("InfoGen 已经启动并开启监听服务");
-			return this;
-		}
-		start = true;
-
 		this.infogen_configuration = infogen_configuration;
-		// AOP
-		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
-		AOP.getInstance().advice();
-
-		//服务治理
-		LOGGER.info("InfoGen启动并开启监听服务");
-		// 初始化缓存的服务
-		CACHE_SERVER.init(infogen_configuration, () -> {// zookeeper
-			// 因连接session过期重启后定制处理
-			CACHE_SERVER.create_node(infogen_configuration.register_node);
-			// 这期间漏掉的Watch消息回调无法恢复 重新加载所有的服务和配置
-			CACHE_SERVER.reload_all_server_flag = true;
-		});
-		LOGGER.info("注册当前服务");
-		CACHE_SERVER.create_server(infogen_configuration.register_server);
-		CACHE_SERVER.create_node(infogen_configuration.register_node);
+		aop();
+		watch();
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			LOGGER.info("InfoGen关闭并关闭监听服务");
 		}));
 		return this;
 	}
 
-	/**
-	 * execution 注解的日志处理
-	 * @param execution_handle Execution_Handle 的实现
-	 * @return InfoGen 对象
-	 */
-	public InfoGen setExecution_handle(Execution_Handle execution_handle) {
-		InfoGen_AOP_Handle_Execution.execution_handle = execution_handle;
+	private Boolean isAOP = false;
+
+	public InfoGen aop() {
+		if (isAOP) {
+			LOGGER.warn("AOP 已经开启");
+			return this;
+		}
+		isAOP = true;
+
+		LOGGER.info("开启 AOP");
+		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
+		AOP.getInstance().advice();
+		return this;
+	}
+
+	private Boolean isWatch = false;
+
+	public InfoGen watch() throws IOException, URISyntaxException {
+		if (isWatch) {
+			LOGGER.warn("InfoGen 已经启动并开启监听服务");
+			return this;
+		}
+		isWatch = true;
+
+		LOGGER.info("InfoGen 启动并开启监听服务");
+		// 初始化缓存的服务
+		CACHE_SERVER.init(infogen_configuration, () -> {// zookeeper
+			// 因连接session过期重启后定制处理
+			if (isRegister) {
+				CACHE_SERVER.create_node(infogen_configuration.register_node);
+			}
+			// 这期间漏掉的Watch消息回调无法恢复 重新加载所有的服务和配置
+			CACHE_SERVER.reload_all_server_flag = true;
+		});
 		return this;
 	}
 
 	/**
-	 * 注册当前服务的方法列表
+	 * 注册当前服务的节点
+	 * 
 	 * @return InfoGen 对象
 	 */
+	private Boolean isRegister = false;
+
 	public InfoGen register() {
+		if (isRegister) {
+			LOGGER.warn("InfoGen 已经启动并开启监听服务");
+			return this;
+		}
+		isRegister = true;
+
 		LOGGER.info("注册当前服务");
-		CACHE_SERVER.create_server(infogen_configuration.register_server);
+		CACHE_SERVER.create_server(infogen_configuration.register_server,false);
+		CACHE_SERVER.create_node(infogen_configuration.register_node);
+		return this;
+	}
+
+	/**
+	 * 注册当前服务并提交当前服务的方法列表
+	 * @return InfoGen 对象
+	 */
+	public InfoGen register_service() {
+		LOGGER.info("注册当前服务");
+		CACHE_SERVER.create_server(infogen_configuration.register_server,true);
+		LOGGER.info("提交当前服务的方法列表");
 		CACHE_SERVER.create_service_functions(infogen_configuration.service_functions);
 		return this;
 	}
 
 	/**
 	 * 开启 Jetty 服务
+	 * 
 	 * @return InfoGen 对象
 	 */
 	public InfoGen http() {
@@ -132,6 +162,7 @@ public class InfoGen {
 
 	/**
 	 * 开启 RPC 服务
+	 * 
 	 * @return InfoGen 对象
 	 */
 	public InfoGen rpc() {
@@ -146,8 +177,10 @@ public class InfoGen {
 
 	/**
 	 * 注册一个 RPC 方法
-	 * @param service BlockingService
-	 * @return  InfoGen 对象
+	 * 
+	 * @param service
+	 *            BlockingService
+	 * @return InfoGen 对象
 	 */
 	public InfoGen registerService(final BlockingService service) {
 		if (infogen_rpc != null) {
