@@ -57,25 +57,24 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.4.0.M0</version>
+			<version>9.4.0.M1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.4.0.M0</version>
+			<version>9.4.0.M1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-plus</artifactId>
-			<version>9.4.0.M0</version>
+			<version>9.4.0.M1</version>
 		</dependency>
 		<!-- http://mvnrepository.com/artifact/org.eclipse.jetty/apache-jsp -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>apache-jsp</artifactId>
-			<version>9.4.0.M0</version>
+			<version>9.4.0.M1</version>
 		</dependency>
-
 
 		<!-- <dependency> -->
 		<!-- <groupId>org.eclipse.jetty.http2</groupId> -->
@@ -102,22 +101,22 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>4.3.1.RELEASE</version>
+			<version>4.3.3.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>4.3.1.RELEASE</version>
+			<version>4.3.3.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>4.3.1.RELEASE</version>
+			<version>4.3.3.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>4.3.1.RELEASE</version>
+			<version>4.3.3.RELEASE</version>
 		</dependency>
 
 		<!-- okhttp -->
@@ -131,7 +130,7 @@
 		<dependency>
 			<groupId>org.apache.zookeeper</groupId>
 			<artifactId>zookeeper</artifactId>
-			<version>3.4.8</version>
+			<version>3.4.9</version>
 		</dependency>
 	</dependencies>
 
