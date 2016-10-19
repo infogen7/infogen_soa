@@ -73,7 +73,6 @@ public class InfoGen {
 	 */
 	public InfoGen start(InfoGen_Configuration infogen_configuration) throws IOException, URISyntaxException {
 		this.infogen_configuration = infogen_configuration;
-		aop();
 		watch();
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			LOGGER.info("InfoGen关闭并关闭监听服务");

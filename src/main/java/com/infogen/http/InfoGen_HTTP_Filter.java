@@ -1,4 +1,4 @@
-package com.infogen.tracking;
+package com.infogen.http;
 
 import java.io.IOException;
 
@@ -12,6 +12,8 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.infogen.InfoGen;
+
 /**
  * HTTP方式的调用链日志框架的过滤器
  * 
@@ -19,8 +21,8 @@ import javax.servlet.http.HttpServletResponse;
  * @since 1.0
  * @version 1.0
  */
-@WebFilter(filterName = "InfoGen_HTTP_Track_Filter", urlPatterns = { "/*" }, asyncSupported = true)
-public class InfoGen_HTTP_Track_Filter implements Filter {
+@WebFilter(filterName = "InfoGen_HTTP_Filter", urlPatterns = { "/*" }, asyncSupported = true)
+public class InfoGen_HTTP_Filter implements Filter {
 	public void doFilter(ServletRequest srequset, ServletResponse sresponse, FilterChain filterChain)
 			throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) srequset;
@@ -36,6 +38,7 @@ public class InfoGen_HTTP_Track_Filter implements Filter {
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		// TODO Auto-generated method stub
+		InfoGen.getInstance().aop();
 	}
 
 	/*

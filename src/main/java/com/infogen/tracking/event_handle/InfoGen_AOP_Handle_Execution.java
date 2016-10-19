@@ -11,9 +11,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.infogen.aop.advice.event_handle.AOP_Handle;
 import com.infogen.aop.agent.Agent_Advice_Method;
-import com.infogen.tracking.CallChain;
-import com.infogen.tracking.Execution_Handle;
-import com.infogen.tracking.ThreadLocal_Tracking;
 import com.infogen.tracking.annotation.Execution;
 
 /**
@@ -25,7 +22,6 @@ import com.infogen.tracking.annotation.Execution;
  */
 public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 	private static final Logger LOGGER = LogManager.getLogger(InfoGen_AOP_Handle_Execution.class.getName());
-	public static Execution_Handle execution_handle = null;
 
 	@Override
 	public Agent_Advice_Method attach_method(String class_name, Method method, Annotation annotation) {
@@ -80,17 +76,8 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 	}
 
 	public static void insert_after_call_back(String class_name, String method_name, String user_definition, String full_method_name, long start_millis, long end_millis, Object return0) {
-		Long duration = end_millis - start_millis;
-		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
-		if(execution_handle != null){
-			execution_handle.insert_after_call_back(class_name,method_name,user_definition,full_method_name,callChain,map.get(full_method_name).decrementAndGet(),duration,return0);
-		}
 	}
 
 	public static void add_catch_call_back(String class_name, String method_name, String user_definition, String full_method_name, Throwable e) {
-		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
-		if(execution_handle != null){
-			execution_handle.add_catch_call_back(class_name,method_name,user_definition,full_method_name,callChain,map.get(full_method_name).decrementAndGet());
-		}
 	}
 }
