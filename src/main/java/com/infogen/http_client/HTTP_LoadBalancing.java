@@ -8,9 +8,9 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.infogen.Service;
 import com.infogen.RemoteHTTPFunction.NetType;
 import com.infogen.RemoteHTTPFunction.RequestType;
+import com.infogen.Service;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.core.json.Return;
 import com.infogen.core.util.CODE;
@@ -20,9 +20,6 @@ import com.infogen.http_client.callback.HTTP_Callback;
 import com.infogen.http_client.exception.HTTP_Fail_Exception;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
-import com.infogen.tracking.CallChain;
-import com.infogen.tracking.HTTP_Header;
-import com.infogen.tracking.ThreadLocal_Tracking;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -142,20 +139,6 @@ public class HTTP_LoadBalancing {
 	}
 	// ///////////////////////////////////////////http////////////////////////////////////////////////
 
-	private Map<String, String> concat_headers() {
-		Map<String, String> map = new HashMap<>();
-		CallChain callChain = ThreadLocal_Tracking.getCallchain().get();
-		if (callChain != null) {
-			// 注意:builder.header 不能写入空值,会报异常
-			map.put(HTTP_Header.x_session_id.key, callChain.getSessionid());
-			map.put(HTTP_Header.x_referer.key, callChain.getTarget());
-			map.put(HTTP_Header.x_track_id.key, callChain.getTrackid());
-			map.put(HTTP_Header.x_identify.key, callChain.getIdentify());
-			map.put(HTTP_Header.x_sequence.key, callChain.getSequence().toString());
-		}
-		return map;
-	}
-
 	private String do_http(RemoteNode node, String function, Map<String, String> name_value_pair, NetType net_type, RequestType request_type) throws IOException, HTTP_Fail_Exception {
 		String url;
 		if (net_type == NetType.LOCAL) {
@@ -165,16 +148,16 @@ public class HTTP_LoadBalancing {
 		}
 		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post -> ").append(url).toString());
-			return InfoGen_HTTP.do_post(url, name_value_pair, concat_headers());
+			return InfoGen_HTTP.do_post(url, name_value_pair, new HashMap<>());
 		} else if (request_type == RequestType.POST_JSON) {
 			LOGGER.debug(new StringBuilder("post json -> ").append(url).toString());
-			return InfoGen_HTTP.do_post_json(url, name_value_pair, concat_headers());
+			return InfoGen_HTTP.do_post_json(url, name_value_pair, new HashMap<>());
 		} else if (request_type == RequestType.POST_FORM_DATA) {
 			LOGGER.debug(new StringBuilder("post form data-> ").append(url).toString());
-			return InfoGen_HTTP.do_post_form_data(url, name_value_pair, concat_headers());
+			return InfoGen_HTTP.do_post_form_data(url, name_value_pair, new HashMap<>());
 		} else {
 			LOGGER.debug(new StringBuilder("get -> ").append(url).toString());
-			return InfoGen_HTTP.do_get(url, name_value_pair, concat_headers());
+			return InfoGen_HTTP.do_get(url, name_value_pair, new HashMap<>());
 		}
 	}
 
@@ -188,16 +171,16 @@ public class HTTP_LoadBalancing {
 		}
 		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post async -> ").append(url).toString());
-			InfoGen_HTTP.do_post_async(url, name_value_pair, callback, concat_headers());
+			InfoGen_HTTP.do_post_async(url, name_value_pair, callback, new HashMap<>());
 		} else if (request_type == RequestType.POST_JSON) {
 			LOGGER.debug(new StringBuilder("post json async -> ").append(url).toString());
-			InfoGen_HTTP.do_post_json_async(url, name_value_pair, callback, concat_headers());
+			InfoGen_HTTP.do_post_json_async(url, name_value_pair, callback, new HashMap<>());
 		} else if (request_type == RequestType.POST_FORM_DATA) {
 			LOGGER.debug(new StringBuilder("post form data async -> ").append(url).toString());
-			InfoGen_HTTP.do_post_form_data_async(url, name_value_pair, callback, concat_headers());
+			InfoGen_HTTP.do_post_form_data_async(url, name_value_pair, callback, new HashMap<>());
 		} else {
 			LOGGER.debug(new StringBuilder("get async -> ").append(url).toString());
-			InfoGen_HTTP.do_get_async(url, name_value_pair, callback, concat_headers());
+			InfoGen_HTTP.do_get_async(url, name_value_pair, callback, new HashMap<>());
 		}
 	}
 
