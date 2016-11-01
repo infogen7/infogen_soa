@@ -60,6 +60,8 @@ public class InfoGen {
 	}
 
 	// //////////////////////////////////////////初始化/////////////////////////////////////////////////////
+	private Boolean isStart = false;
+
 	/**
 	 * 启动 InfoGen 的 AOP 和 服务治理
 	 * 
@@ -73,7 +75,22 @@ public class InfoGen {
 	 */
 	public InfoGen start(InfoGen_Configuration infogen_configuration) throws IOException, URISyntaxException {
 		this.infogen_configuration = infogen_configuration;
-		watch();
+		if (isStart) {
+			LOGGER.warn("InfoGen 已经启动并开启监听服务");
+			return this;
+		}
+		isStart = true;
+
+		LOGGER.info("InfoGen 启动并开启监听服务");
+		// 初始化缓存的服务
+		CACHE_SERVER.init(infogen_configuration, () -> {// zookeeper
+			// 因连接session过期重启后定制处理
+			if (isRegister) {
+				CACHE_SERVER.create_node(infogen_configuration.register_node);
+			}
+			// 这期间漏掉的Watch消息回调无法恢复 重新加载所有的服务和配置
+			CACHE_SERVER.reload_all_server_flag = true;
+		});
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			LOGGER.info("InfoGen关闭并关闭监听服务");
 		}));
@@ -95,28 +112,6 @@ public class InfoGen {
 		return this;
 	}
 
-	private Boolean isWatch = false;
-
-	public InfoGen watch() throws IOException, URISyntaxException {
-		if (isWatch) {
-			LOGGER.warn("InfoGen 已经启动并开启监听服务");
-			return this;
-		}
-		isWatch = true;
-
-		LOGGER.info("InfoGen 启动并开启监听服务");
-		// 初始化缓存的服务
-		CACHE_SERVER.init(infogen_configuration, () -> {// zookeeper
-			// 因连接session过期重启后定制处理
-			if (isRegister) {
-				CACHE_SERVER.create_node(infogen_configuration.register_node);
-			}
-			// 这期间漏掉的Watch消息回调无法恢复 重新加载所有的服务和配置
-			CACHE_SERVER.reload_all_server_flag = true;
-		});
-		return this;
-	}
-
 	/**
 	 * 注册当前服务的节点
 	 * 
@@ -132,18 +127,19 @@ public class InfoGen {
 		isRegister = true;
 
 		LOGGER.info("注册当前服务");
-		CACHE_SERVER.create_server(infogen_configuration.register_server,false);
+		CACHE_SERVER.create_server(infogen_configuration.register_server, false);
 		CACHE_SERVER.create_node(infogen_configuration.register_node);
 		return this;
 	}
 
 	/**
 	 * 注册当前服务并提交当前服务的方法列表
+	 * 
 	 * @return InfoGen 对象
 	 */
 	public InfoGen register_service() {
 		LOGGER.info("注册当前服务");
-		CACHE_SERVER.create_server(infogen_configuration.register_server,true);
+		CACHE_SERVER.create_server(infogen_configuration.register_server, true);
 		LOGGER.info("提交当前服务的方法列表");
 		CACHE_SERVER.create_service_functions(infogen_configuration.service_functions);
 		return this;

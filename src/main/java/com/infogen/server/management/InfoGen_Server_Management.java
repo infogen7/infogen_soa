@@ -28,7 +28,7 @@ import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.core.tools.Tool_Core;
+import com.infogen.core.tools.Tool_Files;
 import com.infogen.core.tools.Tool_Jackson;
 import com.infogen.core.util.NativePath;
 import com.infogen.server.model.RegisterNode;
@@ -91,20 +91,16 @@ public class InfoGen_Server_Management {
 
 	public void init(InfoGen_Configuration infogen_configuration, InfoGen_Zookeeper_Handle_Expired expired_handle)
 			throws IOException, URISyntaxException {
-		if (infogen_configuration.zookeeper == null || infogen_configuration.zookeeper.trim().isEmpty()) {
-			LOGGER.warn("InfoGen服务治理开启失败-infogen_configuration.zookeeper 为空");
-			return;
-		}
 		// 初始化 zookeeper
 		ZK.start_zookeeper(infogen_configuration.zookeeper, expired_handle);
 		ZK.create_notexists(InfoGen_ZooKeeper.CONTEXT, CreateMode.PERSISTENT);
 		ZK.create_notexists(InfoGen_ZooKeeper.CONTEXT_FUNCTIONS, CreateMode.PERSISTENT);
 
 		// 初始化所有需要的配置文件 如果不存在则创建
-		Tool_Core.prepare_files(source_server_path, target_server_path);
+		Tool_Files.prepare_files(source_server_path, target_server_path);
 
 		// 获取缓存的服务
-		String server_json = Tool_Core.load_file(source_server_path);
+		String server_json = Tool_Files.load_file(source_server_path);
 		if (!server_json.isEmpty()) {
 			ConcurrentHashMap<String, RemoteServer> fromJson = Tool_Jackson.toObject(server_json,
 					new TypeReference<ConcurrentHashMap<String, RemoteServer>>() {

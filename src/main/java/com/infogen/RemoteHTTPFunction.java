@@ -23,7 +23,6 @@ public class RemoteHTTPFunction {
 	private Service service;
 	private String function;
 	private String seed;
-	private NetType net_type = NetType.LOCAL;
 
 	public enum RequestType {
 		POST, GET, POST_JSON, POST_FORM_DATA
@@ -46,66 +45,61 @@ public class RemoteHTTPFunction {
 		this.seed = seed;
 	}
 
-	public RemoteHTTPFunction(Service service, String method, NetType net_type) {
-		this(service, method);
-		this.net_type = net_type;
-	}
-
-	public RemoteHTTPFunction(Service service, String method, NetType net_type, String seed) {
-		this(service, method);
-		this.net_type = net_type;
-		this.seed = seed;
-	}
-
 	//////////////////////////////////////////// GET/////////////////////////////////////////
 	public Return get(Map<String, String> name_value_pair) {
-		return http_loadbalancing.http_blocking(service, function, name_value_pair, net_type, RequestType.GET, seed);
+		return http_loadbalancing.http_blocking(service, function, name_value_pair, RequestType.GET, seed);
 	}
 
 	public HTTP_Callback<Return> get_async(Map<String, String> name_value_pair) {
-		return http_loadbalancing.http_async(service, function, name_value_pair, net_type, RequestType.GET, seed);
+		return http_loadbalancing.http_async(service, function, name_value_pair, RequestType.GET, seed);
 	}
 
-	public void get_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
-		http_loadbalancing.http_async(service, function, name_value_pair, net_type, RequestType.GET, callback, seed);
+	public void get_async(Map<String, String> name_value_pair, Callback callback)
+			throws Service_Notfound_Exception, Node_Unavailable_Exception {
+		http_loadbalancing.http_async(service, function, name_value_pair, RequestType.GET, callback, seed);
 	}
 
 	//////////////////////////////////////////// POST/////////////////////////////////////////
 	public Return post(Map<String, String> name_value_pair) {
-		return http_loadbalancing.http_blocking(service, function, name_value_pair, net_type, RequestType.POST, seed);
+		return http_loadbalancing.http_blocking(service, function, name_value_pair, RequestType.POST, seed);
 	}
 
 	public HTTP_Callback<Return> post_async(Map<String, String> name_value_pair) {
-		return http_loadbalancing.http_async(service, function, name_value_pair, net_type, RequestType.POST, seed);
+		return http_loadbalancing.http_async(service, function, name_value_pair, RequestType.POST, seed);
 	}
 
-	public void post_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
-		http_loadbalancing.http_async(service, function, name_value_pair, net_type, RequestType.POST, callback, seed);
+	public void post_async(Map<String, String> name_value_pair, Callback callback)
+			throws Service_Notfound_Exception, Node_Unavailable_Exception {
+		http_loadbalancing.http_async(service, function, name_value_pair, RequestType.POST, callback, seed);
 	}
 
-	//////////////////////////////////////////// POST JSON/////////////////////////////////////////
+	//////////////////////////////////////////// POST
+	//////////////////////////////////////////// JSON/////////////////////////////////////////
 	public Return post_json(Map<String, String> name_value_pair) {
-		return http_loadbalancing.http_blocking(service, function, name_value_pair, net_type, RequestType.POST_JSON, seed);
+		return http_loadbalancing.http_blocking(service, function, name_value_pair, RequestType.POST_JSON, seed);
 	}
 
 	public HTTP_Callback<Return> post_json_async(Map<String, String> name_value_pair) {
-		return http_loadbalancing.http_async(service, function, name_value_pair, net_type, RequestType.POST_JSON, seed);
+		return http_loadbalancing.http_async(service, function, name_value_pair, RequestType.POST_JSON, seed);
 	}
 
-	public void post_json_async(Map<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
-		http_loadbalancing.http_async(service, function, name_value_pair, net_type, RequestType.POST_JSON, callback, seed);
+	public void post_json_async(Map<String, String> name_value_pair, Callback callback)
+			throws Service_Notfound_Exception, Node_Unavailable_Exception {
+		http_loadbalancing.http_async(service, function, name_value_pair, RequestType.POST_JSON, callback, seed);
 	}
 
-	//////////////////////////////////////////// POST FORM DATA///////////////////////////////////////////
+	//////////////////////////////////////////// POST FORM
+	//////////////////////////////////////////// DATA///////////////////////////////////////////
 	public Return post_form_data(Map<String, String> name_value_pair) {
-		return http_loadbalancing.http_blocking(service, function, name_value_pair, net_type, RequestType.POST_FORM_DATA, seed);
+		return http_loadbalancing.http_blocking(service, function, name_value_pair, RequestType.POST_FORM_DATA, seed);
 	}
 
 	public HTTP_Callback<Return> post_form_data_async(Map<String, String> name_value_pair) {
-		return http_loadbalancing.http_async(service, function, name_value_pair, net_type, RequestType.POST_FORM_DATA, seed);
+		return http_loadbalancing.http_async(service, function, name_value_pair, RequestType.POST_FORM_DATA, seed);
 	}
 
-	public void post_form_data_async(IdentityHashMap<String, String> name_value_pair, Callback callback) throws Service_Notfound_Exception, Node_Unavailable_Exception {
-		http_loadbalancing.http_async(service, function, name_value_pair, net_type, RequestType.POST_FORM_DATA, callback, seed);
+	public void post_form_data_async(IdentityHashMap<String, String> name_value_pair, Callback callback)
+			throws Service_Notfound_Exception, Node_Unavailable_Exception {
+		http_loadbalancing.http_async(service, function, name_value_pair, RequestType.POST_FORM_DATA, callback, seed);
 	}
 }

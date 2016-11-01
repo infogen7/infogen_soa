@@ -18,7 +18,7 @@ import com.infogen.self_description.component.Function;
  * @since 1.0
  * @version 1.0
  */
-public class HTTP_Parser extends Self_Description_Parser {
+public class InfoGen_Parser_HTTP extends InfoGen_Parser {
 
 	/*
 	 * (non-Javadoc)

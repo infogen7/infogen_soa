@@ -8,7 +8,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.infogen.RemoteHTTPFunction.NetType;
 import com.infogen.RemoteHTTPFunction.RequestType;
 import com.infogen.Service;
 import com.infogen.configuration.InfoGen_Configuration;
@@ -40,7 +39,7 @@ public class HTTP_LoadBalancing {
 	private static String RETURN_KEY_SERVICE = "service";
 
 	// 同步http调用
-	public Return http_blocking(Service service, String function, Map<String, String> name_value_pair, NetType net_type, RequestType request_type, String seed) {
+	public Return http_blocking(Service service, String function, Map<String, String> name_value_pair, RequestType request_type, String seed) {
 		RemoteServer server = service.get_server();
 		if (server == null) {
 			LOGGER.error(CODE.service_notfound.note);
@@ -59,7 +58,7 @@ public class HTTP_LoadBalancing {
 					LOGGER.error(CODE.node_unavailable.note);
 					return Return.FAIL(CODE.node_unavailable).add(RETURN_KEY_SERVICE, service.get_server());
 				}
-				String http = do_http(node, function, name_value_pair, net_type, request_type);
+				String http = do_http(node, function, name_value_pair, request_type);
 				Return create = Return.create(http);
 				if (create.get_code() == CODE.limit.code) {
 					LOGGER.info(new StringBuilder("接口调用超过限制:").append(function).toString());
@@ -79,7 +78,7 @@ public class HTTP_LoadBalancing {
 	}
 
 	// 异步http调用
-	public void http_async(Service service, String function, Map<String, String> name_value_pair, NetType net_type, RequestType request_type, Callback callback, String seed) throws Service_Notfound_Exception, Node_Unavailable_Exception {
+	public void http_async(Service service, String function, Map<String, String> name_value_pair, RequestType request_type, Callback callback, String seed) throws Service_Notfound_Exception, Node_Unavailable_Exception {
 		RemoteServer server = service.get_server();
 		if (server == null) {
 			LOGGER.error(CODE.service_notfound.note);
@@ -97,7 +96,7 @@ public class HTTP_LoadBalancing {
 				throw new Node_Unavailable_Exception();
 			}
 			try {
-				do_http_async(node, function, name_value_pair, net_type, request_type, callback);
+				do_http_async(node, function, name_value_pair, request_type, callback);
 				return;
 			} catch (IOException e) {
 				LOGGER.error("调用失败", e);
@@ -109,10 +108,10 @@ public class HTTP_LoadBalancing {
 		throw new Node_Unavailable_Exception();
 	}
 
-	public HTTP_Callback<Return> http_async(Service service, String function, Map<String, String> name_value_pair, NetType net_type, RequestType request_type, String seed) {
+	public HTTP_Callback<Return> http_async(Service service, String function, Map<String, String> name_value_pair, RequestType request_type, String seed) {
 		HTTP_Callback<Return> callback = new HTTP_Callback<>();
 		try {
-			http_async(service, function, name_value_pair, net_type, request_type, new Callback() {
+			http_async(service, function, name_value_pair, request_type, new Callback() {
 				@Override
 				public void onFailure(Call call, IOException e) {
 					Request request = call.request();
@@ -139,13 +138,8 @@ public class HTTP_LoadBalancing {
 	}
 	// ///////////////////////////////////////////http////////////////////////////////////////////////
 
-	private String do_http(RemoteNode node, String function, Map<String, String> name_value_pair, NetType net_type, RequestType request_type) throws IOException, HTTP_Fail_Exception {
-		String url;
-		if (net_type == NetType.LOCAL) {
-			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
-		} else {
-			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
-		}
+	private String do_http(RemoteNode node, String function, Map<String, String> name_value_pair, RequestType request_type) throws IOException, HTTP_Fail_Exception {
+		String url = new StringBuilder().append("http://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
 		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post -> ").append(url).toString());
 			return InfoGen_HTTP.do_post(url, name_value_pair, new HashMap<>());
@@ -162,13 +156,8 @@ public class HTTP_LoadBalancing {
 	}
 
 	// 通过异步callback取得返回值,不阻塞返回值
-	private void do_http_async(RemoteNode node, String function, Map<String, String> name_value_pair, NetType net_type, RequestType request_type, Callback callback) throws IOException {
-		String url;
-		if (net_type == NetType.LOCAL) {
-			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
-		} else {
-			url = new StringBuilder().append(node.getHttp_protocol()).append("://").append(node.getNet_ip()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
-		}
+	private void do_http_async(RemoteNode node, String function, Map<String, String> name_value_pair, RequestType request_type, Callback callback) throws IOException {
+		String url = new StringBuilder().append("http://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
 		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post async -> ").append(url).toString());
 			InfoGen_HTTP.do_post_async(url, name_value_pair, callback, new HashMap<>());

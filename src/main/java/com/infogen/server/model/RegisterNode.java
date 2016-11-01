@@ -22,13 +22,9 @@ import com.infogen.core.structure.map.consistent_hash.ShardInfo;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, setterVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class RegisterNode extends ShardInfo {
 	private static final long serialVersionUID = -5382412471335577005L;
-	protected String server_room = "";// sh@youfu
 	protected String ip;
-	protected String net_ip;
-	protected String http_protocol;
 	protected Integer http_port;
 	protected Integer rpc_port;
-	protected String http_context = "";// tomcat的context path,使用tomcat的应该配置，jetty如果有特殊的路径，也可以配置
 
 	// 不需要配置
 	protected String server_name;
@@ -47,14 +43,6 @@ public class RegisterNode extends ShardInfo {
 			return false;
 		}
 		return true;
-	}
-
-	public String getServer_room() {
-		return server_room;
-	}
-
-	public void setServer_room(String server_room) {
-		this.server_room = server_room;
 	}
 
 	public String getHost() {
@@ -81,14 +69,6 @@ public class RegisterNode extends ShardInfo {
 		this.ip = ip;
 	}
 
-	public String getHttp_protocol() {
-		return http_protocol;
-	}
-
-	public void setHttp_protocol(String http_protocol) {
-		this.http_protocol = http_protocol;
-	}
-
 	public Integer getHttp_port() {
 		return http_port;
 	}
@@ -113,28 +93,12 @@ public class RegisterNode extends ShardInfo {
 		this.time = time;
 	}
 
-	public String getNet_ip() {
-		return net_ip;
-	}
-
-	public void setNet_ip(String net_ip) {
-		this.net_ip = net_ip;
-	}
-
 	public Map<String, Object> getMetadata() {
 		return metadata;
 	}
 
 	public void setMetadata(Map<String, Object> metadata) {
 		this.metadata = metadata;
-	}
-
-	public String getHttp_context() {
-		return http_context;
-	}
-
-	public void setHttp_context(String http_context) {
-		this.http_context = http_context;
 	}
 
 }

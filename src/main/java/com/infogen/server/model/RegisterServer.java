@@ -23,10 +23,7 @@ import com.infogen.configuration.InfoGen_Configuration;
 public class RegisterServer implements Serializable {
 	private static final long serialVersionUID = -8079754814055388959L;
 	protected String name;
-	protected String protocol = "";
 	protected String describe = "";
-	protected Integer min_nodes = 1;
-	protected String http_proxy;// proxy domain
 	
 	// 不需要配置
 	protected String infogen_version = "";
@@ -51,14 +48,6 @@ public class RegisterServer implements Serializable {
 		this.name = name;
 	}
 
-	public String getProtocol() {
-		return protocol;
-	}
-
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
-	}
-
 	public String getDescribe() {
 		return describe;
 	}
@@ -75,28 +64,12 @@ public class RegisterServer implements Serializable {
 		this.metadata = metadata;
 	}
 
-	public String getHttp_proxy() {
-		return http_proxy;
-	}
-
 	public Timestamp getTime() {
 		return time;
 	}
 
 	public void setTime(Timestamp time) {
 		this.time = time;
-	}
-
-	public void setHttp_proxy(String http_proxy) {
-		this.http_proxy = http_proxy;
-	}
-
-	public Integer getMin_nodes() {
-		return min_nodes;
-	}
-
-	public void setMin_nodes(Integer min_nodes) {
-		this.min_nodes = min_nodes;
 	}
 
 	public String getInfogen_version() {

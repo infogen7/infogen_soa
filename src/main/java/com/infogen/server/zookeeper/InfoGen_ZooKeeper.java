@@ -90,7 +90,7 @@ public class InfoGen_ZooKeeper {
 			}
 			LOGGER.info("启动zookeeper成功:".concat(host_port));
 		} else {
-			LOGGER.info("已经存在一个运行的zookeeper实例");
+			LOGGER.error("已经存在一个运行的zookeeper实例");
 		}
 	}
 

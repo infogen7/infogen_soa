@@ -48,11 +48,6 @@
 			<artifactId>infogen_core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.github.infogen7</groupId>
-			<artifactId>infogen_rpc</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 		<!-- Jetty Webapp -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -75,22 +70,18 @@
 			<artifactId>apache-jsp</artifactId>
 			<version>9.4.0.M1</version>
 		</dependency>
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty.http2</groupId> -->
-		<!-- <artifactId>http2-server</artifactId> -->
-		<!-- <version>9.3.9.v20160517</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty.http2</groupId> -->
-		<!-- <artifactId>http2-common</artifactId> -->
-		<!-- <version>9.3.9.v20160517</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.eclipse.jetty.http2</groupId> -->
-		<!-- <artifactId>http2-hpack</artifactId> -->
-		<!-- <version>9.3.9.v20160517</version> -->
-		<!-- </dependency> -->
+		<!-- rpc -->
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.1.6.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<!-- servlet -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>

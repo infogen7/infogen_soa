@@ -16,7 +16,7 @@ import com.infogen.self_description.component.Function;
  * @since 1.0
  * @version 1.0
  */
-public class RPC_Parser extends Self_Description_Parser {
+public class InfoGen_Parser_RPC extends InfoGen_Parser {
 
 	@Override
 	public List<Function> self_description(Class<?> clazz) {

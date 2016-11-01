@@ -63,10 +63,6 @@ public class Service {
 		return new RemoteHTTPFunction(this, function);
 	}
 
-	public RemoteHTTPFunction get_http_function(String function, RemoteHTTPFunction.NetType net_type) {
-		return new RemoteHTTPFunction(this, function, net_type);
-	}
-
 	////////////////////////////////////////////////// RPC///////////////////////////////////////////////////////////
 	public LoadBalancingRPCChannel get_loadbalancing_rpc_channel() {
 		return new LoadBalancingRPCChannel(this);

@@ -36,8 +36,8 @@ import javassist.bytecode.MethodInfo;
  * @since 1.0
  * @version 1.0
  */
-public abstract class Self_Description_Parser {
-	private static final Logger LOGGER = LogManager.getLogger(Self_Description_Parser.class.getName());
+public abstract class InfoGen_Parser {
+	private static final Logger LOGGER = LogManager.getLogger(InfoGen_Parser.class.getName());
 
 	public abstract List<Function> self_description(Class<?> clazz);
 
@@ -106,6 +106,7 @@ public abstract class Self_Description_Parser {
 			parameter.setType(reflect_parameter.getType());// 参数类型
 			RequestParam param_annotation = reflect_parameter.getAnnotation(RequestParam.class);
 			if (param_annotation != null) {
+				//是Spring MVC
 				String default_value = param_annotation.defaultValue();// 默认值
 				default_value = default_value.equals(ValueConstants.DEFAULT_NONE) ? "" : default_value;
 				parameter.setDefault_value(default_value);
