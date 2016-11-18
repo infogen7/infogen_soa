@@ -52,23 +52,23 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.4.0.M1</version>
+			<version>9.3.14.v20161028</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.4.0.M1</version>
+			<version>9.3.14.v20161028</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-plus</artifactId>
-			<version>9.4.0.M1</version>
+			<version>9.3.14.v20161028</version>
 		</dependency>
 		<!-- http://mvnrepository.com/artifact/org.eclipse.jetty/apache-jsp -->
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
+			<groupId>org.eclipse.jetty</groupId> 
 			<artifactId>apache-jsp</artifactId>
-			<version>9.4.0.M1</version>
+			<version>9.3.14.v20161028</version> 
 		</dependency>
 		<!-- rpc -->
 		<dependency>

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.infogen.configuration.InfoGen_Configuration;
 
 /**
@@ -21,6 +22,7 @@ import com.infogen.configuration.InfoGen_Configuration;
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, setterVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class RegisterServer implements Serializable {
+	@JsonIgnore
 	private static final long serialVersionUID = -8079754814055388959L;
 	protected String name;
 	protected String describe = "";

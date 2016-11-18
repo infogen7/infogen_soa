@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.infogen.self_description.component.Function;
 
 /**
@@ -16,6 +17,7 @@ import com.infogen.self_description.component.Function;
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, setterVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ServiceFunctions implements Serializable {
+	@JsonIgnore
 	private static final long serialVersionUID = 597069376404016921L;
 	private RegisterServer server = new RegisterServer();
 	private List<Function> functions = new ArrayList<>();

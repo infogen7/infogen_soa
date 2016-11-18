@@ -120,7 +120,7 @@ public class InfoGen_Configuration {
 			System.exit(-1);
 		}
 
-		// /////////////////////////////////////////////////////初始化启动配置/////////////////////////////////////////////////////////////////////
+		// /////////////////////////////////////////////////////自描述/////////////////////////////////////////////////////////////////////
 		InfoGen_Self_Description.getInstance().add_parser(RestController.class, new InfoGen_Parser_HTTP());
 		InfoGen_Self_Description.getInstance().add_parser(RPCController.class, new InfoGen_Parser_RPC());
 		List<Function> functions = InfoGen_Self_Description.getInstance().parser();

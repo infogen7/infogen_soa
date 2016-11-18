@@ -24,6 +24,7 @@ import com.infogen.core.tools.Tool_Jackson;
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, setterVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class RemoteServer extends RegisterServer {
+	@JsonIgnore
 	private static final long serialVersionUID = 1343826022706203233L;
 
 	@JsonIgnore
