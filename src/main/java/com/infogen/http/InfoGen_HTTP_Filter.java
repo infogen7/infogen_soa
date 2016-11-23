@@ -38,7 +38,7 @@ public class InfoGen_HTTP_Filter implements Filter {
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		// TODO Auto-generated method stub
-		InfoGen.getInstance().aop();
+		InfoGen.aop();
 	}
 
 	/*

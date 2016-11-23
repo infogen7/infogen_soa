@@ -24,7 +24,7 @@ public class Infogen_HTTP_Ping_Servlet extends HttpServlet {
 
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().write(Return.SUCCESS(CODE.success).toJson());
+		response.getWriter().write(Return.create(CODE.success).toJson(""));
 	}
 
 	@Override

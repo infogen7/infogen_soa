@@ -93,4 +93,13 @@ public class JSONObject extends HashMap<String, Object> {
 		return getAsClass(key, new TypeReference<JSONArray>() {
 		}, _default);
 	}
+
+	public String toJson(String _default) {
+		try {
+			return Tool_Jackson.toJson(this);
+		} catch (Exception e) {
+			LOGGER.error("json 解析失败:", e);
+			return _default;
+		}
+	}
 }

@@ -24,7 +24,7 @@ public class InfoGen_RPC_Filter extends InfoGen_Filter {
 	@Override
 	public void init(Map<String, String> filterConfig) {
 		// TODO Auto-generated method stub
-		InfoGen.getInstance().aop();
+		InfoGen.aop();
 	}
 
 	/*

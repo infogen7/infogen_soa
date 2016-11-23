@@ -107,9 +107,9 @@ public class InfoGen_Configuration {
 		register_node.setName(localIP.concat("-" + Clock.system(zoneid).millis()));
 		register_node.setServer_name(register_server.getName());
 		String http_port = infogen_properties.getProperty("infogen.http.port");
-		register_node.setHttp_port((http_port == null) ? null : Integer.valueOf(http_port));
+		register_node.setHttp_port((http_port == null) ? 8080 : Integer.valueOf(http_port));
 		String rpc_port = infogen_properties.getProperty("infogen.rpc.port");
-		register_node.setRpc_port((rpc_port == null) ? null : Integer.valueOf(rpc_port));
+		register_node.setRpc_port((rpc_port == null) ? 18080 : Integer.valueOf(rpc_port));
 		register_node.setHost(System.getProperty("user.name").concat("@").concat(Tool_IP.getHostName()));
 		String ratio = infogen_properties.getProperty("infogen.ratio");
 		register_node.setRatio((ratio == null) ? 10 : Math.max(0, Math.min(10, Integer.valueOf(ratio))));

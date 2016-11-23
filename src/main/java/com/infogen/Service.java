@@ -18,7 +18,6 @@ import com.infogen.server.model.RemoteServer;
 public class Service {
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private static final InfoGen instance = InfoGen.getInstance();
 	private static ConcurrentMap<String, RemoteServer> depend_server = InfoGen_Server_Management.getInstance().depend_server;
 	private String server_name;
 
@@ -29,8 +28,8 @@ public class Service {
 
 	public Service(String server_name) {
 		this.server_name = server_name;
-		// 初始化
-		instance.get_server(server_name);
+		InfoGen.init_server(server_name, (native_server) -> {
+		});
 	}
 
 	///////////////////////////////////////////////// Server///////////////////////////////////////////////////////

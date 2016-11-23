@@ -89,8 +89,7 @@ public class InfoGen_Server_Management {
 
 	// ///////////////////////////////////////////////////初始化///////////////////////////////////////////////
 
-	public void init(InfoGen_Configuration infogen_configuration, InfoGen_Zookeeper_Handle_Expired expired_handle)
-			throws IOException, URISyntaxException {
+	public void init(InfoGen_Configuration infogen_configuration, InfoGen_Zookeeper_Handle_Expired expired_handle) throws IOException, URISyntaxException {
 		// 初始化 zookeeper
 		ZK.start_zookeeper(infogen_configuration.zookeeper, expired_handle);
 		ZK.create_notexists(InfoGen_ZooKeeper.CONTEXT, CreateMode.PERSISTENT);
@@ -102,9 +101,8 @@ public class InfoGen_Server_Management {
 		// 获取缓存的服务
 		String server_json = Tool_Files.load_file(source_server_path);
 		if (!server_json.isEmpty()) {
-			ConcurrentHashMap<String, RemoteServer> fromJson = Tool_Jackson.toObject(server_json,
-					new TypeReference<ConcurrentHashMap<String, RemoteServer>>() {
-					});
+			ConcurrentHashMap<String, RemoteServer> fromJson = Tool_Jackson.toObject(server_json, new TypeReference<ConcurrentHashMap<String, RemoteServer>>() {
+			});
 			for (String key : fromJson.keySet()) {
 				depend_server_cache.put(key, fromJson.get(key));
 			}
@@ -114,7 +112,7 @@ public class InfoGen_Server_Management {
 	//////////////////////////////////////////////////////// create_server/////////////////////////////////////////////////////////
 	public void create_service_functions(ServiceFunctions service_functions) {
 		if (!ZK.available()) {
-			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
+			LOGGER.warn("InfoGen服务没有开启- InfoGen.create('infogen.properties').start();");
 			return;
 		}
 
@@ -134,7 +132,7 @@ public class InfoGen_Server_Management {
 	// 生成一个服务节点
 	public void create_server(RegisterServer register_server, Boolean update) {
 		if (!ZK.available()) {
-			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
+			LOGGER.warn("InfoGen服务没有开启- InfoGen.create('infogen.properties').start();");
 			return;
 		}
 
@@ -156,7 +154,7 @@ public class InfoGen_Server_Management {
 	// 生成一个服务实例节点
 	public void create_node(RegisterNode register_node) {
 		if (!ZK.available()) {
-			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
+			LOGGER.warn("InfoGen服务没有开启- InfoGen.create('infogen.properties').start();");
 			return;
 		}
 
@@ -208,7 +206,7 @@ public class InfoGen_Server_Management {
 
 	private RemoteServer cache_server(String server_name) {
 		if (!ZK.available()) {
-			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
+			LOGGER.warn("InfoGen服务没有开启- InfoGen.create('infogen.properties').start();");
 			return null;
 		}
 		String server_path = InfoGen_ZooKeeper.path(server_name);
@@ -260,7 +258,7 @@ public class InfoGen_Server_Management {
 
 	private void reload_server(RemoteServer native_server) {
 		if (!ZK.available()) {
-			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
+			LOGGER.warn("InfoGen服务没有开启- InfoGen.create('infogen.properties').start();");
 			return;
 		}
 
@@ -345,12 +343,12 @@ public class InfoGen_Server_Management {
 		}
 	}
 
-	///////////////////////////////////////////////////////////// 备份////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////// 代码备份 ////////////////////////////////////////////////////////////////////////////////////
 	// 写入或更新一个节点数据
 	@SuppressWarnings("unused")
 	private void upsert_data(String name, String value, String digest) throws NoSuchAlgorithmException {
 		if (!ZK.available()) {
-			LOGGER.warn("InfoGen服务没有开启-InfoGen.getInstance().start_and_watch(infogen_configuration);");
+			LOGGER.warn("InfoGen服务没有开启- InfoGen.create('infogen.properties').start();");
 			return;
 		}
 
@@ -368,4 +366,5 @@ public class InfoGen_Server_Management {
 			ZK.set_data(InfoGen_ZooKeeper.path(name), value.getBytes(), -1);
 		}
 	}
+	///////////////////////////////////////////////////////////// END 代码备份 //////////////////////////////////////////////////////////////////////////
 }
