@@ -17,8 +17,8 @@ import com.infogen.tracking.annotation.Execution;
  * @since 1.0
  * @version 1.0
  */
-public class AOP_Handle_Execution extends AOP_Handle {
-	private static final Logger LOGGER = LogManager.getLogger(AOP_Handle_Execution.class.getName());
+public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
+	private static final Logger LOGGER = LogManager.getLogger(InfoGen_AOP_Handle_Execution.class.getName());
 
 	@Override
 	public Agent_Advice_Method attach_method(String class_name, Method method, Annotation annotation) {
@@ -65,9 +65,9 @@ public class AOP_Handle_Execution extends AOP_Handle {
 		return advice_method;
 	}
 
-	public AOP_Handle_Execution(Tracking_Handle handle) {
+	public InfoGen_AOP_Handle_Execution(Tracking_Handle handle) {
 		super();
-		AOP_Handle_Execution.tracking_handle = handle;
+		InfoGen_AOP_Handle_Execution.tracking_handle = handle;
 	}
 
 	private static Tracking_Handle tracking_handle = null;

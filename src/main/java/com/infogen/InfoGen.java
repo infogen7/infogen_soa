@@ -15,7 +15,7 @@ import com.infogen.server.management.InfoGen_Loaded_Handle_Server;
 import com.infogen.server.management.InfoGen_Server_Management;
 import com.infogen.server.model.RemoteServer;
 import com.infogen.tracking.annotation.Execution;
-import com.infogen.tracking.event_handle.AOP_Handle_Execution;
+import com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution;
 import com.infogen.tracking.event_handle.Tracking_Handle;
 
 /**
@@ -194,7 +194,7 @@ public class InfoGen {
 	 * @return InfoGen
 	 */
 	public InfoGen track(Tracking_Handle handle) {
-		AOP.getInstance().add_advice_method(Execution.class, new AOP_Handle_Execution(handle));
+		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution(handle));
 		return this;
 	}
 
