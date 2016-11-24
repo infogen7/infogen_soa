@@ -2,9 +2,6 @@ package com.infogen.tracking.event_handle;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +17,8 @@ import com.infogen.tracking.annotation.Execution;
  * @since 1.0
  * @version 1.0
  */
-public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
-	private static final Logger LOGGER = LogManager.getLogger(InfoGen_AOP_Handle_Execution.class.getName());
+public class AOP_Handle_Execution extends AOP_Handle {
+	private static final Logger LOGGER = LogManager.getLogger(AOP_Handle_Execution.class.getName());
 
 	@Override
 	public Agent_Advice_Method attach_method(String class_name, Method method, Annotation annotation) {
@@ -39,15 +36,13 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 			user_definition.replaceAll(",", "|");
 			LOGGER.warn("注解Execution中user_definition字段不能出现 ',' 将被替换成 '|' ".concat(class_name).concat(".").concat(method_name));
 		}
-		
-		map.put(full_method_name, new AtomicInteger(1));
-		
+
 		Agent_Advice_Method advice_method = new Agent_Advice_Method();
 		advice_method.setMethod_name(method_name);
 		advice_method.setLong_local_variable("infogen_logger_attach_start_millis");
 
 		advice_method.setInsert_before("infogen_logger_attach_start_millis =System.currentTimeMillis();com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution.insert_before_call_back(\"" + full_method_name + "\");");
-		
+
 		StringBuilder sbd = new StringBuilder();
 		sbd.append("com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution.insert_after_call_back(");
 		sbd.append("\"").append(class_name).append("\"").append(",");
@@ -66,18 +61,38 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		sbd.append("$e);throw $e;");
 		advice_method.setAdd_catch(sbd.toString());
 
+		init(full_method_name);
 		return advice_method;
 	}
 
-	private static final Map<String, AtomicInteger> map = new HashMap<>();
+	public AOP_Handle_Execution(Tracking_Handle handle) {
+		super();
+		AOP_Handle_Execution.tracking_handle = handle;
+	}
+
+	private static Tracking_Handle tracking_handle = null;
+
+	public static void init(String full_method_name) {
+		if (tracking_handle != null) {
+			tracking_handle.init(full_method_name);
+		}
+	}
 
 	public static void insert_before_call_back(String full_method_name) {
-		map.get(full_method_name).incrementAndGet();
+		if (tracking_handle != null) {
+			tracking_handle.insert_before_call_back(full_method_name);
+		}
 	}
 
 	public static void insert_after_call_back(String class_name, String method_name, String user_definition, String full_method_name, long start_millis, long end_millis, Object return0) {
+		if (tracking_handle != null) {
+			tracking_handle.insert_after_call_back(class_name, method_name, user_definition, full_method_name, start_millis, end_millis, return0);
+		}
 	}
 
 	public static void add_catch_call_back(String class_name, String method_name, String user_definition, String full_method_name, Throwable e) {
+		if (tracking_handle != null) {
+			tracking_handle.add_catch_call_back(class_name, method_name, user_definition, full_method_name, e);
+		}
 	}
 }
