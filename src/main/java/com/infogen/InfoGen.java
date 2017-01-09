@@ -28,7 +28,17 @@ import com.infogen.tracking.event_handle.Tracking_Handle;
 public class InfoGen {
 	private static final Logger LOGGER = LogManager.getLogger(InfoGen.class.getName());
 
-	private InfoGen() {
+	public InfoGen(InfoGen_Configuration infogen_configuration) {
+		this.infogen_configuration = infogen_configuration;
+	}
+
+	public InfoGen(String infogen_configuration_path) {
+		try {
+			this.infogen_configuration = new InfoGen_Configuration().initialization(infogen_configuration_path);
+		} catch (IOException | URISyntaxException e) {
+			LOGGER.error("初始化 infogen_configuration 失败", e);
+			System.exit(-1);
+		}
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,84 +46,10 @@ public class InfoGen {
 	private static InfoGen_Server_Management CACHE_SERVER = InfoGen_Server_Management.getInstance();
 
 	// //////////////////////////////////////////配置/////////////////////////////////////////////////////
-	private static InfoGen_Configuration infogen_configuration = null;
+	private InfoGen_Configuration infogen_configuration = null;
 
-	public static InfoGen_Configuration getInfogen_configuration() {
+	public InfoGen_Configuration getInfogen_configuration() {
 		return infogen_configuration;
-	}
-
-	/**
-	 * 绑定 InfoGen 配置
-	 * 
-	 * @param infogen_configuration
-	 *            配置文件
-	 * @return InfoGen
-	 */
-	public static InfoGen create(InfoGen_Configuration infogen_configuration) {
-		InfoGen.infogen_configuration = infogen_configuration;
-		return new InfoGen();
-	}
-
-	/**
-	 * 加载 InfoGen 配置
-	 * 
-	 * @param infogen_configuration_path
-	 *            配置文件
-	 * @return InfoGen
-	 */
-	public static InfoGen create(String infogen_configuration_path) {
-		try {
-			InfoGen.infogen_configuration = new InfoGen_Configuration().initialization(infogen_configuration_path);
-		} catch (IOException | URISyntaxException e) {
-			LOGGER.error("初始化 infogen_configuration 失败", e);
-			System.exit(-1);
-		}
-		return new InfoGen();
-	}
-
-	// ////////////////////////////////////////// AOP /////////////////////////////////////////////////////
-	private static Boolean isAOP = false;
-
-	/**
-	 * 启动 AOP 功能 ， 默认会在 InfoGen_HTTP_Filter 初始化的时候加载
-	 */
-	public static void aop() {
-		if (isAOP) {
-			LOGGER.warn("AOP 已经开启");
-		}
-		isAOP = true;
-		LOGGER.info("开启 AOP");
-		AOP.getInstance().advice();
-	}
-
-	////////////////////////////////////// 获取服务 /////////////////////////////////////////////////////
-	// 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
-	public static RemoteServer get_server(String server_name) {
-		RemoteServer server = CACHE_SERVER.depend_server.get(server_name);
-		if (server != null) {
-			return server;
-		}
-		return init_server(server_name, (native_server) -> {
-		});
-	}
-
-	// 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
-	public static RemoteServer get_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
-		RemoteServer server = CACHE_SERVER.depend_server.get(server_name);
-		if (server != null) {
-			return server;
-		}
-		return init_server(server_name, server_loaded_handle);
-	}
-
-	// 初始化服务,每个服务只会拉取一次
-	public static RemoteServer init_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
-		RemoteServer server = CACHE_SERVER.cache_server_single(server_name, server_loaded_handle);
-		if (server != null) {
-			return server;
-		}
-		LOGGER.warn("没有找到可用服务:".concat(server_name));
-		return server;
 	}
 
 	// ///////////////////////////////////////启动模块////////////////////////////////////////////////////////
@@ -129,7 +65,7 @@ public class InfoGen {
 	 * @throws URISyntaxException
 	 *             路径异常
 	 */
-	public InfoGen start() throws IOException, URISyntaxException {
+	public InfoGen start_and_watcher() throws IOException, URISyntaxException {
 		if (isStart) {
 			LOGGER.warn("InfoGen 已经启动并开启监听服务");
 			return this;
@@ -258,4 +194,50 @@ public class InfoGen {
 	public void join() throws InterruptedException {
 		Thread.currentThread().join();
 	}
+
+	// ////////////////////////////////////////// AOP /////////////////////////////////////////////////////
+	private static Boolean isAOP = false;
+
+	/**
+	 * 启动 AOP 功能 ， 默认会在 InfoGen_HTTP_Filter 初始化的时候加载
+	 */
+	public static void aop() {
+		if (isAOP) {
+			LOGGER.warn("AOP 已经开启");
+		}
+		isAOP = true;
+		LOGGER.info("开启 AOP");
+		AOP.getInstance().advice();
+	}
+
+	////////////////////////////////////// 获取服务 /////////////////////////////////////////////////////
+	// 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
+	public static RemoteServer get_server(String server_name) {
+		RemoteServer server = CACHE_SERVER.depend_server.get(server_name);
+		if (server != null) {
+			return server;
+		}
+		return init_server(server_name, (native_server) -> {
+		});
+	}
+
+	// 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
+	public static RemoteServer get_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
+		RemoteServer server = CACHE_SERVER.depend_server.get(server_name);
+		if (server != null) {
+			return server;
+		}
+		return init_server(server_name, server_loaded_handle);
+	}
+
+	// 初始化服务,每个服务只会拉取一次
+	public static RemoteServer init_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
+		RemoteServer server = CACHE_SERVER.cache_server_single(server_name, server_loaded_handle);
+		if (server != null) {
+			return server;
+		}
+		LOGGER.warn("没有找到可用服务:".concat(server_name));
+		return server;
+	}
+
 }

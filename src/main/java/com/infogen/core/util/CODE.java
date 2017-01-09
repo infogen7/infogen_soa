@@ -15,11 +15,7 @@ public enum CODE {
 	service_notfound(402, "没有这个服务"), //
 	node_unavailable(403, "没有可用的服务节点"), //
 
-	error(500, "执行错误"), //
-	authentication_fail(501, "认证失败"), //
-	roles_fail(502, "授权失败"), //
-	session_expiration(503, "Session 过期"), //
-	session_lose(504, "Session 丢失"), //
+	error(500, "执行错误"),
 
 	timeout(510, "调用超时"), //
 	generate_return_error(511, "处理返回值错误"), //
