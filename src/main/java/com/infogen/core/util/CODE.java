@@ -11,7 +11,7 @@ public enum CODE {
 	success(200, "成功"), //
 
 	parameters_incorrect(400, "参数不正确"), //
-	parameters_invalid(401, "特定参数不符合条件(eg:没有这个用户)"), //
+	parameters_invalid(401, "参数不符合规范"), //
 	service_notfound(402, "没有这个服务"), //
 	node_unavailable(403, "没有可用的服务节点"), //
 

@@ -204,6 +204,7 @@ public class InfoGen {
 	public static void aop() {
 		if (isAOP) {
 			LOGGER.warn("AOP 已经开启");
+			return;
 		}
 		isAOP = true;
 		LOGGER.info("开启 AOP");

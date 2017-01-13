@@ -59,13 +59,11 @@ public class InfoGen_Jetty {
 
 	// 启动jetty服务
 	public InfoGen_Jetty start(Integer http_port) {
-		return start(http_port, "/", NativePath.get("webapp").toString(),
-				NativePath.get("webapp/WEB-INF/web.xml").toString());
+		return start(http_port, "/", NativePath.get("webapp").toString(), NativePath.get("webapp/WEB-INF/web.xml").toString());
 	}
 
 	public InfoGen_Jetty start(Integer http_port, String context) {
-		return start(http_port, context, NativePath.get("webapp").toString(),
-				NativePath.get("webapp/WEB-INF/web.xml").toString());
+		return start(http_port, context, NativePath.get("webapp").toString(), NativePath.get("webapp/WEB-INF/web.xml").toString());
 	}
 
 	public InfoGen_Jetty start(Integer http_port, String context, String webapp_path) {
@@ -76,8 +74,7 @@ public class InfoGen_Jetty {
 		classpaths.add(NativePath.get_class_path(InfoGen_Jetty.class));
 		Thread t = new Thread(() -> {
 			try {
-				final Server server = createServerInSource(http_port, context, webapp_path, descriptor,
-						classpaths.toArray(new String[] {}));
+				final Server server = createServerInSource(http_port, context, webapp_path, descriptor, classpaths.toArray(new String[] {}));
 				server.start();
 				server.join();
 			} catch (Exception e) {
@@ -104,15 +101,14 @@ public class InfoGen_Jetty {
 	}
 
 	// 创建用于开发运行调试的Jetty Server, 以src/main/webapp为Web应用目录.
-	public Server createServerInSource(int port, String context, String default_webapp_path, String descriptor,
-			String[] classpaths) throws MalformedURLException {
+	public Server createServerInSource(int port, String context, String default_webapp_path, String descriptor, String[] classpaths) throws MalformedURLException {
 		Server server = new Server();
 		// 设置在JVM退出时关闭Jetty的钩子。
 		server.setStopAtShutdown(true);
 
 		ServerConnector httpConnector = getHttpConnector(server, port);
 		server.setConnectors(new Connector[] { httpConnector });
-		
+
 		WebAppContext webContext = new WebAppContext();
 		webContext.setContextPath(context);
 		webContext.setResourceBase(default_webapp_path);
@@ -123,6 +119,18 @@ public class InfoGen_Jetty {
 		try {
 			set.add(Resource.newResource(NativePath.get_class_path()));
 			set.add(Resource.newResource(NativePath.get_class_path(InfoGen_Jetty.class)));
+			try {
+				Class<?> clazz = this.getClass().getClassLoader().loadClass("com.infogen.authc.InfoGen_Authc");
+				set.add(Resource.newResource(NativePath.get_class_path(clazz)));
+			} catch (ClassNotFoundException e) {
+				LOGGER.warn("加载InfoGen_Authc失败");
+			}
+			try {
+				Class<?> clazz = this.getClass().getClassLoader().loadClass("com.infogen.hibernate.InfoGen_Hibernate");
+				set.add(Resource.newResource(NativePath.get_class_path(clazz)));
+			} catch (ClassNotFoundException e) {
+				LOGGER.warn("加载InfoGen_Hibernate失败");
+			}
 			if (classpaths != null) {
 				for (String classpath : classpaths) {
 					set.add(Resource.newResource(classpath));
@@ -142,13 +150,11 @@ public class InfoGen_Jetty {
 		// WebXmlConfiguration Configure by parsing default web.xml and web.xml
 		// AnnotationConfiguration eg:@WebFilter
 		// 配置jetty支持xml和注解配置
-		webContext.setConfigurations(new Configuration[] { new AnnotationConfiguration(),new WebInfConfiguration(), new MetaInfConfiguration(),
-				new FragmentConfiguration(), new EnvConfiguration(), new PlusConfiguration(),
-				new JettyWebXmlConfiguration(), new WebXmlConfiguration() });
+		webContext.setConfigurations(new Configuration[] { new AnnotationConfiguration(), new WebInfConfiguration(), new MetaInfConfiguration(), new FragmentConfiguration(), new EnvConfiguration(), new PlusConfiguration(), new JettyWebXmlConfiguration(), new WebXmlConfiguration() });
 
 		//
-		 HandlerCollection handlerCollection = new HandlerCollection();
-		 handlerCollection.setHandlers(new Handler[] { webContext });
+		HandlerCollection handlerCollection = new HandlerCollection();
+		handlerCollection.setHandlers(new Handler[] { webContext });
 		server.setHandler(handlerCollection);
 		return server;
 	}
