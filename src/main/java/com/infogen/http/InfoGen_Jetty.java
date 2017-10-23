@@ -114,6 +114,17 @@ public class InfoGen_Jetty {
 		webContext.setResourceBase(default_webapp_path);
 		webContext.setDescriptor(descriptor);
 		webContext.setMaxFormContentSize(52428800);
+		webContext.setParentLoaderPriority(true);
+
+		// JSP 相关 指定temp目录会导致jsp编译后的class文件路径和包名不匹配
+		// File temp = NativePath.get("temp").toFile();
+		// webContext.setTempDirectory(temp);
+		// webContext.setAttribute("javax.servlet.context.tempdir", temp);
+		// // 下面是为解决此次问题增加的代码
+		// webContext.setAttribute("org.eclipse.jetty.containerInitializers", Arrays.asList(new ContainerInitializer(new JettyJasperInitializer(), null)));
+		// webContext.setAttribute(InstanceManager.class.getName(), new SimpleInstanceManager());
+		// webContext.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*/[^/]*taglibs.*\\.jar$");
+
 		// 配置jetty扫描注解的目录 并去重
 		Set<Resource> set = new HashSet<>();
 		try {

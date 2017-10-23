@@ -52,76 +52,76 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.3.14.v20161028</version>
+			<version>9.4.7.v20170914</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.3.14.v20161028</version>
+			<version>9.4.7.v20170914</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-plus</artifactId>
-			<version>9.3.14.v20161028</version>
+			<version>9.4.7.v20170914</version>
 		</dependency>
 		<!-- http://mvnrepository.com/artifact/org.eclipse.jetty/apache-jsp -->
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId> 
+			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>apache-jsp</artifactId>
-			<version>9.3.14.v20161028</version> 
+			<version>9.4.7.v20170914</version>
 		</dependency>
 		<!-- rpc -->
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
-			<version>4.1.6.Final</version>
+			<version>4.1.16.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
-			<version>3.1.0</version>
+			<version>3.4.0</version>
 		</dependency>
 		<!-- servlet -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.0-b01</version>
+			<version>4.0.0</version>
 		</dependency>
 
 		<!-- webmvc -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>4.3.3.RELEASE</version>
+			<version>5.0.0.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>4.3.3.RELEASE</version>
+			<version>5.0.0.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>4.3.3.RELEASE</version>
+			<version>5.0.0.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>4.3.3.RELEASE</version>
+			<version>5.0.0.RELEASE</version>
 		</dependency>
 
 		<!-- okhttp -->
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
-			<version>3.4.1</version>
+			<version>3.9.0</version>
 		</dependency>
 
 		<!-- zookeeper -->
 		<dependency>
 			<groupId>org.apache.zookeeper</groupId>
 			<artifactId>zookeeper</artifactId>
-			<version>3.4.9</version>
+			<version>3.4.10</version>
 		</dependency>
 	</dependencies>
 

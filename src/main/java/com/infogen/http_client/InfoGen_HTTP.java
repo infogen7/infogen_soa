@@ -32,12 +32,19 @@ import okhttp3.Response;
 public class InfoGen_HTTP {
 	private static final Logger LOGGER = LogManager.getLogger(InfoGen_HTTP.class.getName());
 	// 当使用长轮循时需要注意不能超过此时间
-	public static Integer socket_timeout = 30_000;// 数据传输时间
 	public static Integer connect_timeout = 3_000;// 连接时间
-	private static final OkHttpClient client = new OkHttpClient.Builder()//
+	public static Integer socket_timeout = 30_000;// 数据传输时间
+	private static OkHttpClient client = new OkHttpClient.Builder()//
 			// TODO WARN util.UrlEncoded : org.eclipse.jetty.util.Utf8Appendable$NotUtf8Exception: Not valid UTF8! byte 8b in state 0
 			// .addInterceptor(new GzipRequestInterceptor())
 			.connectTimeout(connect_timeout, TimeUnit.MILLISECONDS).writeTimeout(socket_timeout, TimeUnit.MILLISECONDS).readTimeout(socket_timeout, TimeUnit.MILLISECONDS).build();
+
+	public static void set_timeout(Integer connect_timeout, Integer socket_timeout) {
+		client = new OkHttpClient.Builder()//
+				// TODO WARN util.UrlEncoded : org.eclipse.jetty.util.Utf8Appendable$NotUtf8Exception: Not valid UTF8! byte 8b in state 0
+				// .addInterceptor(new GzipRequestInterceptor())
+				.connectTimeout(connect_timeout, TimeUnit.MILLISECONDS).writeTimeout(socket_timeout, TimeUnit.MILLISECONDS).readTimeout(socket_timeout, TimeUnit.MILLISECONDS).build();
+	}
 
 	static {
 		LOGGER.info("初始化HTTP CLIENT");
@@ -73,7 +80,7 @@ public class InfoGen_HTTP {
 	}
 
 	// get 获取 rest 资源
-	public static String do_get(String url, Map<String, String> params, Map<String, String> headers) throws IOException,HTTP_Fail_Exception {
+	public static String do_get(String url, Map<String, String> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(concat_url_params(url, params));
 		add_headers(builder, headers);
 		Request request = builder.build();
@@ -113,7 +120,7 @@ public class InfoGen_HTTP {
 
 	// ////////////////////////////////////////////////////////post///////////////////////////////////////////////////////////////////////////
 
-	public static String do_post(String url, Map<String, String> params, Map<String, String> headers) throws IOException,HTTP_Fail_Exception {
+	public static String do_post(String url, Map<String, String> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
 		okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url);
 		add_headers(builder, headers);
 		okhttp3.FormBody.Builder form_builder = new FormBody.Builder();
@@ -142,9 +149,10 @@ public class InfoGen_HTTP {
 		}
 		client.newCall(request).enqueue(callback);
 	}
-	
+
 	public static final okhttp3.MediaType MEDIA_TYPE_JSON = okhttp3.MediaType.parse("application/json; charset=utf-8");//
-	public static String do_post_json(String url, Map<String, String> params, Map<String, String> headers) throws IOException,HTTP_Fail_Exception {
+
+	public static String do_post_json(String url, Map<String, ? extends Object> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
 		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
@@ -165,8 +173,8 @@ public class InfoGen_HTTP {
 		}
 		client.newCall(request).enqueue(callback);
 	}
-	
-	public static String do_post_form_data(String url, Map<String, String> params, Map<String, String> headers) throws IOException,HTTP_Fail_Exception {
+
+	public static String do_post_form_data(String url, Map<String, String> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
 		okhttp3.MultipartBody.Builder multipartBuilder = new MultipartBody.Builder();
@@ -188,7 +196,7 @@ public class InfoGen_HTTP {
 		}
 	}
 
-	//大文件上传
+	// 大文件上传
 	public static void do_post_form_data_async(String url, Map<String, String> params, Callback callback, Map<String, String> headers) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
