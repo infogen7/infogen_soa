@@ -42,7 +42,7 @@ public class InfoGen {
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	public static final String VERSION = "V2.6.11R161118";
+	public static final String VERSION = "V2.7.1R171107";
 	private static InfoGen_Server_Management CACHE_SERVER = InfoGen_Server_Management.getInstance();
 
 	// //////////////////////////////////////////配置/////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ public class InfoGen {
 	private Boolean isRegister = false;
 
 	/**
-	 * 启动 InfoGen 的 AOP 和 服务治理
+	 * 启动 InfoGen 的 服务治理
 	 * 
 	 * @return InfoGen 对象
 	 * @throws IOException
@@ -65,7 +65,11 @@ public class InfoGen {
 	 * @throws URISyntaxException
 	 *             路径异常
 	 */
-	public InfoGen start_and_watcher() throws IOException, URISyntaxException {
+	public InfoGen soa() throws IOException, URISyntaxException {
+		if (this.infogen_configuration.zookeeper == null) {
+			LOGGER.error("zookeeper 配置为空，不能启动 soa 功能");
+			System.exit(-1);
+		}
 		if (isStart) {
 			LOGGER.warn("InfoGen 已经启动并开启监听服务");
 			return this;
@@ -89,11 +93,11 @@ public class InfoGen {
 	}
 
 	/**
-	 * 注册当前服务的节点
+	 * 注册当前服务的节点到 SOA
 	 * 
 	 * @return InfoGen 对象
 	 */
-	public InfoGen register() {
+	public InfoGen soa_register() {
 		if (!isStart) {
 			LOGGER.error("InfoGen服务没有开启- InfoGen.create('infogen.properties').start();");
 			System.exit(-1);
@@ -107,11 +111,11 @@ public class InfoGen {
 	}
 
 	/**
-	 * 注册当前服务并提交当前服务的方法列表
+	 * 注册当前服务并提交当前服务的方法列表到 SOA
 	 * 
 	 * @return InfoGen 对象
 	 */
-	public InfoGen register_service() {
+	public InfoGen soa_register_service() {
 		if (!isStart) {
 			LOGGER.error("InfoGen服务没有开启- InfoGen.create('infogen.properties').start();");
 			System.exit(-1);
@@ -146,7 +150,12 @@ public class InfoGen {
 	 * @return InfoGen 对象
 	 */
 	public InfoGen http() {
-		infogen_http = InfoGen_Jetty.getInstance().start(infogen_configuration.register_node.getHttp_port());
+		Integer http_port = infogen_configuration.register_node.getHttp_port();
+		if (http_port == null) {
+			LOGGER.error("http_port 配置为空，不能启动 http 服务");
+			System.exit(-1);
+		}
+		infogen_http = InfoGen_Jetty.getInstance().start(http_port);
 		return this;
 	}
 
@@ -163,7 +172,12 @@ public class InfoGen {
 	 */
 	public InfoGen rpc() {
 		try {
-			infogen_rpc = InfoGen_RPC.getInstance().start(infogen_configuration.register_node.getRpc_port());
+			Integer rpc_port = infogen_configuration.register_node.getRpc_port();
+			if (rpc_port == null) {
+				LOGGER.error("rpc_port 配置为空，不能启动 rpc 服务");
+				System.exit(-1);
+			}
+			infogen_rpc = InfoGen_RPC.getInstance().start(rpc_port);
 		} catch (InterruptedException e) {
 			LOGGER.error(e.getMessage(), e);
 			System.exit(1);
@@ -178,7 +192,7 @@ public class InfoGen {
 	 *            BlockingService
 	 * @return InfoGen 对象
 	 */
-	public InfoGen registerService(final BlockingService service) {
+	public InfoGen rpc_register_service(final BlockingService service) {
 		if (infogen_rpc != null) {
 			infogen_rpc.registerService(service);
 		}

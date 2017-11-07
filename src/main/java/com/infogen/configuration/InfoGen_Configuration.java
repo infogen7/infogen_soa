@@ -48,7 +48,6 @@ public class InfoGen_Configuration {
 	public final static Charset charset = StandardCharsets.UTF_8;
 
 	public String zookeeper;
-	public String kafka;
 	public final RegisterNode register_node = new RegisterNode();
 	public final RegisterServer register_server = new RegisterServer();
 	public final ServiceFunctions service_functions = new ServiceFunctions();
@@ -79,12 +78,7 @@ public class InfoGen_Configuration {
 
 		zookeeper = infogen_properties.getProperty("infogen.zookeeper");
 		if (zookeeper == null || zookeeper.trim().isEmpty()) {
-			LOGGER.error("zookeeper配置不能为空:infogen.zookeeper");
-			System.exit(-1);
-		}
-		kafka = infogen_properties.getProperty("infogen.kafka");
-		if (kafka == null || kafka.trim().isEmpty()) {
-			LOGGER.warn("kafka配置为空:infogen.kafka 调用链/日志等功能将不可用");
+			LOGGER.warn("zookeeper配置为空:SOA功能将不可用");
 		}
 
 		// server
@@ -116,8 +110,7 @@ public class InfoGen_Configuration {
 		register_node.setTime(new Timestamp(Clock.system(InfoGen_Configuration.zoneid).millis()));
 
 		if (!register_node.available()) {
-			LOGGER.error("节点配置配置不能为空:infogen.name,infogen.ratio,infogen.ip,infogen.http.port或infogen.rpc.port");
-			System.exit(-1);
+			LOGGER.warn("节点配置配置为空:infogen.http.port或infogen.rpc.port:http或rpc功能将不可用");
 		}
 
 		// /////////////////////////////////////////////////////自描述/////////////////////////////////////////////////////////////////////
