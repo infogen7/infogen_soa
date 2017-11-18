@@ -2,7 +2,9 @@ package com.infogen.core.json;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +21,7 @@ import com.infogen.core.tools.Tool_Jackson;
  * @since 1.0
  * @version 1.0
  */
-public class JSONObject extends HashMap<String, Object> {
+public class JSONObject extends LinkedHashMap<String, Object> {
 	private static final long serialVersionUID = -3927973692243736378L;
 	private static final Logger LOGGER = LogManager.getLogger(JSONObject.class.getName());
 
@@ -58,26 +60,14 @@ public class JSONObject extends HashMap<String, Object> {
 		return (Float) this.getOrDefault(key, _default);
 	}
 
-	public <T> T getAsClass(String key, TypeReference<T> typereference, T _default) {
-		Object object = this.get(key);
-		if (object == null) {
-			return _default;
-		}
-		try {
-			return (T) Tool_Jackson.toObject(Tool_Jackson.toJson(object), typereference);
-		} catch (IOException e) {
-			LOGGER.error("json 转换对象失败:", e);
-			return _default;
-		}
-	}
-
 	public <T> T getAsClass(String key, Class<T> clazz, T _default) {
 		Object object = this.get(key);
 		if (object == null) {
 			return _default;
 		}
 		try {
-			return (T) Tool_Jackson.toObject(Tool_Jackson.toJson(object), clazz);
+			return (T) Tool_Jackson.toObject(Tool_Jackson.toJson(object), new TypeReference<T>() {
+			});
 		} catch (IOException e) {
 			LOGGER.error("json 转换对象失败:", e);
 			return _default;
@@ -85,13 +75,11 @@ public class JSONObject extends HashMap<String, Object> {
 	}
 
 	public JSONObject getAsJSONObject(String key, JSONObject _default) {
-		return getAsClass(key, new TypeReference<JSONObject>() {
-		}, _default);
+		return getAsClass(key, JSONObject.class, _default);
 	}
 
 	public JSONArray getAsJSONArray(String key, JSONArray _default) {
-		return getAsClass(key, new TypeReference<JSONArray>() {
-		}, _default);
+		return getAsClass(key, JSONArray.class, _default);
 	}
 
 	public String toJson(String _default) {
