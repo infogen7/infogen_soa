@@ -2,9 +2,7 @@ package com.infogen.core.json;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +19,7 @@ import com.infogen.core.tools.Tool_Jackson;
  * @since 1.0
  * @version 1.0
  */
-public class JSONObject extends LinkedHashMap<String, Object> {
+public class JSONObject extends HashMap<String, Object> {
 	private static final long serialVersionUID = -3927973692243736378L;
 	private static final Logger LOGGER = LogManager.getLogger(JSONObject.class.getName());
 

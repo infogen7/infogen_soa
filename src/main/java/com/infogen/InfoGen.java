@@ -131,7 +131,9 @@ public class InfoGen {
 	/**
 	 * 开启 @Execution 的日志追踪功能 使用 InfoGen_AOP_Handle_Execution
 	 * 
-	 * @return InfoGen
+	 * @param handle
+	 *            继承 Tracking_Handle
+	 * @return InfoGen 对象
 	 */
 	public InfoGen track(Tracking_Handle handle) {
 		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution(handle));
