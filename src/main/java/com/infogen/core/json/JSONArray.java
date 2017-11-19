@@ -17,7 +17,7 @@ import com.infogen.core.tools.Tool_Jackson;
  * @version 1.0
  */
 public class JSONArray extends ArrayList<Object> {
-	private static final long serialVersionUID = 7454802493921603703L;
+	private static final long serialVersionUID = -1975539711595702789L;
 	private static final Logger LOGGER = LogManager.getLogger(JSONArray.class.getName());
 
 	public String getAsString(Integer index, String _default) {
@@ -50,7 +50,7 @@ public class JSONArray extends ArrayList<Object> {
 		return object != null ? (Float) object : _default;
 	}
 
-	public <T> T getAsClass(Integer index, Class<T> clazz, T _default) {
+	public <T> T getAsMap(Integer index, Class<T> clazz, T _default) {
 		Object object = this.get(index);
 		if (object == null) {
 			return _default;
@@ -64,12 +64,39 @@ public class JSONArray extends ArrayList<Object> {
 		}
 	}
 
+	public <T> T getAsList(Integer index, Class<T> clazz, T _default) {
+		Object object = this.get(index);
+		if (object == null) {
+			return _default;
+		}
+		try {
+			return (T) Tool_Jackson.toObject(Tool_Jackson.toJson(object), new TypeReference<T>() {
+			});
+		} catch (IOException e) {
+			LOGGER.error("json 转换对象失败:", e);
+			return _default;
+		}
+	}
+
+	public <T> T getAsClass(Integer index, Class<T> clazz, T _default) {
+		Object object = this.get(index);
+		if (object == null) {
+			return _default;
+		}
+		try {
+			return (T) Tool_Jackson.toObject(Tool_Jackson.toJson(object), clazz);
+		} catch (IOException e) {
+			LOGGER.error("json 转换对象失败:", e);
+			return _default;
+		}
+	}
+
 	public JSONObject getAsJSONObject(Integer index, JSONObject _default) {
-		return getAsClass(index, JSONObject.class, _default);
+		return getAsMap(index, JSONObject.class, _default);
 	}
 
 	public JSONArray getAsJSONArray(Integer index, JSONArray _default) {
-		return getAsClass(index, JSONArray.class, _default);
+		return getAsList(index, JSONArray.class, _default);
 	}
 
 	public String toJson(String _default) {

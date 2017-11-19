@@ -20,7 +20,7 @@ import com.infogen.core.tools.Tool_Jackson;
  * @version 1.0
  */
 public class JSONObject extends HashMap<String, Object> {
-	private static final long serialVersionUID = -3927973692243736378L;
+	private static final long serialVersionUID = 684659227542251158L;
 	private static final Logger LOGGER = LogManager.getLogger(JSONObject.class.getName());
 
 	public static JSONObject create(String json) throws JsonParseException, JsonMappingException, IOException {
@@ -58,7 +58,7 @@ public class JSONObject extends HashMap<String, Object> {
 		return (Float) this.getOrDefault(key, _default);
 	}
 
-	public <T> T getAsClass(String key, Class<T> clazz, T _default) {
+	public <T> T getAsMap(String key, Class<T> clazz, T _default) {
 		Object object = this.get(key);
 		if (object == null) {
 			return _default;
@@ -72,12 +72,39 @@ public class JSONObject extends HashMap<String, Object> {
 		}
 	}
 
+	public <T> T getAsList(String key, Class<T> clazz, T _default) {
+		Object object = this.get(key);
+		if (object == null) {
+			return _default;
+		}
+		try {
+			return (T) Tool_Jackson.toObject(Tool_Jackson.toJson(object), new TypeReference<T>() {
+			});
+		} catch (IOException e) {
+			LOGGER.error("json 转换对象失败:", e);
+			return _default;
+		}
+	}
+
+	public <T> T getAsClass(String key, Class<T> clazz, T _default) {
+		Object object = this.get(key);
+		if (object == null) {
+			return _default;
+		}
+		try {
+			return (T) Tool_Jackson.toObject(Tool_Jackson.toJson(object), clazz);
+		} catch (IOException e) {
+			LOGGER.error("json 转换对象失败:", e);
+			return _default;
+		}
+	}
+
 	public JSONObject getAsJSONObject(String key, JSONObject _default) {
-		return getAsClass(key, JSONObject.class, _default);
+		return getAsMap(key, JSONObject.class, _default);
 	}
 
 	public JSONArray getAsJSONArray(String key, JSONArray _default) {
-		return getAsClass(key, JSONArray.class, _default);
+		return getAsList(key, JSONArray.class, _default);
 	}
 
 	public String toJson(String _default) {
