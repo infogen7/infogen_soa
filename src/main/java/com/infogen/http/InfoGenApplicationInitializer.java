@@ -21,23 +21,10 @@ public class InfoGenApplicationInitializer implements WebApplicationInitializer 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.springframework.web.WebApplicationInitializer#onStartup(javax.servlet
-	 * .ServletContext)
+	 * @see org.springframework.web.WebApplicationInitializer#onStartup(javax.servlet .ServletContext)
 	 */
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		LOGGER.info("initialized for Application");
-		// XmlWebApplicationContext mvcContext = new XmlWebApplicationContext();
-		// mvcContext.setConfigLocation(mapping_path);
-		//
-		// DispatcherServlet dispatcherServlet = new
-		// DispatcherServlet(mvcContext);
-		// ServletRegistration.Dynamic dispatcher =
-		// servletContext.addServlet("dispatcher", dispatcherServlet);
-		// dispatcher.setAsyncSupported(true);// 支持异步servlet
-		// dispatcher.setLoadOnStartup(1);// 确保在default servlet加载完成之后再加载
-		// dispatcher.addMapping(mapping_pattern);
-		// created = true;
 	}
 }
