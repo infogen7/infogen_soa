@@ -58,28 +58,13 @@ public class JSONObject extends HashMap<String, Object> {
 		return (Float) this.getOrDefault(key, _default);
 	}
 
-	public <T> T getAsMap(String key, Class<T> clazz, T _default) {
+	public <T> T getAsMapOrList(String key, TypeReference<T> typereference, T _default) {
 		Object object = this.get(key);
 		if (object == null) {
 			return _default;
 		}
 		try {
-			return (T) Tool_Jackson.toObject(Tool_Jackson.toJson(object), new TypeReference<T>() {
-			});
-		} catch (IOException e) {
-			LOGGER.error("json 转换对象失败:", e);
-			return _default;
-		}
-	}
-
-	public <T> T getAsList(String key, Class<T> clazz, T _default) {
-		Object object = this.get(key);
-		if (object == null) {
-			return _default;
-		}
-		try {
-			return (T) Tool_Jackson.toObject(Tool_Jackson.toJson(object), new TypeReference<T>() {
-			});
+			return (T) Tool_Jackson.toObject(Tool_Jackson.toJson(object), typereference);
 		} catch (IOException e) {
 			LOGGER.error("json 转换对象失败:", e);
 			return _default;
@@ -100,11 +85,13 @@ public class JSONObject extends HashMap<String, Object> {
 	}
 
 	public JSONObject getAsJSONObject(String key, JSONObject _default) {
-		return getAsMap(key, JSONObject.class, _default);
+		return getAsMapOrList(key, new TypeReference<JSONObject>() {
+		}, _default);
 	}
 
 	public JSONArray getAsJSONArray(String key, JSONArray _default) {
-		return getAsList(key, JSONArray.class, _default);
+		return getAsMapOrList(key, new TypeReference<JSONArray>() {
+		}, _default);
 	}
 
 	public String toJson(String _default) {

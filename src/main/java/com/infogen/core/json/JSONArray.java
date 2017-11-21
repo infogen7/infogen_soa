@@ -50,28 +50,13 @@ public class JSONArray extends ArrayList<Object> {
 		return object != null ? (Float) object : _default;
 	}
 
-	public <T> T getAsMap(Integer index, Class<T> clazz, T _default) {
+	public <T> T getAsMapOrList(Integer index, TypeReference<T> typereference, T _default) {
 		Object object = this.get(index);
 		if (object == null) {
 			return _default;
 		}
 		try {
-			return (T) Tool_Jackson.toObject(Tool_Jackson.toJson(object), new TypeReference<T>() {
-			});
-		} catch (IOException e) {
-			LOGGER.error("json 转换对象失败:", e);
-			return _default;
-		}
-	}
-
-	public <T> T getAsList(Integer index, Class<T> clazz, T _default) {
-		Object object = this.get(index);
-		if (object == null) {
-			return _default;
-		}
-		try {
-			return (T) Tool_Jackson.toObject(Tool_Jackson.toJson(object), new TypeReference<T>() {
-			});
+			return (T) Tool_Jackson.toObject(Tool_Jackson.toJson(object), typereference);
 		} catch (IOException e) {
 			LOGGER.error("json 转换对象失败:", e);
 			return _default;
@@ -92,11 +77,13 @@ public class JSONArray extends ArrayList<Object> {
 	}
 
 	public JSONObject getAsJSONObject(Integer index, JSONObject _default) {
-		return getAsMap(index, JSONObject.class, _default);
+		return getAsMapOrList(index, new TypeReference<JSONObject>() {
+		}, _default);
 	}
 
 	public JSONArray getAsJSONArray(Integer index, JSONArray _default) {
-		return getAsList(index, JSONArray.class, _default);
+		return getAsMapOrList(index, new TypeReference<JSONArray>() {
+		}, _default);
 	}
 
 	public String toJson(String _default) {
