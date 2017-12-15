@@ -1,6 +1,5 @@
 package com.infogen.exception;
 
-import com.infogen.core.exception.InfoGen_Exception;
 import com.infogen.core.util.CODE;
 
 /**

@@ -1,4 +1,4 @@
-package com.infogen.core.exception;
+package com.infogen.exception;
 
 /**
  * rpc调用中的异常接口
