@@ -21,8 +21,7 @@ import com.infogen.InfoGen;
  */
 @WebFilter(filterName = "InfoGen_HTTP_Filter", urlPatterns = { "/*" }, asyncSupported = true)
 public class InfoGen_HTTP_Filter implements Filter {
-	public void doFilter(ServletRequest srequset, ServletResponse sresponse, FilterChain filterChain)
-			throws IOException, ServletException {
+	public void doFilter(ServletRequest srequset, ServletResponse sresponse, FilterChain filterChain) throws IOException, ServletException {
 		filterChain.doFilter(srequset, sresponse);
 	}
 
