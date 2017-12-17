@@ -1,6 +1,6 @@
 package com.infogen.exception;
 
-import com.infogen.core.util.CODE;
+import com.infogen.core.CODE;
 
 /**
  * 依赖服务在注册中心/本地缓存没有找到的异常

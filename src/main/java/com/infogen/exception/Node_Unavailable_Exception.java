@@ -1,6 +1,6 @@
 package com.infogen.exception;
 
-import com.infogen.core.util.CODE;
+import com.infogen.core.CODE;
 
 /**
  * 依赖服务没有找到任何可用节点的异常

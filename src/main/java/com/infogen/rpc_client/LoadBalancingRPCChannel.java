@@ -7,8 +7,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.protobuf.ServiceException;
 import com.infogen.Service;
+import com.infogen.core.CODE;
 import com.infogen.core.structure.map.LRULinkedHashMap;
-import com.infogen.core.util.CODE;
 import com.infogen.exception.Node_Unavailable_Exception;
 import com.infogen.exception.Service_Notfound_Exception;
 import com.infogen.rpc.client.InfoGen_Channel;
