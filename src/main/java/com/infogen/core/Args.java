@@ -1,4 +1,4 @@
-package com.infogen.core.util;
+package com.infogen.core;
 
 /**
  * 判断参数的空值情况
