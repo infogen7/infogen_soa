@@ -43,7 +43,7 @@ public class HTTP_LoadBalancing {
 		RemoteServer server = service.get_server();
 		if (server == null) {
 			LOGGER.error(CODE.service_notfound.note);
-			return Return.create(CODE.service_notfound).add(RETURN_KEY_SERVICE, service.get_server());
+			return Return.create(CODE.service_notfound).put(RETURN_KEY_SERVICE, service.get_server());
 		}
 
 		RemoteNode node = null;
@@ -56,10 +56,10 @@ public class HTTP_LoadBalancing {
 				node = server.random_node(seed);
 				if (node == null) {
 					LOGGER.error(CODE.node_unavailable.note);
-					return Return.create(CODE.node_unavailable).add(RETURN_KEY_SERVICE, service.get_server());
+					return Return.create(CODE.node_unavailable).put(RETURN_KEY_SERVICE, service.get_server());
 				}
 				String http = do_http(node, function, name_value_pair, request_type);
-				Return create = Return.create(http);
+				Return create = Return.toObject(http);
 				if (create.get_code() == CODE.limit.code) {
 					LOGGER.info(new StringBuilder("接口调用超过限制:").append(function).toString());
 					continue;
@@ -67,14 +67,14 @@ public class HTTP_LoadBalancing {
 				return create;
 			} catch (HTTP_Fail_Exception e) {
 				LOGGER.warn("调用失败", e);
-				return Return.create(e.getCode(), e.getMessage()).add(RETURN_KEY_SERVICE, service.get_server());
+				return Return.create(e.getCode(), e.getMessage()).put(RETURN_KEY_SERVICE, service.get_server());
 			} catch (IOException e) {
 				LOGGER.error("调用失败", e);
 				server.disabled(node);
 				continue;
 			}
 		}
-		return Return.create(CODE.error).add(RETURN_KEY_SERVICE, service.get_server());
+		return Return.create(CODE.error).put(RETURN_KEY_SERVICE, service.get_server());
 	}
 
 	// 异步http调用
@@ -115,24 +115,24 @@ public class HTTP_LoadBalancing {
 				@Override
 				public void onFailure(Call call, IOException e) {
 					Request request = call.request();
-					callback.run(Return.create(CODE.error).add(RETURN_KEY_SERVICE, service.get_server()));
+					callback.run(Return.create(CODE.error).put(RETURN_KEY_SERVICE, service.get_server()));
 					LOGGER.error("do_async_post_bytype 报错:".concat(request.url().toString()), e);
 				}
 
 				@Override
 				public void onResponse(Call call, Response response) throws IOException {
 					if (response.isSuccessful()) {
-						callback.run(Return.create(response.body().string()));
+						callback.run(Return.toObject(response.body().string()));
 					} else {
-						callback.run(Return.create(response.code(), response.message()).add(RETURN_KEY_SERVICE, service.get_server()));
+						callback.run(Return.create(response.code(), response.message()).put(RETURN_KEY_SERVICE, service.get_server()));
 						LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().url().toString()));
 					}
 				}
 			}, seed);
 		} catch (Service_Notfound_Exception e) {
-			callback.run(Return.create(e.code(), e.note()).add(RETURN_KEY_SERVICE, service.get_server()));
+			callback.run(Return.create(e.code(), e.note()).put(RETURN_KEY_SERVICE, service.get_server()));
 		} catch (Node_Unavailable_Exception e) {
-			callback.run(Return.create(e.code(), e.note()).add(RETURN_KEY_SERVICE, service.get_server()));
+			callback.run(Return.create(e.code(), e.note()).put(RETURN_KEY_SERVICE, service.get_server()));
 		}
 		return callback;
 	}
