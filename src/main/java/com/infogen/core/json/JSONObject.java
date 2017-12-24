@@ -2,6 +2,7 @@ package com.infogen.core.json;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -23,14 +24,27 @@ public class JSONObject extends HashMap<String, Object> {
 	private static final long serialVersionUID = 684659227542251158L;
 	private static final Logger LOGGER = LogManager.getLogger(JSONObject.class.getName());
 
-	public static JSONObject create(String json) throws JsonParseException, JsonMappingException, IOException {
-		JSONObject jo = new JSONObject();
-		Map<String, Object> fromJson = Tool_Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
+	public static JSONObject create() {
+		return new JSONObject();
+	}
+
+	public static JSONObject create(Map<String, List<String>> name_value_pair) {
+		JSONObject map = new JSONObject();
+		name_value_pair.forEach((key, values) -> {
+			values.forEach(value -> {
+				map.put(new String(key), value);
+			});
 		});
-		for (Entry<String, Object> entry : fromJson.entrySet()) {
-			jo.put(entry.getKey(), entry.getValue());
-		}
-		return jo;
+		return map;
+	}
+
+	public static JSONObject create(String key, String value) {
+		return new JSONObject().put(key, value);
+	}
+
+	public JSONObject put(String key, Object value) {
+		super.put(key, value);
+		return this;
 	}
 	///////////////////////////////////////////////////////////// json工具//////////////////////////////////////////
 
@@ -92,6 +106,17 @@ public class JSONObject extends HashMap<String, Object> {
 	public JSONArray getAsJSONArray(String key, JSONArray _default) {
 		return getAsMapOrList(key, new TypeReference<JSONArray>() {
 		}, _default);
+	}
+
+	//////////////////////////////////////////////
+	public static JSONObject toObject(String json) throws JsonParseException, JsonMappingException, IOException {
+		JSONObject jo = new JSONObject();
+		Map<String, Object> fromJson = Tool_Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
+		});
+		for (Entry<String, Object> entry : fromJson.entrySet()) {
+			jo.put(entry.getKey(), entry.getValue());
+		}
+		return jo;
 	}
 
 	public String toJson(String _default) {

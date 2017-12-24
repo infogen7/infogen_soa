@@ -1,15 +1,6 @@
 package com.infogen.core.json;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.infogen.core.CODE;
-import com.infogen.core.tools.Tool_Jackson;
 
 /**
  * HTTP协议返回值封装
@@ -20,7 +11,6 @@ import com.infogen.core.tools.Tool_Jackson;
  */
 public class Return extends JSONObject {
 	private static final long serialVersionUID = 2203513787220720192L;
-	private static final Logger LOGGER = LogManager.getLogger(Return.class.getName());
 
 	//////////////////////////////// create//////////////////////////////////
 	public static Return create() {
@@ -39,23 +29,9 @@ public class Return extends JSONObject {
 	}
 
 	public static Return create(String key, Object value) {
-		return new Return().add(key, value);
+		return new Return().put(key, value);
 	}
 
-	public static Return create(String json) {
-		Return jo = new Return();
-		try {
-			Map<String, Object> fromJson = Tool_Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
-			});
-			for (Entry<String, Object> entry : fromJson.entrySet()) {
-				jo.put(entry.getKey(), entry.getValue());
-			}
-		} catch (IOException e) {
-			LOGGER.error("Return.create 解析 JSON 失败", e);
-			return Return.create(CODE.generate_return_error);
-		}
-		return jo;
-	}
 
 	//////////////////////////////////// GETTER SETTER///////////////////////////
 
@@ -74,8 +50,4 @@ public class Return extends JSONObject {
 		return this;
 	}
 
-	public Return add(String key, Object value) {
-		super.put(key, value);
-		return this;
-	}
 }
