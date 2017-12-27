@@ -134,13 +134,7 @@ public class InfoGen_Jetty {
 				Class<?> clazz = this.getClass().getClassLoader().loadClass("com.infogen.authc.InfoGen_Session");
 				set.add(Resource.newResource(NativePath.get_class_path(clazz)));
 			} catch (ClassNotFoundException e) {
-				LOGGER.warn("加载InfoGen_Authc失败");
-			}
-			try {
-				Class<?> clazz = this.getClass().getClassLoader().loadClass("com.infogen.hibernate.InfoGen_Hibernate");
-				set.add(Resource.newResource(NativePath.get_class_path(clazz)));
-			} catch (ClassNotFoundException e) {
-				LOGGER.warn("加载InfoGen_Hibernate失败");
+				LOGGER.warn("未加载认证模块 InfoGen_Authc");
 			}
 			if (classpaths != null) {
 				for (String classpath : classpaths) {
