@@ -49,7 +49,7 @@ public class JSONObject extends HashMap<String, Object> {
 	///////////////////////////////////////////////////////////// json工具//////////////////////////////////////////
 
 	public String getAsString(String key, String _default) {
-		return (String) this.getOrDefault(key, _default);
+		return this.getOrDefault(key, _default).toString();
 	}
 
 	public Boolean getAsBoolean(String key, Boolean _default) {
