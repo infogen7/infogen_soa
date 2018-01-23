@@ -57,7 +57,7 @@ public class JSONObject extends HashMap<String, Object> {
 	}
 
 	public Long getAsLong(String key, Long _default) {
-		return (Long) this.getOrDefault(key, _default);
+		return Long.valueOf(this.getOrDefault(key, _default).toString());
 	}
 
 	public Integer getAsInteger(String key, Integer _default) {
@@ -65,11 +65,11 @@ public class JSONObject extends HashMap<String, Object> {
 	}
 
 	public Double getAsDouble(String key, Double _default) {
-		return (Double) this.getOrDefault(key, _default);
+		return Double.valueOf(this.getOrDefault(key, _default).toString());
 	}
 
 	public Float getAsFloat(String key, Float _default) {
-		return (Float) this.getOrDefault(key, _default);
+		return Float.valueOf(this.getOrDefault(key, _default).toString());
 	}
 
 	public <T> T getAsMapOrList(String key, TypeReference<T> typereference, T _default) {
