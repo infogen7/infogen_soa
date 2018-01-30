@@ -53,7 +53,7 @@ public class JSONObject extends HashMap<String, Object> {
 	}
 
 	public Boolean getAsBoolean(String key, Boolean _default) {
-		return (Boolean) this.getOrDefault(key, _default);
+		return Boolean.valueOf(this.getOrDefault(key, _default).toString());
 	}
 
 	public Long getAsLong(String key, Long _default) {
@@ -61,7 +61,7 @@ public class JSONObject extends HashMap<String, Object> {
 	}
 
 	public Integer getAsInteger(String key, Integer _default) {
-		return (Integer) this.getOrDefault(key, _default);
+		return Integer.valueOf(this.getOrDefault(key, _default).toString());
 	}
 
 	public Double getAsDouble(String key, Double _default) {

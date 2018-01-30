@@ -22,32 +22,32 @@ public class JSONArray extends ArrayList<Object> {
 
 	public String getAsString(Integer index, String _default) {
 		Object object = this.get(index);
-		return object != null ? (String) object : _default;
+		return object != null ? object.toString() : _default;
 	}
 
 	public Boolean getAsBoolean(Integer index, Boolean _default) {
 		Object object = this.get(index);
-		return object != null ? (Boolean) object : _default;
+		return object != null ? Boolean.valueOf(object.toString()) : _default;
 	}
 
 	public Long getAsLong(Integer index, Long _default) {
 		Object object = this.get(index);
-		return object != null ? (Long) object : _default;
+		return object != null ? Long.valueOf(object.toString()) : _default;
 	}
 
 	public Integer getAsInteger(Integer index, Integer _default) {
 		Object object = this.get(index);
-		return object != null ? (Integer) object : _default;
+		return object != null ? Integer.valueOf(object.toString()) : _default;
 	}
 
 	public Double getAsDouble(Integer index, Double _default) {
 		Object object = this.get(index);
-		return object != null ? (Double) object : _default;
+		return object != null ? Double.valueOf(object.toString()) : _default;
 	}
 
 	public Float getAsFloat(Integer index, Float _default) {
 		Object object = this.get(index);
-		return object != null ? (Float) object : _default;
+		return object != null ? Float.valueOf(object.toString()) : _default;
 	}
 
 	public <T> T getAsMapOrList(Integer index, TypeReference<T> typereference, T _default) {
