@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.infogen.core.CODE;
-import com.infogen.core.tools.Tool_Jackson;
 
 /**
  * HTTP协议返回值封装
@@ -60,7 +59,7 @@ public class Return extends JSONObject {
 	////////////////////////////////////////////////////////////////////////
 	public static Return toObject(String json) throws JsonParseException, JsonMappingException, IOException {
 		Return jo = new Return();
-		Map<String, Object> fromJson = Tool_Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
+		Map<String, Object> fromJson = Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
 		});
 		for (Entry<String, Object> entry : fromJson.entrySet()) {
 			jo.put(entry.getKey(), entry.getValue());

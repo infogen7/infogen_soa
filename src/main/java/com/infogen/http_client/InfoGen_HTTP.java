@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.infogen.core.tools.Tool_Jackson;
+import com.infogen.core.json.Jackson;
 import com.infogen.http_client.exception.HTTP_Fail_Exception;
 
 import okhttp3.Call;
@@ -155,7 +155,7 @@ public class InfoGen_HTTP {
 	public static String do_post_json(String url, Map<String, ? extends Object> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
-		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Jackson.toJson(params))).build();
 		Response response = client.newCall(request).execute();
 		if (response.isSuccessful()) {
 			return response.body().string();
@@ -167,7 +167,7 @@ public class InfoGen_HTTP {
 	public static void do_post_json_async(String url, Map<String, String> params, Callback callback, Map<String, String> headers) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
-		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Tool_Jackson.toJson(params))).build();
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Jackson.toJson(params))).build();
 		if (callback == null) {
 			callback = async_post_callback;
 		}

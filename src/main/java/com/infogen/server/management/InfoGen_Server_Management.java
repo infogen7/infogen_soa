@@ -28,9 +28,8 @@ import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.infogen.configuration.InfoGen_Configuration;
+import com.infogen.core.json.Jackson;
 import com.infogen.core.path.NativePath;
-import com.infogen.core.tools.Tool_Files;
-import com.infogen.core.tools.Tool_Jackson;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
 import com.infogen.server.model.RemoteNode;
@@ -96,12 +95,12 @@ public class InfoGen_Server_Management {
 		ZK.create_notexists(InfoGen_ZooKeeper.CONTEXT_FUNCTIONS, CreateMode.PERSISTENT);
 
 		// 初始化所有需要的配置文件 如果不存在则创建
-		Tool_Files.prepare_files(source_server_path, target_server_path);
+		com.infogen.core.tools.Files.prepare_files(source_server_path, target_server_path);
 
 		// 获取缓存的服务
-		String server_json = Tool_Files.load_file(source_server_path);
+		String server_json = com.infogen.core.tools.Files.load_file(source_server_path);
 		if (!server_json.isEmpty()) {
-			ConcurrentHashMap<String, RemoteServer> fromJson = Tool_Jackson.toObject(server_json, new TypeReference<ConcurrentHashMap<String, RemoteServer>>() {
+			ConcurrentHashMap<String, RemoteServer> fromJson = Jackson.toObject(server_json, new TypeReference<ConcurrentHashMap<String, RemoteServer>>() {
 			});
 			for (String key : fromJson.keySet()) {
 				depend_server_cache.put(key, fromJson.get(key));
@@ -118,7 +117,7 @@ public class InfoGen_Server_Management {
 
 		String path = InfoGen_ZooKeeper.functions_path(service_functions.getServer().getName());
 		// 创建或更新服务节点
-		byte[] bytes = Tool_Jackson.toJson(service_functions).getBytes();
+		byte[] bytes = Jackson.toJson(service_functions).getBytes();
 		String create_path = ZK.create(path, bytes, CreateMode.PERSISTENT);
 		if (create_path == null) {
 			LOGGER.error("注册自身服务方法列表失败!");
@@ -138,7 +137,7 @@ public class InfoGen_Server_Management {
 
 		String path = InfoGen_ZooKeeper.path(register_server.getName());
 		// 创建或更新服务节点
-		byte[] bytes = Tool_Jackson.toJson(register_server).getBytes();
+		byte[] bytes = Jackson.toJson(register_server).getBytes();
 		String create_path = ZK.create(path, bytes, CreateMode.PERSISTENT);
 		if (create_path == null) {
 			LOGGER.error("注册自身服务失败!");
@@ -160,7 +159,7 @@ public class InfoGen_Server_Management {
 
 		// 创建应用子节点及子节点数据
 		String path = InfoGen_ZooKeeper.path(register_node.getServer_name(), register_node.getName());
-		String create_path = ZK.create(path, Tool_Jackson.toJson(register_node).getBytes(), CreateMode.EPHEMERAL);
+		String create_path = ZK.create(path, Jackson.toJson(register_node).getBytes(), CreateMode.EPHEMERAL);
 		if (create_path == null) {
 			LOGGER.error("#注册自身节点失败!");
 			return;
@@ -219,7 +218,7 @@ public class InfoGen_Server_Management {
 				return null;
 			}
 
-			RemoteServer native_server = Tool_Jackson.toObject(server_data, RemoteServer.class);
+			RemoteServer native_server = Jackson.toObject(server_data, RemoteServer.class);
 			if (!native_server.available()) {
 				retry_cache_server_paths.add(server_name);
 				LOGGER.error("服务节点数据不可用:".concat(server_name));
@@ -229,7 +228,7 @@ public class InfoGen_Server_Management {
 			for (String node_name : ZK.get_childrens(server_path)) {
 				String node_string = ZK.get_data(InfoGen_ZooKeeper.path(server_name, node_name));
 				try {
-					RemoteNode node = Tool_Jackson.toObject(node_string, RemoteNode.class);
+					RemoteNode node = Jackson.toObject(node_string, RemoteNode.class);
 					native_server.add(node);
 				} catch (Exception e) {
 					LOGGER.error("转换节点数据错误:", e);
@@ -277,7 +276,7 @@ public class InfoGen_Server_Management {
 			// 本地不存在远端存在该节点 - 加载到本地
 			String node_string = ZK.get_data(InfoGen_ZooKeeper.path(server_name, node_name));
 			try {
-				native_server.add(Tool_Jackson.toObject(node_string, RemoteNode.class));
+				native_server.add(Jackson.toObject(node_string, RemoteNode.class));
 			} catch (Exception e) {
 				LOGGER.error("转换节点数据错误:", e);
 			}
@@ -334,7 +333,7 @@ public class InfoGen_Server_Management {
 				Files.deleteIfExists(target_server_path);
 				Files.move(source_server_path, target_server_path);
 				Files.deleteIfExists(source_server_path);
-				Files.write(source_server_path, Tool_Jackson.toJson(depend_server).getBytes(charset));
+				Files.write(source_server_path, Jackson.toJson(depend_server).getBytes(charset));
 				persistence_flag = false;
 				LOGGER.info("持久化服务成功");
 			}

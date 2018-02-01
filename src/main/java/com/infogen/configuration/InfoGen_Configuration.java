@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.infogen.InfoGen;
 import com.infogen.core.path.NativePath;
-import com.infogen.core.tools.Tool_IP;
-import com.infogen.core.tools.Tool_String;
+import com.infogen.core.tools.IP;
+import com.infogen.core.tools.Trim;
 import com.infogen.rpc.annotation.RPCController;
 import com.infogen.self_description.InfoGen_Parser_HTTP;
 import com.infogen.self_description.InfoGen_Parser_RPC;
@@ -94,7 +94,7 @@ public class InfoGen_Configuration {
 		String localIP = infogen_properties.getProperty("infogen.ip");
 		if (localIP == null || localIP.trim().isEmpty() || !Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(localIP).find()) {
 			String ifcfgs = infogen_properties.getProperty("infogen.ifcfgs");
-			localIP = Tool_IP.getLocalIP(Tool_String.trim((ifcfgs == null || ifcfgs.trim().isEmpty()) ? "eth,wlan" : ifcfgs).split(","));
+			localIP = IP.get_local_ip(Trim.trim((ifcfgs == null || ifcfgs.trim().isEmpty()) ? "eth,wlan" : ifcfgs).split(","));
 		}
 		LOGGER.info("localIP :" + localIP);
 		register_node.setIp(localIP);
@@ -104,7 +104,7 @@ public class InfoGen_Configuration {
 		register_node.setHttp_port((http_port == null) ? 8080 : Integer.valueOf(http_port));
 		String rpc_port = infogen_properties.getProperty("infogen.rpc.port");
 		register_node.setRpc_port((rpc_port == null) ? 18080 : Integer.valueOf(rpc_port));
-		register_node.setHost(System.getProperty("user.name").concat("@").concat(Tool_IP.getHostName()));
+		register_node.setHost(System.getProperty("user.name").concat("@").concat(IP.get_hostname()));
 		String ratio = infogen_properties.getProperty("infogen.ratio");
 		register_node.setRatio((ratio == null) ? 10 : Math.max(0, Math.min(10, Integer.valueOf(ratio))));
 		register_node.setTime(new Timestamp(Clock.system(InfoGen_Configuration.zoneid).millis()));

@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.infogen.core.tools.Tool_Jackson;
+import com.infogen.core.json.Jackson;
 import com.infogen.server.management.InfoGen_Server_Management;
 
 /**
@@ -24,7 +24,7 @@ public class Infogen_HTTP_NativeServer_Servlet extends HttpServlet {
 
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().write(Tool_Jackson.toJson(InfoGen_Server_Management.getInstance().depend_server.values()));
+		response.getWriter().write(Jackson.toJson(InfoGen_Server_Management.getInstance().depend_server.values()));
 	}
 
 	@Override
