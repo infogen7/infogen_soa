@@ -20,9 +20,9 @@ import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infogen.InfoGen;
+import com.infogen.core.path.NativePath;
 import com.infogen.core.tools.Tool_IP;
 import com.infogen.core.tools.Tool_String;
-import com.infogen.core.util.NativePath;
 import com.infogen.rpc.annotation.RPCController;
 import com.infogen.self_description.InfoGen_Parser_HTTP;
 import com.infogen.self_description.InfoGen_Parser_RPC;

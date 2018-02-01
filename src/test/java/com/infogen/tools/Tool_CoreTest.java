@@ -16,20 +16,8 @@ import com.infogen.core.tools.Tool_Files;
 import com.infogen.core.tools.Tool_IP;
 import com.infogen.core.tools.Tool_MD5;
 import com.infogen.core.tools.Tool_String;
-import com.infogen.core.tools.Tool_Throwable;
 
 public class Tool_CoreTest {
-
-	@Test(groups = { "tools", "all" })
-	public void stacktrace() {
-		List<String> list = new ArrayList<String>();
-		try {
-			list.get(1);
-		} catch (IndexOutOfBoundsException e) {
-			String str = Tool_Throwable.stacktrace(e);
-			Assert.assertNotNull(str);
-		}
-	}
 
 	@Test(groups = { "tools", "all" })
 	public void prepare_files() {
