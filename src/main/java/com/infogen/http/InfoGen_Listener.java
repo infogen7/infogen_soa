@@ -14,7 +14,6 @@ import com.infogen.InfoGen;
 
 /**
  * @author larry
- * @email larrylv@outlook.com
  * @version 创建时间 2018年3月26日 下午5:37:16
  */
 @WebListener
