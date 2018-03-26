@@ -22,10 +22,10 @@ public class InfoGen_Listener implements ServletContextListener {
 
 	public void contextInitialized(ServletContextEvent event) {
 		InfoGen.aop();
-		LOGGER.info("servlet context created");
+		LOGGER.info("servlet context created - JAR SOA");
 	}
 
 	public void contextDestroyed(ServletContextEvent event) {
-		LOGGER.info("servlet context destroy");
+		LOGGER.info("servlet context destroy - JAR SOA");
 	}
 }
