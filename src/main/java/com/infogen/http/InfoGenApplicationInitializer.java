@@ -6,7 +6,6 @@ import javax.servlet.ServletException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.infogen.InfoGen;
 import com.infogen.http.ServletContainerInitializer.WebApplicationInitializer;
 
 /**
@@ -26,7 +25,6 @@ public class InfoGenApplicationInitializer implements WebApplicationInitializer 
 	 */
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
-		LOGGER.info("initialized for Application");
-		InfoGen.aop();
+		LOGGER.info("initialized for Application - JAR SOA");
 	}
 }
