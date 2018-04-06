@@ -30,15 +30,11 @@ public class InfoGen {
 
 	public InfoGen(InfoGen_Configuration infogen_configuration) {
 		this.infogen_configuration = infogen_configuration;
+		AOP.getInstance();
 	}
 
-	public InfoGen(String infogen_configuration_path) {
-		try {
-			this.infogen_configuration = new InfoGen_Configuration().initialization(infogen_configuration_path);
-		} catch (IOException | URISyntaxException e) {
-			LOGGER.error("初始化 infogen_configuration 失败", e);
-			System.exit(-1);
-		}
+	public InfoGen(String infogen_configuration_path) throws IOException, URISyntaxException {
+		this(new InfoGen_Configuration().initialization(infogen_configuration_path));
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
