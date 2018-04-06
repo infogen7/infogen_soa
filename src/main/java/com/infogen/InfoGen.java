@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.protobuf.BlockingService;
 import com.infogen.aop.AOP;
+import com.infogen.aop.agent.Agent_Cache;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.http.InfoGen_Jetty;
 import com.infogen.rpc.InfoGen_RPC;
@@ -30,7 +31,8 @@ public class InfoGen {
 
 	public InfoGen(InfoGen_Configuration infogen_configuration) {
 		this.infogen_configuration = infogen_configuration;
-		AOP.getInstance();
+		//
+		Agent_Cache.load_class();
 	}
 
 	public InfoGen(String infogen_configuration_path) throws IOException, URISyntaxException {
