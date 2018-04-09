@@ -52,29 +52,29 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.4.8.v20171121</version>
+			<version>9.4.9.v20180320</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
-			<version>9.4.8.v20171121</version>
+			<version>9.4.9.v20180320</version>
 		</dependency>
 		<!-- <dependency> -->
 		<!-- <groupId>org.eclipse.jetty</groupId> -->
 		<!-- <artifactId>jetty-plus</artifactId> -->
-		<!-- <version>9.4.8.v20171121</version> -->
+		<!-- <version>9.4.9.v20180320</version> -->
 		<!-- </dependency> -->
 		<!-- http://mvnrepository.com/artifact/org.eclipse.jetty/apache-jsp -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>apache-jsp</artifactId>
-			<version>9.4.8.v20171121</version>
+			<version>9.4.9.v20180320</version>
 		</dependency>
 		<!-- rpc -->
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
-			<version>4.1.22.Final</version>
+			<version>4.1.23.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
@@ -83,25 +83,10 @@
 		</dependency>
 
 		<!-- webmvc -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.springframework</groupId> -->
-		<!-- <artifactId>spring-aop</artifactId> -->
-		<!-- <version>5.0.3.RELEASE</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.springframework</groupId> -->
-		<!-- <artifactId>spring-context</artifactId> -->
-		<!-- <version>5.0.3.RELEASE</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.springframework</groupId> -->
-		<!-- <artifactId>spring-web</artifactId> -->
-		<!-- <version>5.0.3.RELEASE</version> -->
-		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>5.0.4.RELEASE</version>
+			<version>5.0.5.RELEASE</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
