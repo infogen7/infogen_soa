@@ -11,6 +11,9 @@ import com.infogen.aop.AOP;
 import com.infogen.aop.agent.Agent_Cache;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.http.InfoGen_Jetty;
+import com.infogen.limit.annotation.Limit_IP;
+import com.infogen.limit.event_handle.InfoGen_AOP_Handle_Limit_IP;
+import com.infogen.limit.event_handle.Limit_IP_Handle;
 import com.infogen.rpc.InfoGen_RPC;
 import com.infogen.server.management.InfoGen_Loaded_Handle_Server;
 import com.infogen.server.management.InfoGen_Server_Management;
@@ -135,6 +138,18 @@ public class InfoGen {
 	 */
 	public InfoGen track(Tracking_Handle handle) {
 		AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution(handle));
+		return this;
+	}
+
+	/**
+	 * 开启 @Limit_IP 的频次控制功能 使用 InfoGen_AOP_Handle_Limit_IP
+	 * 
+	 * @param handle
+	 *            继承 Limit_IP_Handle
+	 * @return InfoGen 对象
+	 */
+	public InfoGen limit(Limit_IP_Handle handle) {
+		AOP.getInstance().add_advice_method(Limit_IP.class, new InfoGen_AOP_Handle_Limit_IP(handle));
 		return this;
 	}
 
