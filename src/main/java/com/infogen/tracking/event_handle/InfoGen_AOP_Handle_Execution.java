@@ -41,27 +41,28 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 		advice_method.setMethod_name(method_name);
 		advice_method.setLong_local_variable("infogen_logger_attach_start_millis");
 
-		advice_method.setInsert_before("infogen_logger_attach_start_millis =System.currentTimeMillis();com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution.insert_before_call_back(\"" + full_method_name + "\");");
+		StringBuilder insert_before = new StringBuilder();
+		insert_before.append("infogen_logger_attach_start_millis = System.currentTimeMillis();");
+		advice_method.setInsert_before(insert_before.toString());
 
-		StringBuilder sbd = new StringBuilder();
-		sbd.append("com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution.insert_after_call_back(");
-		sbd.append("\"").append(class_name).append("\"").append(",");
-		sbd.append("\"").append(method_name).append("\"").append(",");
-		sbd.append("\"").append(user_definition).append("\"").append(",");
-		sbd.append("\"").append(full_method_name).append("\"").append(",");
-		sbd.append("infogen_logger_attach_start_millis, System.currentTimeMillis(),$_);");
-		advice_method.setInsert_after(sbd.toString());
+		StringBuilder insert_after = new StringBuilder();
+		insert_after.append("com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution.insert_after_call_back(");
+		insert_after.append("\"").append(class_name).append("\"").append(",");
+		insert_after.append("\"").append(method_name).append("\"").append(",");
+		insert_after.append("\"").append(user_definition).append("\"").append(",");
+		insert_after.append("\"").append(full_method_name).append("\"").append(",");
+		insert_after.append("infogen_logger_attach_start_millis, System.currentTimeMillis(),$_);");
+		advice_method.setInsert_after(insert_after.toString());
 
-		sbd.setLength(0);
-		sbd.append("com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution.add_catch_call_back(");
-		sbd.append("\"").append(class_name).append("\"").append(",");
-		sbd.append("\"").append(method_name).append("\"").append(",");
-		sbd.append("\"").append(user_definition).append("\"").append(",");
-		sbd.append("\"").append(full_method_name).append("\"").append(",");
-		sbd.append("$e);throw $e;");
-		advice_method.setAdd_catch(sbd.toString());
+		StringBuilder add_catch = new StringBuilder();
+		add_catch.append("com.infogen.tracking.event_handle.InfoGen_AOP_Handle_Execution.add_catch_call_back(");
+		add_catch.append("\"").append(class_name).append("\"").append(",");
+		add_catch.append("\"").append(method_name).append("\"").append(",");
+		add_catch.append("\"").append(user_definition).append("\"").append(",");
+		add_catch.append("\"").append(full_method_name).append("\"").append(",");
+		add_catch.append("$e);throw $e;");
+		advice_method.setAdd_catch(add_catch.toString());
 
-		init(full_method_name);
 		return advice_method;
 	}
 
@@ -71,18 +72,6 @@ public class InfoGen_AOP_Handle_Execution extends AOP_Handle {
 	}
 
 	private static Tracking_Handle tracking_handle = null;
-
-	public static void init(String full_method_name) {
-		if (tracking_handle != null) {
-			tracking_handle.init(full_method_name);
-		}
-	}
-
-	public static void insert_before_call_back(String full_method_name) {
-		if (tracking_handle != null) {
-			tracking_handle.insert_before_call_back(full_method_name);
-		}
-	}
 
 	public static void insert_after_call_back(String class_name, String method_name, String user_definition, String full_method_name, long start_millis, long end_millis, Object return0) {
 		if (tracking_handle != null) {
