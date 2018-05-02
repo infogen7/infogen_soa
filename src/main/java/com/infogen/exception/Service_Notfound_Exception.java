@@ -1,6 +1,6 @@
 package com.infogen.exception;
 
-import com.infogen.core.CODE;
+import com.infogen.core.InfoGen_CODE;
 
 /**
  * 依赖服务在注册中心/本地缓存没有找到的异常
@@ -19,7 +19,7 @@ public class Service_Notfound_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public Integer code() {
-		return CODE.service_notfound.code;
+		return InfoGen_CODE.service_notfound.code;
 	}
 
 	/*
@@ -29,7 +29,7 @@ public class Service_Notfound_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public String name() {
-		return CODE.service_notfound.name();
+		return InfoGen_CODE.service_notfound.name();
 	}
 
 	/*
@@ -38,8 +38,8 @@ public class Service_Notfound_Exception extends InfoGen_Exception {
 	 * @see com.infogen.rpc.exception.InfoGen_RPC_Exception#note()
 	 */
 	@Override
-	public String note() {
-		return CODE.service_notfound.note;
+	public String message() {
+		return InfoGen_CODE.service_notfound.message;
 	}
 
 }

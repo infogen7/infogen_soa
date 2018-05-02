@@ -1,6 +1,6 @@
 package com.infogen.exception;
 
-import com.infogen.core.CODE;
+import com.infogen.core.InfoGen_CODE;
 
 /**
  * 依赖服务没有找到任何可用节点的异常
@@ -19,7 +19,7 @@ public class Node_Unavailable_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public Integer code() {
-		return CODE.node_unavailable.code;
+		return InfoGen_CODE.node_unavailable.code;
 	}
 
 	/*
@@ -29,7 +29,7 @@ public class Node_Unavailable_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public String name() {
-		return CODE.node_unavailable.name();
+		return InfoGen_CODE.node_unavailable.name();
 	}
 
 	/*
@@ -38,8 +38,8 @@ public class Node_Unavailable_Exception extends InfoGen_Exception {
 	 * @see com.infogen.rpc.exception.InfoGen_RPC_Exception#note()
 	 */
 	@Override
-	public String note() {
-		return CODE.node_unavailable.note;
+	public String message() {
+		return InfoGen_CODE.node_unavailable.message;
 	}
 
 }

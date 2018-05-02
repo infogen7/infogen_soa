@@ -1,6 +1,6 @@
 package com.infogen.exception;
 
-import com.infogen.core.CODE;
+import com.infogen.core.InfoGen_CODE;
 
 /**
  * response.isSuccessful()为false的错误
@@ -19,7 +19,7 @@ public class Timeout_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public Integer code() {
-		return CODE.timeout.code;
+		return InfoGen_CODE.timeout.code;
 	}
 
 	/*
@@ -29,7 +29,7 @@ public class Timeout_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public String name() {
-		return CODE.timeout.name();
+		return InfoGen_CODE.timeout.name();
 	}
 
 	/*
@@ -38,8 +38,8 @@ public class Timeout_Exception extends InfoGen_Exception {
 	 * @see com.infogen.rpc.exception.InfoGen_RPC_Exception#note()
 	 */
 	@Override
-	public String note() {
-		return CODE.timeout.note;
+	public String message() {
+		return InfoGen_CODE.timeout.message;
 	}
 
 }

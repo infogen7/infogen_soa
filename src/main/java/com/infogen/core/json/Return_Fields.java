@@ -8,5 +8,5 @@ package com.infogen.core.json;
  * @version 1.0
  */
 public enum Return_Fields {
-	code, note
+	code, message
 }

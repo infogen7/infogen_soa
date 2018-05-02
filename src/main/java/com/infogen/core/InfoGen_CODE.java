@@ -7,7 +7,7 @@ package com.infogen.core;
  * @since 1.0
  * @version 1.0
  */
-public enum CODE {
+public enum InfoGen_CODE {
 	// 1xx（临时响应）
 	// 表示临时响应并需要请求者继续执行操作的状态代码。
 	//
@@ -90,11 +90,11 @@ public enum CODE {
 	limit(1200, "流量限制"),
 
 	generate_return_error(1300, "生成返回数据失败");
-	public String note;
 	public Integer code;
+	public String message;
 
-	private CODE(Integer code, String note) {
-		this.note = note;
+	private InfoGen_CODE(Integer code, String message) {
 		this.code = code;
+		this.message = message;
 	}
 }

@@ -14,5 +14,5 @@ public abstract class InfoGen_Exception extends Exception {
 
 	public abstract String name();
 
-	public abstract String note();
+	public abstract String message();
 }

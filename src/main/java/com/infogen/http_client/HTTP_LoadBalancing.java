@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import com.infogen.RemoteHTTPFunction.RequestType;
 import com.infogen.Service;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.core.CODE;
+import com.infogen.core.InfoGen_CODE;
 import com.infogen.core.json.Return;
 import com.infogen.exception.Node_Unavailable_Exception;
 import com.infogen.exception.Service_Notfound_Exception;
@@ -42,8 +42,8 @@ public class HTTP_LoadBalancing {
 	public Return http_blocking(Service service, String function, Map<String, String> name_value_pair, RequestType request_type, String seed) {
 		RemoteServer server = service.get_server();
 		if (server == null) {
-			LOGGER.error(CODE.service_notfound.note);
-			return Return.create(CODE.service_notfound).put(RETURN_KEY_SERVICE, service.get_server());
+			LOGGER.error(InfoGen_CODE.service_notfound.message);
+			return Return.create(InfoGen_CODE.service_notfound.code, InfoGen_CODE.service_notfound.message).put(RETURN_KEY_SERVICE, service.get_server());
 		}
 
 		RemoteNode node = null;
@@ -55,12 +55,12 @@ public class HTTP_LoadBalancing {
 			try {
 				node = server.random_node(seed);
 				if (node == null) {
-					LOGGER.error(CODE.node_unavailable.note);
-					return Return.create(CODE.node_unavailable).put(RETURN_KEY_SERVICE, service.get_server());
+					LOGGER.error(InfoGen_CODE.node_unavailable.message);
+					return Return.create(InfoGen_CODE.node_unavailable.code, InfoGen_CODE.node_unavailable.message).put(RETURN_KEY_SERVICE, service.get_server());
 				}
 				String http = do_http(node, function, name_value_pair, request_type);
-				Return create = Return.toObject(http);
-				if (create.get_code() == CODE.limit.code) {
+				Return create = Return.create(http);
+				if (create.get_code() == InfoGen_CODE.limit.code) {
 					LOGGER.info(new StringBuilder("接口调用超过限制:").append(function).toString());
 					continue;
 				}
@@ -74,14 +74,14 @@ public class HTTP_LoadBalancing {
 				continue;
 			}
 		}
-		return Return.create(CODE.error).put(RETURN_KEY_SERVICE, service.get_server());
+		return Return.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put(RETURN_KEY_SERVICE, service.get_server());
 	}
 
 	// 异步http调用
 	public void http_async(Service service, String function, Map<String, String> name_value_pair, RequestType request_type, Callback callback, String seed) throws Service_Notfound_Exception, Node_Unavailable_Exception {
 		RemoteServer server = service.get_server();
 		if (server == null) {
-			LOGGER.error(CODE.service_notfound.note);
+			LOGGER.error(InfoGen_CODE.service_notfound.message);
 			throw new Service_Notfound_Exception();
 		}
 		RemoteNode node = null;
@@ -92,7 +92,7 @@ public class HTTP_LoadBalancing {
 		for (int i = 0; i < 3; i++) {
 			node = server.random_node(seed);
 			if (node == null) {
-				LOGGER.error(CODE.node_unavailable.note);
+				LOGGER.error(InfoGen_CODE.node_unavailable.message);
 				throw new Node_Unavailable_Exception();
 			}
 			try {
@@ -104,7 +104,7 @@ public class HTTP_LoadBalancing {
 				continue;
 			}
 		}
-		LOGGER.error(CODE.node_unavailable.note);
+		LOGGER.error(InfoGen_CODE.node_unavailable.message);
 		throw new Node_Unavailable_Exception();
 	}
 
@@ -115,14 +115,14 @@ public class HTTP_LoadBalancing {
 				@Override
 				public void onFailure(Call call, IOException e) {
 					Request request = call.request();
-					callback.run(Return.create(CODE.error).put(RETURN_KEY_SERVICE, service.get_server()));
+					callback.run(Return.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put(RETURN_KEY_SERVICE, service.get_server()));
 					LOGGER.error("do_async_post_bytype 报错:".concat(request.url().toString()), e);
 				}
 
 				@Override
 				public void onResponse(Call call, Response response) throws IOException {
 					if (response.isSuccessful()) {
-						callback.run(Return.toObject(response.body().string()));
+						callback.run(Return.create(response.body().string()));
 					} else {
 						callback.run(Return.create(response.code(), response.message()).put(RETURN_KEY_SERVICE, service.get_server()));
 						LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().url().toString()));
@@ -130,9 +130,9 @@ public class HTTP_LoadBalancing {
 				}
 			}, seed);
 		} catch (Service_Notfound_Exception e) {
-			callback.run(Return.create(e.code(), e.note()).put(RETURN_KEY_SERVICE, service.get_server()));
+			callback.run(Return.create(e.code(), e.getMessage()).put(RETURN_KEY_SERVICE, service.get_server()));
 		} catch (Node_Unavailable_Exception e) {
-			callback.run(Return.create(e.code(), e.note()).put(RETURN_KEY_SERVICE, service.get_server()));
+			callback.run(Return.create(e.code(), e.getMessage()).put(RETURN_KEY_SERVICE, service.get_server()));
 		}
 		return callback;
 	}

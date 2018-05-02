@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.protobuf.ServiceException;
 import com.infogen.Service;
-import com.infogen.core.CODE;
+import com.infogen.core.InfoGen_CODE;
 import com.infogen.core.structure.map.LRULinkedHashMap;
 import com.infogen.exception.Node_Unavailable_Exception;
 import com.infogen.exception.Service_Notfound_Exception;
@@ -51,7 +51,7 @@ public class LoadBalancingRPCChannel extends InfoGen_Channel {
 	public void writeAndFlush(DefaultFullHttpRequest httprequest) throws ServiceException {
 		RemoteServer server = service.get_server();
 		if (server == null) {
-			LOGGER.error(CODE.service_notfound.note);
+			LOGGER.error(InfoGen_CODE.service_notfound.message);
 			throw new ServiceException(new Service_Notfound_Exception());
 		}
 		RemoteNode node = null;
@@ -61,7 +61,7 @@ public class LoadBalancingRPCChannel extends InfoGen_Channel {
 		for (int i = 0; i < 3; i++) {
 			node = server.random_node(seed);
 			if (node == null) {
-				LOGGER.error(CODE.node_unavailable.note);
+				LOGGER.error(InfoGen_CODE.node_unavailable.message);
 				throw new ServiceException(new Node_Unavailable_Exception());
 			}
 			try {
@@ -73,7 +73,7 @@ public class LoadBalancingRPCChannel extends InfoGen_Channel {
 				continue;
 			}
 		}
-		LOGGER.error(CODE.node_unavailable.note);
+		LOGGER.error(InfoGen_CODE.node_unavailable.message);
 		throw new ServiceException(new Node_Unavailable_Exception());
 	}
 }
