@@ -10,12 +10,19 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年5月19日 下午2:50:30
  * @since 1.0
  * @version 1.0
  */
 public class IP {
+	private static final Logger LOGGER = LogManager.getLogger(IP.class.getName());
+
 	/**
 	 * 
 	 * @param string_ip
@@ -32,6 +39,42 @@ public class IP {
 		ip[2] = Long.parseLong(string_ip.substring(position2 + 1, position3));
 		ip[3] = Long.parseLong(string_ip.substring(position3 + 1));
 		return (ip[0] << 24) + (ip[1] << 16) + (ip[2] << 8) + ip[3]; // ip1*256*256*256+ip2*256*256+ip3*256+ip4
+	}
+
+	/**
+	 * @param request
+	 *            HttpServletRequest
+	 * @return 获取来源IP
+	 */
+	public static String get_remote_ip(HttpServletRequest request) {
+		String ip = request.getHeader("X-Forwarded-For");
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getRemoteAddr();
+			if (ip.equals("127.0.0.1") || ip.equals("0:0:0:0:0:0:0:1")) {
+				// 根据网卡取本机配置的IP
+				InetAddress inet = null;
+				try {
+					inet = InetAddress.getLocalHost();
+				} catch (UnknownHostException e) {
+					LOGGER.error("找不到本地HOST", e);
+				}
+				ip = inet.getHostAddress();
+			}
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = "0.0.0.0";
+		}
+		// 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
+		if (ip.indexOf(",") > 0) {
+			ip = ip.substring(0, ip.indexOf(","));
+		}
+		return ip;
 	}
 
 	/**
