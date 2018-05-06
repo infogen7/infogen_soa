@@ -2,9 +2,11 @@ package com.infogen.core.json;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -15,23 +17,16 @@ import com.fasterxml.jackson.databind.JsonMappingException;
  * @since 1.0
  * @version 1.0
  */
-public class Return extends JSONObject {
+public class Return extends IdentityHashMap<String, Object> {
 	private static final long serialVersionUID = 2203513787220720192L;
 
 	//////////////////////////////// create//////////////////////////////////
-	public static Return create() {
-		return new Return();
-	}
 
 	public static Return create(Integer code, String message) {
 		Return jo = new Return();
 		jo.put(Return_Fields.code.name(), code);
 		jo.put(Return_Fields.message.name(), message);
 		return jo;
-	}
-
-	public static Return create(String key, Object value) {
-		return new Return().put(key, value);
 	}
 
 	public static Return create(String json) throws JsonParseException, JsonMappingException, IOException {
@@ -60,4 +55,18 @@ public class Return extends JSONObject {
 		return this;
 	}
 
+	public Return put(Map<String, ? extends Object> map) {
+		for (String key : map.keySet()) {
+			super.put(key, map.get(key));
+		}
+		return this;
+	}
+
+	public String toJson(String _default) {
+		try {
+			return Jackson.toJson(this);
+		} catch (JsonProcessingException e) {
+			return _default;
+		}
+	}
 }

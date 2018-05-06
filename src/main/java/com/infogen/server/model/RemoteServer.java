@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.core.json.Jackson;
 import com.infogen.core.structure.map.consistent_hash.ConsistentHash;
 
 /**
@@ -68,7 +67,7 @@ public class RemoteServer extends RegisterServer {
 				consistent_hash.add(node);
 			}
 		} else {
-			LOGGER.error("node unavailable:".concat(Jackson.toJson(node)));
+			LOGGER.error("node unavailable:".concat(node.getName()));
 		}
 	}
 

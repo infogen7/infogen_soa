@@ -47,6 +47,11 @@ public class RegisterNode extends ShardInfo {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return super.toString();
+	}
+
 	public String getHost() {
 		return host;
 	}

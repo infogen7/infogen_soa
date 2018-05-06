@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.protobuf.BlockingService;
 import com.infogen.aop.AOP;
 import com.infogen.aop.agent.Agent_Cache;
@@ -101,10 +102,14 @@ public class InfoGen {
 			System.exit(-1);
 		}
 
-		LOGGER.info("注册当前服务");
 		isRegister = true;
-		CACHE_SERVER.create_server(infogen_configuration.register_server, false);
-		CACHE_SERVER.create_node(infogen_configuration.register_node);
+		try {
+			LOGGER.info("注册当前服务");
+			CACHE_SERVER.create_server(infogen_configuration.register_server, false);
+			CACHE_SERVER.create_node(infogen_configuration.register_node);
+		} catch (JsonProcessingException e) {
+			LOGGER.error("注册当前服务失败", e);
+		}
 		return this;
 	}
 
@@ -119,10 +124,14 @@ public class InfoGen {
 			System.exit(-1);
 		}
 
-		LOGGER.info("注册当前服务");
-		CACHE_SERVER.create_server(infogen_configuration.register_server, true);
-		LOGGER.info("提交当前服务的方法列表");
-		CACHE_SERVER.create_service_functions(infogen_configuration.service_functions);
+		try {
+			LOGGER.info("注册当前服务");
+			CACHE_SERVER.create_server(infogen_configuration.register_server, true);
+			LOGGER.info("提交当前服务的方法列表");
+			CACHE_SERVER.create_service_functions(infogen_configuration.service_functions);
+		} catch (JsonProcessingException e) {
+			LOGGER.error("注册当前服务方法列表失败", e);
+		}
 		return this;
 	}
 

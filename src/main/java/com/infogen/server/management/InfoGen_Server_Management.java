@@ -26,6 +26,7 @@ import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Id;
 import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.core.json.Jackson;
@@ -109,7 +110,7 @@ public class InfoGen_Server_Management {
 	}
 
 	//////////////////////////////////////////////////////// create_server/////////////////////////////////////////////////////////
-	public void create_service_functions(ServiceFunctions service_functions) {
+	public void create_service_functions(ServiceFunctions service_functions) throws JsonProcessingException {
 		if (!ZK.available()) {
 			LOGGER.warn("InfoGen服务没有开启- InfoGen.create('infogen.properties').start();");
 			return;
@@ -129,7 +130,7 @@ public class InfoGen_Server_Management {
 	}
 
 	// 生成一个服务节点
-	public void create_server(RegisterServer register_server, Boolean update) {
+	public void create_server(RegisterServer register_server, Boolean update) throws JsonProcessingException {
 		if (!ZK.available()) {
 			LOGGER.warn("InfoGen服务没有开启- InfoGen.create('infogen.properties').start();");
 			return;
@@ -151,7 +152,7 @@ public class InfoGen_Server_Management {
 	}
 
 	// 生成一个服务实例节点
-	public void create_node(RegisterNode register_node) {
+	public void create_node(RegisterNode register_node) throws JsonProcessingException {
 		if (!ZK.available()) {
 			LOGGER.warn("InfoGen服务没有开启- InfoGen.create('infogen.properties').start();");
 			return;
