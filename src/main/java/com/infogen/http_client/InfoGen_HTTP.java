@@ -51,34 +51,6 @@ public class InfoGen_HTTP {
 	}
 
 	// /////////////////////////////////////////////////////////////////get/////////////////////////////////////////////////////////////
-	private static String concat_url_params(String url, Map<String, String> params) {
-		if (params == null || params.isEmpty()) {
-			return url;
-		}
-		Iterator<String> iterator = params.keySet().iterator();
-		StringBuilder do_get_sbf = new StringBuilder();
-
-		String first_key = iterator.next();
-		do_get_sbf.append(url).append("?").append(first_key).append("=").append(params.get(first_key));
-		while (iterator.hasNext()) {
-			String key = iterator.next();
-			do_get_sbf.append("&").append(key).append("=").append(params.get(key));
-		}
-		url = do_get_sbf.toString();
-		return url;
-	}
-
-	private static void add_headers(okhttp3.Request.Builder builder, Map<String, String> headers) {
-		if (headers == null) {
-			return;
-		}
-		headers.forEach((key, value) -> {
-			if (value != null) {
-				builder.header(key, value);
-			}
-		});
-	}
-
 	// get 获取 rest 资源
 	public static String do_get(String url, Map<String, String> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(concat_url_params(url, params));
@@ -92,22 +64,6 @@ public class InfoGen_HTTP {
 		}
 	}
 
-	private static final Callback async_get_callback = new Callback() {
-		@Override
-		public void onFailure(Call call, IOException e) {
-			Request request = call.request();
-			LOGGER.error("do_async_get 报错:".concat(request.url().toString()), e);
-		}
-
-		@Override
-		public void onResponse(Call call, Response response) throws IOException {
-			if (response.isSuccessful()) {
-			} else {
-				LOGGER.error("do_async_get 错误-返回非2xx:".concat(response.request().url().toString()));
-			}
-		}
-	};
-
 	public static void do_get_async(String url, Map<String, String> params, Callback callback, Map<String, String> headers) {
 		Builder builder = new Request.Builder().url(concat_url_params(url, params));
 		add_headers(builder, headers);
@@ -118,7 +74,7 @@ public class InfoGen_HTTP {
 		client.newCall(request).enqueue(callback);
 	}
 
-	// ////////////////////////////////////////////////////////post///////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////post: form form-data json xml///////////////////////////////////////////////////////////////////////////
 
 	public static String do_post(String url, Map<String, String> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
 		okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url);
@@ -150,30 +106,7 @@ public class InfoGen_HTTP {
 		client.newCall(request).enqueue(callback);
 	}
 
-	public static final okhttp3.MediaType MEDIA_TYPE_JSON = okhttp3.MediaType.parse("application/json; charset=utf-8");//
-
-	public static String do_post_json(String url, Map<String, ? extends Object> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
-		Builder builder = new Request.Builder().url(url);
-		add_headers(builder, headers);
-		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Jackson.toJson(params))).build();
-		Response response = client.newCall(request).execute();
-		if (response.isSuccessful()) {
-			return response.body().string();
-		} else {
-			throw new HTTP_Fail_Exception(response.code(), response.message());
-		}
-	}
-
-	public static void do_post_json_async(String url, Map<String, String> params, Callback callback, Map<String, String> headers) throws IOException {
-		Builder builder = new Request.Builder().url(url);
-		add_headers(builder, headers);
-		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Jackson.toJson(params))).build();
-		if (callback == null) {
-			callback = async_post_callback;
-		}
-		client.newCall(request).enqueue(callback);
-	}
-
+	//
 	public static String do_post_form_data(String url, Map<String, String> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
@@ -218,6 +151,75 @@ public class InfoGen_HTTP {
 		client.newCall(request).enqueue(callback);
 	}
 
+	/////////////////////////////////////////////////////////////////////////////////
+	public static final okhttp3.MediaType MEDIA_TYPE_JSON = okhttp3.MediaType.parse("application/json; charset=utf-8");//
+
+	public static String do_post_json(String url, Map<String, ? extends Object> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder, headers);
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Jackson.toJson(params))).build();
+		Response response = client.newCall(request).execute();
+		if (response.isSuccessful()) {
+			return response.body().string();
+		} else {
+			throw new HTTP_Fail_Exception(response.code(), response.message());
+		}
+	}
+
+	public static void do_post_json_async(String url, Map<String, String> params, Callback callback, Map<String, String> headers) throws IOException {
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder, headers);
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Jackson.toJson(params))).build();
+		if (callback == null) {
+			callback = async_post_callback;
+		}
+		client.newCall(request).enqueue(callback);
+	}
+
+	//
+	public static final okhttp3.MediaType MEDIA_TYPE_XML = okhttp3.MediaType.parse("text/xml;charset=UTF-8");//
+
+	public static String do_post_xml(String url, String xml, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder, headers);
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_XML, xml)).build();
+		Response response = client.newCall(request).execute();
+		if (response.isSuccessful()) {
+			return response.body().string();
+		} else {
+			throw new HTTP_Fail_Exception(response.code(), response.message());
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	private static String concat_url_params(String url, Map<String, String> params) {
+		if (params == null || params.isEmpty()) {
+			return url;
+		}
+		Iterator<String> iterator = params.keySet().iterator();
+		StringBuilder do_get_sbf = new StringBuilder();
+
+		String first_key = iterator.next();
+		do_get_sbf.append(url).append("?").append(first_key).append("=").append(params.get(first_key));
+		while (iterator.hasNext()) {
+			String key = iterator.next();
+			do_get_sbf.append("&").append(key).append("=").append(params.get(key));
+		}
+		url = do_get_sbf.toString();
+		return url;
+	}
+
+	private static void add_headers(okhttp3.Request.Builder builder, Map<String, String> headers) {
+		if (headers == null) {
+			return;
+		}
+		headers.forEach((key, value) -> {
+			if (value != null) {
+				builder.header(key, value);
+			}
+		});
+	}
+
 	private static final Callback async_post_callback = new Callback() {
 		@Override
 		public void onFailure(Call call, IOException e) {
@@ -230,6 +232,22 @@ public class InfoGen_HTTP {
 			if (response.isSuccessful()) {
 			} else {
 				LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().url().toString()));
+			}
+		}
+	};
+
+	private static final Callback async_get_callback = new Callback() {
+		@Override
+		public void onFailure(Call call, IOException e) {
+			Request request = call.request();
+			LOGGER.error("do_async_get 报错:".concat(request.url().toString()), e);
+		}
+
+		@Override
+		public void onResponse(Call call, Response response) throws IOException {
+			if (response.isSuccessful()) {
+			} else {
+				LOGGER.error("do_async_get 错误-返回非2xx:".concat(response.request().url().toString()));
 			}
 		}
 	};
