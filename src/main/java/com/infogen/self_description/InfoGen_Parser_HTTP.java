@@ -26,7 +26,7 @@ public class InfoGen_Parser_HTTP extends InfoGen_Parser {
 	 * @see com.infogen.self_description.Self_Description#self_description(java.util.Set)
 	 */
 	@Override
-	public List<Function>  self_description(Class<?> clazz) {
+	public List<Function> self_description(Class<?> clazz) {
 		List<Function> functions = new ArrayList<>();
 
 		// url 前缀
@@ -70,7 +70,6 @@ public class InfoGen_Parser_HTTP extends InfoGen_Parser {
 			getDescribe(function, method);
 
 			// 输入参数注释(通过反射方法形参与注释的mapping)
-			System.out.println(function+"--"+method);
 			getInParam(function, method, clazz, HttpServletRequest.class, HttpServletResponse.class);
 
 			// outParams

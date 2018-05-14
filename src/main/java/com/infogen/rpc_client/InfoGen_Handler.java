@@ -1,11 +1,11 @@
-package com.infogen.rpc.client;
+package com.infogen.rpc_client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.infogen.core.structure.map.LRULinkedHashMap;
 import com.infogen.rpc.header.X_HttpHeaderNames;
+import com.infogen.structure.map.LRULinkedHashMap;
 
 import io.netty.buffer.ByteBuf;
 

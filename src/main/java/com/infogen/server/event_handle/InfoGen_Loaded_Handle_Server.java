@@ -1,7 +1,4 @@
-/**
- * 
- */
-package com.infogen.server.management;
+package com.infogen.server.event_handle;
 
 import com.infogen.server.model.RemoteServer;
 

@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.infogen.core.json.Jackson;
-import com.infogen.server.management.InfoGen_Server_Management;
+import com.infogen.json.Jackson;
+import com.infogen.server.InfoGen_Server_Management;
 
 /**
  * 项目监控和管理接口-获取当前本地依赖服务的状态

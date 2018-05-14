@@ -1,7 +1,4 @@
-/**
- * 
- */
-package com.infogen.core.tools;
+package com.infogen.tools;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -90,7 +87,7 @@ public class IP {
 					if (nic_name == null) {
 						continue;
 					}
-					ip = get_local_ip_bystartswith(nic_name);
+					ip = get_local_ip_bystartswith(nic_name.trim());
 					if (ip != null) {
 						break;
 					}

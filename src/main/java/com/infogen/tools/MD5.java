@@ -1,7 +1,4 @@
-/**
- * 
- */
-package com.infogen.core.tools;
+package com.infogen.tools;
 
 import java.nio.charset.Charset;
 import java.security.MessageDigest;

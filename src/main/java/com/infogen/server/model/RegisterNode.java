@@ -11,7 +11,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.core.structure.map.consistent_hash.ShardInfo;
+import com.infogen.structure.map.consistent_hash.ShardInfo;
 
 /**
  * 节点基本属性 继承了用于一致性hash算法的接口

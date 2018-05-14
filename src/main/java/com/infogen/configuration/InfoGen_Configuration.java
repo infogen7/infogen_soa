@@ -20,9 +20,7 @@ import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infogen.InfoGen;
-import com.infogen.core.path.NativePath;
-import com.infogen.core.tools.IP;
-import com.infogen.core.tools.Trim;
+import com.infogen.path.NativePath;
 import com.infogen.rpc.annotation.RPCController;
 import com.infogen.self_description.InfoGen_Parser_HTTP;
 import com.infogen.self_description.InfoGen_Parser_RPC;
@@ -32,6 +30,7 @@ import com.infogen.self_description.component.OutParameter;
 import com.infogen.server.model.RegisterNode;
 import com.infogen.server.model.RegisterServer;
 import com.infogen.server.model.ServiceFunctions;
+import com.infogen.tools.IP;
 
 /**
  * infogen配置解析及其它全局配置
@@ -94,7 +93,7 @@ public class InfoGen_Configuration {
 		String localIP = infogen_properties.getProperty("infogen.ip");
 		if (localIP == null || localIP.trim().isEmpty() || !Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)").matcher(localIP).find()) {
 			String ifcfgs = infogen_properties.getProperty("infogen.ifcfgs");
-			localIP = IP.get_local_ip(Trim.trim((ifcfgs == null || ifcfgs.trim().isEmpty()) ? "eth,wlan" : ifcfgs).split(","));
+			localIP = IP.get_local_ip(((ifcfgs == null || ifcfgs.trim().isEmpty()) ? "eth,wlan" : ifcfgs).split(","));
 		}
 		LOGGER.info("localIP :" + localIP);
 		register_node.setIp(localIP);

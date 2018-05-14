@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.core.structure.map.consistent_hash.ConsistentHash;
+import com.infogen.structure.map.consistent_hash.ConsistentHash;
 
 /**
  * 为本地调用扩展的服务属性
@@ -40,7 +40,7 @@ public class RemoteServer extends RegisterServer {
 	@JsonIgnore
 	private final transient byte[] change_node_status_lock = new byte[0];
 	@JsonIgnore
-	private transient long last_success_invoke_millis = Clock.system(InfoGen_Configuration.zoneid).millis();// 最近一次调用成功的时间戳
+	private transient long last_success_invoke_millis = Clock.system(InfoGen_Configuration.zoneid).millis();// 最近一次重置失效节点的时间戳
 	@JsonIgnore
 	private final transient int disabled_timeout = 16 * 1000;// 重置失效节点的时间间隔 - 超过zookeeper的session超时时间
 	@JsonIgnore
@@ -99,8 +99,8 @@ public class RemoteServer extends RegisterServer {
 	// 获取随机节点实现负载均衡
 	public RemoteNode random_node(String seed) {
 		long millis = Clock.system(InfoGen_Configuration.zoneid).millis();
-		// 没有可用节点或距离上一次成功调用超过指定时间
-		if (!disabled_nodes.isEmpty() && (available_nodes.isEmpty() || (millis - last_success_invoke_millis) > disabled_timeout)) {
+		// 没有可用节点或距离重置失效节点的时间超过指定时间
+		if (available_nodes.isEmpty() || (millis - last_success_invoke_millis) > disabled_timeout) {
 			for (RemoteNode node : disabled_nodes) {
 				if ((Clock.system(InfoGen_Configuration.zoneid).millis() - node.disabled_time) > min_disabled_timeout) {
 					enable(node);

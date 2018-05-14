@@ -9,13 +9,11 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.infogen.core.json.Jackson;
 import com.infogen.http_client.exception.HTTP_Fail_Exception;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Request.Builder;
@@ -74,7 +72,7 @@ public class InfoGen_HTTP {
 		client.newCall(request).enqueue(callback);
 	}
 
-	// ////////////////////////////////////////////////////////post: form form-data json xml///////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////post: form json xml///////////////////////////////////////////////////////////////////////////
 
 	public static String do_post(String url, Map<String, String> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
 		okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url);
@@ -106,58 +104,13 @@ public class InfoGen_HTTP {
 		client.newCall(request).enqueue(callback);
 	}
 
-	//
-	public static String do_post_form_data(String url, Map<String, String> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
-		Builder builder = new Request.Builder().url(url);
-		add_headers(builder, headers);
-		okhttp3.MultipartBody.Builder multipartBuilder = new MultipartBody.Builder();
-		multipartBuilder.setType(MultipartBody.FORM);
-		if (params.isEmpty()) {
-			multipartBuilder.addFormDataPart("", "");
-		}
-		for (String key : params.keySet()) {
-			multipartBuilder.addFormDataPart(key, params.get(key));
-		}
-		RequestBody requestBody = multipartBuilder.build();
-
-		Request request = builder.post(requestBody).build();
-		Response response = client.newCall(request).execute();
-		if (response.isSuccessful()) {
-			return response.body().string();
-		} else {
-			throw new HTTP_Fail_Exception(response.code(), response.message());
-		}
-	}
-
-	// 大文件上传
-	public static void do_post_form_data_async(String url, Map<String, String> params, Callback callback, Map<String, String> headers) throws IOException {
-		Builder builder = new Request.Builder().url(url);
-		add_headers(builder, headers);
-
-		okhttp3.MultipartBody.Builder multipartBuilder = new MultipartBody.Builder();
-		multipartBuilder.setType(MultipartBody.FORM);
-		if (params.isEmpty()) {
-			multipartBuilder.addFormDataPart("", "");
-		}
-		for (String key : params.keySet()) {
-			multipartBuilder.addFormDataPart(key, params.get(key));
-		}
-		RequestBody requestBody = multipartBuilder.build();
-
-		Request request = builder.post(requestBody).build();
-		if (callback == null) {
-			callback = async_post_callback;
-		}
-		client.newCall(request).enqueue(callback);
-	}
-
 	/////////////////////////////////////////////////////////////////////////////////
 	public static final okhttp3.MediaType MEDIA_TYPE_JSON = okhttp3.MediaType.parse("application/json; charset=utf-8");//
 
-	public static String do_post_json(String url, Map<String, ? extends Object> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
+	public static String do_post_json(String url, String json, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
-		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Jackson.toJson(params))).build();
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, json)).build();
 		Response response = client.newCall(request).execute();
 		if (response.isSuccessful()) {
 			return response.body().string();
@@ -166,10 +119,10 @@ public class InfoGen_HTTP {
 		}
 	}
 
-	public static void do_post_json_async(String url, Map<String, String> params, Callback callback, Map<String, String> headers) throws IOException {
+	public static void do_post_json_async(String url, String json, Callback callback, Map<String, String> headers) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
-		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, Jackson.toJson(params))).build();
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, json)).build();
 		if (callback == null) {
 			callback = async_post_callback;
 		}
@@ -189,6 +142,16 @@ public class InfoGen_HTTP {
 		} else {
 			throw new HTTP_Fail_Exception(response.code(), response.message());
 		}
+	}
+
+	public static void do_post_xml_async(String url, String xml, Callback callback, Map<String, String> headers) throws IOException {
+		Builder builder = new Request.Builder().url(url);
+		add_headers(builder, headers);
+		Request request = builder.post(RequestBody.create(MEDIA_TYPE_XML, xml)).build();
+		if (callback == null) {
+			callback = async_post_callback;
+		}
+		client.newCall(request).enqueue(callback);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////

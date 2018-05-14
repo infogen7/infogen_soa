@@ -30,8 +30,8 @@ public class HTTP_Callback<T> {
 	public void run(T value) {
 		if (value == null) {
 			LOGGER.warn("参数不能为空");
-			return;
+		} else {
+			queue.add(value);
 		}
-		queue.add(value);
 	}
 }

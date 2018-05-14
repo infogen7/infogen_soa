@@ -3,8 +3,9 @@ package com.infogen;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
+import com.infogen.http_client.HTTP_LoadBalancing;
 import com.infogen.rpc_client.LoadBalancingRPCChannel;
-import com.infogen.server.management.InfoGen_Server_Management;
+import com.infogen.server.InfoGen_Server_Management;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
 
@@ -58,6 +59,10 @@ public class Service {
 	}
 
 	// /////////////////////////////////////////////////HTTPFunction/////////////////////////////////////////////
+	public HTTP_LoadBalancing get_loadbalancing_http_channel() {
+		return new HTTP_LoadBalancing(this);
+	}
+
 	public RemoteHTTPFunction get_http_function(String function) {
 		return new RemoteHTTPFunction(this, function);
 	}

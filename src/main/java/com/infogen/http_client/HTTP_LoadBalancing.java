@@ -8,15 +8,14 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.infogen.InfoGen_CODE;
 import com.infogen.RemoteHTTPFunction.RequestType;
 import com.infogen.Service;
 import com.infogen.configuration.InfoGen_Configuration;
-import com.infogen.core.InfoGen_CODE;
-import com.infogen.core.json.Return;
-import com.infogen.exception.Node_Unavailable_Exception;
-import com.infogen.exception.Service_Notfound_Exception;
 import com.infogen.http_client.callback.HTTP_Callback;
 import com.infogen.http_client.exception.HTTP_Fail_Exception;
+import com.infogen.http_idl.Return;
+import com.infogen.json.Jackson;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
 
@@ -31,19 +30,23 @@ import okhttp3.Response;
  * @version 1.0
  */
 public class HTTP_LoadBalancing {
-	private static final Logger LOGGER = LogManager.getLogger(Service.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(HTTP_LoadBalancing.class.getName());
+	private Service service;
+
+	public HTTP_LoadBalancing(Service service) {
+		this.service = service;
+	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////// HTTP LOAD BALANCING//////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private static String RETURN_KEY_SERVICE = "service";
 
 	// 同步http调用
-	public Return http_blocking(Service service, String function, Map<String, String> name_value_pair, RequestType request_type, String seed) {
+	public Return http_blocking(String function, Map<String, String> name_value_pair, RequestType request_type, String seed) {
 		RemoteServer server = service.get_server();
 		if (server == null) {
 			LOGGER.error(InfoGen_CODE.service_notfound.message);
-			return Return.create(InfoGen_CODE.service_notfound.code, InfoGen_CODE.service_notfound.message).put(RETURN_KEY_SERVICE, service.get_server());
+			return Return.create(InfoGen_CODE.service_notfound.code, InfoGen_CODE.service_notfound.message).put("service", service.get_server());
 		}
 
 		RemoteNode node = null;
@@ -56,33 +59,31 @@ public class HTTP_LoadBalancing {
 				node = server.random_node(seed);
 				if (node == null) {
 					LOGGER.error(InfoGen_CODE.node_unavailable.message);
-					return Return.create(InfoGen_CODE.node_unavailable.code, InfoGen_CODE.node_unavailable.message).put(RETURN_KEY_SERVICE, service.get_server());
+					return Return.create(InfoGen_CODE.node_unavailable.code, InfoGen_CODE.node_unavailable.message).put("service", service.get_server());
 				}
 				String http = do_http(node, function, name_value_pair, request_type);
-				Return create = Return.create(http);
-				if (create.get_code() == InfoGen_CODE.limit.code) {
-					LOGGER.info(new StringBuilder("接口调用超过限制:").append(function).toString());
-					continue;
-				}
-				return create;
+				return Return.create(http);
 			} catch (HTTP_Fail_Exception e) {
 				LOGGER.warn("调用失败", e);
-				return Return.create(e.getCode(), e.getMessage()).put(RETURN_KEY_SERVICE, service.get_server());
+				return Return.create(e.getCode(), e.getMessage()).put("service", service.get_server());
 			} catch (IOException e) {
 				LOGGER.error("调用失败", e);
 				server.disabled(node);
 				continue;
 			}
 		}
-		return Return.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put(RETURN_KEY_SERVICE, service.get_server());
+		return Return.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put("service", service.get_server());
 	}
 
 	// 异步http调用
-	public void http_async(Service service, String function, Map<String, String> name_value_pair, RequestType request_type, Callback callback, String seed) throws Service_Notfound_Exception, Node_Unavailable_Exception {
+	public HTTP_Callback<Return> http_async(String function, Map<String, String> name_value_pair, RequestType request_type, String seed) {
+		HTTP_Callback<Return> callback = new HTTP_Callback<>();
+
 		RemoteServer server = service.get_server();
 		if (server == null) {
 			LOGGER.error(InfoGen_CODE.service_notfound.message);
-			throw new Service_Notfound_Exception();
+			callback.run(Return.create(InfoGen_CODE.service_notfound.code, InfoGen_CODE.service_notfound.message).put("service", service.get_server()));
+			return callback;
 		}
 		RemoteNode node = null;
 		if (seed == null) {
@@ -93,49 +94,40 @@ public class HTTP_LoadBalancing {
 			node = server.random_node(seed);
 			if (node == null) {
 				LOGGER.error(InfoGen_CODE.node_unavailable.message);
-				throw new Node_Unavailable_Exception();
+				callback.run(Return.create(InfoGen_CODE.node_unavailable.code, InfoGen_CODE.node_unavailable.message).put("service", service.get_server()));
+				return callback;
 			}
 			try {
-				do_http_async(node, function, name_value_pair, request_type, callback);
-				return;
+				do_http_async(node, function, name_value_pair, request_type, new Callback() {
+					@Override
+					public void onFailure(Call call, IOException e) {
+						Request request = call.request();
+						callback.run(Return.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put("service", service.get_server()));
+						LOGGER.error("do_async_post_bytype 报错:".concat(request.url().toString()), e);
+					}
+
+					@Override
+					public void onResponse(Call call, Response response) throws IOException {
+						if (response.isSuccessful()) {
+							callback.run(Return.create(response.body().string()));
+						} else {
+							callback.run(Return.create(response.code(), response.message()).put("service", service.get_server()));
+							LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().url().toString()));
+						}
+					}
+				});
+				return callback;
 			} catch (IOException e) {
 				LOGGER.error("调用失败", e);
 				server.disabled(node);
 				continue;
 			}
 		}
-		LOGGER.error(InfoGen_CODE.node_unavailable.message);
-		throw new Node_Unavailable_Exception();
-	}
 
-	public HTTP_Callback<Return> http_async(Service service, String function, Map<String, String> name_value_pair, RequestType request_type, String seed) {
-		HTTP_Callback<Return> callback = new HTTP_Callback<>();
-		try {
-			http_async(service, function, name_value_pair, request_type, new Callback() {
-				@Override
-				public void onFailure(Call call, IOException e) {
-					Request request = call.request();
-					callback.run(Return.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put(RETURN_KEY_SERVICE, service.get_server()));
-					LOGGER.error("do_async_post_bytype 报错:".concat(request.url().toString()), e);
-				}
-
-				@Override
-				public void onResponse(Call call, Response response) throws IOException {
-					if (response.isSuccessful()) {
-						callback.run(Return.create(response.body().string()));
-					} else {
-						callback.run(Return.create(response.code(), response.message()).put(RETURN_KEY_SERVICE, service.get_server()));
-						LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().url().toString()));
-					}
-				}
-			}, seed);
-		} catch (Service_Notfound_Exception e) {
-			callback.run(Return.create(e.code(), e.getMessage()).put(RETURN_KEY_SERVICE, service.get_server()));
-		} catch (Node_Unavailable_Exception e) {
-			callback.run(Return.create(e.code(), e.getMessage()).put(RETURN_KEY_SERVICE, service.get_server()));
-		}
+		callback.run(Return.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put("service", service.get_server()));
 		return callback;
 	}
+
 	// ///////////////////////////////////////////http////////////////////////////////////////////////
 
 	private String do_http(RemoteNode node, String function, Map<String, String> name_value_pair, RequestType request_type) throws IOException, HTTP_Fail_Exception {
@@ -145,10 +137,10 @@ public class HTTP_LoadBalancing {
 			return InfoGen_HTTP.do_post(url, name_value_pair, new HashMap<>());
 		} else if (request_type == RequestType.POST_JSON) {
 			LOGGER.debug(new StringBuilder("post json -> ").append(url).toString());
-			return InfoGen_HTTP.do_post_json(url, name_value_pair, new HashMap<>());
-		} else if (request_type == RequestType.POST_FORM_DATA) {
-			LOGGER.debug(new StringBuilder("post form data-> ").append(url).toString());
-			return InfoGen_HTTP.do_post_form_data(url, name_value_pair, new HashMap<>());
+			return InfoGen_HTTP.do_post_json(url, Jackson.toJson(name_value_pair), new HashMap<>());
+		} else if (request_type == RequestType.POST_XML) {
+			LOGGER.debug(new StringBuilder("post xml-> ").append(url).toString());
+			return InfoGen_HTTP.do_post_xml(url, Jackson.toJson(name_value_pair), new HashMap<>());
 		} else {
 			LOGGER.debug(new StringBuilder("get -> ").append(url).toString());
 			return InfoGen_HTTP.do_get(url, name_value_pair, new HashMap<>());
@@ -163,10 +155,10 @@ public class HTTP_LoadBalancing {
 			InfoGen_HTTP.do_post_async(url, name_value_pair, callback, new HashMap<>());
 		} else if (request_type == RequestType.POST_JSON) {
 			LOGGER.debug(new StringBuilder("post json async -> ").append(url).toString());
-			InfoGen_HTTP.do_post_json_async(url, name_value_pair, callback, new HashMap<>());
-		} else if (request_type == RequestType.POST_FORM_DATA) {
-			LOGGER.debug(new StringBuilder("post form data async -> ").append(url).toString());
-			InfoGen_HTTP.do_post_form_data_async(url, name_value_pair, callback, new HashMap<>());
+			InfoGen_HTTP.do_post_json_async(url, Jackson.toJson(name_value_pair), callback, new HashMap<>());
+		} else if (request_type == RequestType.POST_XML) {
+			LOGGER.debug(new StringBuilder("post xml async -> ").append(url).toString());
+			InfoGen_HTTP.do_post_xml_async(url, Jackson.toJson(name_value_pair), callback, new HashMap<>());
 		} else {
 			LOGGER.debug(new StringBuilder("get async -> ").append(url).toString());
 			InfoGen_HTTP.do_get_async(url, name_value_pair, callback, new HashMap<>());

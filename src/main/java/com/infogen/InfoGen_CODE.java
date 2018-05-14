@@ -1,4 +1,4 @@
-package com.infogen.core;
+package com.infogen;
 
 /**
  * infogen框架的返回值错误码

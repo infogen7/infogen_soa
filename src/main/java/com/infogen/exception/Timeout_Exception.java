@@ -1,6 +1,6 @@
 package com.infogen.exception;
 
-import com.infogen.core.InfoGen_CODE;
+import com.infogen.InfoGen_CODE;
 
 /**
  * response.isSuccessful()为false的错误

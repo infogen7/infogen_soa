@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.infogen.core.InfoGen_CODE;
-import com.infogen.core.json.Return;
+import com.infogen.InfoGen_CODE;
+import com.infogen.http_idl.Return;
 
 /**
  * 项目监控和管理接口-获取当前本地依赖服务的状态

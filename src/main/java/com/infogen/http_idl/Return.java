@@ -1,10 +1,12 @@
-package com.infogen.core.json;
+package com.infogen.http_idl;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.infogen.json.JSONObject;
+import com.infogen.json.Jackson;
 
 /**
  * HTTP协议返回值封装

@@ -12,8 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.infogen.aop.AOP;
-import com.infogen.core.structure.DefaultEntry;
 import com.infogen.self_description.component.Function;
+import com.infogen.structure.DefaultEntry;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年5月19日 下午2:50:30
@@ -38,8 +38,8 @@ public class InfoGen_Self_Description {
 		Objects.requireNonNull(parser);
 		defaultentrys.add(new DefaultEntry<Class<? extends Annotation>, InfoGen_Parser>(clazz, parser));
 	}
-	
-	public List<Function> parser(){
+
+	public List<Function> parser() {
 		List<Function> functions = new ArrayList<>();
 		AOP.getInstance().getClasses().forEach((clazz) -> {
 			try {

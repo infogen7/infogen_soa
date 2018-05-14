@@ -1,4 +1,4 @@
-package com.infogen.core.tools;
+package com.infogen.tools;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

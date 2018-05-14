@@ -1,4 +1,4 @@
-package com.infogen.rpc.client;
+package com.infogen.rpc_client;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -13,11 +13,11 @@ import com.google.protobuf.RpcCallback;
 import com.google.protobuf.RpcChannel;
 import com.google.protobuf.RpcController;
 import com.google.protobuf.ServiceException;
-import com.infogen.core.structure.map.LRULinkedHashMap;
 import com.infogen.exception.Timeout_Exception;
 import com.infogen.rpc.InfoGen_Controller;
-import com.infogen.rpc.callback.InfoGen_Callback;
 import com.infogen.rpc.header.X_HttpHeaderNames;
+import com.infogen.rpc_client.callback.InfoGen_Callback;
+import com.infogen.structure.map.LRULinkedHashMap;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
@@ -136,7 +136,7 @@ public class InfoGen_Channel implements BlockingRpcChannel, RpcChannel {
 		httprequest.headers().setInt(HttpHeaderNames.CONTENT_LENGTH, httprequest.content().readableBytes());
 		httprequest.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
 		httprequest.headers().set(HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.GZIP);
-		//异步返回必须知道该序列号才能返回调用程序结果
+		// 异步返回必须知道该序列号才能返回调用程序结果
 		httprequest.headers().set(X_HttpHeaderNames.x_sequence.key, sequence);
 
 		writeAndFlush(httprequest);

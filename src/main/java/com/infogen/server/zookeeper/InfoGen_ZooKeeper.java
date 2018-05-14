@@ -24,7 +24,7 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 
-import com.infogen.tools.Scheduled;
+import com.infogen.Scheduled;
 
 /**
  * zookeeper调用封装

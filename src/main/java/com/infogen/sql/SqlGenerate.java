@@ -3,8 +3,8 @@ package com.infogen.sql;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.infogen.core.json.JSONArray;
-import com.infogen.core.json.JSONObject;
+import com.infogen.json.JSONArray;
+import com.infogen.json.JSONObject;
 
 /**
  * @author larry

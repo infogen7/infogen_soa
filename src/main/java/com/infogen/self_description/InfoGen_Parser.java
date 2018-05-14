@@ -101,6 +101,7 @@ public abstract class InfoGen_Parser {
 					continue D;
 				}
 			}
+			
 			InParameter parameter = new InParameter();
 			parameter.setName(parameter_name);// 参数名
 			parameter.setType(reflect_parameter.getType());// 参数类型

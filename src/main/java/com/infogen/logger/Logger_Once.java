@@ -3,7 +3,7 @@ package com.infogen.logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.infogen.core.structure.map.LRULinkedHashMap;
+import com.infogen.structure.map.LRULinkedHashMap;
 
 /**
  * 只会打印一次的日志

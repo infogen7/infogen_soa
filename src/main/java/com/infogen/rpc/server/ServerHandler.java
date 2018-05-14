@@ -11,10 +11,10 @@ import com.google.protobuf.BlockingService;
 import com.google.protobuf.Descriptors.MethodDescriptor;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
-import com.infogen.core.structure.DefaultEntry;
 import com.infogen.rpc.InfoGen_Controller;
 import com.infogen.rpc.filter.InfoGen_Filter;
 import com.infogen.rpc.header.X_HttpHeaderNames;
+import com.infogen.structure.DefaultEntry;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFutureListener;

@@ -1,4 +1,4 @@
-package com.infogen.tools;
+package com.infogen;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

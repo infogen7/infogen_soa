@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.infogen.core.json.Jackson;
+import com.infogen.json.Jackson;
 
 /**
  * @author larry

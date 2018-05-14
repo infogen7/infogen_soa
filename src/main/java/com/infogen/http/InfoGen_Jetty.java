@@ -30,7 +30,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.webapp.WebInfConfiguration;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
 
-import com.infogen.core.path.NativePath;
+import com.infogen.path.NativePath;
 
 /**
  * 启动jetty服务

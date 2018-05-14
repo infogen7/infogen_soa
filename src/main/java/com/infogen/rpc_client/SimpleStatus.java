@@ -1,4 +1,4 @@
-package com.infogen.rpc.client;
+package com.infogen.rpc_client;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.RpcCallback;

@@ -1,4 +1,4 @@
-package com.infogen.core.json;
+package com.infogen.json;
 
 import java.io.IOException;
 import java.util.ArrayList;
