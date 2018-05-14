@@ -55,13 +55,6 @@ public class Return extends IdentityHashMap<String, Object> {
 		return this;
 	}
 
-	public Return put(Map<String, ? extends Object> map) {
-		for (String key : map.keySet()) {
-			super.put(key, map.get(key));
-		}
-		return this;
-	}
-
 	public String toJson(String _default) {
 		try {
 			return Jackson.toJson(this);
