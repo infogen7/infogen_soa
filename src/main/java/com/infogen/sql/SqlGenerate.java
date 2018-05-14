@@ -1,8 +1,8 @@
 package com.infogen.sql;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.io.IOException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.infogen.json.JSONArray;
 import com.infogen.json.JSONObject;
 
@@ -12,60 +12,40 @@ import com.infogen.json.JSONObject;
  */
 public class SqlGenerate {
 
-	public Operator generate(JSONObject jsonobject) {
+	public Operator generate(JSONObject jsonobject) throws JsonProcessingException, IOException {
 		Operator operator = new Empty();
 
 		String type = jsonobject.getAsString("type", "");
 		String key = jsonobject.getAsString("key", "");
 
-		if (type.equals("AND")) {
+		/*  */ if (type.equals("AND")) {
 			AND and = new AND();
-			JSONArray array = jsonobject.getAsJSONArray("value", new JSONArray());
+			JSONArray array = jsonobject.getAsJSONArray("value");
 			for (int i = 0; i < array.size(); i++) {
-				JSONObject item = array.getAsJSONObject(i, new JSONObject());
-				if (item != null) {
-					and.add(generate(item));
-				}
+				and.add(generate(array.getAsJSONObject(i)));
 			}
 			operator = and;
 		} else if (type.equals("OR")) {
 			OR or = new OR();
-			JSONArray array = jsonobject.getAsJSONArray("value", new JSONArray());
+			JSONArray array = jsonobject.getAsJSONArray("value");
 			for (int i = 0; i < array.size(); i++) {
-				JSONObject item = array.getAsJSONObject(i, new JSONObject());
-				if (item != null) {
-					or.add(generate(item));
-				}
+				or.add(generate(array.getAsJSONObject(i)));
 			}
 			operator = or;
-		} else if (type.equals("JSON")) {// Json
-			JSONArray array = jsonobject.getAsJSONArray("value", new JSONArray());
-			Set<Object> set = new HashSet<>();
-			for (Object object : array) {
-				set.add(object);
-			}
-			operator = new Json(key, set);
-		} else if (type.equals("JSONARRAY")) {
-			JSONArray array = jsonobject.getAsJSONArray("value", new JSONArray());
-			Set<Object> set = new HashSet<>();
-			for (Object object : array) {
-				set.add(object);
-			}
-			operator = new JsonArray(key, set);
 		} else if (type.equals("IN")) {
-			JSONArray array = jsonobject.getAsJSONArray("value", new JSONArray());
-			Set<Object> set = new HashSet<>();
+			IN in = new IN(key);
+			JSONArray array = jsonobject.getAsJSONArray("value");
 			for (Object object : array) {
-				set.add(object);
+				in.add(object.toString());
 			}
-			operator = new IN(key, set);
+			operator = in;
 		} else if (type.equals("NOTIN")) {
-			JSONArray array = jsonobject.getAsJSONArray("value", new JSONArray());
-			Set<Object> set = new HashSet<>();
+			NOTIN notin = new NOTIN(key);
+			JSONArray array = jsonobject.getAsJSONArray("value");
 			for (Object object : array) {
-				set.add(object);
+				notin.add(object.toString());
 			}
-			operator = new NOTIN(key, set);
+			operator = notin;
 		} else if (type.equals("EQ")) {
 			operator = new EQ(key, jsonobject.getAsString("value", null));
 		} else if (type.equals("NE")) {

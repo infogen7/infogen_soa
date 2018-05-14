@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
@@ -18,7 +16,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
  */
 public class JSONObject extends HashMap<String, Object> {
 	private static final long serialVersionUID = 684659227542251158L;
-	private static final Logger LOGGER = LogManager.getLogger(JSONObject.class.getName());
 
 	public static JSONObject create() {
 		return new JSONObject();
@@ -71,51 +68,27 @@ public class JSONObject extends HashMap<String, Object> {
 		return object != null ? Float.valueOf(object.toString()) : _default;
 	}
 
-	public JSONObject getAsJSONObject(String key, JSONObject _default) {
-		return getAsMapOrList(key, new TypeReference<JSONObject>() {
-		}, _default);
-	}
-
-	public JSONArray getAsJSONArray(String key, JSONArray _default) {
-		return getAsMapOrList(key, new TypeReference<JSONArray>() {
-		}, _default);
-	}
-
-	///////////////////////////////////////////////////////////////////
-	public <T> T getAsMapOrList(String key, TypeReference<T> typereference, T _default) {
+	public JSONObject getAsJSONObject(String key) throws JsonProcessingException, IOException {
 		Object object = this.get(key);
 		if (object == null) {
-			return _default;
+			return null;
 		}
-		try {
-			return (T) Jackson.toObject(Jackson.toJson(object), typereference);
-		} catch (IOException e) {
-			LOGGER.error("json 转换对象失败:", e);
-			return _default;
-		}
+		return Jackson.toObject(Jackson.toJson(object), new TypeReference<JSONObject>() {
+		});
 	}
 
-	public <T> T getAsClass(String key, Class<T> clazz, T _default) {
+	public JSONArray getAsJSONArray(String key) throws JsonProcessingException, IOException {
 		Object object = this.get(key);
 		if (object == null) {
-			return _default;
+			return null;
 		}
-		try {
-			return (T) Jackson.toObject(Jackson.toJson(object), clazz);
-		} catch (IOException e) {
-			LOGGER.error("json 转换对象失败:", e);
-			return _default;
-		}
+		return Jackson.toObject(Jackson.toJson(object), new TypeReference<JSONArray>() {
+		});
 	}
 
 	///////////////////////////////////////////////////////////////////
 
-	public String toJson(String _default) {
-		try {
-			return Jackson.toJson(this);
-		} catch (Exception e) {
-			LOGGER.error("json 解析失败:", e);
-			return _default;
-		}
+	public String toJson() throws JsonProcessingException {
+		return Jackson.toJson(this);
 	}
 }

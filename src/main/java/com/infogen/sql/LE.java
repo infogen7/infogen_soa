@@ -16,15 +16,14 @@ public class LE extends Operator {
 		this.value = value;
 	}
 
-	private Number value = 0;
 	public String key = "";
+	private Number value = null;
 
 	public String to_filter() {
-		if (key == null || key.trim().isEmpty()) {
+		if (key == null || key.trim().isEmpty() || value == null) {
 			return " 1 = 1 ";
 		}
-		StringBuilder string_builder = new StringBuilder();
-		return string_builder.append(" ").append(key).append(" <= ").append(value).append(" ").toString();
+		return new StringBuilder().append(" ").append(key).append(" <= ").append(value).append(" ").toString();
 	}
 
 	/**

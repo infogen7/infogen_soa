@@ -2,7 +2,6 @@ package com.infogen.sql;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
@@ -14,16 +13,16 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 public class NOTIN extends Operator {
 	private static final long serialVersionUID = 103243415527557652L;
 
-	public NOTIN(String key, Set<? extends Object> items) {
+	public NOTIN(String key, String... items) {
 		super();
 		this.key = key;
-		for (Object string : items) {
-			this.items.add(string.toString());
+		for (String string : items) {
+			this.items.add(string);
 		}
 	}
 
-	private List<String> items = new ArrayList<>();
 	public String key = "";
+	private List<String> items = new ArrayList<>();
 
 	public void add(String item) {
 		items.add(item);

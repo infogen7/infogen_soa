@@ -17,16 +17,15 @@ public class Between extends Operator {
 		this.max = max;
 	}
 
-	private Number min = 0d;
-	private Number max = 0d;
 	public String key = "";
+	private Number min = null;
+	private Number max = null;
 
 	public String to_filter() {
-		if (key == null || key.isEmpty()) {
+		if (key == null || key.isEmpty() || min == null || max == null) {
 			return " 1 = 1 ";
 		}
-		StringBuilder string_builder = new StringBuilder();
-		return string_builder.append(" ").append(key).append(" BETWEEN ").append(min).append(" AND ").append(max).toString();
+		return new StringBuilder().append(" ").append(key).append(" BETWEEN ").append(min).append(" AND ").append(max).toString();
 	}
 
 	/**

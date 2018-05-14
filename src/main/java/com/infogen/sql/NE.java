@@ -16,8 +16,8 @@ public class NE extends Operator {
 		this.value = value;
 	}
 
-	private String value = "";
 	public String key = "";
+	private String value = "";
 
 	public String to_filter() {
 		if (key == null || key.trim().isEmpty() || value == null || value.trim().isEmpty()) {
