@@ -84,12 +84,8 @@ public enum InfoGen_CODE {
 
 	error(500, "服务器内部错误"), timeout(504, "调用超时"), //
 
-	service_notfound(1100, "没有这个服务"), //
-	node_unavailable(1101, "没有可用的服务节点"),
-
-	limit(1200, "流量限制"),
-
-	generate_return_error(1300, "生成返回数据失败");
+	service_notfound(1400, "没有这个服务"), //
+	node_unavailable(1401, "没有可用的服务节点");
 	public Integer code;
 	public String message;
 
