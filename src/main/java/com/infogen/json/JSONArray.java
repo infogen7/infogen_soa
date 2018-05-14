@@ -84,6 +84,21 @@ public class JSONArray extends ArrayList<Object> {
 		});
 	}
 
+	public <T> T getAsMapOrList(Integer index, TypeReference<T> typereference) throws JsonProcessingException, IOException {
+		Object object = this.get(index);
+		if (object == null) {
+			return null;
+		}
+		return (T) Jackson.toObject(Jackson.toJson(object), typereference);
+	}
+
+	public <T> T getAsClass(Integer index, Class<T> clazz) throws JsonProcessingException, IOException {
+		Object object = this.get(index);
+		if (object == null) {
+			return null;
+		}
+		return (T) Jackson.toObject(Jackson.toJson(object), clazz);
+	}
 	///////////////////////////////////////////////////////////////////
 
 	public String toJson() throws JsonProcessingException {

@@ -86,6 +86,21 @@ public class JSONObject extends HashMap<String, Object> {
 		});
 	}
 
+	public <T> T getAsMapOrList(String key, TypeReference<T> typereference) throws JsonProcessingException, IOException {
+		Object object = this.get(key);
+		if (object == null) {
+			return null;
+		}
+		return (T) Jackson.toObject(Jackson.toJson(object), typereference);
+	}
+
+	public <T> T getAsClass(String key, Class<T> clazz) throws JsonProcessingException, IOException {
+		Object object = this.get(key);
+		if (object == null) {
+			return null;
+		}
+		return (T) Jackson.toObject(Jackson.toJson(object), clazz);
+	}
 	///////////////////////////////////////////////////////////////////
 
 	public String toJson() throws JsonProcessingException {
