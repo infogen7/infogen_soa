@@ -2,13 +2,9 @@ package com.infogen.core.json;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 /**
  * HTTP协议返回值封装
@@ -17,10 +13,17 @@ import com.fasterxml.jackson.databind.JsonMappingException;
  * @since 1.0
  * @version 1.0
  */
-public class Return extends IdentityHashMap<String, Object> {
+public class Return extends JSONObject {
 	private static final long serialVersionUID = 2203513787220720192L;
 
+	private enum Return_Fields {
+		code, message
+	}
+
 	//////////////////////////////// create//////////////////////////////////
+	public static Return create() {
+		return new Return();
+	}
 
 	public static Return create(Integer code, String message) {
 		Return jo = new Return();
@@ -29,7 +32,7 @@ public class Return extends IdentityHashMap<String, Object> {
 		return jo;
 	}
 
-	public static Return create(String json) throws JsonParseException, JsonMappingException, IOException {
+	public static Return create(String json) throws IOException {
 		Return jo = new Return();
 		Map<String, Object> fromJson = Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
 		});
@@ -48,18 +51,9 @@ public class Return extends IdentityHashMap<String, Object> {
 		return (String) this.getOrDefault(Return_Fields.message.name(), "");
 	}
 
-	//////////////////////// @Override/////////////////////////////////////
 	@Override
 	public Return put(String key, Object value) {
 		super.put(key, value);
 		return this;
-	}
-
-	public String toJson(String _default) {
-		try {
-			return Jackson.toJson(this);
-		} catch (JsonProcessingException e) {
-			return _default;
-		}
 	}
 }

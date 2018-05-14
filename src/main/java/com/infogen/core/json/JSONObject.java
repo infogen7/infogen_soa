@@ -7,9 +7,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 /**
  * HTTP协议调用端json处理类
@@ -26,14 +24,12 @@ public class JSONObject extends HashMap<String, Object> {
 		return new JSONObject();
 	}
 
-	public static JSONObject create(String key, String value) {
-		return new JSONObject().put(key, value);
-	}
-
-	public static JSONObject create(Map<String, Object> map) {
+	public static JSONObject create(String json) throws IOException {
 		JSONObject jo = new JSONObject();
-		for (String key : map.keySet()) {
-			jo.put(key, map.get(key));
+		Map<String, Object> fromJson = Jackson.toObject(json, new TypeReference<HashMap<String, Object>>() {
+		});
+		for (Entry<String, Object> entry : fromJson.entrySet()) {
+			jo.put(entry.getKey(), entry.getValue());
 		}
 		return jo;
 	}
@@ -113,10 +109,6 @@ public class JSONObject extends HashMap<String, Object> {
 	}
 
 	///////////////////////////////////////////////////////////////////
-	public static JSONObject toObject(String json) throws JsonParseException, JsonMappingException, IOException {
-		return Jackson.toObject(json, new TypeReference<JSONObject>() {
-		});
-	}
 
 	public String toJson(String _default) {
 		try {
