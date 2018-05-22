@@ -18,7 +18,7 @@ import com.infogen.server.InfoGen_Server_Management;
  * @since 1.0
  * @version 1.0
  */
-@WebServlet(name = "Infogen_HTTP_NativeServer_Servlet", urlPatterns = "/infogen/native_server")
+@WebServlet(name = "Infogen_HTTP_NativeServer_Servlet", urlPatterns = "/infogen/native_server", asyncSupported = true)
 public class Infogen_HTTP_NativeServer_Servlet extends HttpServlet {
 	private static final long serialVersionUID = 4421704113732067430L;
 

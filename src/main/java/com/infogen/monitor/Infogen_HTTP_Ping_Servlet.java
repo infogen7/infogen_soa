@@ -18,7 +18,7 @@ import com.infogen.http_idl.Return;
  * @since 1.0
  * @version 1.0
  */
-@WebServlet(name = "Infogen_HTTP_Ping_Servlet", urlPatterns = "/infogen/ping")
+@WebServlet(name = "Infogen_HTTP_Ping_Servlet", urlPatterns = "/infogen/ping", asyncSupported = true)
 public class Infogen_HTTP_Ping_Servlet extends HttpServlet {
 	private static final long serialVersionUID = 4421704113732067430L;
 
