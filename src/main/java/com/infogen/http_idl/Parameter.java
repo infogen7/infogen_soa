@@ -33,23 +33,23 @@ public class Parameter extends IdentityHashMap<String, Object> {
 	}
 
 	public static Parameter create(Map<String, List<String>> name_value_pair) {
-		Parameter map = new Parameter();
+		Parameter parameter = new Parameter();
 		name_value_pair.forEach((key, values) -> {
 			values.forEach(value -> {
-				map.put(new String(key), value);
+				parameter.put(new String(key), value);
 			});
 		});
-		return map;
+		return parameter;
 	}
 
 	public static Parameter create(String json) throws JsonParseException, JsonMappingException, IOException {
-		Parameter jo = new Parameter();
+		Parameter parameter = new Parameter();
 		Map<String, Object> fromJson = Jackson.toObject(json, new TypeReference<IdentityHashMap<String, Object>>() {
 		});
 		for (Entry<String, Object> entry : fromJson.entrySet()) {
-			jo.put(entry.getKey(), entry.getValue());
+			parameter.put(entry.getKey(), entry.getValue());
 		}
-		return jo;
+		return parameter;
 	}
 
 	//////////////////////// @Override/////////////////////////////////////

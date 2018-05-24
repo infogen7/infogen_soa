@@ -41,38 +41,38 @@ public class RemoteHTTPFunction {
 	}
 
 	//////////////////////////////////////////// GET/////////////////////////////////////////
-	public Return get(Map<String, String> name_value_pair) {
+	public Return get(Map<String, Object> name_value_pair) {
 		return http_loadbalancing.http_blocking(function, name_value_pair, RequestType.GET, seed);
 	}
 
-	public HTTP_Callback<Return> get_async(Map<String, String> name_value_pair) {
+	public HTTP_Callback<Return> get_async(Map<String, Object> name_value_pair) {
 		return http_loadbalancing.http_async(function, name_value_pair, RequestType.GET, seed);
 	}
 
 	//////////////////////////////////////////// POST/////////////////////////////////////////
-	public Return post(Map<String, String> name_value_pair) {
+	public Return post(Map<String, Object> name_value_pair) {
 		return http_loadbalancing.http_blocking(function, name_value_pair, RequestType.POST, seed);
 	}
 
-	public HTTP_Callback<Return> post_async(Map<String, String> name_value_pair) {
+	public HTTP_Callback<Return> post_async(Map<String, Object> name_value_pair) {
 		return http_loadbalancing.http_async(function, name_value_pair, RequestType.POST, seed);
 	}
 
 	//////////////////////////////////////////// POST JSON/////////////////////////////////////////
-	public Return post_json(Map<String, String> name_value_pair) {
+	public Return post_json(Map<String, Object> name_value_pair) {
 		return http_loadbalancing.http_blocking(function, name_value_pair, RequestType.POST_JSON, seed);
 	}
 
-	public HTTP_Callback<Return> post_json_async(Map<String, String> name_value_pair) {
+	public HTTP_Callback<Return> post_json_async(Map<String, Object> name_value_pair) {
 		return http_loadbalancing.http_async(function, name_value_pair, RequestType.POST_JSON, seed);
 	}
 
 	//////////////////////////////////////////// POST FORM DATA///////////////////////////////////////////
-	public Return post_xml(Map<String, String> name_value_pair) {
+	public Return post_xml(Map<String, Object> name_value_pair) {
 		return http_loadbalancing.http_blocking(function, name_value_pair, RequestType.POST_XML, seed);
 	}
 
-	public HTTP_Callback<Return> post_xml_async(Map<String, String> name_value_pair) {
+	public HTTP_Callback<Return> post_xml_async(Map<String, Object> name_value_pair) {
 		return http_loadbalancing.http_async(function, name_value_pair, RequestType.POST_XML, seed);
 	}
 }

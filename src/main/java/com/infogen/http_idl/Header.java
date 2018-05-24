@@ -33,23 +33,23 @@ public class Header extends IdentityHashMap<String, Object> {
 	}
 
 	public static Header create(Map<String, List<String>> name_value_pair) {
-		Header map = new Header();
+		Header header = new Header();
 		name_value_pair.forEach((key, values) -> {
 			values.forEach(value -> {
-				map.put(new String(key), value);
+				header.put(new String(key), value);
 			});
 		});
-		return map;
+		return header;
 	}
 
-	public static Parameter create(String json) throws JsonParseException, JsonMappingException, IOException {
-		Parameter jo = new Parameter();
+	public static Header create(String json) throws JsonParseException, JsonMappingException, IOException {
+		Header header = new Header();
 		Map<String, Object> fromJson = Jackson.toObject(json, new TypeReference<IdentityHashMap<String, Object>>() {
 		});
 		for (Entry<String, Object> entry : fromJson.entrySet()) {
-			jo.put(entry.getKey(), entry.getValue());
+			header.put(entry.getKey(), entry.getValue());
 		}
-		return jo;
+		return header;
 	}
 
 	//////////////////////// @Override/////////////////////////////////////

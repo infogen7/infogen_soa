@@ -42,7 +42,7 @@ public class HTTP_LoadBalancing {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// 同步http调用
-	public Return http_blocking(String function, Map<String, String> name_value_pair, RequestType request_type, String seed) {
+	public Return http_blocking(String function, Map<String, Object> name_value_pair, RequestType request_type, String seed) {
 		RemoteServer server = service.get_server();
 		if (server == null) {
 			LOGGER.error(InfoGen_CODE.service_notfound.message);
@@ -76,7 +76,7 @@ public class HTTP_LoadBalancing {
 	}
 
 	// 异步http调用
-	public HTTP_Callback<Return> http_async(String function, Map<String, String> name_value_pair, RequestType request_type, String seed) {
+	public HTTP_Callback<Return> http_async(String function, Map<String, Object> name_value_pair, RequestType request_type, String seed) {
 		HTTP_Callback<Return> callback = new HTTP_Callback<>();
 
 		RemoteServer server = service.get_server();
@@ -130,7 +130,7 @@ public class HTTP_LoadBalancing {
 
 	// ///////////////////////////////////////////http////////////////////////////////////////////////
 
-	private String do_http(RemoteNode node, String function, Map<String, String> name_value_pair, RequestType request_type) throws IOException, HTTP_Fail_Exception {
+	private String do_http(RemoteNode node, String function, Map<String, Object> name_value_pair, RequestType request_type) throws IOException, HTTP_Fail_Exception {
 		String url = new StringBuilder().append("http://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
 		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post -> ").append(url).toString());
@@ -148,7 +148,7 @@ public class HTTP_LoadBalancing {
 	}
 
 	// 通过异步callback取得返回值,不阻塞返回值
-	private void do_http_async(RemoteNode node, String function, Map<String, String> name_value_pair, RequestType request_type, Callback callback) throws IOException {
+	private void do_http_async(RemoteNode node, String function, Map<String, Object> name_value_pair, RequestType request_type, Callback callback) throws IOException {
 		String url = new StringBuilder().append("http://").append(node.getIp()).append(":").append(node.getHttp_port()).append("/").append(function).toString();
 		if (request_type == RequestType.POST) {
 			LOGGER.debug(new StringBuilder("post async -> ").append(url).toString());

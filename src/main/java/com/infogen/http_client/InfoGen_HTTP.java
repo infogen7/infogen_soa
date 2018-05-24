@@ -50,7 +50,7 @@ public class InfoGen_HTTP {
 
 	// /////////////////////////////////////////////////////////////////get/////////////////////////////////////////////////////////////
 	// get 获取 rest 资源
-	public static String do_get(String url, Map<String, String> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
+	public static String do_get(String url, Map<String, Object> params, Map<String, Object> headers) throws IOException, HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(concat_url_params(url, params));
 		add_headers(builder, headers);
 		Request request = builder.build();
@@ -62,7 +62,7 @@ public class InfoGen_HTTP {
 		}
 	}
 
-	public static void do_get_async(String url, Map<String, String> params, Callback callback, Map<String, String> headers) {
+	public static void do_get_async(String url, Map<String, Object> params, Callback callback, Map<String, Object> headers) {
 		Builder builder = new Request.Builder().url(concat_url_params(url, params));
 		add_headers(builder, headers);
 		Request request = builder.build();
@@ -74,12 +74,12 @@ public class InfoGen_HTTP {
 
 	// ////////////////////////////////////////////////////////post: form json xml///////////////////////////////////////////////////////////////////////////
 
-	public static String do_post(String url, Map<String, String> params, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
+	public static String do_post(String url, Map<String, Object> params, Map<String, Object> headers) throws IOException, HTTP_Fail_Exception {
 		okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(url);
 		add_headers(builder, headers);
 		okhttp3.FormBody.Builder form_builder = new FormBody.Builder();
-		for (Entry<String, String> entry : params.entrySet()) {
-			form_builder.add(entry.getKey(), entry.getValue());
+		for (Entry<String, Object> entry : params.entrySet()) {
+			form_builder.add(entry.getKey(), String.valueOf(entry.getValue()));
 		}
 		Request request = builder.post(form_builder.build()).build();
 		Response response = client.newCall(request).execute();
@@ -90,12 +90,12 @@ public class InfoGen_HTTP {
 		}
 	}
 
-	public static void do_post_async(String url, Map<String, String> params, Callback callback, Map<String, String> headers) throws IOException {
+	public static void do_post_async(String url, Map<String, Object> params, Callback callback, Map<String, Object> headers) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
 		okhttp3.FormBody.Builder form_builder = new FormBody.Builder();
-		for (Entry<String, String> entry : params.entrySet()) {
-			form_builder.add(entry.getKey(), entry.getValue());
+		for (Entry<String, Object> entry : params.entrySet()) {
+			form_builder.add(entry.getKey(), String.valueOf(entry.getValue()));
 		}
 		Request request = builder.post(form_builder.build()).build();
 		if (callback == null) {
@@ -107,7 +107,7 @@ public class InfoGen_HTTP {
 	/////////////////////////////////////////////////////////////////////////////////
 	public static final okhttp3.MediaType MEDIA_TYPE_JSON = okhttp3.MediaType.parse("application/json; charset=utf-8");//
 
-	public static String do_post_json(String url, String json, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
+	public static String do_post_json(String url, String json, Map<String, Object> headers) throws IOException, HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
 		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, json)).build();
@@ -119,7 +119,7 @@ public class InfoGen_HTTP {
 		}
 	}
 
-	public static void do_post_json_async(String url, String json, Callback callback, Map<String, String> headers) throws IOException {
+	public static void do_post_json_async(String url, String json, Callback callback, Map<String, Object> headers) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
 		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, json)).build();
@@ -132,7 +132,7 @@ public class InfoGen_HTTP {
 	//
 	public static final okhttp3.MediaType MEDIA_TYPE_XML = okhttp3.MediaType.parse("text/xml;charset=UTF-8");//
 
-	public static String do_post_xml(String url, String xml, Map<String, String> headers) throws IOException, HTTP_Fail_Exception {
+	public static String do_post_xml(String url, String xml, Map<String, Object> headers) throws IOException, HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
 		Request request = builder.post(RequestBody.create(MEDIA_TYPE_XML, xml)).build();
@@ -144,7 +144,7 @@ public class InfoGen_HTTP {
 		}
 	}
 
-	public static void do_post_xml_async(String url, String xml, Callback callback, Map<String, String> headers) throws IOException {
+	public static void do_post_xml_async(String url, String xml, Callback callback, Map<String, Object> headers) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
 		Request request = builder.post(RequestBody.create(MEDIA_TYPE_XML, xml)).build();
@@ -155,7 +155,7 @@ public class InfoGen_HTTP {
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
-	private static String concat_url_params(String url, Map<String, String> params) {
+	private static String concat_url_params(String url, Map<String, Object> params) {
 		if (params == null || params.isEmpty()) {
 			return url;
 		}
@@ -172,13 +172,13 @@ public class InfoGen_HTTP {
 		return url;
 	}
 
-	private static void add_headers(okhttp3.Request.Builder builder, Map<String, String> headers) {
+	private static void add_headers(okhttp3.Request.Builder builder, Map<String, Object> headers) {
 		if (headers == null) {
 			return;
 		}
 		headers.forEach((key, value) -> {
 			if (value != null) {
-				builder.header(key, value);
+				builder.header(key, String.valueOf(value));
 			}
 		});
 	}
