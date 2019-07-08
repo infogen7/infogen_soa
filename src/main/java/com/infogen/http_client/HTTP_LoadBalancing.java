@@ -9,7 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.infogen.InfoGen_CODE;
-import com.infogen.RemoteHTTPFunction.RequestType;
 import com.infogen.Service;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.http_client.callback.HTTP_Callback;
@@ -31,6 +30,11 @@ import okhttp3.Response;
  */
 public class HTTP_LoadBalancing {
 	private static final Logger LOGGER = LogManager.getLogger(HTTP_LoadBalancing.class.getName());
+
+	public enum RequestType {
+		POST, GET, POST_JSON, POST_XML
+	}
+
 	private Service service;
 
 	public HTTP_LoadBalancing(Service service) {
@@ -43,6 +47,9 @@ public class HTTP_LoadBalancing {
 
 	// 同步http调用
 	public Return http_blocking(String function, Map<String, Object> name_value_pair, RequestType request_type, String seed) {
+		function = function.startsWith("/") ? function.substring(1) : function;
+		seed = seed == null ? String.valueOf(Clock.system(InfoGen_Configuration.zoneid).millis()) : seed;
+
 		RemoteServer server = service.get_server();
 		if (server == null) {
 			LOGGER.error(InfoGen_CODE.service_notfound.message);
@@ -50,9 +57,6 @@ public class HTTP_LoadBalancing {
 		}
 
 		RemoteNode node = null;
-		if (seed == null) {
-			seed = String.valueOf(Clock.system(InfoGen_Configuration.zoneid).millis());
-		}
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			try {
@@ -61,6 +65,7 @@ public class HTTP_LoadBalancing {
 					LOGGER.error(InfoGen_CODE.node_unavailable.message);
 					return Return.create(InfoGen_CODE.node_unavailable.code, InfoGen_CODE.node_unavailable.message).put("service", service.get_server());
 				}
+				
 				String http = do_http(node, function, name_value_pair, request_type);
 				return Return.create(http);
 			} catch (HTTP_Fail_Exception e) {
@@ -72,11 +77,15 @@ public class HTTP_LoadBalancing {
 				continue;
 			}
 		}
+		
 		return Return.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put("service", service.get_server());
 	}
 
 	// 异步http调用
 	public HTTP_Callback<Return> http_async(String function, Map<String, Object> name_value_pair, RequestType request_type, String seed) {
+		function = function.startsWith("/") ? function.substring(1) : function;
+		seed = seed == null ? String.valueOf(Clock.system(InfoGen_Configuration.zoneid).millis()) : seed;
+
 		HTTP_Callback<Return> callback = new HTTP_Callback<>();
 
 		RemoteServer server = service.get_server();
@@ -85,10 +94,8 @@ public class HTTP_LoadBalancing {
 			callback.run(Return.create(InfoGen_CODE.service_notfound.code, InfoGen_CODE.service_notfound.message).put("service", service.get_server()));
 			return callback;
 		}
+
 		RemoteNode node = null;
-		if (seed == null) {
-			seed = String.valueOf(Clock.system(InfoGen_Configuration.zoneid).millis());
-		}
 		// 调用出错重试3次
 		for (int i = 0; i < 3; i++) {
 			node = server.random_node(seed);
@@ -97,6 +104,7 @@ public class HTTP_LoadBalancing {
 				callback.run(Return.create(InfoGen_CODE.node_unavailable.code, InfoGen_CODE.node_unavailable.message).put("service", service.get_server()));
 				return callback;
 			}
+			
 			try {
 				do_http_async(node, function, name_value_pair, request_type, new Callback() {
 					@Override

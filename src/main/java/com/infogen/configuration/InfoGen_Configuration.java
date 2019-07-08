@@ -47,8 +47,8 @@ public class InfoGen_Configuration {
 	public final static Charset charset = StandardCharsets.UTF_8;
 
 	public String zookeeper;
-	public final RegisterNode register_node = new RegisterNode();
 	public final RegisterServer register_server = new RegisterServer();
+	public final RegisterNode register_node = new RegisterNode();
 	public final ServiceFunctions service_functions = new ServiceFunctions();
 	// ////////////////////////////////////////////读取自身配置/////////////////////////////////////////////
 

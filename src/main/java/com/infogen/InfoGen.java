@@ -88,6 +88,7 @@ public class InfoGen {
 		return this;
 	}
 
+	////////////////////////////////////// register server /////////////////////////////////////////////////////
 	/**
 	 * 注册当前服务的节点到 SOA
 	 * 
@@ -132,6 +133,52 @@ public class InfoGen {
 		return this;
 	}
 
+	////////////////////////////////////// get server /////////////////////////////////////////////////////
+	// 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
+	public static RemoteServer get_server(String server_name) {
+		RemoteServer server = CACHE_SERVER.depend_server.get(server_name);
+		if (server != null) {
+			return server;
+		}
+		return init_server(server_name, (native_server) -> {
+		});
+	}
+
+	// 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
+	public static RemoteServer get_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
+		RemoteServer server = CACHE_SERVER.depend_server.get(server_name);
+		if (server != null) {
+			return server;
+		}
+		return init_server(server_name, server_loaded_handle);
+	}
+
+	// 初始化服务,每个服务只会拉取一次
+	public static RemoteServer init_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
+		RemoteServer server = CACHE_SERVER.cache_server_single(server_name, server_loaded_handle);
+		if (server != null) {
+			return server;
+		}
+		LOGGER.warn("没有找到可用服务:".concat(server_name));
+		return server;
+	}
+
+	// ////////////////////////////////////////// AOP /////////////////////////////////////////////////////
+	private static Boolean isAOP = false;
+
+	/**
+	 * 启动 AOP 功能 ， 默认会在 InfoGen_Listener 或 InfoGen_RPC_Filter初始化的时候加载
+	 */
+	public static void aop() {
+		if (isAOP) {
+			LOGGER.warn("AOP 已经开启");
+			return;
+		}
+		isAOP = true;
+		LOGGER.info("开启 AOP");
+		AOP.getInstance().advice();
+	}
+
 	/**
 	 * 开启 @Execution 的日志追踪功能 使用 InfoGen_AOP_Handle_Execution
 	 * 
@@ -144,6 +191,7 @@ public class InfoGen {
 		return this;
 	}
 
+	//////////////////////////////////////// service ////////////////////////////////////////////////
 	private InfoGen_Jetty infogen_http;
 
 	public InfoGen_Jetty getInfogen_http() {
@@ -213,52 +261,6 @@ public class InfoGen {
 	 */
 	public void join() throws InterruptedException {
 		Thread.currentThread().join();
-	}
-
-	// ////////////////////////////////////////// AOP /////////////////////////////////////////////////////
-	private static Boolean isAOP = false;
-
-	/**
-	 * 启动 AOP 功能 ， 默认会在 InfoGen_HTTP_Filter 初始化的时候加载
-	 */
-	public static void aop() {
-		if (isAOP) {
-			LOGGER.warn("AOP 已经开启");
-			return;
-		}
-		isAOP = true;
-		LOGGER.info("开启 AOP");
-		AOP.getInstance().advice();
-	}
-
-	////////////////////////////////////// 获取服务 /////////////////////////////////////////////////////
-	// 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
-	public static RemoteServer get_server(String server_name) {
-		RemoteServer server = CACHE_SERVER.depend_server.get(server_name);
-		if (server != null) {
-			return server;
-		}
-		return init_server(server_name, (native_server) -> {
-		});
-	}
-
-	// 获取一个服务的缓存数据,如果没有则初始化拉取这个服务,并指定节点拉取完成的事件
-	public static RemoteServer get_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
-		RemoteServer server = CACHE_SERVER.depend_server.get(server_name);
-		if (server != null) {
-			return server;
-		}
-		return init_server(server_name, server_loaded_handle);
-	}
-
-	// 初始化服务,每个服务只会拉取一次
-	public static RemoteServer init_server(String server_name, InfoGen_Loaded_Handle_Server server_loaded_handle) {
-		RemoteServer server = CACHE_SERVER.cache_server_single(server_name, server_loaded_handle);
-		if (server != null) {
-			return server;
-		}
-		LOGGER.warn("没有找到可用服务:".concat(server_name));
-		return server;
 	}
 
 }
