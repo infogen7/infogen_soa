@@ -110,7 +110,7 @@ public class InfoGen_HTTP {
 	public static String do_post_json(String url, String json, Map<String, Object> headers) throws IOException, HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
-		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, json)).build();
+		Request request = builder.post(RequestBody.create(json, MEDIA_TYPE_JSON)).build();
 		Response response = client.newCall(request).execute();
 		if (response.isSuccessful()) {
 			return response.body().string();
@@ -122,7 +122,7 @@ public class InfoGen_HTTP {
 	public static void do_post_json_async(String url, String json, Callback callback, Map<String, Object> headers) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
-		Request request = builder.post(RequestBody.create(MEDIA_TYPE_JSON, json)).build();
+		Request request = builder.post(RequestBody.create(json, MEDIA_TYPE_JSON)).build();
 		if (callback == null) {
 			callback = async_post_callback;
 		}
@@ -135,7 +135,7 @@ public class InfoGen_HTTP {
 	public static String do_post_xml(String url, String xml, Map<String, Object> headers) throws IOException, HTTP_Fail_Exception {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
-		Request request = builder.post(RequestBody.create(MEDIA_TYPE_XML, xml)).build();
+		Request request = builder.post(RequestBody.create(xml, MEDIA_TYPE_XML)).build();
 		Response response = client.newCall(request).execute();
 		if (response.isSuccessful()) {
 			return response.body().string();
@@ -147,7 +147,7 @@ public class InfoGen_HTTP {
 	public static void do_post_xml_async(String url, String xml, Callback callback, Map<String, Object> headers) throws IOException {
 		Builder builder = new Request.Builder().url(url);
 		add_headers(builder, headers);
-		Request request = builder.post(RequestBody.create(MEDIA_TYPE_XML, xml)).build();
+		Request request = builder.post(RequestBody.create(xml, MEDIA_TYPE_XML)).build();
 		if (callback == null) {
 			callback = async_post_callback;
 		}
