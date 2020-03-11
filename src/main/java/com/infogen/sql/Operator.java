@@ -9,5 +9,5 @@ import java.io.Serializable;
 public abstract class Operator implements Serializable {
 	private static final long serialVersionUID = -7735467654296659101L;
 
-	public abstract String to_filter();
+	public abstract String sql();
 }

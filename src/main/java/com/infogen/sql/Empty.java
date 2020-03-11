@@ -10,12 +10,19 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 public class Empty extends Operator {
 	private static final long serialVersionUID = 5733165376281048683L;
 
-	public Empty() {
+	private Boolean pass = true;
+
+	public Empty(Boolean pass) {
 		super();
+		this.pass = pass;
 	}
 
-	public String to_filter() {
-		return " 1 = 1 ";
+	public String sql() {
+		if (pass) {
+			return " 1 = 1 ";
+		} else {
+			return " 1 != 1 ";
+		}
 	}
 
 }

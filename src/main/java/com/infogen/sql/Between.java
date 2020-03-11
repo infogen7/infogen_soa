@@ -21,11 +21,19 @@ public class Between extends Operator {
 	private Number min = null;
 	private Number max = null;
 
-	public String to_filter() {
+	public String sql() {
 		if (key == null || key.isEmpty() || min == null || max == null) {
 			return " 1 = 1 ";
 		}
-		return new StringBuilder().append(" ").append(key).append(" BETWEEN ").append(min).append(" AND ").append(max).toString();
+
+		StringBuilder string_builder = new StringBuilder();
+		string_builder.append(" ");
+		string_builder.append(key);
+		string_builder.append(" BETWEEN ");
+		string_builder.append(min);
+		string_builder.append(" AND ");
+		string_builder.append(max);
+		return string_builder.toString();
 	}
 
 	/**

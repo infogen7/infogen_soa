@@ -29,21 +29,25 @@ public class IN extends Operator {
 		items.add(item);
 	}
 
-	public String to_filter() {
+	public String sql() {
 		if (key == null || key.trim().isEmpty() || items.isEmpty()) {
 			return " 1 = 1 ";
 		}
+
 		StringBuilder string_builder = new StringBuilder();
 		string_builder.append(" ").append(key).append(" IN ");
 		string_builder.append("(");
-		for (int i = 0; i < items.size(); i++) {
+
+		for (int i = 0, size = items.size(); i < size; i++) {
 			string_builder.append("'");
 			string_builder.append(items.get(i));
 			string_builder.append("'");
-			if (i != items.size() - 1) {
+
+			if (i != size - 1) {
 				string_builder.append(" , ");
 			}
 		}
+
 		string_builder.append(")");
 		return string_builder.toString();
 	}

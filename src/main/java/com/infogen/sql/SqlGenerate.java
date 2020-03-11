@@ -13,7 +13,7 @@ import com.infogen.json.JSONObject;
 public class SqlGenerate {
 
 	public Operator generate(JSONObject jsonobject) throws JsonProcessingException, IOException {
-		Operator operator = new Empty();
+		Operator operator = new Empty(true);
 
 		String type = jsonobject.getAsString("type", "");
 		String key = jsonobject.getAsString("key", "");

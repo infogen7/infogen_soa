@@ -19,10 +19,11 @@ public class Like extends Operator {
 	public String key = "";
 	private String value = "";
 
-	public String to_filter() {
+	public String sql() {
 		if (key == null || key.trim().isEmpty() || value == null || value.trim().isEmpty()) {
 			return " 1 = 1 ";
 		}
+
 		StringBuilder string_builder = new StringBuilder();
 		string_builder.append(" ").append(key).append(" like ");
 		string_builder.append("'");

@@ -19,12 +19,15 @@ public class EQ extends Operator {
 	public String key = "";
 	private String value = "";
 
-	public String to_filter() {
+	public String sql() {
 		if (key == null || key.trim().isEmpty() || value == null || value.trim().isEmpty()) {
 			return " 1 = 1 ";
 		}
+
 		StringBuilder string_builder = new StringBuilder();
-		string_builder.append(" ").append(key).append(" = ");
+		string_builder.append(" ");
+		string_builder.append(key);
+		string_builder.append(" = ");
 		string_builder.append("'");
 		string_builder.append(value);
 		string_builder.append("'");

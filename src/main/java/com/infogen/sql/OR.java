@@ -26,23 +26,31 @@ public class OR extends Operator {
 		items.add(item);
 	}
 
-	public String to_filter() {
+	public String sql() {
 		Integer size = items.size();
+
 		if (size == 0) {
 			return " 1 = 1 ";
-		} else if (size == 1) {
-			return items.get(0).to_filter();
-		} else {
-			StringBuilder string_builder = new StringBuilder();
-			string_builder.append("(");
-			for (int i = 0; i < items.size(); i++) {
-				Operator operation = items.get(i);
-				string_builder.append(operation.to_filter());
-				if (i != size - 1) {
-					string_builder.append(" OR ");
-				}
-			}
-			return string_builder.append(")").toString();
 		}
+
+		if (size == 1) {
+			return items.get(0).sql();
+		}
+
+		// size > 1
+		StringBuilder string_builder = new StringBuilder();
+		string_builder.append("(");
+
+		for (int i = 0; i < size; i++) {
+			Operator operation = items.get(i);
+
+			string_builder.append(operation.sql());
+			if (i != size - 1) {
+				string_builder.append(" OR ");
+			}
+		}
+
+		string_builder.append(")");
+		return string_builder.toString();
 	}
 }

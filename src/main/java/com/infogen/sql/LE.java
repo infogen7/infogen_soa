@@ -19,11 +19,18 @@ public class LE extends Operator {
 	public String key = "";
 	private Number value = null;
 
-	public String to_filter() {
+	public String sql() {
 		if (key == null || key.trim().isEmpty() || value == null) {
 			return " 1 = 1 ";
 		}
-		return new StringBuilder().append(" ").append(key).append(" <= ").append(value).append(" ").toString();
+
+		StringBuilder string_builder = new StringBuilder();
+		string_builder.append(" ");
+		string_builder.append(key);
+		string_builder.append(" <= ");
+		string_builder.append(value);
+		string_builder.append(" ");
+		return string_builder.toString();
 	}
 
 	/**
