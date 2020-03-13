@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.infogen.json.JSONObject;
 import com.infogen.json.Jackson;
@@ -17,6 +20,8 @@ import com.infogen.json.Jackson;
  */
 public class Return extends JSONObject {
 	private static final long serialVersionUID = 2203513787220720192L;
+
+	private static final Logger LOGGER = LogManager.getLogger(Return.class.getName());
 
 	private enum Return_Fields {
 		code, message
@@ -55,7 +60,11 @@ public class Return extends JSONObject {
 
 	@Override
 	public Return put(String key, Object value) {
-		super.put(key, value);
+		if (Return_Fields.code.name().equals(key) || Return_Fields.message.name().equals(key)) {
+			LOGGER.error("Return: key 不可以为 'code' 或 'message'");
+		} else {
+			super.put(key, value);
+		}
 		return this;
 	}
 }
