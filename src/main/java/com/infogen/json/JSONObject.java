@@ -45,27 +45,27 @@ public class JSONObject extends HashMap<String, Object> {
 
 	public Boolean getAsBoolean(String key, Boolean _default) {
 		Object object = this.get(key);
-		return object != null ? Boolean.valueOf(object.toString()) : _default;
+		return object != null && object.toString().trim().isEmpty() == false ? Boolean.valueOf(object.toString()) : _default;
 	}
 
 	public Long getAsLong(String key, Long _default) {
 		Object object = this.get(key);
-		return object != null ? Long.valueOf(object.toString()) : _default;
+		return object != null && object.toString().trim().isEmpty() == false ? Long.valueOf(object.toString()) : _default;
 	}
 
 	public Integer getAsInteger(String key, Integer _default) {
 		Object object = this.get(key);
-		return object != null ? Integer.valueOf(object.toString()) : _default;
+		return object != null && object.toString().trim().isEmpty() == false ? Integer.valueOf(object.toString()) : _default;
 	}
 
 	public Double getAsDouble(String key, Double _default) {
 		Object object = this.get(key);
-		return object != null ? Double.valueOf(object.toString()) : _default;
+		return object != null && object.toString().trim().isEmpty() == false ? Double.valueOf(object.toString()) : _default;
 	}
 
 	public Float getAsFloat(String key, Float _default) {
 		Object object = this.get(key);
-		return object != null ? Float.valueOf(object.toString()) : _default;
+		return object != null && object.toString().trim().isEmpty() == false ? Float.valueOf(object.toString()) : _default;
 	}
 
 	public JSONObject getAsJSONObject(String key) throws JsonProcessingException, IOException {
