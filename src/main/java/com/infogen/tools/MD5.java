@@ -12,7 +12,7 @@ import java.security.NoSuchAlgorithmException;
 public class MD5 {
 
 	/**
-	 * @param password
+	 * @param text
 	 *            密码
 	 * @param salt
 	 *            盐值
