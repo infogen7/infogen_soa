@@ -20,9 +20,9 @@ public class MD5 {
 	 * @throws NoSuchAlgorithmException
 	 *             加密异常
 	 */
-	public static String create(String password, String salt) throws NoSuchAlgorithmException {
+	public static String create(String text, String salt) throws NoSuchAlgorithmException {
 		MessageDigest instance = MessageDigest.getInstance("MD5");
-		instance.update((password + "{" + salt.toString() + "}").getBytes(Charset.forName("UTF-8")));
+		instance.update((text + "{" + salt.toString() + "}").getBytes(Charset.forName("UTF-8")));
 		char hexDigits[] = { // 用来将字节转换成 16 进制表示的字符
 				'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 		byte tmp[] = instance.digest(); // MD5 的计算结果是一个 128 位的长整数，用字节表示就是 16 个字节
@@ -36,9 +36,9 @@ public class MD5 {
 		return new String(str);
 	}
 
-	public static String create(String password) throws NoSuchAlgorithmException {
+	public static String create(String text) throws NoSuchAlgorithmException {
 		MessageDigest instance = MessageDigest.getInstance("MD5");
-		instance.update((password).getBytes(Charset.forName("UTF-8")));
+		instance.update((text).getBytes(Charset.forName("UTF-8")));
 		char hexDigits[] = { // 用来将字节转换成 16 进制表示的字符
 				'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 		byte tmp[] = instance.digest(); // MD5 的计算结果是一个 128 位的长整数，用字节表示就是 16 个字节
