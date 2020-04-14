@@ -1,4 +1,4 @@
-package com.infogen.sql;
+package com.infogen.tools;
 
 import java.util.regex.Pattern;
 

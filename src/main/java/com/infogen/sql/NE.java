@@ -10,16 +10,28 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 public class NE extends Operator {
 	private static final long serialVersionUID = 2020502685563180302L;
 
-	public NE(String key, String value, Boolean is_varname) {
+	public NE(String key, String value, Boolean is_string_value) {
 		super();
 		this.key = key;
 		this.value = value;
-		this.compare_varname = is_varname;
+		this.is_string_value = is_string_value;
+	}
+
+	public NE(String key, String value) {
+		super();
+		this.key = key;
+		this.value = value;
+	}
+
+	public NE(String key, Number value) {
+		super();
+		this.key = key;
+		this.value = value.toString();
 	}
 
 	public String key = "";
 	private String value = "";
-	private Boolean compare_varname = false;
+	private Boolean is_string_value = false;
 
 	public String sql() {
 		if (key == null || key.trim().isEmpty() || value == null || value.trim().isEmpty()) {
@@ -30,12 +42,12 @@ public class NE extends Operator {
 		string_builder.append(" ");
 		string_builder.append(key);
 		string_builder.append(" != ");
-		if (compare_varname) {
+		if (is_string_value) {
+			string_builder.append("'");
 			string_builder.append(value);
+			string_builder.append("'");
 		} else {
-			string_builder.append("'");
 			string_builder.append(value);
-			string_builder.append("'");
 		}
 		string_builder.append(" ");
 		return string_builder.toString();

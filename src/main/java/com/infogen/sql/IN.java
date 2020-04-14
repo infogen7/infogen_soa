@@ -22,8 +22,18 @@ public class IN extends Operator {
 		}
 	}
 
+	public IN(String key, Number... items) {
+		super();
+		this.key = key;
+		for (Number string : items) {
+			this.items.add(string.toString());
+		}
+		this.compare_number = true;
+	}
+
 	public String key = "";
 	private List<String> items = new ArrayList<>();
+	private Boolean compare_number = false;
 
 	public void add(String item) {
 		items.add(item);
@@ -39,9 +49,13 @@ public class IN extends Operator {
 		string_builder.append("(");
 
 		for (int i = 0, size = items.size(); i < size; i++) {
-			string_builder.append("'");
-			string_builder.append(items.get(i));
-			string_builder.append("'");
+			if (compare_number) {
+				string_builder.append(items.get(i));
+			} else {
+				string_builder.append("'");
+				string_builder.append(items.get(i));
+				string_builder.append("'");
+			}
 
 			if (i != size - 1) {
 				string_builder.append(" , ");
