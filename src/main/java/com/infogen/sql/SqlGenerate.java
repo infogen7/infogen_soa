@@ -51,15 +51,15 @@ public class SqlGenerate {
 		} else if (type.equals("NE")) {
 			operator = new NE(key, jsonobject.getAsString("value", null));
 		} else if (type.equals("GT")) {
-			operator = new GT(key, jsonobject.getAsDouble("value", null));
+			operator = new GT(key, jsonobject.getAsString("value", null));
 		} else if (type.equals("LT")) {
-			operator = new LT(key, jsonobject.getAsDouble("value", null));
+			operator = new LT(key, jsonobject.getAsString("value", null));
 		} else if (type.equals("GE")) {
-			operator = new GE(key, jsonobject.getAsDouble("value", null));
+			operator = new GE(key, jsonobject.getAsString("value", null));
 		} else if (type.equals("LE")) {
-			operator = new LE(key, jsonobject.getAsDouble("value", null));
+			operator = new LE(key, jsonobject.getAsString("value", null));
 		} else if (type.equals("BETWEEN")) {
-			operator = new Between(key, jsonobject.getAsDouble("min", null), jsonobject.getAsDouble("max", null));
+			operator = new Between(key, jsonobject.getAsString("min", null), jsonobject.getAsString("max", null));
 		}
 		return operator;
 	}

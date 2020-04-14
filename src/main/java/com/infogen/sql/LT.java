@@ -11,14 +11,14 @@ public class LT extends Operator {
 
 	private static final long serialVersionUID = 1412101728540937357L;
 
-	public LT(String key, Number value) {
+	public LT(String key, String value) {
 		super();
 		this.key = key;
 		this.value = value;
 	}
 
 	public String key = "";
-	private Number value = null;
+	private String value = null;
 
 	public String sql() {
 		if (key == null || key.trim().isEmpty() || value == null) {
@@ -37,7 +37,7 @@ public class LT extends Operator {
 	/**
 	 * @return the value
 	 */
-	public Number getValue() {
+	public String getValue() {
 		return value;
 	}
 
@@ -45,7 +45,7 @@ public class LT extends Operator {
 	 * @param value
 	 *            the value to set
 	 */
-	public void setValue(Number value) {
+	public void setValue(String value) {
 		this.value = value;
 	}
 

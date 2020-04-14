@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
  */
 public class SqlValidation {
 	// 判断是否存在sql注入
-	public static Boolean is_sql_safety(String string) {
+	private static Boolean is_sql_safety(String string) {
 		if (null == string || string.trim().length() == 0) {
 			return false;
 		}

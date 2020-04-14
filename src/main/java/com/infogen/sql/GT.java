@@ -10,14 +10,14 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 public class GT extends Operator {
 	private static final long serialVersionUID = -6016383539821071462L;
 
-	public GT(String key, Number value) {
+	public GT(String key, String value) {
 		super();
 		this.key = key;
 		this.value = value;
 	}
 
 	public String key = "";
-	private Number value = null;
+	private String value = null;
 
 	public String sql() {
 		if (key == null || key.trim().isEmpty() || value == null) {
@@ -36,7 +36,7 @@ public class GT extends Operator {
 	/**
 	 * @return the value
 	 */
-	public Number getValue() {
+	public String getValue() {
 		return value;
 	}
 
@@ -44,7 +44,7 @@ public class GT extends Operator {
 	 * @param value
 	 *            the value to set
 	 */
-	public void setValue(Number value) {
+	public void setValue(String value) {
 		this.value = value;
 	}
 

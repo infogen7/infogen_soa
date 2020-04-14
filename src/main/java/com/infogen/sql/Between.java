@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 public class Between extends Operator {
 	private static final long serialVersionUID = -4232996750996709020L;
 
-	public Between(String key, Number min, Number max) {
+	public Between(String key, String min, String max) {
 		super();
 		this.key = key;
 		this.min = min;
@@ -18,8 +18,8 @@ public class Between extends Operator {
 	}
 
 	public String key = "";
-	private Number min = null;
-	private Number max = null;
+	private String min = null;
+	private String max = null;
 
 	public String sql() {
 		if (key == null || key.isEmpty() || min == null || max == null) {
@@ -39,7 +39,7 @@ public class Between extends Operator {
 	/**
 	 * @return the min
 	 */
-	public Number getMin() {
+	public String getMin() {
 		return min;
 	}
 
@@ -47,7 +47,7 @@ public class Between extends Operator {
 	 * @param min
 	 *            the min to set
 	 */
-	public void setMin(Number min) {
+	public void setMin(String min) {
 		this.min = min;
 	}
 
@@ -69,7 +69,7 @@ public class Between extends Operator {
 	/**
 	 * @return the max
 	 */
-	public Number getMax() {
+	public String getMax() {
 		return max;
 	}
 
@@ -77,7 +77,7 @@ public class Between extends Operator {
 	 * @param max
 	 *            the max to set
 	 */
-	public void setMax(Number max) {
+	public void setMax(String max) {
 		this.max = max;
 	}
 
