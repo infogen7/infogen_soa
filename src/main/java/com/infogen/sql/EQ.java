@@ -10,12 +10,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 public class EQ extends Operator {
 	private static final long serialVersionUID = 757844916520032852L;
 
-	public EQ(String key, String value) {
-		super();
-		this.key = key;
-		this.value = value;
-	}
-
 	public EQ(String key, String value, Boolean is_varname) {
 		super();
 		this.key = key;

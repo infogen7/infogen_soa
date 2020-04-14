@@ -47,9 +47,9 @@ public class SqlGenerate {
 			}
 			operator = notin;
 		} else if (type.equals("EQ")) {
-			operator = new EQ(key, jsonobject.getAsString("value", null));
+			operator = new EQ(key, jsonobject.getAsString("value", null), false);
 		} else if (type.equals("NE")) {
-			operator = new NE(key, jsonobject.getAsString("value", null));
+			operator = new NE(key, jsonobject.getAsString("value", null), false);
 		} else if (type.equals("GT")) {
 			operator = new GT(key, jsonobject.getAsDouble("value", null));
 		} else if (type.equals("LT")) {

@@ -10,12 +10,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 public class NE extends Operator {
 	private static final long serialVersionUID = 2020502685563180302L;
 
-	public NE(String key, String value) {
-		super();
-		this.key = key;
-		this.value = value;
-	}
-
 	public NE(String key, String value, Boolean is_varname) {
 		super();
 		this.key = key;
