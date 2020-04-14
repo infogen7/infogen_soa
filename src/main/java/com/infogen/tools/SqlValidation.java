@@ -1,5 +1,6 @@
 package com.infogen.tools;
 
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -21,6 +22,16 @@ public class SqlValidation {
 		for (int i = 0; i < item_array.length; i++) {
 			String string = item_array[i];
 
+			if (is_sql_safety(string) == false) {
+				has = false;
+			}
+		}
+		return has;
+	}
+
+	public static Boolean is_sql_safety(Set<String> item_array) {
+		Boolean has = true;
+		for (String string : item_array) {
 			if (is_sql_safety(string) == false) {
 				has = false;
 			}
