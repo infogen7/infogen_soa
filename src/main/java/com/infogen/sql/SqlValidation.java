@@ -1,7 +1,5 @@
 package com.infogen.sql;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -18,16 +16,16 @@ public class SqlValidation {
 		return Pattern.compile("^[-_0-9a-zA-Z\\u4e00-\\u9fa5]{1,32}$").matcher(string).matches() && string.indexOf("--") == -1;
 	}
 
-	public static String[] is_sql_safety(String[] item_array) {
-		List<String> return_list = new ArrayList<>();
+	public static Boolean is_sql_safety(String... item_array) {
+		Boolean has = true;
 		for (int i = 0; i < item_array.length; i++) {
 			String string = item_array[i];
 
-			if (is_sql_safety(string)) {
-				return_list.add(string);
+			if (is_sql_safety(string) == false) {
+				has = false;
 			}
 		}
-		return return_list.toArray(new String[] {});
+		return has;
 	}
 
 }
