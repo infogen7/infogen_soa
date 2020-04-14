@@ -11,6 +11,12 @@ public class LT extends Operator {
 
 	private static final long serialVersionUID = 1412101728540937357L;
 
+	public LT(String key, Number value) {
+		super();
+		this.key = key;
+		this.value = value.toString();
+	}
+
 	public LT(String key, String value) {
 		super();
 		this.key = key;

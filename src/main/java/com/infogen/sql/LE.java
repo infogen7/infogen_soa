@@ -10,6 +10,12 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 public class LE extends Operator {
 	private static final long serialVersionUID = -4232996750996709020L;
 
+	public LE(String key, Number value) {
+		super();
+		this.key = key;
+		this.value = value.toString();
+	}
+
 	public LE(String key, String value) {
 		super();
 		this.key = key;

@@ -10,6 +10,13 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 public class Between extends Operator {
 	private static final long serialVersionUID = -4232996750996709020L;
 
+	public Between(String key, Number min, Number max) {
+		super();
+		this.key = key;
+		this.min = min.toString();
+		this.max = max.toString();
+	}
+
 	public Between(String key, String min, String max) {
 		super();
 		this.key = key;

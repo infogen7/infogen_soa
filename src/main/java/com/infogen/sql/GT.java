@@ -10,6 +10,12 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 public class GT extends Operator {
 	private static final long serialVersionUID = -6016383539821071462L;
 
+	public GT(String key, Number value) {
+		super();
+		this.key = key;
+		this.value = value.toString();
+	}
+
 	public GT(String key, String value) {
 		super();
 		this.key = key;

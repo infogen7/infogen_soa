@@ -16,8 +16,16 @@ public class EQ extends Operator {
 		this.value = value;
 	}
 
+	public EQ(String key, String value, Boolean is_varname) {
+		super();
+		this.key = key;
+		this.value = value;
+		this.compare_varname = is_varname;
+	}
+
 	public String key = "";
 	private String value = "";
+	private Boolean compare_varname = false;
 
 	public String sql() {
 		if (key == null || key.trim().isEmpty() || value == null || value.trim().isEmpty()) {
@@ -28,9 +36,13 @@ public class EQ extends Operator {
 		string_builder.append(" ");
 		string_builder.append(key);
 		string_builder.append(" = ");
-		string_builder.append("'");
-		string_builder.append(value);
-		string_builder.append("'");
+		if (compare_varname) {
+			string_builder.append(value);
+		} else {
+			string_builder.append("'");
+			string_builder.append(value);
+			string_builder.append("'");
+		}
 		string_builder.append(" ");
 		return string_builder.toString();
 	}
