@@ -23,6 +23,12 @@ public class EQ extends Operator {
 		this.value = value.toString();
 	}
 
+	public EQ(String key, Boolean value) {
+		super();
+		this.key = key;
+		this.value = value.toString();
+	}
+
 	public String key = "";
 	private String value = "";
 	private Boolean is_string_value = false;
