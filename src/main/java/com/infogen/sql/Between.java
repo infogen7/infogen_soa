@@ -24,6 +24,20 @@ public class Between extends Operator {
 		this.max = max;
 	}
 
+	public Between(String key, Number min, String max) {
+		super();
+		this.key = key;
+		this.min = min.toString();
+		this.max = max;
+	}
+
+	public Between(String key, String min, Number max) {
+		super();
+		this.key = key;
+		this.min = min;
+		this.max = max.toString();
+	}
+
 	public String key = "";
 	private String min = null;
 	private String max = null;
