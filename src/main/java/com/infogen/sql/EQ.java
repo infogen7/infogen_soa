@@ -17,12 +17,6 @@ public class EQ extends Operator {
 		this.is_string_value = is_string_value;
 	}
 
-	public EQ(String key, String value) {
-		super();
-		this.key = key;
-		this.value = value;
-	}
-
 	public EQ(String key, Number value) {
 		super();
 		this.key = key;

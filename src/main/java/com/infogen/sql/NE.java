@@ -17,12 +17,6 @@ public class NE extends Operator {
 		this.is_string_value = is_string_value;
 	}
 
-	public NE(String key, String value) {
-		super();
-		this.key = key;
-		this.value = value;
-	}
-
 	public NE(String key, Number value) {
 		super();
 		this.key = key;
