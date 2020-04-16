@@ -10,10 +10,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
  * @version 创建时间 2017年9月26日 上午11:18:48
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, setterVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class NOTIN extends Operator {
+public class NotIN extends Operator {
 	private static final long serialVersionUID = 103243415527557652L;
 
-	public NOTIN(String key, String... items) {
+	public NotIN(String key, String... items) {
 		super();
 		this.key = key;
 		for (String string : items) {
@@ -21,7 +21,7 @@ public class NOTIN extends Operator {
 		}
 	}
 
-	public NOTIN(String key, Number... items) {
+	public NotIN(String key, Number... items) {
 		super();
 		this.key = key;
 		for (Number string : items) {

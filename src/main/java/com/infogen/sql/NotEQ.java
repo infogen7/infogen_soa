@@ -7,23 +7,23 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
  * @version 创建时间 2017年9月26日 上午10:33:28
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, setterVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class NE extends Operator {
+public class NotEQ extends Operator {
 	private static final long serialVersionUID = 2020502685563180302L;
 
-	public NE(String key, String value, Boolean is_string_value) {
+	public NotEQ(String key, String value, Boolean is_string_value) {
 		super();
 		this.key = key;
 		this.value = value;
 		this.is_string_value = is_string_value;
 	}
 
-	public NE(String key, Number value) {
+	public NotEQ(String key, Number value) {
 		super();
 		this.key = key;
 		this.value = value.toString();
 	}
 
-	public NE(String key, Boolean value) {
+	public NotEQ(String key, Boolean value) {
 		super();
 		this.key = key;
 		this.value = value.toString();
