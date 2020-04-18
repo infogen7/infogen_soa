@@ -19,7 +19,7 @@ public class Service_Notfound_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public Integer code() {
-		return InfoGen_CODE.service_notfound.code;
+		return InfoGen_CODE.notfound_service.code;
 	}
 
 	/*
@@ -29,7 +29,7 @@ public class Service_Notfound_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public String name() {
-		return InfoGen_CODE.service_notfound.name();
+		return InfoGen_CODE.notfound_service.name();
 	}
 
 	/*
@@ -39,7 +39,7 @@ public class Service_Notfound_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public String message() {
-		return InfoGen_CODE.service_notfound.message;
+		return InfoGen_CODE.notfound_service.message;
 	}
 
 }

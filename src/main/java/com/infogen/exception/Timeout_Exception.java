@@ -19,7 +19,7 @@ public class Timeout_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public Integer code() {
-		return InfoGen_CODE.timeout.code;
+		return InfoGen_CODE.error_timeout.code;
 	}
 
 	/*
@@ -29,7 +29,7 @@ public class Timeout_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public String name() {
-		return InfoGen_CODE.timeout.name();
+		return InfoGen_CODE.error_timeout.name();
 	}
 
 	/*
@@ -39,7 +39,7 @@ public class Timeout_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public String message() {
-		return InfoGen_CODE.timeout.message;
+		return InfoGen_CODE.error_timeout.message;
 	}
 
 }

@@ -52,8 +52,8 @@ public class HTTP_LoadBalancing {
 
 		RemoteServer server = service.get_server();
 		if (server == null) {
-			LOGGER.error(InfoGen_CODE.service_notfound.message);
-			return Return.create(InfoGen_CODE.service_notfound.code, InfoGen_CODE.service_notfound.message).put("service", service.get_server());
+			LOGGER.error(InfoGen_CODE.notfound_service.message);
+			return Return.create(InfoGen_CODE.notfound_service.code, InfoGen_CODE.notfound_service.message).put("service", service.get_server());
 		}
 
 		RemoteNode node = null;
@@ -62,12 +62,12 @@ public class HTTP_LoadBalancing {
 			try {
 				node = server.random_node(seed);
 				if (node == null) {
-					LOGGER.error(InfoGen_CODE.node_unavailable.message);
-					return Return.create(InfoGen_CODE.node_unavailable.code, InfoGen_CODE.node_unavailable.message).put("service", service.get_server());
+					LOGGER.error(InfoGen_CODE.notfound_node.message);
+					return Return.create(InfoGen_CODE.notfound_node.code, InfoGen_CODE.notfound_node.message).put("service", service.get_server());
 				}
 
-				String http = do_http(node, function, name_value_pair, request_type);
-				return Return.create(http);
+				String http_body = do_http(node, function, name_value_pair, request_type);
+				return Return.create(InfoGen_CODE.success.code, "提交成功").put(http_body);
 			} catch (HTTP_Fail_Exception e) {
 				LOGGER.warn("调用失败", e);
 				return Return.create(e.getCode(), e.getMessage()).put("service", service.get_server());
@@ -90,8 +90,8 @@ public class HTTP_LoadBalancing {
 
 		RemoteServer server = service.get_server();
 		if (server == null) {
-			LOGGER.error(InfoGen_CODE.service_notfound.message);
-			callback.run(Return.create(InfoGen_CODE.service_notfound.code, InfoGen_CODE.service_notfound.message).put("service", service.get_server()));
+			LOGGER.error(InfoGen_CODE.notfound_service.message);
+			callback.run(Return.create(InfoGen_CODE.notfound_service.code, InfoGen_CODE.notfound_service.message).put("service", service.get_server()));
 			return callback;
 		}
 
@@ -100,8 +100,8 @@ public class HTTP_LoadBalancing {
 		for (int i = 0; i < 3; i++) {
 			node = server.random_node(seed);
 			if (node == null) {
-				LOGGER.error(InfoGen_CODE.node_unavailable.message);
-				callback.run(Return.create(InfoGen_CODE.node_unavailable.code, InfoGen_CODE.node_unavailable.message).put("service", service.get_server()));
+				LOGGER.error(InfoGen_CODE.notfound_node.message);
+				callback.run(Return.create(InfoGen_CODE.notfound_node.code, InfoGen_CODE.notfound_node.message).put("service", service.get_server()));
 				return callback;
 			}
 
@@ -117,7 +117,7 @@ public class HTTP_LoadBalancing {
 					@Override
 					public void onResponse(Call call, Response response) throws IOException {
 						if (response.isSuccessful()) {
-							callback.run(Return.create(response.code(), response.message()).put(response.body().string()));
+							callback.run(Return.create(response.code(), response.message()).put(response.body().string()).put("service", service.get_server()));
 						} else {
 							callback.run(Return.create(response.code(), response.message()).put("service", service.get_server()));
 							LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().url().toString()));

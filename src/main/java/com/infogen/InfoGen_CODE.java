@@ -79,14 +79,15 @@ public enum InfoGen_CODE {
 	//
 	success(200, "成功"), //
 
-	parameters_incorrect(400, "服务器不理解请求的语法"), //
-	limit_by_group(429, "用户调用次数超过限制"), //
+	fail_parameters(400, "服务器不理解请求的语法"), //
+	fail_limit(429, "用户调用次数超过限制"), //
 
 	error(500, "服务器内部错误"), //
-	timeout(504, "调用超时"), //
+	error_timeout(504, "调用超时"), //
 
-	service_notfound(1400, "没有这个服务"), //
-	node_unavailable(1401, "没有可用的服务节点");
+	notfound_service(1400, "没有这个服务"), //
+	notfound_node(1401, "没有可用的服务节点");
+
 	public Integer code;
 	public String message;
 

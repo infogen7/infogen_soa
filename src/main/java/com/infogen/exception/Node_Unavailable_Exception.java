@@ -19,7 +19,7 @@ public class Node_Unavailable_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public Integer code() {
-		return InfoGen_CODE.node_unavailable.code;
+		return InfoGen_CODE.notfound_node.code;
 	}
 
 	/*
@@ -29,7 +29,7 @@ public class Node_Unavailable_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public String name() {
-		return InfoGen_CODE.node_unavailable.name();
+		return InfoGen_CODE.notfound_node.name();
 	}
 
 	/*
@@ -39,7 +39,7 @@ public class Node_Unavailable_Exception extends InfoGen_Exception {
 	 */
 	@Override
 	public String message() {
-		return InfoGen_CODE.node_unavailable.message;
+		return InfoGen_CODE.notfound_node.message;
 	}
 
 }

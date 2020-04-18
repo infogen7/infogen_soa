@@ -50,7 +50,7 @@ public class LoadBalancingRPCChannel extends InfoGen_Channel {
 	public void writeAndFlush(DefaultFullHttpRequest httprequest) throws ServiceException {
 		RemoteServer server = service.get_server();
 		if (server == null) {
-			LOGGER.error(InfoGen_CODE.service_notfound.message);
+			LOGGER.error(InfoGen_CODE.notfound_service.message);
 			throw new ServiceException(new Service_Notfound_Exception());
 		}
 		RemoteNode node = null;
@@ -60,7 +60,7 @@ public class LoadBalancingRPCChannel extends InfoGen_Channel {
 		for (int i = 0; i < 3; i++) {
 			node = server.random_node(seed);
 			if (node == null) {
-				LOGGER.error(InfoGen_CODE.node_unavailable.message);
+				LOGGER.error(InfoGen_CODE.notfound_node.message);
 				throw new ServiceException(new Node_Unavailable_Exception());
 			}
 			try {
@@ -72,7 +72,7 @@ public class LoadBalancingRPCChannel extends InfoGen_Channel {
 				continue;
 			}
 		}
-		LOGGER.error(InfoGen_CODE.node_unavailable.message);
+		LOGGER.error(InfoGen_CODE.notfound_node.message);
 		throw new ServiceException(new Node_Unavailable_Exception());
 	}
 }
