@@ -65,7 +65,7 @@ public class HTTP_LoadBalancing {
 					LOGGER.error(InfoGen_CODE.node_unavailable.message);
 					return Return.create(InfoGen_CODE.node_unavailable.code, InfoGen_CODE.node_unavailable.message).put("service", service.get_server());
 				}
-				
+
 				String http = do_http(node, function, name_value_pair, request_type);
 				return Return.create(http);
 			} catch (HTTP_Fail_Exception e) {
@@ -77,7 +77,7 @@ public class HTTP_LoadBalancing {
 				continue;
 			}
 		}
-		
+
 		return Return.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put("service", service.get_server());
 	}
 
@@ -104,7 +104,7 @@ public class HTTP_LoadBalancing {
 				callback.run(Return.create(InfoGen_CODE.node_unavailable.code, InfoGen_CODE.node_unavailable.message).put("service", service.get_server()));
 				return callback;
 			}
-			
+
 			try {
 				do_http_async(node, function, name_value_pair, request_type, new Callback() {
 					@Override
@@ -117,7 +117,7 @@ public class HTTP_LoadBalancing {
 					@Override
 					public void onResponse(Call call, Response response) throws IOException {
 						if (response.isSuccessful()) {
-							callback.run(Return.create(response.body().string()));
+							callback.run(Return.create(response.code(), response.message()).put(response.body().string()));
 						} else {
 							callback.run(Return.create(response.code(), response.message()).put("service", service.get_server()));
 							LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().url().toString()));
