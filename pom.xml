@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.github.infogen7</groupId>
 		<artifactId>infogen_combine</artifactId>
-		<version>V12.0.0R190708</version>
+		<version>V12.0.0R210207</version>
 		<relativePath>../infogen_combine</relativePath>
 	</parent>
 	<artifactId>infogen_soa</artifactId>
