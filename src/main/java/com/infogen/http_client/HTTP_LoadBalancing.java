@@ -13,7 +13,7 @@ import com.infogen.Service;
 import com.infogen.configuration.InfoGen_Configuration;
 import com.infogen.http_client.callback.HTTP_Callback;
 import com.infogen.http_client.exception.HTTP_Fail_Exception;
-import com.infogen.http_idl.Return;
+import com.infogen.http_idl.Response;
 import com.infogen.json.Jackson;
 import com.infogen.server.model.RemoteNode;
 import com.infogen.server.model.RemoteServer;
@@ -21,7 +21,6 @@ import com.infogen.server.model.RemoteServer;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * @author larry/larrylv@outlook.com/创建时间 2015年12月30日 下午3:21:38
@@ -46,14 +45,14 @@ public class HTTP_LoadBalancing {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// 同步http调用
-	public Return http_blocking(String function, Map<String, Object> name_value_pair, RequestType request_type, String seed) {
+	public Response http_blocking(String function, Map<String, Object> name_value_pair, RequestType request_type, String seed) {
 		function = function.startsWith("/") ? function.substring(1) : function;
 		seed = seed == null ? String.valueOf(Clock.system(InfoGen_Configuration.zoneid).millis()) : seed;
 
 		RemoteServer server = service.get_server();
 		if (server == null) {
 			LOGGER.error(InfoGen_CODE.notfound_service.message);
-			return Return.create(InfoGen_CODE.notfound_service.code, InfoGen_CODE.notfound_service.message).put("service", service.get_server());
+			return Response.create(InfoGen_CODE.notfound_service.code, InfoGen_CODE.notfound_service.message).put("service", service.get_server());
 		}
 
 		RemoteNode node = null;
@@ -63,14 +62,14 @@ public class HTTP_LoadBalancing {
 				node = server.random_node(seed);
 				if (node == null) {
 					LOGGER.error(InfoGen_CODE.notfound_node.message);
-					return Return.create(InfoGen_CODE.notfound_node.code, InfoGen_CODE.notfound_node.message).put("service", service.get_server());
+					return Response.create(InfoGen_CODE.notfound_node.code, InfoGen_CODE.notfound_node.message).put("service", service.get_server());
 				}
 
 				String http_body = do_http(node, function, name_value_pair, request_type);
-				return Return.create(InfoGen_CODE.success.code, "提交成功").put(http_body);
+				return Response.create(InfoGen_CODE.success.code, "提交成功").put(http_body);
 			} catch (HTTP_Fail_Exception e) {
 				LOGGER.warn("调用失败", e);
-				return Return.create(e.getCode(), e.getMessage()).put("service", service.get_server());
+				return Response.create(e.getCode(), e.getMessage()).put("service", service.get_server());
 			} catch (IOException e) {
 				LOGGER.error("调用失败", e);
 				server.disabled(node);
@@ -78,20 +77,20 @@ public class HTTP_LoadBalancing {
 			}
 		}
 
-		return Return.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put("service", service.get_server());
+		return Response.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put("service", service.get_server());
 	}
 
 	// 异步http调用
-	public HTTP_Callback<Return> http_async(String function, Map<String, Object> name_value_pair, RequestType request_type, String seed) {
+	public HTTP_Callback<Response> http_async(String function, Map<String, Object> name_value_pair, RequestType request_type, String seed) {
 		function = function.startsWith("/") ? function.substring(1) : function;
 		seed = seed == null ? String.valueOf(Clock.system(InfoGen_Configuration.zoneid).millis()) : seed;
 
-		HTTP_Callback<Return> callback = new HTTP_Callback<>();
+		HTTP_Callback<Response> callback = new HTTP_Callback<>();
 
 		RemoteServer server = service.get_server();
 		if (server == null) {
 			LOGGER.error(InfoGen_CODE.notfound_service.message);
-			callback.run(Return.create(InfoGen_CODE.notfound_service.code, InfoGen_CODE.notfound_service.message).put("service", service.get_server()));
+			callback.run(Response.create(InfoGen_CODE.notfound_service.code, InfoGen_CODE.notfound_service.message).put("service", service.get_server()));
 			return callback;
 		}
 
@@ -101,7 +100,7 @@ public class HTTP_LoadBalancing {
 			node = server.random_node(seed);
 			if (node == null) {
 				LOGGER.error(InfoGen_CODE.notfound_node.message);
-				callback.run(Return.create(InfoGen_CODE.notfound_node.code, InfoGen_CODE.notfound_node.message).put("service", service.get_server()));
+				callback.run(Response.create(InfoGen_CODE.notfound_node.code, InfoGen_CODE.notfound_node.message).put("service", service.get_server()));
 				return callback;
 			}
 
@@ -110,16 +109,16 @@ public class HTTP_LoadBalancing {
 					@Override
 					public void onFailure(Call call, IOException e) {
 						Request request = call.request();
-						callback.run(Return.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put("service", service.get_server()));
+						callback.run(Response.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put("service", service.get_server()));
 						LOGGER.error("do_async_post_bytype 报错:".concat(request.url().toString()), e);
 					}
 
 					@Override
-					public void onResponse(Call call, Response response) throws IOException {
+					public void onResponse(Call call, okhttp3.Response response) throws IOException {
 						if (response.isSuccessful()) {
-							callback.run(Return.create(response.code(), response.message()).put(response.body().string()).put("service", service.get_server()));
+							callback.run(Response.create(response.code(), response.message()).put(response.body().string()).put("service", service.get_server()));
 						} else {
-							callback.run(Return.create(response.code(), response.message()).put("service", service.get_server()));
+							callback.run(Response.create(response.code(), response.message()).put("service", service.get_server()));
 							LOGGER.error("do_async_post_bytype 错误-返回非2xx:".concat(response.request().url().toString()));
 						}
 					}
@@ -132,7 +131,7 @@ public class HTTP_LoadBalancing {
 			}
 		}
 
-		callback.run(Return.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put("service", service.get_server()));
+		callback.run(Response.create(InfoGen_CODE.error.code, InfoGen_CODE.error.message).put("service", service.get_server()));
 		return callback;
 	}
 

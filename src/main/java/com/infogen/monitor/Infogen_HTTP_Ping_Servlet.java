@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.infogen.InfoGen_CODE;
-import com.infogen.http_idl.Return;
+import com.infogen.http_idl.Response;
 
 /**
  * 项目监控和管理接口-获取当前本地依赖服务的状态
@@ -24,7 +24,7 @@ public class Infogen_HTTP_Ping_Servlet extends HttpServlet {
 
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().write(Return.create(InfoGen_CODE.success.code, InfoGen_CODE.success.message).toJson());
+		response.getWriter().write(Response.create(InfoGen_CODE.success.code, InfoGen_CODE.success.message).toJson());
 	}
 
 	@Override
